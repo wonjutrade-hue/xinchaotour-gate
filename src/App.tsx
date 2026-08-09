@@ -1,0 +1,503 @@
+import React, { useState, useEffect } from 'react';
+import { Product, Category, Region, City, ConsultationRequest } from './types';
+import { Navbar } from './components/Navbar';
+import { Hero } from './components/Hero';
+import { CategoryNav } from './components/CategoryNav';
+import { ProductCard } from './components/ProductCard';
+import { ProductDetailModal } from './components/ProductDetailModal';
+import { ConsultationModal } from './components/ConsultationModal';
+import { AiTravelAssistantModal } from './components/AiTravelAssistantModal';
+import { AdminPanel } from './components/AdminPanel';
+import { TravelQuiz } from './components/TravelQuiz';
+import { FloatingChatWidget } from './components/FloatingChatWidget';
+import { Footer } from './components/Footer';
+import { ExchangeRateModal } from './components/ExchangeRateModal';
+import { INITIAL_PRODUCTS } from './data/seedProducts';
+import { getLiveExchangeRates, ExchangeRates, DEFAULT_RATES } from './lib/exchangeRate';
+import { 
+  Sparkles, 
+  MapPin, 
+  ShieldCheck, 
+  PhoneCall, 
+  SearchX, 
+  Palmtree, 
+  CheckCircle2, 
+  ThumbsUp, 
+  Clock, 
+  Heart,
+  Award
+} from 'lucide-react';
+
+export default function App() {
+  const [products, setProducts] = useState<Product[]>(INITIAL_PRODUCTS);
+  const [inquiries, setInquiries] = useState<ConsultationRequest[]>([]);
+  const [isLoadingProducts, setIsLoadingProducts] = useState(true);
+
+  // Exchange Rates state
+  const [exchangeRates, setExchangeRates] = useState<ExchangeRates>(DEFAULT_RATES);
+  const [isRateModalOpen, setIsRateModalOpen] = useState(false);
+  const [isRefreshingRates, setIsRefreshingRates] = useState(false);
+
+  // Filters
+  const [activeCategory, setActiveCategory] = useState<Category | '전체'>('전체');
+  const [activeRegion, setActiveRegion] = useState<Region>('전체');
+  const [activeCity, setActiveCity] = useState<City>('전체');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [sortBy, setSortBy] = useState<'popular' | 'price_asc' | 'price_desc' | 'rating'>('popular');
+
+  // Modals
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [isConsultationOpen, setIsConsultationOpen] = useState(false);
+  const [consultationTargetProduct, setConsultationTargetProduct] = useState<Product | null>(null);
+  const [isAiAssistantOpen, setIsAiAssistantOpen] = useState(false);
+  const [isAdminOpen, setIsAdminOpen] = useState(false);
+  const [isQuizOpen, setIsQuizOpen] = useState(false);
+
+  // Fetch Exchange Rates
+  const loadRates = async () => {
+    setIsRefreshingRates(true);
+    const rates = await getLiveExchangeRates();
+    setExchangeRates(rates);
+    setIsRefreshingRates(false);
+  };
+
+  // Fetch Products & Inquiries from Express backend
+  const fetchProducts = async () => {
+    try {
+      const res = await fetch('/api/products');
+      const data = await res.json();
+      if (data.success && Array.isArray(data.products)) {
+        setProducts(data.products);
+      }
+    } catch (err) {
+      console.warn('API fetch failed, falling back to local seed products');
+    } finally {
+      setIsLoadingProducts(false);
+    }
+  };
+
+  const fetchInquiries = async () => {
+    try {
+      const res = await fetch('/api/inquiries');
+      const data = await res.json();
+      if (data.success && Array.isArray(data.inquiries)) {
+        setInquiries(data.inquiries);
+      }
+    } catch (err) {
+      console.warn('Failed to fetch inquiries');
+    }
+  };
+
+  useEffect(() => {
+    loadRates();
+    fetchProducts();
+    fetchInquiries();
+  }, []);
+
+  // API Actions
+  const handleAddProduct = async (newProd: Omit<Product, 'id'>) => {
+    try {
+      const res = await fetch('/api/products', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newProd)
+      });
+      const data = await res.json();
+      if (data.success && data.product) {
+        setProducts(prev => [data.product, ...prev]);
+      } else {
+        // Fallback local update
+        const fallbackProd = { ...newProd, id: `prod-${Date.now()}` } as Product;
+        setProducts(prev => [fallbackProd, ...prev]);
+      }
+    } catch (err) {
+      const fallbackProd = { ...newProd, id: `prod-${Date.now()}` } as Product;
+      setProducts(prev => [fallbackProd, ...prev]);
+    }
+  };
+
+  const handleUpdateProduct = async (id: string, updated: Partial<Product>) => {
+    try {
+      await fetch(`/api/products/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updated)
+      });
+    } catch (err) {
+      console.warn('API update failed');
+    }
+    setProducts(prev => prev.map(p => p.id === id ? { ...p, ...updated } : p));
+  };
+
+  const handleDeleteProduct = async (id: string) => {
+    try {
+      await fetch(`/api/products/${id}`, { method: 'DELETE' });
+    } catch (err) {
+      console.warn('API delete failed');
+    }
+    setProducts(prev => prev.filter(p => p.id !== id));
+  };
+
+  const handleResetProducts = async () => {
+    try {
+      const res = await fetch('/api/products/reset', { method: 'POST' });
+      const data = await res.json();
+      if (data.success && Array.isArray(data.products)) {
+        setProducts(data.products);
+        return;
+      }
+    } catch (err) {
+      console.warn('API reset failed');
+    }
+    setProducts([...INITIAL_PRODUCTS]);
+  };
+
+  const handleImportProducts = async (items: any[], replace: boolean) => {
+    try {
+      const res = await fetch('/api/products/import', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ items, replaceExisting: replace })
+      });
+      const data = await res.json();
+      if (data.success && Array.isArray(data.products)) {
+        setProducts(data.products);
+        return;
+      }
+    } catch (err) {
+      console.warn('API import failed');
+    }
+    if (replace) {
+      setProducts(items.map((it, idx) => ({ ...it, id: it.id || `imp-${idx}` })));
+    } else {
+      setProducts(prev => [...items.map((it, idx) => ({ ...it, id: it.id || `imp-${idx}` })), ...prev]);
+    }
+  };
+
+  const handleSubmitInquiry = async (payload: any): Promise<boolean> => {
+    try {
+      const res = await fetch('/api/inquiries', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      if (data.success && data.inquiry) {
+        setInquiries(prev => [data.inquiry, ...prev]);
+        return true;
+      }
+    } catch (err) {
+      console.warn('Inquiry submit API failed');
+    }
+    // Fallback local inquiry append
+    const localInq = { ...payload, id: `inq-${Date.now()}`, status: 'pending', createdAt: new Date().toISOString() };
+    setInquiries(prev => [localInq, ...prev]);
+    return true;
+  };
+
+  const handleUpdateInquiryStatus = async (id: string, status: ConsultationRequest['status']) => {
+    try {
+      await fetch(`/api/inquiries/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status })
+      });
+    } catch (err) {
+      console.warn('API inquiry update failed');
+    }
+    setInquiries(prev => prev.map(i => i.id === id ? { ...i, status } : i));
+  };
+
+  // Filter & Sort Logic
+  const filteredProducts = products.filter((p) => {
+    // Category match
+    if (activeCategory !== '전체' && p.category !== activeCategory) {
+      return false;
+    }
+    // Region match
+    if (activeRegion !== '전체' && p.region !== activeRegion) {
+      return false;
+    }
+    // City match
+    if (activeCity !== '전체' && p.city !== activeCity) {
+      return false;
+    }
+    // Search keyword match
+    if (searchTerm.trim()) {
+      const kw = searchTerm.toLowerCase();
+      const matchTitle = p.title.toLowerCase().includes(kw);
+      const matchSub = p.subTitle.toLowerCase().includes(kw);
+      const matchCity = p.city.toLowerCase().includes(kw);
+      const matchTags = p.tags.some(t => t.toLowerCase().includes(kw));
+      if (!matchTitle && !matchSub && !matchCity && !matchTags) {
+        return false;
+      }
+    }
+    return true;
+  }).sort((a, b) => {
+    if (sortBy === 'price_asc') return a.priceKRW - b.priceKRW;
+    if (sortBy === 'price_desc') return b.priceKRW - a.priceKRW;
+    if (sortBy === 'rating') return b.rating - a.rating;
+    // Popularity default
+    return (b.reviewCount || 0) - (a.reviewCount || 0);
+  });
+
+  return (
+    <div className="min-h-screen bg-white text-slate-900 font-sans flex flex-col">
+      {/* Top Navbar */}
+      <Navbar
+        activeCategory={activeCategory}
+        activeRegion={activeRegion}
+        activeCity={activeCity}
+        onSelectCategory={setActiveCategory}
+        onSelectRegion={setActiveRegion}
+        onSelectCity={setActiveCity}
+        onOpenConsultation={() => {
+          setConsultationTargetProduct(null);
+          setIsConsultationOpen(true);
+        }}
+        onOpenAiAssistant={() => setIsAiAssistantOpen(true)}
+        onOpenAdmin={() => setIsAdminOpen(true)}
+        searchTerm={searchTerm}
+        onSearchChange={setSearchTerm}
+        exchangeRates={exchangeRates}
+        onOpenRateCalculator={() => setIsRateModalOpen(true)}
+      />
+
+      {/* Hero Carousel Section */}
+      <Hero
+        onSearch={(city, category, keyword) => {
+          setActiveCity(city);
+          if (city !== '전체') {
+            if (['하노이', '하롱베이', '사파', '닌빈'].includes(city)) setActiveRegion('북부');
+            else if (['다낭', '호이안', '후에', '나트랑'].includes(city)) setActiveRegion('중부');
+            else if (['호치민', '푸꾸옥', '달랏', '붕따우'].includes(city)) setActiveRegion('남부');
+          }
+          setActiveCategory(category);
+          setSearchTerm(keyword);
+        }}
+        onSelectCategory={setActiveCategory}
+        onOpenQuiz={() => setIsQuizOpen(true)}
+      />
+
+      {/* Category Nav & Regional Breakdown Filter */}
+      <CategoryNav
+        activeCategory={activeCategory}
+        activeRegion={activeRegion}
+        activeCity={activeCity}
+        sortBy={sortBy}
+        onSelectCategory={setActiveCategory}
+        onSelectRegion={setActiveRegion}
+        onSelectCity={setActiveCity}
+        onSortChange={setSortBy}
+        totalProductsCount={filteredProducts.length}
+      />
+
+      {/* Main Content Product Display Grid */}
+      <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full space-y-12">
+        {/* Active Filter Title Banner */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
+          <div>
+            <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
+              <Palmtree className="w-6 h-6 text-teal-700" />
+              <span>
+                {activeCategory === '전체' ? '베트남 종합 맞춤 상품' : activeCategory}
+                {activeRegion !== '전체' && ` (${activeRegion} 권역)`}
+                {activeCity !== '전체' && ` - ${activeCity}`}
+              </span>
+            </h2>
+            <p className="text-xs font-medium text-slate-500 mt-0.5">
+              엄선된 베트남 단독 전용 차량 및 100% 한국인 전문 가이드 결합 상품
+            </p>
+          </div>
+
+          {(activeCategory !== '전체' || activeRegion !== '전체' || activeCity !== '전체' || searchTerm) && (
+            <button
+              onClick={() => {
+                setActiveCategory('전체');
+                setActiveRegion('전체');
+                setActiveCity('전체');
+                setSearchTerm('');
+              }}
+              className="text-xs font-bold text-teal-700 hover:text-teal-900 bg-teal-50 px-3 py-1.5 rounded-xl self-start sm:self-auto transition-colors"
+            >
+              🔄 전체 필터 초기화
+            </button>
+          )}
+        </div>
+
+        {/* Product Cards Grid */}
+        {filteredProducts.length === 0 ? (
+          <div className="py-20 text-center bg-slate-50 rounded-3xl border border-dashed border-slate-200 space-y-3">
+            <SearchX className="w-12 h-12 text-slate-400 mx-auto" />
+            <h3 className="text-base font-extrabold text-slate-800">
+              선택한 필터 조건에 맞는 여행 상품이 없습니다.
+            </h3>
+            <p className="text-xs text-slate-500 max-w-sm mx-auto">
+              다른 지역이나 카테고리를 선택하시거나, 실시간 카톡 맞춤 견적 신청으로 나만의 여행을 만드실 수 있습니다.
+            </p>
+            <button
+              onClick={() => {
+                setActiveCategory('전체');
+                setActiveRegion('전체');
+                setActiveCity('전체');
+                setSearchTerm('');
+              }}
+              className="px-4 py-2 bg-teal-700 text-white rounded-xl font-bold text-xs shadow-sm hover:bg-teal-800"
+            >
+              전체 상품 보기
+            </button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {filteredProducts.map((prod) => (
+              <ProductCard
+                key={prod.id}
+                product={prod}
+                onSelectProduct={setSelectedProduct}
+                onQuickInquire={(p) => {
+                  setConsultationTargetProduct(p);
+                  setIsConsultationOpen(true);
+                }}
+                exchangeRates={exchangeRates}
+              />
+            ))}
+          </div>
+        )}
+
+        {/* Trust & Unique Benefits Section */}
+        <section className="bg-gradient-to-br from-slate-900 via-teal-950 to-slate-900 text-white rounded-3xl p-6 sm:p-10 shadow-xl space-y-8">
+          <div className="text-center max-w-2xl mx-auto space-y-2">
+            <span className="text-amber-400 font-extrabold text-xs tracking-wider uppercase bg-amber-400/10 px-3 py-1 rounded-full border border-amber-400/30">
+              Why Xin Chao Tour
+            </span>
+            <h3 className="text-2xl sm:text-3xl font-black tracking-tight text-white">
+              왜 한국 여행객들은 '신차오투어'를 선택할까요?
+            </h3>
+            <p className="text-xs sm:text-sm text-slate-300">
+              베트남 현지 직접 운영으로 거품을 완전히 뺀 정직한 가격과 완벽한 안심 케어를 제공합니다.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-slate-200">
+            <div className="bg-white/5 backdrop-blur-md p-6 rounded-2xl border border-white/10 space-y-3">
+              <div className="w-12 h-12 rounded-2xl bg-teal-500/20 text-teal-300 flex items-center justify-center font-bold">
+                <ShieldCheck className="w-6 h-6 text-amber-300" />
+              </div>
+              <h4 className="font-extrabold text-white text-base">100% 현지 직영 & 단독 차량</h4>
+              <p className="text-xs text-slate-300 leading-relaxed">
+                중개 수수료 제로! 하노이, 다낭, 호치민, 푸꾸옥 현지 지사에서 전용 럭셔리 차와 한국어 전문 가이드를 수시로 직영 배치합니다.
+              </p>
+            </div>
+
+            <div className="bg-white/5 backdrop-blur-md p-6 rounded-2xl border border-white/10 space-y-3">
+              <div className="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-300 flex items-center justify-center font-bold">
+                <Clock className="w-6 h-6 text-amber-300" />
+              </div>
+              <h4 className="font-extrabold text-white text-base">24시간 카카오톡 실시간 케어</h4>
+              <p className="text-xs text-slate-300 leading-relaxed">
+                여행 중 어떤 돌발 상황도 즉각 해결! 한국어 소통이 원활한 24시간 비상 긴급 지원 센터를 현지에서 가동합니다.
+              </p>
+            </div>
+
+            <div className="bg-white/5 backdrop-blur-md p-6 rounded-2xl border border-white/10 space-y-3">
+              <div className="w-12 h-12 rounded-2xl bg-rose-500/20 text-rose-300 flex items-center justify-center font-bold">
+                <ThumbsUp className="w-6 h-6 text-amber-300" />
+              </div>
+              <h4 className="font-extrabold text-white text-base">NO 강요 쇼핑 / 최저가 보장</h4>
+              <p className="text-xs text-slate-300 leading-relaxed">
+                원치 않는 저급 쇼핑센터 방문 없는 100% 힐링 동선! 불만족 시 100% 책임 환불제를 실시합니다.
+              </p>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      {/* Footer */}
+      <Footer
+        onSelectCategory={setActiveCategory}
+        onSelectRegion={setActiveRegion}
+        onOpenConsultation={() => {
+          setConsultationTargetProduct(null);
+          setIsConsultationOpen(true);
+        }}
+        onOpenAdmin={() => setIsAdminOpen(true)}
+      />
+
+      {/* Floating Inquiry Button */}
+      <FloatingChatWidget
+        onOpenConsultation={() => {
+          setConsultationTargetProduct(null);
+          setIsConsultationOpen(true);
+        }}
+        onOpenAiAssistant={() => setIsAiAssistantOpen(true)}
+      />
+
+      {/* Product Details Modal */}
+      <ProductDetailModal
+        product={selectedProduct}
+        onClose={() => setSelectedProduct(null)}
+        onOpenConsultation={(p) => {
+          setConsultationTargetProduct(p || null);
+          setIsConsultationOpen(true);
+        }}
+        exchangeRates={exchangeRates}
+      />
+
+      {/* Real-time Exchange Rate & Calculator Modal */}
+      <ExchangeRateModal
+        isOpen={isRateModalOpen}
+        onClose={() => setIsRateModalOpen(false)}
+        rates={exchangeRates}
+        onRefresh={loadRates}
+        isRefreshing={isRefreshingRates}
+      />
+
+      {/* Real-time Consultation Booking Modal */}
+      <ConsultationModal
+        isOpen={isConsultationOpen}
+        product={consultationTargetProduct}
+        onClose={() => {
+          setIsConsultationOpen(false);
+          setConsultationTargetProduct(null);
+        }}
+        onSubmitInquiry={handleSubmitInquiry}
+      />
+
+      {/* Gemini AI Assistant Modal */}
+      <AiTravelAssistantModal
+        isOpen={isAiAssistantOpen}
+        onClose={() => setIsAiAssistantOpen(false)}
+        onOpenConsultation={() => {
+          setIsAiAssistantOpen(false);
+          setIsConsultationOpen(true);
+        }}
+      />
+
+      {/* Admin Panel (Edit products, upload & download CSV/JSON) */}
+      <AdminPanel
+        isOpen={isAdminOpen}
+        onClose={() => setIsAdminOpen(false)}
+        products={products}
+        inquiries={inquiries}
+        onAddProduct={handleAddProduct}
+        onUpdateProduct={handleUpdateProduct}
+        onDeleteProduct={handleDeleteProduct}
+        onResetProducts={handleResetProducts}
+        onImportProducts={handleImportProducts}
+        onUpdateInquiryStatus={handleUpdateInquiryStatus}
+      />
+
+      {/* Interactive Travel Quiz */}
+      <TravelQuiz
+        isOpen={isQuizOpen}
+        onClose={() => setIsQuizOpen(false)}
+        onCompleteQuiz={(cat, reg) => {
+          setActiveCategory(cat);
+          setActiveRegion(reg);
+          setActiveCity('전체');
+        }}
+      />
+    </div>
+  );
+}

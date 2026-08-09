@@ -1,0 +1,6 @@
+{
+  "name": "신차오투어 - 베트남 맞춤 여행 전문",
+  "description": "한국인을 위한 베트남 맞춤형 패키지, 자유여행, 골프 투어, 풀빌라 예약 및 실시간 상담 웹사이트",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
