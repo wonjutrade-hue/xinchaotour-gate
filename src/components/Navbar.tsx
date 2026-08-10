@@ -62,7 +62,6 @@ export const Navbar: React.FC<NavbarProps> = ({
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [travelDropdownOpen, setTravelDropdownOpen] = useState(false);
-  const [csDropdownOpen, setCsDropdownOpen] = useState(false);
 
   const categories: { key: Category | '전체'; label: string; icon: string }[] = [
     { key: '전체', label: '전체 보기', icon: '🌏' },
@@ -221,53 +220,6 @@ export const Navbar: React.FC<NavbarProps> = ({
                       <span>{item.label}</span>
                     </button>
                   ))}
-                </div>
-              )}
-            </div>
-
-            {/* 고객센터 Dropdown Menu matching Image 2 */}
-            <div 
-              className="relative"
-              onMouseEnter={() => setCsDropdownOpen(true)}
-              onMouseLeave={() => setCsDropdownOpen(false)}
-            >
-              <button
-                onClick={() => setCsDropdownOpen(!csDropdownOpen)}
-                className="flex items-center gap-1 px-3.5 py-2 rounded-xl font-bold text-sm text-slate-700 hover:bg-slate-100 transition-all"
-              >
-                <span>고객센터</span>
-                <ChevronDown className={`w-4 h-4 transition-transform ${csDropdownOpen ? 'rotate-180' : ''}`} />
-              </button>
-
-              {csDropdownOpen && (
-                <div className="absolute top-full right-0 mt-1 w-52 bg-white rounded-2xl shadow-xl border border-slate-100 p-2 space-y-1 animate-fadeIn z-50">
-                  <button
-                    onClick={() => {
-                      setCsDropdownOpen(false);
-                      handleOpenKakaoTalkDirect();
-                    }}
-                    className="w-full text-left px-3 py-2.5 rounded-xl hover:bg-amber-50 text-slate-800 text-xs font-bold flex items-center gap-2 transition-colors"
-                  >
-                    <MessageCircle className="w-4 h-4 text-amber-500 fill-amber-400" />
-                    <span>카카오톡 1:1 바로 상담</span>
-                  </button>
-                  <a
-                    href={COMPANY_PHONE_TEL}
-                    className="w-full text-left px-3 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 text-xs font-bold flex items-center gap-2 transition-colors"
-                  >
-                    <PhoneCall className="w-4 h-4 text-teal-600" />
-                    <span>전화상담 ({COMPANY_PHONE})</span>
-                  </a>
-                  <button
-                    onClick={() => {
-                      setCsDropdownOpen(false);
-                      onOpenConsultation();
-                    }}
-                    className="w-full text-left px-3 py-2.5 rounded-xl hover:bg-teal-50 text-teal-800 text-xs font-bold flex items-center gap-2 transition-colors"
-                  >
-                    <Calendar className="w-4 h-4 text-teal-600" />
-                    <span>상세 견적/상담 신청</span>
-                  </button>
                 </div>
               )}
             </div>

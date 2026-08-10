@@ -377,14 +377,35 @@ export const TravelInfoModal: React.FC<TravelInfoModalProps> = ({
                     </p>
                   </div>
 
-                  <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
+                  <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2.5">
                     <span className="text-xs font-black text-amber-800 bg-amber-100 px-2.5 py-0.5 rounded-full">
                       전자비자 (e-Visa)
                     </span>
                     <h4 className="font-bold text-slate-900 text-sm">45일 초과 체류 시</h4>
                     <p className="text-xs text-slate-600 leading-relaxed">
-                      45일을 초과하여 장기 체류하거나 복수 입국이 필요한 경우, 베트남 이민국 공식 웹사이트에서 90일 e-Visa를 미리 신청해야 합니다.
+                      45일을 초과하여 장기 체류하거나 복수 입국이 필요한 경우, 아래{' '}
+                      <a
+                        href="https://evisa.xuatnhapcanh.gov.vn/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-black text-teal-800 underline hover:text-teal-900 bg-teal-100/80 px-1.5 py-0.5 rounded inline-flex items-center gap-1"
+                      >
+                        베트남 이민국 공식 웹사이트
+                        <ExternalLink className="w-3 h-3 text-teal-700" />
+                      </a>
+                      에서 90일 e-Visa를 미리 신청해야 합니다.
                     </p>
+                    <div>
+                      <a
+                        href="https://evisa.xuatnhapcanh.gov.vn/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-1 inline-flex items-center gap-1.5 px-3.5 py-2 bg-teal-700 hover:bg-teal-800 text-white font-extrabold text-xs rounded-xl shadow-xs transition-colors"
+                      >
+                        <ExternalLink className="w-3.5 h-3.5" />
+                        베트남 이민국 공식 e-Visa 신청 사이트 바로가기
+                      </a>
+                    </div>
                   </div>
                 </div>
 
