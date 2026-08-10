@@ -32,7 +32,7 @@ export const CategoryNav: React.FC<CategoryNavProps> = ({
   totalProductsCount,
 }) => {
   return (
-    <div className="bg-slate-50 border-y border-slate-200/80 pt-6 sm:pt-16 pb-6 px-3 sm:px-6 lg:px-8">
+    <div className="bg-slate-50 border-y border-slate-200/80 py-6 px-3 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto space-y-4">
         {/* Category Tabs */}
         <div className="flex items-center justify-between flex-wrap gap-3">

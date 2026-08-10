@@ -38,14 +38,14 @@ export const TravelQuiz: React.FC<TravelQuizProps> = ({
         {/* Step Indicator */}
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-full bg-amber-400 text-slate-950 flex items-center justify-center font-extrabold text-xs">
-            {step}/3
+            {step === 4 ? '완료' : `${step}/3`}
           </div>
           <div>
             <h3 className="font-extrabold text-slate-900 text-base">
-              나에게 딱 맞는 베트남 여행 찾기
+              {step === 4 ? '🎉 고객님 맞춤 베트남 여행 추천 완료!' : '나에게 딱 맞는 베트남 여행 찾기'}
             </h3>
             <p className="text-[11px] text-slate-500 font-medium">
-              간단한 질문에 답하시면 최적의 추천 상품을 보여드립니다.
+              {step === 4 ? '선택하신 취향에 맞춰 베트남 맞춤 상품을 찾았습니다.' : '간단한 질문에 답하시면 최적의 추천 상품을 보여드립니다.'}
             </p>
           </div>
         </div>
@@ -134,7 +134,7 @@ export const TravelQuiz: React.FC<TravelQuizProps> = ({
                   key={item.val}
                   onClick={() => {
                     setRegion(item.val);
-                    handleFinish();
+                    setStep(4);
                   }}
                   className={`p-3.5 rounded-2xl border text-xs font-bold text-left transition-all ${
                     region === item.val
@@ -146,6 +146,43 @@ export const TravelQuiz: React.FC<TravelQuizProps> = ({
                 </button>
               ))}
             </div>
+          </div>
+        )}
+
+        {/* Step 4: Result Modal View */}
+        {step === 4 && (
+          <div className="space-y-4 animate-fadeIn">
+            <div className="bg-gradient-to-br from-teal-50 to-amber-50 p-4.5 rounded-2xl border border-teal-200/80 space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-extrabold text-teal-900 bg-teal-200/70 px-2.5 py-1 rounded-full">
+                  맞춤 매칭 추천 결과
+                </span>
+                <span className="text-xs font-bold text-slate-600">
+                  {companion ? `${companion} 동반` : ''}
+                </span>
+              </div>
+              
+              <div className="space-y-1.5">
+                <p className="text-sm font-extrabold text-slate-900">
+                  선택하신 추천 조건: <span className="text-teal-700 font-black">{region === '전체' ? '베트남 전역' : `${region} 권역`}</span> × <span className="text-amber-700 font-black">{category === '전체' ? '인기 종합' : category}</span>
+                </p>
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  {region === '북부' && '⛰️ 하노이의 유네스코 하롱베이 럭셔리 크루즈 & 사파 힐링 트레킹 추천'}
+                  {region === '중부' && '🏖️ 다낭 바나힐 단독 투어 & 호이안 올드타운, 미케비치 휴양 추천'}
+                  {region === '남부' && '🌴 푸꾸옥 프라이빗 독채 풀빌라 & 나트랑 해양 호핑투어 추천'}
+                  {region === '전체' && '🌏 베트남 전체 베스트셀러 단독 패키지 & 1:1 맞춤 견적 추천'}
+                </p>
+              </div>
+            </div>
+
+            <button
+              onClick={handleFinish}
+              className="w-full py-3.5 px-4 bg-teal-700 hover:bg-teal-800 text-white font-black text-sm rounded-2xl shadow-md transition-all flex items-center justify-center gap-2"
+            >
+              <Sparkles className="w-4 h-4 text-amber-300" />
+              <span>추천된 여행 상품 보기 (자동 필터 적용)</span>
+              <ArrowRight className="w-4 h-4 text-white" />
+            </button>
           </div>
         )}
       </div>

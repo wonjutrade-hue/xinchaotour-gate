@@ -129,21 +129,21 @@ export const Hero: React.FC<HeroProps> = ({ onSearch, onSelectCategory, onOpenQu
       </div>
 
       {/* Floating Integrated Search Bar Container */}
-      <div className="relative z-20 max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 pb-4 sm:pb-0 sm:-mb-10 w-full">
+      <div className="relative z-20 max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 pt-4 pb-6 sm:pb-8 w-full">
         <form 
           onSubmit={handleSearchSubmit}
-          className="bg-white rounded-2xl p-3.5 sm:p-4 shadow-xl border border-slate-100 text-slate-800 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 items-end"
+          className="bg-white rounded-2xl p-4 sm:p-5 shadow-xl border border-slate-200/90 text-slate-800 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 items-end"
         >
           {/* City Selection */}
-          <div className="space-y-1">
-            <label className="text-[11px] font-bold text-slate-600 flex items-center gap-1 whitespace-nowrap">
+          <div className="space-y-1.5">
+            <label className="text-[11px] sm:text-xs font-extrabold text-slate-700 flex items-center gap-1.5 whitespace-nowrap">
               <MapPin className="w-3.5 h-3.5 text-teal-600 shrink-0" />
               <span>여행 도시 선택</span>
             </label>
             <select
               value={searchCity}
               onChange={(e) => setSearchCity(e.target.value as City)}
-              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-teal-500"
+              className="w-full bg-slate-50 hover:bg-slate-100/80 border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-teal-500 transition-colors"
             >
               <option value="전체">베트남 전체 (북부/중부/남부)</option>
               <optgroup label="북부">
@@ -168,15 +168,15 @@ export const Hero: React.FC<HeroProps> = ({ onSearch, onSelectCategory, onOpenQu
           </div>
 
           {/* Category Selection */}
-          <div className="space-y-1">
-            <label className="text-[11px] font-bold text-slate-600 flex items-center gap-1 whitespace-nowrap">
+          <div className="space-y-1.5">
+            <label className="text-[11px] sm:text-xs font-extrabold text-slate-700 flex items-center gap-1.5 whitespace-nowrap">
               <Compass className="w-3.5 h-3.5 text-teal-600 shrink-0" />
               <span>여행 카테고리</span>
             </label>
             <select
               value={searchCategory}
               onChange={(e) => setSearchCategory(e.target.value as Category | '전체')}
-              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-teal-500"
+              className="w-full bg-slate-50 hover:bg-slate-100/80 border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-teal-500 transition-colors"
             >
               <option value="전체">전체 카테고리</option>
               <option value="추천패키지">추천 패키지</option>
@@ -187,8 +187,8 @@ export const Hero: React.FC<HeroProps> = ({ onSearch, onSelectCategory, onOpenQu
           </div>
 
           {/* Keyword Input */}
-          <div className="space-y-1">
-            <label className="text-[11px] font-bold text-slate-600 flex items-center gap-1 whitespace-nowrap">
+          <div className="space-y-1.5">
+            <label className="text-[11px] sm:text-xs font-extrabold text-slate-700 flex items-center gap-1.5 whitespace-nowrap">
               <Search className="w-3.5 h-3.5 text-teal-600 shrink-0" />
               <span>검색어 (크루즈, 풀빌라, 바나힐 등)</span>
             </label>
@@ -197,14 +197,14 @@ export const Hero: React.FC<HeroProps> = ({ onSearch, onSelectCategory, onOpenQu
               placeholder="관심 키워드 입력..."
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-teal-500"
+              className="w-full bg-slate-50 hover:bg-slate-100/80 border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-teal-500 transition-colors"
             />
           </div>
 
           {/* Search Button */}
           <button
             type="submit"
-            className="w-full bg-teal-700 hover:bg-teal-800 text-white font-bold py-2.5 px-4 rounded-xl text-xs flex items-center justify-center gap-2 transition-all shadow-md shadow-teal-700/20 whitespace-nowrap"
+            className="w-full bg-teal-700 hover:bg-teal-800 text-white font-extrabold py-2.5 px-4 rounded-xl text-xs flex items-center justify-center gap-2 transition-all shadow-md shadow-teal-700/20 whitespace-nowrap h-[42px]"
           >
             <Search className="w-4 h-4 text-amber-300 shrink-0" />
             <span>맞춤 상품 검색</span>
