@@ -129,16 +129,16 @@ export const Hero: React.FC<HeroProps> = ({ onSearch, onSelectCategory, onOpenQu
       </div>
 
       {/* Floating Integrated Search Bar Container */}
-      <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mb-10 w-full">
+      <div className="relative z-20 max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 pb-4 sm:pb-0 sm:-mb-10 w-full">
         <form 
           onSubmit={handleSearchSubmit}
-          className="bg-white rounded-2xl p-4 shadow-xl border border-slate-100 text-slate-800 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 items-end"
+          className="bg-white rounded-2xl p-3.5 sm:p-4 shadow-xl border border-slate-100 text-slate-800 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 items-end"
         >
           {/* City Selection */}
           <div className="space-y-1">
-            <label className="text-[11px] font-bold text-slate-500 flex items-center gap-1">
-              <MapPin className="w-3.5 h-3.5 text-teal-600" />
-              여행 도시 선택
+            <label className="text-[11px] font-bold text-slate-600 flex items-center gap-1 whitespace-nowrap">
+              <MapPin className="w-3.5 h-3.5 text-teal-600 shrink-0" />
+              <span>여행 도시 선택</span>
             </label>
             <select
               value={searchCity}
@@ -169,9 +169,9 @@ export const Hero: React.FC<HeroProps> = ({ onSearch, onSelectCategory, onOpenQu
 
           {/* Category Selection */}
           <div className="space-y-1">
-            <label className="text-[11px] font-bold text-slate-500 flex items-center gap-1">
-              <Compass className="w-3.5 h-3.5 text-teal-600" />
-              여행 카테고리
+            <label className="text-[11px] font-bold text-slate-600 flex items-center gap-1 whitespace-nowrap">
+              <Compass className="w-3.5 h-3.5 text-teal-600 shrink-0" />
+              <span>여행 카테고리</span>
             </label>
             <select
               value={searchCategory}
@@ -188,13 +188,13 @@ export const Hero: React.FC<HeroProps> = ({ onSearch, onSelectCategory, onOpenQu
 
           {/* Keyword Input */}
           <div className="space-y-1">
-            <label className="text-[11px] font-bold text-slate-500 flex items-center gap-1">
-              <Search className="w-3.5 h-3.5 text-teal-600" />
-              검색어 (예: 크루즈, 3베드룸, 바나힐)
+            <label className="text-[11px] font-bold text-slate-600 flex items-center gap-1 whitespace-nowrap">
+              <Search className="w-3.5 h-3.5 text-teal-600 shrink-0" />
+              <span>검색어 (크루즈, 풀빌라, 바나힐 등)</span>
             </label>
             <input
               type="text"
-              placeholder="관심 키워드 검색..."
+              placeholder="관심 키워드 입력..."
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
               className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-teal-500"
@@ -204,9 +204,9 @@ export const Hero: React.FC<HeroProps> = ({ onSearch, onSelectCategory, onOpenQu
           {/* Search Button */}
           <button
             type="submit"
-            className="w-full bg-teal-700 hover:bg-teal-800 text-white font-bold py-2.5 px-4 rounded-xl text-xs flex items-center justify-center gap-2 transition-all shadow-md shadow-teal-700/20"
+            className="w-full bg-teal-700 hover:bg-teal-800 text-white font-bold py-2.5 px-4 rounded-xl text-xs flex items-center justify-center gap-2 transition-all shadow-md shadow-teal-700/20 whitespace-nowrap"
           >
-            <Search className="w-4 h-4 text-amber-300" />
+            <Search className="w-4 h-4 text-amber-300 shrink-0" />
             <span>맞춤 상품 검색</span>
           </button>
         </form>
