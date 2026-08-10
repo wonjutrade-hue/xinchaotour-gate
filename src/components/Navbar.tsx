@@ -13,11 +13,19 @@ import {
   Calendar,
   Layers,
   RefreshCw,
-  TrendingUp
+  TrendingUp,
+  ChevronDown,
+  Sun,
+  DollarSign,
+  FileText,
+  Utensils,
+  Lightbulb,
+  Headphones
 } from 'lucide-react';
 import { Category, Region, City } from '../types';
 import { COMPANY_PHONE, COMPANY_PHONE_TEL, handleOpenKakaoTalkDirect } from '../constants';
 import { ExchangeRates } from '../lib/exchangeRate';
+import { TravelInfoTab } from './TravelInfoModal';
 
 interface NavbarProps {
   activeCategory: Category | '전체';
@@ -33,6 +41,7 @@ interface NavbarProps {
   onSearchChange: (val: string) => void;
   exchangeRates: ExchangeRates;
   onOpenRateCalculator?: () => void;
+  onOpenTravelInfo?: (tab?: TravelInfoTab) => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -49,8 +58,11 @@ export const Navbar: React.FC<NavbarProps> = ({
   onSearchChange,
   exchangeRates,
   onOpenRateCalculator,
+  onOpenTravelInfo,
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [travelDropdownOpen, setTravelDropdownOpen] = useState(false);
+  const [csDropdownOpen, setCsDropdownOpen] = useState(false);
 
   const categories: { key: Category | '전체'; label: string; icon: string }[] = [
     { key: '전체', label: '전체 보기', icon: '🌏' },
@@ -58,6 +70,15 @@ export const Navbar: React.FC<NavbarProps> = ({
     { key: '자유여행', label: '자유 여행', icon: '🛫' },
     { key: '골프투어', label: '골프 투어', icon: '⛳' },
     { key: '풀빌라', label: '풀빌라 & 리조트', icon: '🏰' },
+  ];
+
+  const travelInfoItems: { tab: TravelInfoTab; label: string; icon: React.ReactNode }[] = [
+    { tab: 'course', label: '여행정보 코스/안내', icon: <Compass className="w-4 h-4 text-teal-600" /> },
+    { tab: 'weather', label: '베트남 날씨', icon: <Sun className="w-4 h-4 text-amber-500" /> },
+    { tab: 'exchange', label: '베트남 환율', icon: <DollarSign className="w-4 h-4 text-emerald-600" /> },
+    { tab: 'visa', label: '비자 가이드', icon: <FileText className="w-4 h-4 text-sky-600" /> },
+    { tab: 'food', label: '맛집 가이드', icon: <Utensils className="w-4 h-4 text-rose-500" /> },
+    { tab: 'tips', label: '여행 알짜팁', icon: <Lightbulb className="w-4 h-4 text-amber-600" /> },
   ];
 
   // Calculate live VND per 1000 KRW
@@ -98,7 +119,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               onClick={handleOpenKakaoTalkDirect}
               className="flex items-center gap-1 text-amber-300 hover:text-amber-200 font-bold transition-colors bg-amber-400/10 hover:bg-amber-400/20 px-2.5 py-0.5 rounded-full border border-amber-400/30"
-              title="2단계 없이 바로 카카오톡 개인/직영 상담 연결"
+              title="카카오톡 개인/직영 상담 즉시 연결"
             >
               <MessageCircle className="w-3.5 h-3.5 text-amber-300" />
               실시간 카톡 바로상담
@@ -118,7 +139,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       {/* Main Navbar */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
-          {/* Logo - Using the uploaded logo asset SVG */}
+          {/* Logo */}
           <div className="flex items-center gap-3">
             <button 
               onClick={() => {
@@ -156,7 +177,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     onSelectRegion('전체');
                     onSelectCity('전체');
                   }}
-                  className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-sm transition-all ${
+                  className={`flex items-center gap-2 px-3.5 py-2 rounded-xl font-bold text-sm transition-all ${
                     isActive
                       ? 'bg-teal-700 text-white shadow-md shadow-teal-700/20'
                       : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900'
@@ -167,6 +188,89 @@ export const Navbar: React.FC<NavbarProps> = ({
                 </button>
               );
             })}
+
+            {/* 여행정보 Dropdown Menu matching Image 2 */}
+            <div 
+              className="relative"
+              onMouseEnter={() => setTravelDropdownOpen(true)}
+              onMouseLeave={() => setTravelDropdownOpen(false)}
+            >
+              <button
+                onClick={() => {
+                  setTravelDropdownOpen(!travelDropdownOpen);
+                  if (onOpenTravelInfo) onOpenTravelInfo('course');
+                }}
+                className="flex items-center gap-1 px-3.5 py-2 rounded-xl font-black text-sm text-teal-800 hover:bg-teal-50 transition-all border border-teal-200 bg-teal-50/50"
+              >
+                <span>여행정보</span>
+                <ChevronDown className={`w-4 h-4 transition-transform ${travelDropdownOpen ? 'rotate-180' : ''}`} />
+              </button>
+
+              {travelDropdownOpen && (
+                <div className="absolute top-full left-0 mt-1 w-56 bg-white rounded-2xl shadow-xl border border-slate-100 p-2 space-y-1 animate-fadeIn z-50">
+                  {travelInfoItems.map((item) => (
+                    <button
+                      key={item.tab}
+                      onClick={() => {
+                        setTravelDropdownOpen(false);
+                        if (onOpenTravelInfo) onOpenTravelInfo(item.tab);
+                      }}
+                      className="w-full text-left px-3 py-2.5 rounded-xl hover:bg-teal-50 text-slate-800 hover:text-teal-900 text-xs font-bold flex items-center gap-2.5 transition-colors"
+                    >
+                      {item.icon}
+                      <span>{item.label}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* 고객센터 Dropdown Menu matching Image 2 */}
+            <div 
+              className="relative"
+              onMouseEnter={() => setCsDropdownOpen(true)}
+              onMouseLeave={() => setCsDropdownOpen(false)}
+            >
+              <button
+                onClick={() => setCsDropdownOpen(!csDropdownOpen)}
+                className="flex items-center gap-1 px-3.5 py-2 rounded-xl font-bold text-sm text-slate-700 hover:bg-slate-100 transition-all"
+              >
+                <span>고객센터</span>
+                <ChevronDown className={`w-4 h-4 transition-transform ${csDropdownOpen ? 'rotate-180' : ''}`} />
+              </button>
+
+              {csDropdownOpen && (
+                <div className="absolute top-full right-0 mt-1 w-52 bg-white rounded-2xl shadow-xl border border-slate-100 p-2 space-y-1 animate-fadeIn z-50">
+                  <button
+                    onClick={() => {
+                      setCsDropdownOpen(false);
+                      handleOpenKakaoTalkDirect();
+                    }}
+                    className="w-full text-left px-3 py-2.5 rounded-xl hover:bg-amber-50 text-slate-800 text-xs font-bold flex items-center gap-2 transition-colors"
+                  >
+                    <MessageCircle className="w-4 h-4 text-amber-500 fill-amber-400" />
+                    <span>카카오톡 1:1 바로 상담</span>
+                  </button>
+                  <a
+                    href={COMPANY_PHONE_TEL}
+                    className="w-full text-left px-3 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 text-xs font-bold flex items-center gap-2 transition-colors"
+                  >
+                    <PhoneCall className="w-4 h-4 text-teal-600" />
+                    <span>전화상담 ({COMPANY_PHONE})</span>
+                  </a>
+                  <button
+                    onClick={() => {
+                      setCsDropdownOpen(false);
+                      onOpenConsultation();
+                    }}
+                    className="w-full text-left px-3 py-2.5 rounded-xl hover:bg-teal-50 text-teal-800 text-xs font-bold flex items-center gap-2 transition-colors"
+                  >
+                    <Calendar className="w-4 h-4 text-teal-600" />
+                    <span>상세 견적/상담 신청</span>
+                  </button>
+                </div>
+              )}
+            </div>
           </nav>
 
           {/* Action Buttons */}
@@ -211,30 +315,60 @@ export const Navbar: React.FC<NavbarProps> = ({
 
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-white border-b border-slate-200 px-4 pt-3 pb-6 space-y-3">
-          <div className="grid grid-cols-2 gap-2">
-            {categories.map((cat) => (
-              <button
-                key={cat.key}
-                onClick={() => {
-                  onSelectCategory(cat.key);
-                  onSelectRegion('전체');
-                  onSelectCity('전체');
-                  setMobileMenuOpen(false);
-                }}
-                className={`flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold ${
-                  activeCategory === cat.key
-                    ? 'bg-teal-700 text-white'
-                    : 'bg-slate-50 text-slate-700 hover:bg-slate-100'
-                }`}
-              >
-                <span>{cat.icon}</span>
-                <span>{cat.label}</span>
-              </button>
-            ))}
+        <div className="lg:hidden bg-white border-b border-slate-200 px-4 pt-3 pb-6 space-y-4">
+          <div>
+            <span className="text-[10px] font-black text-slate-400 block uppercase mb-1">카테고리</span>
+            <div className="grid grid-cols-2 gap-2">
+              {categories.map((cat) => (
+                <button
+                  key={cat.key}
+                  onClick={() => {
+                    onSelectCategory(cat.key);
+                    onSelectRegion('전체');
+                    onSelectCity('전체');
+                    setMobileMenuOpen(false);
+                  }}
+                  className={`flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold ${
+                    activeCategory === cat.key
+                      ? 'bg-teal-700 text-white'
+                      : 'bg-slate-50 text-slate-700 hover:bg-slate-100'
+                  }`}
+                >
+                  <span>{cat.icon}</span>
+                  <span>{cat.label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Mobile Travel Info Section */}
+          <div>
+            <span className="text-[10px] font-black text-teal-800 block uppercase mb-1">여행 정보 가이드</span>
+            <div className="grid grid-cols-2 gap-2">
+              {travelInfoItems.map((item) => (
+                <button
+                  key={item.tab}
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    if (onOpenTravelInfo) onOpenTravelInfo(item.tab);
+                  }}
+                  className="flex items-center gap-2 p-2.5 rounded-xl bg-teal-50/60 border border-teal-100 text-teal-900 text-xs font-bold text-left"
+                >
+                  {item.icon}
+                  <span>{item.label}</span>
+                </button>
+              ))}
+            </div>
           </div>
 
           <div className="pt-2 flex flex-col gap-2">
+            <button
+              onClick={handleOpenKakaoTalkDirect}
+              className="w-full py-2.5 bg-amber-400 text-slate-950 rounded-xl font-black text-xs flex items-center justify-center gap-2"
+            >
+              <MessageCircle className="w-4 h-4 fill-slate-950" />
+              카카오톡 1:1 상담 바로 연결
+            </button>
             <button
               onClick={() => {
                 onOpenConsultation();
@@ -261,3 +395,4 @@ export const Navbar: React.FC<NavbarProps> = ({
     </header>
   );
 };
+

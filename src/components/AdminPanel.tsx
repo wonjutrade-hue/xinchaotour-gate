@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Product, Category, Region, City, ConsultationRequest } from '../types';
 import { 
   X, 
@@ -17,8 +17,14 @@ import {
   FileJson,
   Layers,
   Inbox,
-  Image as ImageIcon
+  Image as ImageIcon,
+  Settings,
+  MessageCircle,
+  Globe,
+  ExternalLink,
+  Phone
 } from 'lucide-react';
+import { getKakaoDirectLink, setKakaoDirectLink, COMPANY_PHONE } from '../constants';
 
 interface AdminPanelProps {
   isOpen: boolean;
@@ -49,9 +55,22 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState('');
-  const [activeTab, setActiveTab] = useState<'products' | 'import_export' | 'inquiries'>('products');
+  const [activeTab, setActiveTab] = useState<'products' | 'import_export' | 'inquiries' | 'settings'>('products');
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [isCreating, setIsCreating] = useState(false);
+
+  // Settings State
+  const [kakaoUrlInput, setKakaoUrlInput] = useState('');
+
+  useEffect(() => {
+    setKakaoUrlInput(getKakaoDirectLink());
+  }, [isOpen]);
+
+  const handleSaveKakaoLink = () => {
+    setKakaoDirectLink(kakaoUrlInput);
+    alert('카카오톡 상담 링크가 성공적으로 저장되었습니다! 홈페이지의 모든 카톡 상담 버튼에 적용됩니다.');
+  };
+
 
   // Form State for Create/Edit
   const [formData, setFormData] = useState<Partial<Product>>({
@@ -303,6 +322,16 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
           >
             <Inbox className="w-4 h-4 text-emerald-600" />
             <span>실시간 예약/상담 접수 ({inquiries.length})</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('settings')}
+            className={`px-4 py-2.5 rounded-t-xl text-xs font-extrabold flex items-center gap-1.5 transition-colors ${
+              activeTab === 'settings' ? 'bg-white text-teal-800 border-t-2 border-teal-700' : 'text-slate-600 hover:bg-slate-200'
+            }`}
+          >
+            <Settings className="w-4 h-4 text-slate-700" />
+            <span>기본 설정 & 도메인 연결</span>
           </button>
         </div>
 
@@ -712,6 +741,126 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                   ))}
                 </div>
               )}
+            </div>
+          )}
+
+          {/* TAB 4: 기본 설정 & 도메인 연결 */}
+          {activeTab === 'settings' && (
+            <div className="space-y-6 animate-fadeIn">
+              
+              {/* KakaoTalk Link Settings */}
+              <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-xs space-y-4">
+                <div className="flex items-center gap-3 border-b border-slate-100 pb-3">
+                  <div className="w-9 h-9 rounded-xl bg-amber-400 text-slate-950 flex items-center justify-center font-black">
+                    <MessageCircle className="w-5 h-5 fill-slate-950" />
+                  </div>
+                  <div>
+                    <h4 className="font-extrabold text-slate-900 text-base">카카오톡 상담 연결 URL 설정</h4>
+                    <p className="text-xs text-slate-500">
+                      고객이 카카오톡 상담 버튼 클릭 시 연결될 오픈채팅방 또는 카카오톡 채널 주소를 설정합니다.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  <div>
+                    <label className="text-xs font-bold text-slate-700 block mb-1">
+                      카카오톡 오픈채팅방 또는 플러스친구 URL
+                    </label>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="url"
+                        value={kakaoUrlInput}
+                        onChange={(e) => setKakaoUrlInput(e.target.value)}
+                        placeholder="예: https://open.kakao.com/o/sXincaoTour 또는 http://pf.kakao.com/_xxxx"
+                        className="flex-1 px-4 py-2.5 rounded-xl border border-slate-300 text-xs font-mono text-slate-800 focus:outline-none focus:ring-2 focus:ring-amber-400"
+                      />
+                      <button
+                        onClick={handleSaveKakaoLink}
+                        className="px-5 py-2.5 bg-teal-700 hover:bg-teal-800 text-white font-bold text-xs rounded-xl shadow-xs transition-colors shrink-0"
+                      >
+                        저장하기
+                      </button>
+                      <button
+                        onClick={() => window.open(kakaoUrlInput, '_blank')}
+                        className="px-4 py-2.5 bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-xs rounded-xl shadow-xs transition-colors shrink-0 flex items-center gap-1"
+                      >
+                        <ExternalLink className="w-3.5 h-3.5" />
+                        테스트
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 text-xs text-amber-900 space-y-1">
+                    <p className="font-bold">💡 카카오톡 채널 및 오픈채팅방 연결 팁:</p>
+                    <ul className="list-disc list-inside space-y-0.5 text-[11px] text-amber-800">
+                      <li>카카오톡 플러스친구/채널이 있으신 경우: <code className="bg-amber-100 px-1 rounded">http://pf.kakao.com/_채널ID</code> 형식의 주소를 입력해주세요.</li>
+                      <li>개인 오픈채팅방을 이용하실 경우: 카카오톡 앱 ➔ 오픈채팅방 ➔ [링크 복사] 후 위 입력창에 붙여넣고 [저장하기]를 누르시면 즉시 모든 카톡 버튼이 변경됩니다.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              {/* Company Info Guide */}
+              <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-xs space-y-4">
+                <div className="flex items-center gap-3 border-b border-slate-100 pb-3">
+                  <div className="w-9 h-9 rounded-xl bg-teal-700 text-white flex items-center justify-center font-black">
+                    <Phone className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h4 className="font-extrabold text-slate-900 text-base">고객센터 대표 연락처</h4>
+                    <p className="text-xs text-slate-500">현재 홈페이지 상단 및 하단에 표시되는 고객센터 번호입니다.</p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                  <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+                    <span className="text-slate-500 block text-[11px]">대표 전화번호</span>
+                    <strong className="text-slate-900 font-bold text-sm">{COMPANY_PHONE}</strong>
+                  </div>
+                  <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+                    <span className="text-slate-500 block text-[11px]">대표 이메일 / 대표자</span>
+                    <strong className="text-slate-900 font-bold text-sm">wonjutrade@hanmail.net (원주트레이드)</strong>
+                  </div>
+                </div>
+              </div>
+
+              {/* Domain Setup Guide Card */}
+              <div className="bg-slate-900 text-white rounded-2xl p-6 border border-slate-800 shadow-xs space-y-4">
+                <div className="flex items-center gap-3 border-b border-slate-800 pb-3">
+                  <div className="w-9 h-9 rounded-xl bg-amber-400 text-slate-950 flex items-center justify-center font-black">
+                    <Globe className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h4 className="font-extrabold text-white text-base">내 도메인(xinchaotour.com) 연결 안내</h4>
+                    <p className="text-xs text-slate-400">
+                      현재 홈페이지를 구입하신 보유 도메인에 연결하는 가이드입니다.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="text-xs text-slate-300 space-y-3 leading-relaxed">
+                  <p className="font-bold text-amber-300">
+                    네! xinchaotour.com 도메인에 홈페이지를 연결하신 후에도 지금처럼 AI Studio에서 원하시는 대로 언제든지 수정하실 수 있습니다.
+                  </p>
+
+                  <div className="bg-slate-800 p-4 rounded-xl border border-slate-700 space-y-2">
+                    <h5 className="font-bold text-white text-xs">📌 도메인 연결 3단계 절차:</h5>
+                    <ol className="list-decimal list-inside space-y-1.5 text-slate-300">
+                      <li>
+                        <strong>호스팅 및 배포 플랫폼 설정:</strong> Vercel, Netlify, Cloud Run 또는 GitHub Pages 등 선호하시는 호스팅에 이 소스코드를 배포합니다.
+                      </li>
+                      <li>
+                        <strong>DNS CNAME / A 레코드 등록:</strong> 도메인 구매 사이트(가비아, 카페24, 후이즈 등)에서 DNS 설정에 들어가 <code className="text-amber-400 bg-slate-900 px-1.5 py-0.5 rounded">xinchaotour.com</code> 도메인의 CNAME/A 레코드를 서버 IP주소 또는 지정 CNAME으로 지정합니다.
+                      </li>
+                      <li>
+                        <strong>실시간 지속 업데이트:</strong> 배포 후에도 AI Studio나 GitHub에서 코드를 수정하여 업로드하시면 도메인에 실시간으로 수정 사항이 반영됩니다!
+                      </li>
+                    </ol>
+                  </div>
+                </div>
+              </div>
+
             </div>
           )}
         </div>

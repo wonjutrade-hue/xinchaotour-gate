@@ -12,6 +12,7 @@ import { TravelQuiz } from './components/TravelQuiz';
 import { FloatingChatWidget } from './components/FloatingChatWidget';
 import { Footer } from './components/Footer';
 import { ExchangeRateModal } from './components/ExchangeRateModal';
+import { TravelInfoModal, TravelInfoTab } from './components/TravelInfoModal';
 import { INITIAL_PRODUCTS } from './data/seedProducts';
 import { getLiveExchangeRates, ExchangeRates, DEFAULT_RATES } from './lib/exchangeRate';
 import { 
@@ -52,6 +53,8 @@ export default function App() {
   const [isAiAssistantOpen, setIsAiAssistantOpen] = useState(false);
   const [isAdminOpen, setIsAdminOpen] = useState(false);
   const [isQuizOpen, setIsQuizOpen] = useState(false);
+  const [isTravelInfoOpen, setIsTravelInfoOpen] = useState(false);
+  const [travelInfoTab, setTravelInfoTab] = useState<TravelInfoTab>('course');
 
   // Fetch Exchange Rates
   const loadRates = async () => {
@@ -262,6 +265,10 @@ export default function App() {
         onSearchChange={setSearchTerm}
         exchangeRates={exchangeRates}
         onOpenRateCalculator={() => setIsRateModalOpen(true)}
+        onOpenTravelInfo={(tab) => {
+          setTravelInfoTab(tab || 'course');
+          setIsTravelInfoOpen(true);
+        }}
       />
 
       {/* Hero Carousel Section */}
@@ -496,6 +503,18 @@ export default function App() {
           setActiveCategory(cat);
           setActiveRegion(reg);
           setActiveCity('전체');
+        }}
+      />
+
+      {/* Vietnam Travel Information Modal */}
+      <TravelInfoModal
+        isOpen={isTravelInfoOpen}
+        onClose={() => setIsTravelInfoOpen(false)}
+        initialTab={travelInfoTab}
+        rates={exchangeRates}
+        onOpenConsultation={() => {
+          setConsultationTargetProduct(null);
+          setIsConsultationOpen(true);
         }}
       />
     </div>
