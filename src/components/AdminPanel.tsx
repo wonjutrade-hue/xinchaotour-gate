@@ -22,9 +22,25 @@ import {
   MessageCircle,
   Globe,
   ExternalLink,
-  Phone
+  Phone,
+  MapPin,
+  Search,
+  Grid,
+  List,
+  Filter,
+  Building2,
+  ChevronRight,
+  Sparkles
 } from 'lucide-react';
 import { getKakaoDirectLink, setKakaoDirectLink, COMPANY_PHONE } from '../constants';
+
+const REGION_LIST: Exclude<Region, '전체'>[] = ['북부', '중부', '남부'];
+
+const REGION_CITIES_MAP: Record<Exclude<Region, '전체'>, City[]> = {
+  '북부': ['하노이', '사파', '하롱베이', '닌빈'],
+  '중부': ['다낭', '호이안', '후에', '나트랑'],
+  '남부': ['호치민', '푸꾸옥', '달랏', '붕따우'],
+};
 
 interface AdminPanelProps {
   isOpen: boolean;
@@ -59,6 +75,12 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [isCreating, setIsCreating] = useState(false);
 
+  // Regional & City Filtering State for Product Management
+  const [selectedRegionFilter, setSelectedRegionFilter] = useState<Region>('전체');
+  const [selectedCityFilter, setSelectedCityFilter] = useState<City>('전체');
+  const [adminSearchQuery, setAdminSearchQuery] = useState('');
+  const [viewMode, setViewMode] = useState<'grouped' | 'list'>('grouped');
+
   // Settings State
   const [kakaoUrlInput, setKakaoUrlInput] = useState('');
 
@@ -70,7 +92,6 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     setKakaoDirectLink(kakaoUrlInput);
     alert('카카오톡 상담 링크가 성공적으로 저장되었습니다! 홈페이지의 모든 카톡 상담 버튼에 적용됩니다.');
   };
-
 
   // Form State for Create/Edit
   const [formData, setFormData] = useState<Partial<Product>>({
@@ -108,15 +129,26 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     }
   };
 
-  const handleStartCreate = () => {
+  // Smart product creation with region and city prefilled
+  const handleStartCreate = (targetRegion?: Region, targetCity?: City) => {
     setEditingProduct(null);
     setIsCreating(true);
+
+    const reg: Region = (targetRegion && targetRegion !== '전체')
+      ? targetRegion
+      : (selectedRegionFilter !== '전체' ? selectedRegionFilter : '중부');
+
+    const availableCities = REGION_CITIES_MAP[reg as Exclude<Region, '전체'>] || ['다낭'];
+    const cit: City = (targetCity && targetCity !== '전체')
+      ? targetCity
+      : (selectedCityFilter !== '전체' && availableCities.includes(selectedCityFilter) ? selectedCityFilter : availableCities[0]);
+
     setFormData({
-      title: '신규 베트남 상품',
+      title: `[${cit}] 신규 여행 상품`,
       subTitle: '상품에 대한 매력적인 한 줄 설명을 적어주세요.',
       category: '추천패키지',
-      region: '중부',
-      city: '다낭',
+      region: reg,
+      city: cit,
       priceKRW: 0,
       priceVND: 0,
       duration: '3박 5일',
@@ -124,7 +156,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
       rating: 5.0,
       reviewCount: 1,
       departureCities: ['인천', '김해'],
-      tags: ['신규상품'],
+      tags: ['신규상품', cit],
       description: '새로운 맞춤형 상품 정보입니다.',
       included: ['왕복 항공권', '호텔 숙박'],
       excluded: ['매너팁'],
@@ -485,75 +517,326 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                   </button>
                 </form>
               ) : (
-                /* PRODUCT LIST TABLE */
+                /* PRODUCT LIST TABLE & REGION/CITY FILTERING */
                 <>
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-slate-600">
-                      등록된 총 {products.length}개의 상품 관리
-                    </span>
-                    <button
-                      onClick={handleStartCreate}
-                      className="px-3.5 py-2 rounded-xl bg-teal-700 hover:bg-teal-800 text-white font-bold text-xs flex items-center gap-1 shadow-sm"
-                    >
-                      <Plus className="w-4 h-4 text-amber-300" />
-                      <span>새 여행 상품 추가</span>
-                    </button>
-                  </div>
-
-                  <div className="space-y-2">
-                    {products.map((prod) => (
-                      <div
-                        key={prod.id}
-                        className="bg-white p-3 sm:p-4 rounded-2xl border border-slate-200/80 hover:border-slate-300 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs"
-                      >
-                        <div className="flex items-center gap-3 min-w-0">
-                          <img
-                            src={prod.imageUrl}
-                            alt={prod.title}
-                            className="w-16 h-12 rounded-xl object-cover shrink-0 border border-slate-100"
-                          />
-                          <div className="min-w-0">
-                            <div className="flex items-center gap-1.5 text-[10px] font-bold">
-                              <span className="bg-slate-100 text-slate-700 px-1.5 py-0.5 rounded">
-                                {prod.category}
-                              </span>
-                              <span className="text-teal-700">
-                                {prod.region} · {prod.city}
-                              </span>
-                            </div>
-                            <h4 className="font-bold text-slate-900 text-xs sm:text-sm truncate mt-0.5">
-                              {prod.title}
-                            </h4>
-                            <p className="text-[11px] text-slate-500 font-bold">
-                              {prod.priceKRW.toLocaleString()}원 ({prod.duration})
-                            </p>
-                          </div>
-                        </div>
-
-                        <div className="flex items-center gap-1.5 self-end sm:self-auto shrink-0">
-                          <button
-                            onClick={() => handleStartEdit(prod)}
-                            className="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs flex items-center gap-1"
-                          >
-                            <Edit className="w-3.5 h-3.5 text-teal-700" />
-                            <span>수정</span>
-                          </button>
-
-                          <button
-                            onClick={async () => {
-                              if (confirm(`'${prod.title}' 상품을 정말 삭제하시겠습니까?`)) {
-                                await onDeleteProduct(prod.id);
-                              }
-                            }}
-                            className="px-2.5 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs flex items-center gap-1"
-                          >
-                            <Trash2 className="w-3.5 h-3.5 text-rose-600" />
-                            <span>삭제</span>
-                          </button>
-                        </div>
+                  {/* Top Bar: Search, View Mode, and Add Button */}
+                  <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-2xs space-y-3">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                      <div className="relative flex-1">
+                        <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                        <input
+                          type="text"
+                          placeholder="상품명, 도시, 키워드 검색..."
+                          value={adminSearchQuery}
+                          onChange={(e) => setAdminSearchQuery(e.target.value)}
+                          className="w-full bg-slate-50 border border-slate-200 pl-9 pr-3 py-2 rounded-xl text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                        />
                       </div>
-                    ))}
+
+                      <div className="flex items-center gap-2">
+                        {/* View Mode Toggle */}
+                        <div className="bg-slate-100 p-1 rounded-xl flex items-center gap-1 border border-slate-200">
+                          <button
+                            onClick={() => setViewMode('grouped')}
+                            className={`px-2.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1 transition-all ${
+                              viewMode === 'grouped'
+                                ? 'bg-white text-teal-800 shadow-2xs'
+                                : 'text-slate-500 hover:text-slate-800'
+                            }`}
+                          >
+                            <Grid className="w-3.5 h-3.5 text-teal-600" />
+                            <span>지역/도시별</span>
+                          </button>
+                          <button
+                            onClick={() => setViewMode('list')}
+                            className={`px-2.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1 transition-all ${
+                              viewMode === 'list'
+                                ? 'bg-white text-teal-800 shadow-2xs'
+                                : 'text-slate-500 hover:text-slate-800'
+                            }`}
+                          >
+                            <List className="w-3.5 h-3.5 text-teal-600" />
+                            <span>전체목록</span>
+                          </button>
+                        </div>
+
+                        <button
+                          onClick={() => handleStartCreate(selectedRegionFilter, selectedCityFilter)}
+                          className="px-3.5 py-2 rounded-xl bg-teal-700 hover:bg-teal-800 text-white font-bold text-xs flex items-center gap-1 shadow-sm shrink-0"
+                        >
+                          <Plus className="w-4 h-4 text-amber-300" />
+                          <span>신규 상품 추가</span>
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Region Filter Tabs */}
+                    <div className="pt-2 border-t border-slate-100 flex flex-wrap items-center gap-2">
+                      <span className="text-[11px] font-extrabold text-slate-500 flex items-center gap-1 mr-1">
+                        <MapPin className="w-3.5 h-3.5 text-teal-600" />
+                        지역 권역:
+                      </span>
+                      {(['전체', '북부', '중부', '남부'] as Region[]).map((reg) => {
+                        const count = reg === '전체' 
+                          ? products.length 
+                          : products.filter(p => p.region === reg).length;
+                        return (
+                          <button
+                            key={reg}
+                            onClick={() => {
+                              setSelectedRegionFilter(reg);
+                              setSelectedCityFilter('전체');
+                            }}
+                            className={`px-3 py-1.5 rounded-xl text-xs font-extrabold transition-all ${
+                              selectedRegionFilter === reg
+                                ? 'bg-teal-700 text-white shadow-xs'
+                                : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                            }`}
+                          >
+                            {reg} ({count})
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    {/* Sub City Filter Pills */}
+                    {selectedRegionFilter !== '전체' && (
+                      <div className="flex flex-wrap items-center gap-1.5 pt-1 pl-1 text-xs">
+                        <span className="text-[10px] font-bold text-slate-400">도시:</span>
+                        <button
+                          onClick={() => setSelectedCityFilter('전체')}
+                          className={`px-2.5 py-1 rounded-lg text-[11px] font-bold ${
+                            selectedCityFilter === '전체'
+                              ? 'bg-amber-100 text-amber-900 border border-amber-300'
+                              : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
+                          }`}
+                        >
+                          전체 도시
+                        </button>
+                        {(REGION_CITIES_MAP[selectedRegionFilter as Exclude<Region, '전체'>] || []).map((cit) => {
+                          const count = products.filter(p => p.region === selectedRegionFilter && p.city === cit).length;
+                          return (
+                            <button
+                              key={cit}
+                              onClick={() => setSelectedCityFilter(cit)}
+                              className={`px-2.5 py-1 rounded-lg text-[11px] font-bold ${
+                                selectedCityFilter === cit
+                                  ? 'bg-amber-100 text-amber-900 border border-amber-300'
+                                  : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
+                              }`}
+                            >
+                              {cit} ({count})
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
                   </div>
+
+                  {/* PRODUCTS DISPLAY MODE */}
+                  {viewMode === 'grouped' ? (
+                    /* GROUPED BY REGION & CITY */
+                    <div className="space-y-6">
+                      {REGION_LIST
+                        .filter(r => selectedRegionFilter === '전체' || selectedRegionFilter === r)
+                        .map((reg) => {
+                          const citiesInRegion = REGION_CITIES_MAP[reg].filter(
+                            c => selectedCityFilter === '전체' || selectedCityFilter === c
+                          );
+
+                          // Region Header Icon & Color
+                          const regIcon = reg === '북부' ? '🏛️' : reg === '중부' ? '🏖️' : '🌴';
+
+                          return (
+                            <div key={reg} className="space-y-4 bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-2xs">
+                              <div className="flex items-center justify-between border-b pb-3 border-slate-100">
+                                <div className="flex items-center gap-2">
+                                  <span className="text-xl">{regIcon}</span>
+                                  <h3 className="font-extrabold text-slate-900 text-sm sm:text-base">
+                                    {reg} 지역 여행 상품
+                                  </h3>
+                                  <span className="bg-teal-50 text-teal-700 px-2 py-0.5 rounded-full text-xs font-extrabold border border-teal-100">
+                                    총 {products.filter(p => p.region === reg).length}개
+                                  </span>
+                                </div>
+
+                                <button
+                                  onClick={() => handleStartCreate(reg, citiesInRegion[0] || '다낭')}
+                                  className="text-xs text-teal-700 hover:text-teal-900 font-bold flex items-center gap-1 bg-teal-50 px-2.5 py-1 rounded-lg border border-teal-200"
+                                >
+                                  <Plus className="w-3.5 h-3.5" />
+                                  <span>{reg} 상품 추가</span>
+                                </button>
+                              </div>
+
+                              <div className="space-y-5">
+                                {citiesInRegion.map((city) => {
+                                  const cityProducts = products.filter(p => {
+                                    const matchReg = p.region === reg;
+                                    const matchCity = p.city === city;
+                                    const matchQuery = !adminSearchQuery || 
+                                      p.title.toLowerCase().includes(adminSearchQuery.toLowerCase()) ||
+                                      p.city.toLowerCase().includes(adminSearchQuery.toLowerCase()) ||
+                                      p.tags.some(t => t.toLowerCase().includes(adminSearchQuery.toLowerCase()));
+                                    return matchReg && matchCity && matchQuery;
+                                  });
+
+                                  return (
+                                    <div key={city} className="bg-slate-50/70 p-3.5 rounded-xl border border-slate-200/60 space-y-3">
+                                      <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-2">
+                                          <Building2 className="w-4 h-4 text-teal-700" />
+                                          <span className="font-extrabold text-slate-800 text-xs sm:text-sm">
+                                            {city}
+                                          </span>
+                                          <span className="text-[11px] font-bold text-slate-500">
+                                            ({cityProducts.length}개 상품)
+                                          </span>
+                                        </div>
+
+                                        <button
+                                          onClick={() => handleStartCreate(reg, city)}
+                                          className="text-[11px] font-extrabold text-teal-800 hover:text-teal-900 flex items-center gap-1 bg-white px-2 py-1 rounded-md border border-slate-200 hover:border-teal-300 shadow-2xs"
+                                        >
+                                          <Plus className="w-3 h-3 text-teal-600" />
+                                          <span>+{city} 상품등록</span>
+                                        </button>
+                                      </div>
+
+                                      {cityProducts.length === 0 ? (
+                                        <div className="text-center py-4 text-xs text-slate-400 font-bold bg-white/50 rounded-lg border border-dashed border-slate-200">
+                                          등록된 {city} 상품이 없습니다. 상단버튼을 눌러 추가하세요.
+                                        </div>
+                                      ) : (
+                                        <div className="grid grid-cols-1 gap-2">
+                                          {cityProducts.map((prod) => (
+                                            <div
+                                              key={prod.id}
+                                              className="bg-white p-3 rounded-xl border border-slate-200 hover:border-teal-300 flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-all"
+                                            >
+                                              <div className="flex items-center gap-3 min-w-0">
+                                                <img
+                                                  src={prod.imageUrl}
+                                                  alt={prod.title}
+                                                  className="w-16 h-12 rounded-lg object-cover shrink-0 border border-slate-100"
+                                                />
+                                                <div className="min-w-0">
+                                                  <div className="flex items-center gap-1.5 text-[10px] font-bold">
+                                                    <span className="bg-teal-50 text-teal-800 px-1.5 py-0.5 rounded border border-teal-100">
+                                                      {prod.category}
+                                                    </span>
+                                                    <span className="text-slate-500">
+                                                      {prod.duration}
+                                                    </span>
+                                                  </div>
+                                                  <h4 className="font-extrabold text-slate-900 text-xs sm:text-sm truncate mt-0.5">
+                                                    {prod.title}
+                                                  </h4>
+                                                  <p className="text-[11px] text-teal-700 font-extrabold">
+                                                    {prod.priceKRW.toLocaleString()}원
+                                                  </p>
+                                                </div>
+                                              </div>
+
+                                              <div className="flex items-center gap-1.5 self-end sm:self-auto shrink-0">
+                                                <button
+                                                  onClick={() => handleStartEdit(prod)}
+                                                  className="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs flex items-center gap-1"
+                                                >
+                                                  <Edit className="w-3.5 h-3.5 text-teal-700" />
+                                                  <span>수정</span>
+                                                </button>
+
+                                                <button
+                                                  onClick={async () => {
+                                                    if (confirm(`'${prod.title}' 상품을 정말 삭제하시겠습니까?`)) {
+                                                      await onDeleteProduct(prod.id);
+                                                    }
+                                                  }}
+                                                  className="px-2.5 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs flex items-center gap-1"
+                                                >
+                                                  <Trash2 className="w-3.5 h-3.5 text-rose-600" />
+                                                  <span>삭제</span>
+                                                </button>
+                                              </div>
+                                            </div>
+                                          ))}
+                                        </div>
+                                      )}
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          );
+                        })}
+                    </div>
+                  ) : (
+                    /* FLAT LIST VIEW */
+                    <div className="space-y-2">
+                      {products
+                        .filter(p => {
+                          const matchReg = selectedRegionFilter === '전체' || p.region === selectedRegionFilter;
+                          const matchCity = selectedCityFilter === '전체' || p.city === selectedCityFilter;
+                          const matchQuery = !adminSearchQuery || 
+                            p.title.toLowerCase().includes(adminSearchQuery.toLowerCase()) ||
+                            p.city.toLowerCase().includes(adminSearchQuery.toLowerCase());
+                          return matchReg && matchCity && matchQuery;
+                        })
+                        .map((prod) => (
+                          <div
+                            key={prod.id}
+                            className="bg-white p-3 sm:p-4 rounded-2xl border border-slate-200 hover:border-teal-300 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs"
+                          >
+                            <div className="flex items-center gap-3 min-w-0">
+                              <img
+                                src={prod.imageUrl}
+                                alt={prod.title}
+                                className="w-16 h-12 rounded-xl object-cover shrink-0 border border-slate-100"
+                              />
+                              <div className="min-w-0">
+                                <div className="flex items-center gap-1.5 text-[10px] font-bold">
+                                  <span className="bg-slate-100 text-slate-700 px-1.5 py-0.5 rounded">
+                                    {prod.category}
+                                  </span>
+                                  <span className="text-teal-700 font-extrabold">
+                                    {prod.region} · {prod.city}
+                                  </span>
+                                </div>
+                                <h4 className="font-bold text-slate-900 text-xs sm:text-sm truncate mt-0.5">
+                                  {prod.title}
+                                </h4>
+                                <p className="text-[11px] text-slate-500 font-bold">
+                                  {prod.priceKRW.toLocaleString()}원 ({prod.duration})
+                                </p>
+                              </div>
+                            </div>
+
+                            <div className="flex items-center gap-1.5 self-end sm:self-auto shrink-0">
+                              <button
+                                onClick={() => handleStartEdit(prod)}
+                                className="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs flex items-center gap-1"
+                              >
+                                <Edit className="w-3.5 h-3.5 text-teal-700" />
+                                <span>수정</span>
+                              </button>
+
+                              <button
+                                onClick={async () => {
+                                  if (confirm(`'${prod.title}' 상품을 정말 삭제하시겠습니까?`)) {
+                                    await onDeleteProduct(prod.id);
+                                  }
+                                }}
+                                className="px-2.5 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs flex items-center gap-1"
+                              >
+                                <Trash2 className="w-3.5 h-3.5 text-rose-600" />
+                                <span>삭제</span>
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                    </div>
+                  )}
                 </>
               )}
             </div>
