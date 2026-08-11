@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X, MessageCircle, Copy, Check, ExternalLink, Phone, ShieldCheck, Sparkles, User, Calendar } from 'lucide-react';
-import { COMPANY_PHONE, KAKAO_ID, DEFAULT_KAKAO_LINK, getKakaoDirectLink, setKakaoDirectLink } from '../constants';
+import { COMPANY_PHONE, KAKAO_ID, DEFAULT_KAKAO_LINK, getKakaoDirectLink, setKakaoDirectLink, handleOpenKakaoTalkDirect } from '../constants';
 
 interface KakaoModalProps {
   isOpen: boolean;
@@ -38,13 +38,7 @@ export const KakaoModal: React.FC<KakaoModalProps> = ({ isOpen, onClose }) => {
   };
 
   const handleOpenLink = () => {
-    const linkEl = document.createElement('a');
-    linkEl.href = currentLink;
-    linkEl.target = '_blank';
-    linkEl.rel = 'noopener noreferrer';
-    document.body.appendChild(linkEl);
-    linkEl.click();
-    document.body.removeChild(linkEl);
+    handleOpenKakaoTalkDirect();
   };
 
   return (
