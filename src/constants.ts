@@ -1,14 +1,13 @@
 export const COMPANY_PHONE = '010-5365-6019';
 export const COMPANY_PHONE_TEL = 'tel:010-5365-6019';
-export const DEFAULT_KAKAO_LINK = 'https://open.kakao.com/o/sSweaL8b';
+export const DEFAULT_KAKAO_LINK = 'https://open.kakao.com/o/sxeekUBi';
 export const DEFAULT_KAKAO_CHANNEL = 'https://pf.kakao.com/_xincaotour';
 export const KAKAO_ID = 'wonjutrade';
 
 export const getKakaoDirectLink = (): string => {
   if (typeof window !== 'undefined') {
     const saved = localStorage.getItem('kakao_direct_link');
-    // If empty or containing old invalid values, override with DEFAULT_KAKAO_LINK
-    if (saved && saved.startsWith('http') && !saved.includes('wonjutrade') && saved.includes('open.kakao.com')) {
+    if (saved && saved.startsWith('http') && saved.includes('open.kakao.com/o/sxeekUBi')) {
       return saved.trim();
     }
   }
