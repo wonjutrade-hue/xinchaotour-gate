@@ -3,6 +3,7 @@ import { Search, MapPin, Sparkles, ShieldCheck, Compass, Home, Award } from 'luc
 import { Category, Region, City } from '../types';
 import goldenBridgeImg from '../assets/images/danang_golden_bridge_1786255489649.jpg';
 import myKheBeachImg from '../assets/images/my_khe_beach_1786255505556.jpg';
+import sapaFansipanImg from '../assets/images/sapa_fansipan_terraces_1786458401102.jpg';
 
 interface HeroProps {
   onSearch: (city: City, category: Category | '전체', keyword: string) => void;
@@ -43,7 +44,7 @@ const HERO_SLIDES = [
     title: "청정 자연 속 사파 산악 계단식 논과 팬시판",
     subtitle: "하노이 출발 사파 트레킹 & 럭셔리 마운틴 리조트",
     location: "북부 사파 · 팬시판",
-    imageUrl: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1600&q=80",
+    imageUrl: sapaFansipanImg,
     tag: "힐링 트레킹 추천"
   }
 ];
