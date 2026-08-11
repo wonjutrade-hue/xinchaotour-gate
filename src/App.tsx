@@ -13,6 +13,7 @@ import { FloatingChatWidget } from './components/FloatingChatWidget';
 import { Footer } from './components/Footer';
 import { ExchangeRateModal } from './components/ExchangeRateModal';
 import { TravelInfoModal, TravelInfoTab } from './components/TravelInfoModal';
+import { KakaoModal } from './components/KakaoModal';
 import { INITIAL_PRODUCTS } from './data/seedProducts';
 import { getLiveExchangeRates, ExchangeRates, DEFAULT_RATES } from './lib/exchangeRate';
 import { 
@@ -56,6 +57,13 @@ export default function App() {
   const [isQuizOpen, setIsQuizOpen] = useState(false);
   const [isTravelInfoOpen, setIsTravelInfoOpen] = useState(false);
   const [travelInfoTab, setTravelInfoTab] = useState<TravelInfoTab>('course');
+  const [isKakaoModalOpen, setIsKakaoModalOpen] = useState(false);
+
+  useEffect(() => {
+    const handleOpenKakaoModal = () => setIsKakaoModalOpen(true);
+    window.addEventListener('open-kakao-modal', handleOpenKakaoModal);
+    return () => window.removeEventListener('open-kakao-modal', handleOpenKakaoModal);
+  }, []);
 
   // Fetch Exchange Rates
   const loadRates = async () => {
@@ -538,6 +546,12 @@ export default function App() {
           setConsultationTargetProduct(null);
           setIsConsultationOpen(true);
         }}
+      />
+
+      {/* KakaoTalk Direct Connect Modal */}
+      <KakaoModal
+        isOpen={isKakaoModalOpen}
+        onClose={() => setIsKakaoModalOpen(false)}
       />
     </div>
   );
