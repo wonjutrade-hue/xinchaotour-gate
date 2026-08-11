@@ -43,6 +43,7 @@ export default function App() {
   const [activeCategory, setActiveCategory] = useState<Category | '전체'>('전체');
   const [activeRegion, setActiveRegion] = useState<Region>('전체');
   const [activeCity, setActiveCity] = useState<City>('전체');
+  const [subFilter, setSubFilter] = useState<string>('전체');
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState<'popular' | 'price_asc' | 'price_desc' | 'rating'>('popular');
 
@@ -225,6 +226,22 @@ export default function App() {
     if (activeCity !== '전체' && p.city !== activeCity) {
       return false;
     }
+    // Sub-filter match
+    if (subFilter !== '전체') {
+      if (activeCategory === '자유여행') {
+        if (subFilter === '1일투어' && !p.duration.includes('1일') && !p.duration.includes('당일')) return false;
+        if (subFilter === '3박4일' && !p.duration.includes('3박')) return false;
+        if (subFilter === '4박5일' && !p.duration.includes('4박')) return false;
+      } else if (activeCategory === '골프투어') {
+        if (subFilter === '18홀' && p.golfSpecs?.holes !== 18) return false;
+        if (subFilter === '54홀' && p.golfSpecs?.holes !== 54) return false;
+        if (subFilter === '72홀' && p.golfSpecs?.holes !== 72) return false;
+      } else if (activeCategory === '풀빌라') {
+        if (subFilter === '1_2bed' && (p.villaSpecs?.bedrooms || 0) > 2) return false;
+        if (subFilter === '3_4bed' && (p.villaSpecs?.bedrooms || 0) < 3) return false;
+        if (subFilter === 'ocean' && !p.villaSpecs?.oceanView) return false;
+      }
+    }
     // Search keyword match
     if (searchTerm.trim()) {
       const kw = searchTerm.toLowerCase();
@@ -292,10 +309,15 @@ export default function App() {
         activeCategory={activeCategory}
         activeRegion={activeRegion}
         activeCity={activeCity}
+        subFilter={subFilter}
         sortBy={sortBy}
-        onSelectCategory={setActiveCategory}
+        onSelectCategory={(cat) => {
+          setActiveCategory(cat);
+          setSubFilter('전체');
+        }}
         onSelectRegion={setActiveRegion}
         onSelectCity={setActiveCity}
+        onSelectSubFilter={setSubFilter}
         onSortChange={setSortBy}
         totalProductsCount={filteredProducts.length}
       />

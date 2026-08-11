@@ -28,11 +28,22 @@ export interface ItineraryDay {
   hotel?: string;
 }
 
+export interface GolfCourseDetail {
+  name: string;
+  designer?: string;
+  holes: number;
+  description: string;
+  difficulty?: string;
+  location?: string;
+}
+
 export interface VillaSpecs {
   bedrooms: number;
   privatePool: boolean;
   oceanView: boolean;
   maxOccupancy: number;
+  features?: string[];
+  areaSqm?: number;
 }
 
 export interface GolfSpecs {
@@ -40,6 +51,7 @@ export interface GolfSpecs {
   greenFeeIncluded: boolean;
   caddieFeeIncluded: boolean;
   golfCourseNames: string[];
+  courseDetails?: GolfCourseDetail[];
 }
 
 export interface Product {

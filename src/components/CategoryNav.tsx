@@ -6,10 +6,12 @@ interface CategoryNavProps {
   activeCategory: Category | '전체';
   activeRegion: Region;
   activeCity: City;
+  subFilter?: string;
   sortBy: 'popular' | 'price_asc' | 'price_desc' | 'rating';
   onSelectCategory: (cat: Category | '전체') => void;
   onSelectRegion: (reg: Region) => void;
   onSelectCity: (city: City) => void;
+  onSelectSubFilter?: (sf: string) => void;
   onSortChange: (sort: 'popular' | 'price_asc' | 'price_desc' | 'rating') => void;
   totalProductsCount: number;
 }
@@ -24,10 +26,12 @@ export const CategoryNav: React.FC<CategoryNavProps> = ({
   activeCategory,
   activeRegion,
   activeCity,
+  subFilter = '전체',
   sortBy,
   onSelectCategory,
   onSelectRegion,
   onSelectCity,
+  onSelectSubFilter,
   onSortChange,
   totalProductsCount,
 }) => {
@@ -46,6 +50,7 @@ export const CategoryNav: React.FC<CategoryNavProps> = ({
                 onClick={() => {
                   onSelectCategory(cat);
                   onSelectCity('전체');
+                  if (onSelectSubFilter) onSelectSubFilter('전체');
                 }}
                 className={`px-3 sm:px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all shrink-0 ${
                   activeCategory === cat
@@ -67,6 +72,85 @@ export const CategoryNav: React.FC<CategoryNavProps> = ({
             <span>의 상품 검색됨</span>
           </div>
         </div>
+
+        {/* Sub-category Quick Filter Pills */}
+        {activeCategory === '자유여행' && onSelectSubFilter && (
+          <div className="bg-teal-50/70 p-3 rounded-2xl border border-teal-200/80 flex items-center gap-2 flex-wrap text-xs">
+            <span className="font-black text-teal-900 mr-1 flex items-center gap-1">
+              <span>🛫 자유여행 맞춤일정:</span>
+            </span>
+            {[
+              { id: '전체', label: '전체 일정' },
+              { id: '1일투어', label: '1일 일일 투어 (Day Tour)' },
+              { id: '3박4일', label: '3박 4일 일정' },
+              { id: '4박5일', label: '4박 5일 일정' },
+            ].map((sf) => (
+              <button
+                key={sf.id}
+                onClick={() => onSelectSubFilter(sf.id)}
+                className={`px-3 py-1.5 rounded-xl font-bold transition-all ${
+                  subFilter === sf.id
+                    ? 'bg-teal-700 text-white shadow-xs'
+                    : 'bg-white text-teal-800 border border-teal-200 hover:bg-teal-100'
+                }`}
+              >
+                {sf.label}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {activeCategory === '골프투어' && onSelectSubFilter && (
+          <div className="bg-emerald-50/70 p-3 rounded-2xl border border-emerald-200/80 flex items-center gap-2 flex-wrap text-xs">
+            <span className="font-black text-emerald-950 mr-1 flex items-center gap-1">
+              <span>⛳ 골프 코스/홀 구성:</span>
+            </span>
+            {[
+              { id: '전체', label: '전체 골프 상품' },
+              { id: '18홀', label: '1일 데일리 골프 (18홀)' },
+              { id: '54홀', label: '3박 4일 콤보 (54홀 Stay & Play)' },
+              { id: '72홀', label: '4박 5일 콤보 (72홀 Stay & Play)' },
+            ].map((sf) => (
+              <button
+                key={sf.id}
+                onClick={() => onSelectSubFilter(sf.id)}
+                className={`px-3 py-1.5 rounded-xl font-bold transition-all ${
+                  subFilter === sf.id
+                    ? 'bg-emerald-700 text-white shadow-xs'
+                    : 'bg-white text-emerald-900 border border-emerald-200 hover:bg-emerald-100'
+                }`}
+              >
+                {sf.label}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {activeCategory === '풀빌라' && onSelectSubFilter && (
+          <div className="bg-sky-50/70 p-3 rounded-2xl border border-sky-200/80 flex items-center gap-2 flex-wrap text-xs">
+            <span className="font-black text-sky-950 mr-1 flex items-center gap-1">
+              <span>🏰 객실/베드룸 타입:</span>
+            </span>
+            {[
+              { id: '전체', label: '전체 풀빌라 & 리조트' },
+              { id: '1_2bed', label: '1~2 베드룸 풀빌라' },
+              { id: '3_4bed', label: '3~4 베드룸 대가족 독채' },
+              { id: 'ocean', label: '파노라마 오션뷰 VIP' },
+            ].map((sf) => (
+              <button
+                key={sf.id}
+                onClick={() => onSelectSubFilter(sf.id)}
+                className={`px-3 py-1.5 rounded-xl font-bold transition-all ${
+                  subFilter === sf.id
+                    ? 'bg-sky-700 text-white shadow-xs'
+                    : 'bg-white text-sky-900 border border-sky-200 hover:bg-sky-100'
+                }`}
+              >
+                {sf.label}
+              </button>
+            ))}
+          </div>
+        )}
 
         {/* Region Breakdown Filter (북부 / 중부 / 남부) */}
         <div className="bg-white p-3.5 sm:p-4 rounded-2xl border border-slate-200/80 shadow-xs space-y-3">

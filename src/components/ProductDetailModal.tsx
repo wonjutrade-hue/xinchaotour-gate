@@ -127,14 +127,37 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
 
           {/* Special Specs Box */}
           {product.golfSpecs && (
-            <div className="bg-emerald-50 border border-emerald-200 p-4 rounded-2xl space-y-2">
+            <div className="bg-emerald-50 border border-emerald-200 p-4 rounded-2xl space-y-3">
               <h4 className="font-extrabold text-emerald-950 text-sm flex items-center gap-2">
                 ⛳ 럭셔리 골프 라운딩 구성 ({product.golfSpecs.holes}홀)
               </h4>
               <div className="text-xs text-emerald-800 space-y-1">
-                <p>• 포함 골프장: {product.golfSpecs.golfCourseNames.join(' / ')}</p>
-                <p>• 그린피, 카트비(2인1카트), 캐디피 포함</p>
+                <p>• 포함 골프장: <span className="font-bold">{product.golfSpecs.golfCourseNames.join(' / ')}</span></p>
+                <p>• 그린피, 카트비(2인1카트), 캐디피 전액 포함 (캐디팁 별도)</p>
               </div>
+
+              {product.golfSpecs.courseDetails && product.golfSpecs.courseDetails.length > 0 && (
+                <div className="mt-3 space-y-2 pt-3 border-t border-emerald-200/80">
+                  <span className="text-[11px] font-black text-emerald-900 block">코스별 상세 안내:</span>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {product.golfSpecs.courseDetails.map((course, idx) => (
+                      <div key={idx} className="bg-white/90 p-2.5 rounded-xl border border-emerald-100 text-xs space-y-1">
+                        <div className="flex items-center justify-between font-bold text-slate-900">
+                          <span>{course.name}</span>
+                          <span className="text-[10px] bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded">{course.holes}홀</span>
+                        </div>
+                        {course.designer && (
+                          <p className="text-[11px] text-teal-800 font-medium">설계: {course.designer}</p>
+                        )}
+                        {course.difficulty && (
+                          <p className="text-[10px] text-amber-800">코스 난이도: {course.difficulty}</p>
+                        )}
+                        <p className="text-[11px] text-slate-600 leading-snug">{course.description}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
