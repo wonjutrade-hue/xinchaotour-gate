@@ -433,24 +433,34 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                       <label className="text-[11px] font-bold text-slate-700">지역 권역</label>
                       <select
                         value={formData.region}
-                        onChange={(e) => setFormData({ ...formData, region: e.target.value as Region })}
+                        onChange={(e) => {
+                          const newReg = e.target.value as Region;
+                          const availableCities = REGION_CITIES_MAP[newReg as Exclude<Region, '전체'>] || ['다낭'];
+                          setFormData({ 
+                            ...formData, 
+                            region: newReg,
+                            city: availableCities.includes(formData.city as City) ? formData.city : availableCities[0]
+                          });
+                        }}
                         className="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-2 text-xs font-bold"
                       >
-                        <option value="북부">북부</option>
-                        <option value="중부">중부</option>
-                        <option value="남부">남부</option>
+                        <option value="북부">북부 (하노이/사파/하롱베이/닌빈)</option>
+                        <option value="중부">중부 (다낭/호이안/후에/나트랑)</option>
+                        <option value="남부">남부 (호치민/푸꾸옥/달랏/붕따우)</option>
                       </select>
                     </div>
 
                     <div className="space-y-1">
                       <label className="text-[11px] font-bold text-slate-700">주요 도시</label>
-                      <input
-                        type="text"
+                      <select
                         value={formData.city}
                         onChange={(e) => setFormData({ ...formData, city: e.target.value as City })}
-                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold"
-                        placeholder="예: 다낭, 하노이, 푸꾸옥"
-                      />
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-2 text-xs font-bold"
+                      >
+                        {(REGION_CITIES_MAP[formData.region as Exclude<Region, '전체'>] || ['다낭']).map(cit => (
+                          <option key={cit} value={cit}>{cit}</option>
+                        ))}
+                      </select>
                     </div>
 
                     <div className="space-y-1">
