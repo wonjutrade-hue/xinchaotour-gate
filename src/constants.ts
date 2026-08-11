@@ -30,16 +30,23 @@ export const handleOpenKakaoTalkDirect = (e?: React.MouseEvent) => {
   if (e && e.preventDefault) {
     e.preventDefault();
   }
-  const targetUrl = DEFAULT_KAKAO_LINK;
+  const targetUrl = getKakaoDirectLink() || DEFAULT_KAKAO_LINK;
   
-  // Create an anchor element and programmatically click it to avoid browser popup blocks
-  const linkEl = document.createElement('a');
-  linkEl.href = targetUrl;
-  linkEl.target = '_blank';
-  linkEl.rel = 'noopener noreferrer';
-  document.body.appendChild(linkEl);
-  linkEl.click();
-  document.body.removeChild(linkEl);
+  // Open the in-app 1:1 Chat Card Modal immediately
+  openKakaoModal();
+
+  // Also trigger external window navigation
+  try {
+    const linkEl = document.createElement('a');
+    linkEl.href = targetUrl;
+    linkEl.target = '_blank';
+    linkEl.rel = 'noopener noreferrer';
+    document.body.appendChild(linkEl);
+    linkEl.click();
+    document.body.removeChild(linkEl);
+  } catch (err) {
+    console.error('Failed to launch link:', err);
+  }
 };
 
 
