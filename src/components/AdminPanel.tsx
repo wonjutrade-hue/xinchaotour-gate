@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Product, Category, Region, City, ConsultationRequest } from '../types';
+import { Product, Category, Region, City, ConsultationRequest, ItineraryDay } from '../types';
 import { 
   X, 
   Plus, 
@@ -15,6 +15,8 @@ import {
   Save, 
   FileSpreadsheet, 
   FileJson,
+  FileText,
+  Calendar,
   Layers,
   Inbox,
   Image as ImageIcon,
@@ -41,6 +43,8 @@ const REGION_CITIES_MAP: Record<Exclude<Region, '전체'>, City[]> = {
   '중부': ['다낭', '호이안', '후에', '나트랑'],
   '남부': ['호치민', '푸꾸옥', '달랏', '붕따우'],
 };
+
+const CATEGORIES: Category[] = ['자유여행', '골프투어', '풀빌라', '추천패키지'];
 
 interface AdminPanelProps {
   isOpen: boolean;
@@ -71,13 +75,14 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState('');
-  const [activeTab, setActiveTab] = useState<'products' | 'import_export' | 'inquiries' | 'settings'>('products');
+  const [activeTab, setActiveTab] = useState<'products' | 'inquiries' | 'settings'>('products');
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [isCreating, setIsCreating] = useState(false);
 
-  // Regional & City Filtering State for Product Management
+  // Regional, City & Category Filtering State for Product Management
   const [selectedRegionFilter, setSelectedRegionFilter] = useState<Region>('전체');
   const [selectedCityFilter, setSelectedCityFilter] = useState<City>('전체');
+  const [selectedCategoryFilter, setSelectedCategoryFilter] = useState<Category | '전체'>('전체');
   const [adminSearchQuery, setAdminSearchQuery] = useState('');
   const [viewMode, setViewMode] = useState<'grouped' | 'list'>('grouped');
 
@@ -93,6 +98,28 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     alert('카카오톡 상담 링크가 성공적으로 저장되었습니다! 홈페이지의 모든 카톡 상담 버튼에 적용됩니다.');
   };
 
+  // Helper Form States for Multiline Text & Complex Specs
+  const [includedText, setIncludedText] = useState('');
+  const [excludedText, setExcludedText] = useState('');
+  const [departureCitiesText, setDepartureCitiesText] = useState('');
+  const [tagsText, setTagsText] = useState('');
+  const [additionalImagesText, setAdditionalImagesText] = useState('');
+
+  // Helper for Itinerary
+  const [itineraryList, setItineraryList] = useState<ItineraryDay[]>([]);
+
+  // Helper for Golf Specs
+  const [golfCourseNamesText, setGolfCourseNamesText] = useState('');
+  const [golfHoles, setGolfHoles] = useState<number>(18);
+  const [greenFeeIncluded, setGreenFeeIncluded] = useState<boolean>(true);
+  const [caddieFeeIncluded, setCaddieFeeIncluded] = useState<boolean>(true);
+
+  // Helper for Villa Specs
+  const [villaBedrooms, setVillaBedrooms] = useState<number>(3);
+  const [villaPrivatePool, setVillaPrivatePool] = useState<boolean>(true);
+  const [villaOceanView, setVillaOceanView] = useState<boolean>(false);
+  const [villaMaxOccupancy, setVillaMaxOccupancy] = useState<number>(6);
+
   // Form State for Create/Edit
   const [formData, setFormData] = useState<Partial<Product>>({
     title: '',
@@ -104,21 +131,22 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     priceVND: 0,
     duration: '3박 5일',
     imageUrl: 'https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?auto=format&fit=crop&w=1000&q=80',
+    additionalImages: [],
     rating: 4.9,
     reviewCount: 10,
+    isPopular: false,
+    isHotDeal: false,
+    discountPercent: 0,
     departureCities: ['인천', '김해'],
     tags: ['인기패키지', 'NO쇼핑'],
     description: '베트남 맞춤형 프리미엄 패키지입니다.',
     included: ['왕복 항공권', '5성급 호텔 숙박', '한국어 가이드'],
     excluded: ['가이드 매너팁'],
     itinerary: [
-      { day: 1, title: '공항 도착 및 호텔 체크인', description: '가이드 미팅 후 전용 차량 이동' },
-      { day: 2, title: '시티 주요 관광지 투어', description: '관광지 관람 및 특식 다이닝' }
+      { day: 1, title: '공항 도착 및 호텔 체크인', description: '가이드 미팅 후 전용 차량 이동', meal: '석식: 현지식', hotel: '5성급 호텔' },
+      { day: 2, title: '시티 주요 관광지 투어', description: '관광지 관람 및 특식 다이닝', meal: '조: 호텔식 / 중: 특식', hotel: '5성급 호텔' }
     ]
   });
-
-  const [jsonInputText, setJsonInputText] = useState('');
-  const [importReplace, setImportReplace] = useState(false);
 
   const handlePasswordSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -129,8 +157,8 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     }
   };
 
-  // Smart product creation with region and city prefilled
-  const handleStartCreate = (targetRegion?: Region, targetCity?: City) => {
+  // Smart product creation with region, city, and category prefilled
+  const handleStartCreate = (targetRegion?: Region, targetCity?: City, targetCategory?: Category) => {
     setEditingProduct(null);
     setIsCreating(true);
 
@@ -143,120 +171,138 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
       ? targetCity
       : (selectedCityFilter !== '전체' && availableCities.includes(selectedCityFilter) ? selectedCityFilter : availableCities[0]);
 
+    const cat: Category = targetCategory || (selectedCategoryFilter !== '전체' ? selectedCategoryFilter : '자유여행');
+
     setFormData({
-      title: `[${cit}] 신규 여행 상품`,
+      title: `[${cit}/${cat}] 신규 여행 상품`,
       subTitle: '상품에 대한 매력적인 한 줄 설명을 적어주세요.',
-      category: '추천패키지',
+      category: cat,
       region: reg,
       city: cit,
-      priceKRW: 0,
-      priceVND: 0,
+      priceKRW: 650000,
+      priceVND: 12000000,
       duration: '3박 5일',
       imageUrl: 'https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?auto=format&fit=crop&w=1000&q=80',
+      additionalImages: [],
       rating: 5.0,
       reviewCount: 1,
-      departureCities: ['인천', '김해'],
-      tags: ['신규상품', cit],
-      description: '새로운 맞춤형 상품 정보입니다.',
-      included: ['왕복 항공권', '호텔 숙박'],
-      excluded: ['매너팁'],
+      isPopular: false,
+      isHotDeal: false,
+      discountPercent: 0,
+      departureCities: ['인천', '김해', '대구'],
+      tags: ['신규상품', cit, cat],
+      description: '새로운 베트남 맞춤형 여행 상품 정보입니다.',
+      included: ['전 일정 전용차량', '한국어 가이드', '5성급 호텔 숙박', '조식 및 주요 특식'],
+      excluded: ['왕복 항공권', '가이드/기사 매너팁', '개인 경비'],
       itinerary: [
-        { day: 1, title: '도착 및 체크인', description: '체크인 후 휴식' }
+        { day: 1, title: '공항 도착 및 현지 가이드 미팅', description: '전용 차량으로 호텔 이동 후 체크인 및 자유 휴식', meal: '석식: 현지 특식', hotel: '5성급 리조트/호텔' },
+        { day: 2, title: '주요 관광지 가이드 투어 및 특식', description: '단독 차량과 가이드로 여유로운 코스 진행', meal: '조: 호텔식 / 중: 특식 / 석: 씨푸드', hotel: '5성급 리조트/호텔' },
+        { day: 3, title: '자유 일정 및 공항 배웅', description: '체크아웃 후 기념품 샵 방문 및 공항 이동', meal: '조: 호텔식 / 중: 자유식', hotel: '기내박' }
       ]
     });
+
+    setIncludedText('전 일정 전용차량\n한국어 가이드\n5성급 호텔 숙박\n조식 및 주요 특식');
+    setExcludedText('왕복 항공권\n가이드/기사 매너팁\n개인 경비');
+    setDepartureCitiesText('인천\n김해\n대구');
+    setTagsText(`신규상품\n${cit}\n${cat}`);
+    setAdditionalImagesText('');
+    setItineraryList([
+      { day: 1, title: '공항 도착 및 현지 가이드 미팅', description: '전용 차량으로 호텔 이동 후 체크인 및 자유 휴식', meal: '석식: 현지 특식', hotel: '5성급 리조트/호텔' },
+      { day: 2, title: '주요 관광지 가이드 투어 및 특식', description: '단독 차량과 가이드로 여유로운 코스 진행', meal: '조: 호텔식 / 중: 특식 / 석: 씨푸드', hotel: '5성급 리조트/호텔' },
+      { day: 3, title: '자유 일정 및 공항 배웅', description: '체크아웃 후 기념품 샵 방문 및 공항 이동', meal: '조: 호텔식 / 중: 자유식', hotel: '기내박' }
+    ]);
+
+    setGolfCourseNamesText(`${cit} CC\n몽고메리 링스`);
+    setGolfHoles(18);
+    setGreenFeeIncluded(true);
+    setCaddieFeeIncluded(true);
+
+    setVillaBedrooms(3);
+    setVillaPrivatePool(true);
+    setVillaOceanView(false);
+    setVillaMaxOccupancy(6);
   };
 
   const handleStartEdit = (prod: Product) => {
     setEditingProduct(prod);
     setIsCreating(false);
     setFormData({ ...prod });
+
+    setIncludedText((prod.included || []).join('\n'));
+    setExcludedText((prod.excluded || []).join('\n'));
+    setDepartureCitiesText((prod.departureCities || []).join('\n'));
+    setTagsText((prod.tags || []).join('\n'));
+    setAdditionalImagesText((prod.additionalImages || []).join('\n'));
+    setItineraryList(prod.itinerary && prod.itinerary.length > 0 ? [...prod.itinerary] : [
+      { day: 1, title: '공항 도착 및 가이드 미팅', description: '체크인 후 휴식' }
+    ]);
+
+    if (prod.golfSpecs) {
+      setGolfHoles(prod.golfSpecs.holes || 18);
+      setGreenFeeIncluded(prod.golfSpecs.greenFeeIncluded ?? true);
+      setCaddieFeeIncluded(prod.golfSpecs.caddieFeeIncluded ?? true);
+      setGolfCourseNamesText((prod.golfSpecs.golfCourseNames || []).join('\n'));
+    } else {
+      setGolfCourseNamesText(`${prod.city} CC`);
+      setGolfHoles(18);
+      setGreenFeeIncluded(true);
+      setCaddieFeeIncluded(true);
+    }
+
+    if (prod.villaSpecs) {
+      setVillaBedrooms(prod.villaSpecs.bedrooms || 3);
+      setVillaPrivatePool(prod.villaSpecs.privatePool ?? true);
+      setVillaOceanView(prod.villaSpecs.oceanView ?? false);
+      setVillaMaxOccupancy(prod.villaSpecs.maxOccupancy || 6);
+    } else {
+      setVillaBedrooms(3);
+      setVillaPrivatePool(true);
+      setVillaOceanView(false);
+      setVillaMaxOccupancy(6);
+    }
   };
 
   const handleSaveProduct = async (e: React.FormEvent) => {
     e.preventDefault();
+    const splitLines = (str: string) => str.split('\n').map(s => s.trim()).filter(Boolean);
+
+    const finalData: Partial<Product> = {
+      ...formData,
+      included: splitLines(includedText),
+      excluded: splitLines(excludedText),
+      departureCities: splitLines(departureCitiesText),
+      tags: splitLines(tagsText),
+      additionalImages: splitLines(additionalImagesText),
+      itinerary: itineraryList,
+    };
+
+    if (formData.category === '골프투어') {
+      finalData.golfSpecs = {
+        holes: golfHoles,
+        greenFeeIncluded,
+        caddieFeeIncluded,
+        golfCourseNames: splitLines(golfCourseNamesText),
+      };
+    }
+
+    if (formData.category === '풀빌라') {
+      finalData.villaSpecs = {
+        bedrooms: villaBedrooms,
+        privatePool: villaPrivatePool,
+        oceanView: villaOceanView,
+        maxOccupancy: villaMaxOccupancy,
+      };
+    }
+
     if (isCreating) {
-      await onAddProduct(formData as any);
+      await onAddProduct(finalData as any);
       alert('새 상품이 성공적으로 등록되었습니다.');
     } else if (editingProduct) {
-      await onUpdateProduct(editingProduct.id, formData);
-      alert('상품 정보가 수정되었습니다.');
+      await onUpdateProduct(editingProduct.id, finalData);
+      alert('상품 정보가 성공적으로 수정되었습니다.');
     }
     setEditingProduct(null);
     setIsCreating(false);
-  };
-
-  // Export as JSON
-  const handleExportJSON = () => {
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(products, null, 2));
-    const downloadAnchor = document.createElement('a');
-    downloadAnchor.setAttribute("href", dataStr);
-    downloadAnchor.setAttribute("download", `xinchao_products_${new Date().toISOString().slice(0,10)}.json`);
-    document.body.appendChild(downloadAnchor);
-    downloadAnchor.click();
-    downloadAnchor.remove();
-  };
-
-  // Export as CSV
-  const handleExportCSV = () => {
-    const headers = ["id", "title", "category", "region", "city", "priceKRW", "duration", "rating", "imageUrl", "tags"];
-    const rows = products.map(p => [
-      p.id,
-      `"${p.title.replace(/"/g, '""')}"`,
-      p.category,
-      p.region,
-      p.city,
-      p.priceKRW,
-      `"${p.duration}"`,
-      p.rating,
-      `"${p.imageUrl}"`,
-      `"${p.tags.join(',')}"`
-    ]);
-    const csvContent = "data:text/csv;charset=utf-8," + [headers.join(","), ...rows.map(e => e.join(","))].join("\n");
-    const downloadAnchor = document.createElement('a');
-    downloadAnchor.setAttribute("href", encodeURI(csvContent));
-    downloadAnchor.setAttribute("download", `xinchao_products_${new Date().toISOString().slice(0,10)}.csv`);
-    document.body.appendChild(downloadAnchor);
-    downloadAnchor.click();
-    downloadAnchor.remove();
-  };
-
-  // Import JSON File
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = async (evt) => {
-      try {
-        const text = evt.target?.result as string;
-        const parsed = JSON.parse(text);
-        if (Array.isArray(parsed)) {
-          await onImportProducts(parsed, importReplace);
-          alert(`${parsed.length}개 상품이 성공적으로 업로드되었습니다!`);
-        } else {
-          alert('올바른 JSON 배열 형식의 파일이 아닙니다.');
-        }
-      } catch (err: any) {
-        alert('파일 파싱 중 오류가 발생했습니다: ' + err.message);
-      }
-    };
-    reader.readAsText(file);
-  };
-
-  // Import JSON Text
-  const handleTextImport = async () => {
-    try {
-      const parsed = JSON.parse(jsonInputText);
-      if (Array.isArray(parsed)) {
-        await onImportProducts(parsed, importReplace);
-        alert('JSON 텍스트 업로드가 완료되었습니다.');
-        setJsonInputText('');
-      } else {
-        alert('JSON 배열 형식이어야 합니다.');
-      }
-    } catch (err: any) {
-      alert('유효하지 않은 JSON 형식을 입력하셨습니다.');
-    }
   };
 
   if (!isAuthenticated) {
@@ -337,16 +383,6 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
           </button>
 
           <button
-            onClick={() => setActiveTab('import_export')}
-            className={`px-4 py-2.5 rounded-t-xl text-xs font-extrabold flex items-center gap-1.5 transition-colors ${
-              activeTab === 'import_export' ? 'bg-white text-teal-800 border-t-2 border-teal-700' : 'text-slate-600 hover:bg-slate-200'
-            }`}
-          >
-            <Download className="w-4 h-4 text-amber-600" />
-            <span>업로드 / 다운로드 (CSV · JSON)</span>
-          </button>
-
-          <button
             onClick={() => setActiveTab('inquiries')}
             className={`px-4 py-2.5 rounded-t-xl text-xs font-extrabold flex items-center gap-1.5 transition-colors ${
               activeTab === 'inquiries' ? 'bg-white text-teal-800 border-t-2 border-teal-700' : 'text-slate-600 hover:bg-slate-200'
@@ -373,158 +409,548 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
           {activeTab === 'products' && (
             <div className="space-y-4">
               {isCreating || editingProduct ? (
-                /* CREATE / EDIT FORM */
-                <form onSubmit={handleSaveProduct} className="bg-white p-5 rounded-2xl border border-slate-200 space-y-4 shadow-sm">
-                  <div className="flex items-center justify-between border-b pb-3 border-slate-100">
-                    <h4 className="font-extrabold text-slate-900 text-sm">
-                      {isCreating ? '➕ 신규 상품 등록하기' : `✏️ 상품 정보 수정 (${editingProduct?.title})`}
-                    </h4>
+                /* COMPREHENSIVE PRODUCT EDITOR FORM */
+                <form onSubmit={handleSaveProduct} className="bg-white p-5 sm:p-6 rounded-3xl border border-slate-200 space-y-6 shadow-sm">
+                  <div className="flex items-center justify-between border-b pb-4 border-slate-100">
+                    <div>
+                      <h4 className="font-extrabold text-slate-900 text-base flex items-center gap-2">
+                        <span>{isCreating ? '➕ 신규 여행 상품 등록' : '✏️ 상품 상세 정보 수정'}</span>
+                        {editingProduct && (
+                          <span className="text-xs bg-teal-100 text-teal-800 px-2.5 py-0.5 rounded-full font-bold">
+                            ID: {editingProduct.id}
+                          </span>
+                        )}
+                      </h4>
+                      <p className="text-xs text-slate-500 mt-0.5">
+                        여행 상품의 모든 기본 정보, 카테고리, 대표 사진, 포함/불포함 사항 및 일차별 일정표를 쉽게 편집합니다.
+                      </p>
+                    </div>
                     <button
                       type="button"
                       onClick={() => {
                         setIsCreating(false);
                         setEditingProduct(null);
                       }}
-                      className="text-xs text-slate-500 hover:text-slate-800 font-bold"
+                      className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-xs"
+                    >
+                      닫기/취소
+                    </button>
+                  </div>
+
+                  {/* Section 1: 기본 정보 & 카테고리 */}
+                  <div className="space-y-3 bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                    <h5 className="font-extrabold text-xs text-slate-800 flex items-center gap-1.5 border-b pb-2 border-slate-200">
+                      <Layers className="w-4 h-4 text-teal-700" />
+                      <span>1. 기본 정보 및 카테고리 분류</span>
+                    </h5>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div className="space-y-1">
+                        <label className="text-[11px] font-bold text-slate-700">상품 제목 <span className="text-rose-500">*</span></label>
+                        <input
+                          type="text"
+                          required
+                          value={formData.title}
+                          onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                          placeholder="예: [다낭/골프투어] 3색 명문 골프 3박 5일 패키지"
+                          className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold"
+                        />
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="text-[11px] font-bold text-slate-700">서브 타이틀 / 한 줄 강조 카피</label>
+                        <input
+                          type="text"
+                          value={formData.subTitle}
+                          onChange={(e) => setFormData({ ...formData, subTitle: e.target.value })}
+                          placeholder="예: 다낭 3대 챔피언십 코스 그린피 포함 & 5성급 호이안 리조트 숙박"
+                          className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                      <div className="space-y-1">
+                        <label className="text-[11px] font-bold text-slate-700">카테고리 테마</label>
+                        <select
+                          value={formData.category}
+                          onChange={(e) => setFormData({ ...formData, category: e.target.value as Category })}
+                          className="w-full bg-white border border-slate-200 rounded-xl px-2.5 py-2 text-xs font-bold text-teal-800"
+                        >
+                          <option value="추천패키지">📦 추천패키지</option>
+                          <option value="자유여행">✈️ 자유여행</option>
+                          <option value="골프투어">⛳ 골프투어</option>
+                          <option value="풀빌라">🏡 풀빌라</option>
+                        </select>
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="text-[11px] font-bold text-slate-700">지역 권역</label>
+                        <select
+                          value={formData.region}
+                          onChange={(e) => {
+                            const newReg = e.target.value as Region;
+                            const availableCities = REGION_CITIES_MAP[newReg as Exclude<Region, '전체'>] || ['다낭'];
+                            setFormData({ 
+                              ...formData, 
+                              region: newReg,
+                              city: availableCities.includes(formData.city as City) ? formData.city : availableCities[0]
+                            });
+                          }}
+                          className="w-full bg-white border border-slate-200 rounded-xl px-2.5 py-2 text-xs font-bold text-slate-800"
+                        >
+                          <option value="북부">북부 (하노이/사파/하롱베이/닌빈)</option>
+                          <option value="중부">중부 (다낭/호이안/후에/나트랑)</option>
+                          <option value="남부">남부 (호치민/푸꾸옥/달랏/붕따우)</option>
+                        </select>
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="text-[11px] font-bold text-slate-700">주요 도시</label>
+                        <select
+                          value={formData.city}
+                          onChange={(e) => setFormData({ ...formData, city: e.target.value as City })}
+                          className="w-full bg-white border border-slate-200 rounded-xl px-2.5 py-2 text-xs font-bold text-amber-800"
+                        >
+                          {(REGION_CITIES_MAP[formData.region as Exclude<Region, '전체'>] || ['다낭']).map(cit => (
+                            <option key={cit} value={cit}>{cit}</option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="text-[11px] font-bold text-slate-700">여행 기간</label>
+                        <input
+                          type="text"
+                          value={formData.duration}
+                          onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
+                          placeholder="예: 3박 5일"
+                          className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-1">
+                      <div className="space-y-1">
+                        <label className="text-[11px] font-bold text-slate-700">상품 가격 (KRW 원화)</label>
+                        <input
+                          type="number"
+                          value={formData.priceKRW || 0}
+                          onChange={(e) => setFormData({ ...formData, priceKRW: Number(e.target.value) })}
+                          className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-extrabold text-teal-800"
+                        />
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="text-[11px] font-bold text-slate-700">상품 가격 (VND 동화)</label>
+                        <input
+                          type="number"
+                          value={formData.priceVND || 0}
+                          onChange={(e) => setFormData({ ...formData, priceVND: Number(e.target.value) })}
+                          placeholder="예: 12000000"
+                          className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-700"
+                        />
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="text-[11px] font-bold text-slate-700">고객 평점 (1.0~5.0)</label>
+                        <input
+                          type="number"
+                          step="0.1"
+                          min="1.0"
+                          max="5.0"
+                          value={formData.rating || 5.0}
+                          onChange={(e) => setFormData({ ...formData, rating: Number(e.target.value) })}
+                          className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold"
+                        />
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="text-[11px] font-bold text-slate-700">리뷰 개수</label>
+                        <input
+                          type="number"
+                          value={formData.reviewCount || 10}
+                          onChange={(e) => setFormData({ ...formData, reviewCount: Number(e.target.value) })}
+                          className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-4 pt-2 border-t border-slate-200/80">
+                      <label className="flex items-center gap-1.5 text-xs font-bold text-slate-800 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={formData.isPopular || false}
+                          onChange={(e) => setFormData({ ...formData, isPopular: e.target.checked })}
+                          className="rounded text-teal-600 w-4 h-4"
+                        />
+                        <span>🔥 인기 추천 상품 표시</span>
+                      </label>
+
+                      <label className="flex items-center gap-1.5 text-xs font-bold text-slate-800 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={formData.isHotDeal || false}
+                          onChange={(e) => setFormData({ ...formData, isHotDeal: e.target.checked })}
+                          className="rounded text-rose-600 w-4 h-4"
+                        />
+                        <span>⚡ HOT 딜 특가 상품 표시</span>
+                      </label>
+
+                      <div className="flex items-center gap-1.5 text-xs font-bold text-slate-800">
+                        <span>할인율 (%):</span>
+                        <input
+                          type="number"
+                          min="0"
+                          max="90"
+                          value={formData.discountPercent || 0}
+                          onChange={(e) => setFormData({ ...formData, discountPercent: Number(e.target.value) })}
+                          className="w-16 bg-white border border-slate-200 rounded-lg px-2 py-1 text-xs text-center font-bold"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Section 2: 대표 및 추가 이미지 URL */}
+                  <div className="space-y-3 bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                    <h5 className="font-extrabold text-xs text-slate-800 flex items-center gap-1.5 border-b pb-2 border-slate-200">
+                      <ImageIcon className="w-4 h-4 text-teal-700" />
+                      <span>2. 이미지 URL 사진 등록</span>
+                    </h5>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div className="space-y-1">
+                        <label className="text-[11px] font-bold text-slate-700">대표 메인 사진 Image URL</label>
+                        <input
+                          type="url"
+                          value={formData.imageUrl || ''}
+                          onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
+                          placeholder="https://images.unsplash.com/..."
+                          className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs"
+                        />
+                        {formData.imageUrl && (
+                          <div className="pt-1 flex items-center gap-2">
+                            <img src={formData.imageUrl} alt="preview" className="w-20 h-14 object-cover rounded-xl border border-slate-200" />
+                            <span className="text-[11px] text-slate-500 font-bold">메인 사진 미리보기</span>
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="text-[11px] font-bold text-slate-700">추가 서브 사진 URL 목록 (한 줄에 1개씩)</label>
+                        <textarea
+                          rows={3}
+                          value={additionalImagesText}
+                          onChange={(e) => setAdditionalImagesText(e.target.value)}
+                          placeholder={'https://images.unsplash.com/photo-1...\nhttps://images.unsplash.com/photo-2...'}
+                          className="w-full bg-white border border-slate-200 rounded-xl p-2.5 text-xs font-mono"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Section 3: 상세 소개글 */}
+                  <div className="space-y-2 bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                    <h5 className="font-extrabold text-xs text-slate-800 flex items-center gap-1.5 border-b pb-2 border-slate-200">
+                      <FileText className="w-4 h-4 text-teal-700" />
+                      <span>3. 상품 상세 소개문 작성</span>
+                    </h5>
+                    <textarea
+                      rows={4}
+                      value={formData.description || ''}
+                      onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                      placeholder="상품에 대한 구체적인 매력 및 일정 스케줄에 대한 요약 상세 소개글을 입력하세요."
+                      className="w-full bg-white border border-slate-200 rounded-xl p-3 text-xs leading-relaxed"
+                    />
+                  </div>
+
+                  {/* Section 4: 포함 & 불포함 사항 */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                    <div className="space-y-2">
+                      <h5 className="font-extrabold text-xs text-emerald-800 flex items-center gap-1">
+                        <span>✅ 포함 사항 (한 줄에 1개씩)</span>
+                      </h5>
+                      <textarea
+                        rows={4}
+                        value={includedText}
+                        onChange={(e) => setIncludedText(e.target.value)}
+                        placeholder={'왕복 항공권\n5성급 호텔 숙박\n전 일정 전용차량\n한국어 가이드\n조식 및 특식'}
+                        className="w-full bg-white border border-slate-200 rounded-xl p-3 text-xs leading-relaxed"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <h5 className="font-extrabold text-xs text-rose-800 flex items-center gap-1">
+                        <span>❎ 불포함 사항 (한 줄에 1개씩)</span>
+                      </h5>
+                      <textarea
+                        rows={4}
+                        value={excludedText}
+                        onChange={(e) => setExcludedText(e.target.value)}
+                        placeholder={'가이드 및 기사 매너팁\n개인 경비\n기타 개인 선택옵션'}
+                        className="w-full bg-white border border-slate-200 rounded-xl p-3 text-xs leading-relaxed"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Section 5: 출발 가능 도시 & 키워드 태그 */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                    <div className="space-y-2">
+                      <h5 className="font-extrabold text-xs text-slate-800">
+                        ✈️ 출발 가능 도시 (한 줄에 1개씩)
+                      </h5>
+                      <textarea
+                        rows={3}
+                        value={departureCitiesText}
+                        onChange={(e) => setDepartureCitiesText(e.target.value)}
+                        placeholder={'인천\n김해\n대구\n청주'}
+                        className="w-full bg-white border border-slate-200 rounded-xl p-2.5 text-xs font-bold"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <h5 className="font-extrabold text-xs text-slate-800">
+                        🏷️ 상품 검색 태그 (한 줄에 1개씩)
+                      </h5>
+                      <textarea
+                        rows={3}
+                        value={tagsText}
+                        onChange={(e) => setTagsText(e.target.value)}
+                        placeholder={'#다낭골프\n#단독가이드\n#5성급호텔\n#NO쇼핑'}
+                        className="w-full bg-white border border-slate-200 rounded-xl p-2.5 text-xs font-bold"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Section 6: 일차별 일정표 (Itinerary) */}
+                  <div className="space-y-3 bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                    <div className="flex items-center justify-between border-b pb-2 border-slate-200">
+                      <h5 className="font-extrabold text-xs text-slate-800 flex items-center gap-1.5">
+                        <Calendar className="w-4 h-4 text-teal-700" />
+                        <span>6. 일차별 상세 여행 일정표 ({itineraryList.length}일차)</span>
+                      </h5>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const nextDay = itineraryList.length + 1;
+                          setItineraryList([
+                            ...itineraryList,
+                            { day: nextDay, title: `${nextDay}일차 대표 일정`, description: '상세 일정 스케줄을 작성하세요.', meal: '조: 호텔식 / 중: 특식', hotel: '5성급 호텔' }
+                          ]);
+                        }}
+                        className="px-3 py-1 rounded-xl bg-teal-700 hover:bg-teal-800 text-white font-bold text-xs flex items-center gap-1"
+                      >
+                        <Plus className="w-3.5 h-3.5" />
+                        <span>+ 일정 일차 추가</span>
+                      </button>
+                    </div>
+
+                    <div className="space-y-3">
+                      {itineraryList.map((item, idx) => (
+                        <div key={idx} className="bg-white p-3.5 rounded-xl border border-slate-200 space-y-2">
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="bg-teal-100 text-teal-800 text-[11px] font-black px-2.5 py-0.5 rounded-md">
+                              DAY {item.day || idx + 1}
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setItineraryList(itineraryList.filter((_, i) => i !== idx));
+                              }}
+                              className="text-rose-600 hover:text-rose-800 text-[11px] font-bold"
+                            >
+                              삭제
+                            </button>
+                          </div>
+
+                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                            <div className="space-y-1">
+                              <label className="text-[10px] font-bold text-slate-500">일차 제목</label>
+                              <input
+                                type="text"
+                                value={item.title}
+                                onChange={(e) => {
+                                  const updated = [...itineraryList];
+                                  updated[idx].title = e.target.value;
+                                  setItineraryList(updated);
+                                }}
+                                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs font-bold"
+                              />
+                            </div>
+
+                            <div className="space-y-1">
+                              <label className="text-[10px] font-bold text-slate-500">식사 정보 (조/중/석)</label>
+                              <input
+                                type="text"
+                                value={item.meal || ''}
+                                onChange={(e) => {
+                                  const updated = [...itineraryList];
+                                  updated[idx].meal = e.target.value;
+                                  setItineraryList(updated);
+                                }}
+                                placeholder="예: 조: 호텔식 / 중: 현지식 / 석: 씨푸드"
+                                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs"
+                              />
+                            </div>
+
+                            <div className="space-y-1">
+                              <label className="text-[10px] font-bold text-slate-500">숙소 정보</label>
+                              <input
+                                type="text"
+                                value={item.hotel || ''}
+                                onChange={(e) => {
+                                  const updated = [...itineraryList];
+                                  updated[idx].hotel = e.target.value;
+                                  setItineraryList(updated);
+                                }}
+                                placeholder="예: 5성급 메리엇 리조트"
+                                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs"
+                              />
+                            </div>
+                          </div>
+
+                          <div className="space-y-1">
+                            <label className="text-[10px] font-bold text-slate-500">일정 상세 설명</label>
+                            <textarea
+                              rows={2}
+                              value={item.description}
+                              onChange={(e) => {
+                                const updated = [...itineraryList];
+                                updated[idx].description = e.target.value;
+                                setItineraryList(updated);
+                              }}
+                              className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 text-xs"
+                            />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Section 7: 골프투어 전용 상세 사양 */}
+                  {formData.category === '골프투어' && (
+                    <div className="space-y-3 bg-emerald-50/70 p-4 rounded-2xl border border-emerald-200">
+                      <h5 className="font-extrabold text-xs text-emerald-900 flex items-center gap-1.5">
+                        <span>⛳ 골프투어 전용 상세 정보</span>
+                      </h5>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div className="space-y-1">
+                          <label className="text-[11px] font-bold text-emerald-800">홀 수 (Holes)</label>
+                          <input
+                            type="number"
+                            value={golfHoles}
+                            onChange={(e) => setGolfHoles(Number(e.target.value))}
+                            className="w-full bg-white border border-emerald-200 rounded-xl px-3 py-2 text-xs font-bold"
+                          />
+                        </div>
+
+                        <label className="flex items-center gap-2 text-xs font-bold text-emerald-900 pt-5 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={greenFeeIncluded}
+                            onChange={(e) => setGreenFeeIncluded(e.target.checked)}
+                            className="rounded text-emerald-600 w-4 h-4"
+                          />
+                          <span>그린피 포함</span>
+                        </label>
+
+                        <label className="flex items-center gap-2 text-xs font-bold text-emerald-900 pt-5 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={caddieFeeIncluded}
+                            onChange={(e) => setCaddieFeeIncluded(e.target.checked)}
+                            className="rounded text-emerald-600 w-4 h-4"
+                          />
+                          <span>캐디피/카트피 포함</span>
+                        </label>
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="text-[11px] font-bold text-emerald-800">이용 골프장 목록 (한 줄에 1개씩)</label>
+                        <textarea
+                          rows={3}
+                          value={golfCourseNamesText}
+                          onChange={(e) => setGolfCourseNamesText(e.target.value)}
+                          placeholder={'다낭 CC\n몽고메리 링스\n바나힐 GC'}
+                          className="w-full bg-white border border-emerald-200 rounded-xl p-2.5 text-xs font-bold"
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Section 8: 풀빌라 전용 상세 사양 */}
+                  {formData.category === '풀빌라' && (
+                    <div className="space-y-3 bg-purple-50/70 p-4 rounded-2xl border border-purple-200">
+                      <h5 className="font-extrabold text-xs text-purple-900 flex items-center gap-1.5">
+                        <span>🏡 풀빌라 전용 상세 정보</span>
+                      </h5>
+
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <div className="space-y-1">
+                          <label className="text-[11px] font-bold text-purple-800">침실 개수 (Bedrooms)</label>
+                          <input
+                            type="number"
+                            value={villaBedrooms}
+                            onChange={(e) => setVillaBedrooms(Number(e.target.value))}
+                            className="w-full bg-white border border-purple-200 rounded-xl px-3 py-2 text-xs font-bold"
+                          />
+                        </div>
+
+                        <div className="space-y-1">
+                          <label className="text-[11px] font-bold text-purple-800">최대 투숙 인원</label>
+                          <input
+                            type="number"
+                            value={villaMaxOccupancy}
+                            onChange={(e) => setVillaMaxOccupancy(Number(e.target.value))}
+                            className="w-full bg-white border border-purple-200 rounded-xl px-3 py-2 text-xs font-bold"
+                          />
+                        </div>
+
+                        <label className="flex items-center gap-2 text-xs font-bold text-purple-900 pt-5 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={villaPrivatePool}
+                            onChange={(e) => setVillaPrivatePool(e.target.checked)}
+                            className="rounded text-purple-600 w-4 h-4"
+                          />
+                          <span>전용 개인 수영장</span>
+                        </label>
+
+                        <label className="flex items-center gap-2 text-xs font-bold text-purple-900 pt-5 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={villaOceanView}
+                            onChange={(e) => setVillaOceanView(e.target.checked)}
+                            className="rounded text-purple-600 w-4 h-4"
+                          />
+                          <span>오션뷰 조망</span>
+                        </label>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Submit Buttons */}
+                  <div className="flex items-center gap-3 pt-3 border-t border-slate-100">
+                    <button
+                      type="submit"
+                      className="flex-1 py-3 rounded-2xl bg-teal-700 hover:bg-teal-800 text-white font-extrabold text-xs flex items-center justify-center gap-2 shadow-md transition-all"
+                    >
+                      <Save className="w-4 h-4 text-amber-300" />
+                      <span>{isCreating ? '신규 상품 등록 완료하기' : '수정 사항 저장 완료하기'}</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsCreating(false);
+                        setEditingProduct(null);
+                      }}
+                      className="px-5 py-3 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs"
                     >
                       취소
                     </button>
                   </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div className="space-y-1">
-                      <label className="text-[11px] font-bold text-slate-700">상품 제목</label>
-                      <input
-                        type="text"
-                        required
-                        value={formData.title}
-                        onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold"
-                      />
-                    </div>
-
-                    <div className="space-y-1">
-                      <label className="text-[11px] font-bold text-slate-700">서브 카피 / 한줄 설명</label>
-                      <input
-                        type="text"
-                        value={formData.subTitle}
-                        onChange={(e) => setFormData({ ...formData, subTitle: e.target.value })}
-                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                    <div className="space-y-1">
-                      <label className="text-[11px] font-bold text-slate-700">카테고리</label>
-                      <select
-                        value={formData.category}
-                        onChange={(e) => setFormData({ ...formData, category: e.target.value as Category })}
-                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-2 text-xs font-bold"
-                      >
-                        <option value="추천패키지">추천패키지</option>
-                        <option value="자유여행">자유여행</option>
-                        <option value="골프투어">골프투어</option>
-                        <option value="풀빌라">풀빌라</option>
-                      </select>
-                    </div>
-
-                    <div className="space-y-1">
-                      <label className="text-[11px] font-bold text-slate-700">지역 권역</label>
-                      <select
-                        value={formData.region}
-                        onChange={(e) => {
-                          const newReg = e.target.value as Region;
-                          const availableCities = REGION_CITIES_MAP[newReg as Exclude<Region, '전체'>] || ['다낭'];
-                          setFormData({ 
-                            ...formData, 
-                            region: newReg,
-                            city: availableCities.includes(formData.city as City) ? formData.city : availableCities[0]
-                          });
-                        }}
-                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-2 text-xs font-bold"
-                      >
-                        <option value="북부">북부 (하노이/사파/하롱베이/닌빈)</option>
-                        <option value="중부">중부 (다낭/호이안/후에/나트랑)</option>
-                        <option value="남부">남부 (호치민/푸꾸옥/달랏/붕따우)</option>
-                      </select>
-                    </div>
-
-                    <div className="space-y-1">
-                      <label className="text-[11px] font-bold text-slate-700">주요 도시</label>
-                      <select
-                        value={formData.city}
-                        onChange={(e) => setFormData({ ...formData, city: e.target.value as City })}
-                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-2 text-xs font-bold"
-                      >
-                        {(REGION_CITIES_MAP[formData.region as Exclude<Region, '전체'>] || ['다낭']).map(cit => (
-                          <option key={cit} value={cit}>{cit}</option>
-                        ))}
-                      </select>
-                    </div>
-
-                    <div className="space-y-1">
-                      <label className="text-[11px] font-bold text-slate-700">가격 (KRW)</label>
-                      <input
-                        type="number"
-                        value={formData.priceKRW}
-                        onChange={(e) => setFormData({ ...formData, priceKRW: Number(e.target.value) })}
-                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div className="space-y-1">
-                      <label className="text-[11px] font-bold text-slate-700 flex items-center gap-1">
-                        <ImageIcon className="w-3.5 h-3.5 text-teal-600" />
-                        대표 사진 Image URL (인터넷 저작권 무료 사진 지원)
-                      </label>
-                      <input
-                        type="url"
-                        value={formData.imageUrl}
-                        onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
-                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs"
-                      />
-                    </div>
-
-                    <div className="space-y-1">
-                      <label className="text-[11px] font-bold text-slate-700">여행 기간</label>
-                      <input
-                        type="text"
-                        value={formData.duration}
-                        onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
-                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs"
-                        placeholder="예: 3박 5일"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Image Preview Box */}
-                  {formData.imageUrl && (
-                    <div className="flex items-center gap-3 bg-slate-50 p-2 rounded-xl border border-slate-200">
-                      <img src={formData.imageUrl} alt="preview" className="w-20 h-14 object-cover rounded-lg" />
-                      <span className="text-[11px] text-slate-500 font-medium">사진 미리보기 확인</span>
-                    </div>
-                  )}
-
-                  <div className="space-y-1">
-                    <label className="text-[11px] font-bold text-slate-700">상세 소개글</label>
-                    <textarea
-                      rows={3}
-                      value={formData.description}
-                      onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs"
-                    />
-                  </div>
-
-                  <button
-                    type="submit"
-                    className="w-full py-2.5 rounded-xl bg-teal-700 hover:bg-teal-800 text-white font-extrabold text-xs flex items-center justify-center gap-1.5 shadow-sm"
-                  >
-                    <Save className="w-4 h-4 text-amber-300" />
-                    <span>저장 완료</span>
-                  </button>
                 </form>
               ) : (
                 /* PRODUCT LIST TABLE & REGION/CITY FILTERING */
@@ -641,11 +1067,39 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                         })}
                       </div>
                     )}
+
+                    {/* Category Filter Pills */}
+                    <div className="flex flex-wrap items-center gap-1.5 pt-1 pl-1 text-xs border-t border-dashed border-slate-100">
+                      <span className="text-[10px] font-bold text-slate-400 flex items-center gap-1">
+                        <Filter className="w-3 h-3 text-teal-600" /> 테마 구분:
+                      </span>
+                      {(['전체', '자유여행', '골프투어', '풀빌라', '추천패키지'] as const).map((cat) => {
+                        const count = products.filter(p => {
+                          const matchReg = selectedRegionFilter === '전체' || p.region === selectedRegionFilter;
+                          const matchCity = selectedCityFilter === '전체' || p.city === selectedCityFilter;
+                          const matchCat = cat === '전체' || p.category === cat;
+                          return matchReg && matchCity && matchCat;
+                        }).length;
+                        return (
+                          <button
+                            key={cat}
+                            onClick={() => setSelectedCategoryFilter(cat as Category | '전체')}
+                            className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all ${
+                              selectedCategoryFilter === cat
+                                ? 'bg-teal-800 text-white shadow-2xs'
+                                : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
+                            }`}
+                          >
+                            {cat} ({count})
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
 
                   {/* PRODUCTS DISPLAY MODE */}
                   {viewMode === 'grouped' ? (
-                    /* GROUPED BY REGION & CITY */
+                    /* GROUPED BY REGION, CITY & CATEGORY */
                     <div className="space-y-6">
                       {REGION_LIST
                         .filter(r => selectedRegionFilter === '전체' || selectedRegionFilter === r)
@@ -654,8 +1108,9 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                             c => selectedCityFilter === '전체' || selectedCityFilter === c
                           );
 
-                          // Region Header Icon & Color
+                          // Region Header Icon
                           const regIcon = reg === '북부' ? '🏛️' : reg === '중부' ? '🏖️' : '🌴';
+                          const regTotal = products.filter(p => p.region === reg).length;
 
                           return (
                             <div key={reg} className="space-y-4 bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-2xs">
@@ -663,23 +1118,39 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                                 <div className="flex items-center gap-2">
                                   <span className="text-xl">{regIcon}</span>
                                   <h3 className="font-extrabold text-slate-900 text-sm sm:text-base">
-                                    {reg} 지역 여행 상품
+                                    {reg} 권역 여행 상품
                                   </h3>
                                   <span className="bg-teal-50 text-teal-700 px-2 py-0.5 rounded-full text-xs font-extrabold border border-teal-100">
-                                    총 {products.filter(p => p.region === reg).length}개
+                                    총 {regTotal}개
                                   </span>
                                 </div>
 
-                                <button
-                                  onClick={() => handleStartCreate(reg, citiesInRegion[0] || '다낭')}
-                                  className="text-xs text-teal-700 hover:text-teal-900 font-bold flex items-center gap-1 bg-teal-50 px-2.5 py-1 rounded-lg border border-teal-200"
-                                >
-                                  <Plus className="w-3.5 h-3.5" />
-                                  <span>{reg} 상품 추가</span>
-                                </button>
+                                <div className="flex items-center gap-1.5">
+                                  <button
+                                    onClick={() => handleStartCreate(reg, citiesInRegion[0] || '다낭', '자유여행')}
+                                    className="text-[11px] text-sky-800 hover:text-sky-900 font-extrabold flex items-center gap-1 bg-sky-50 px-2.5 py-1 rounded-lg border border-sky-200"
+                                  >
+                                    <Plus className="w-3.5 h-3.5 text-sky-600" />
+                                    <span>+{reg} 자유여행</span>
+                                  </button>
+                                  <button
+                                    onClick={() => handleStartCreate(reg, citiesInRegion[0] || '다낭', '골프투어')}
+                                    className="text-[11px] text-emerald-800 hover:text-emerald-900 font-extrabold flex items-center gap-1 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200"
+                                  >
+                                    <Plus className="w-3.5 h-3.5 text-emerald-600" />
+                                    <span>+{reg} 골프</span>
+                                  </button>
+                                  <button
+                                    onClick={() => handleStartCreate(reg, citiesInRegion[0] || '다낭', '풀빌라')}
+                                    className="text-[11px] text-purple-800 hover:text-purple-900 font-extrabold flex items-center gap-1 bg-purple-50 px-2.5 py-1 rounded-lg border border-purple-200"
+                                  >
+                                    <Plus className="w-3.5 h-3.5 text-purple-600" />
+                                    <span>+{reg} 풀빌라</span>
+                                  </button>
+                                </div>
                               </div>
 
-                              <div className="space-y-5">
+                              <div className="space-y-6">
                                 {citiesInRegion.map((city) => {
                                   const cityProducts = products.filter(p => {
                                     const matchReg = p.region === reg;
@@ -692,87 +1163,156 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                                   });
 
                                   return (
-                                    <div key={city} className="bg-slate-50/70 p-3.5 rounded-xl border border-slate-200/60 space-y-3">
-                                      <div className="flex items-center justify-between">
+                                    <div key={city} className="bg-slate-50/80 p-3.5 sm:p-4 rounded-xl border border-slate-200/80 space-y-3">
+                                      {/* City Header */}
+                                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200/60 pb-2.5">
                                         <div className="flex items-center gap-2">
                                           <Building2 className="w-4 h-4 text-teal-700" />
-                                          <span className="font-extrabold text-slate-800 text-xs sm:text-sm">
+                                          <span className="font-extrabold text-slate-900 text-xs sm:text-sm">
                                             {city}
                                           </span>
                                           <span className="text-[11px] font-bold text-slate-500">
-                                            ({cityProducts.length}개 상품)
+                                            (총 {cityProducts.length}개)
                                           </span>
                                         </div>
 
-                                        <button
-                                          onClick={() => handleStartCreate(reg, city)}
-                                          className="text-[11px] font-extrabold text-teal-800 hover:text-teal-900 flex items-center gap-1 bg-white px-2 py-1 rounded-md border border-slate-200 hover:border-teal-300 shadow-2xs"
-                                        >
-                                          <Plus className="w-3 h-3 text-teal-600" />
-                                          <span>+{city} 상품등록</span>
-                                        </button>
+                                        {/* City-level Quick Category Registration Buttons */}
+                                        <div className="flex items-center gap-1 flex-wrap">
+                                          <button
+                                            onClick={() => handleStartCreate(reg, city, '자유여행')}
+                                            className="text-[10px] font-extrabold text-sky-800 bg-sky-50 hover:bg-sky-100 px-2 py-1 rounded-md border border-sky-200 flex items-center gap-0.5"
+                                          >
+                                            <Plus className="w-3 h-3 text-sky-600" />
+                                            <span>+ 자유여행</span>
+                                          </button>
+                                          <button
+                                            onClick={() => handleStartCreate(reg, city, '골프투어')}
+                                            className="text-[10px] font-extrabold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 px-2 py-1 rounded-md border border-emerald-200 flex items-center gap-0.5"
+                                          >
+                                            <Plus className="w-3 h-3 text-emerald-600" />
+                                            <span>+ 골프투어</span>
+                                          </button>
+                                          <button
+                                            onClick={() => handleStartCreate(reg, city, '풀빌라')}
+                                            className="text-[10px] font-extrabold text-purple-800 bg-purple-50 hover:bg-purple-100 px-2 py-1 rounded-md border border-purple-200 flex items-center gap-0.5"
+                                          >
+                                            <Plus className="w-3 h-3 text-purple-600" />
+                                            <span>+ 풀빌라</span>
+                                          </button>
+                                          <button
+                                            onClick={() => handleStartCreate(reg, city, '추천패키지')}
+                                            className="text-[10px] font-extrabold text-amber-800 bg-amber-50 hover:bg-amber-100 px-2 py-1 rounded-md border border-amber-200 flex items-center gap-0.5"
+                                          >
+                                            <Plus className="w-3 h-3 text-amber-600" />
+                                            <span>+ 패키지</span>
+                                          </button>
+                                        </div>
                                       </div>
 
-                                      {cityProducts.length === 0 ? (
-                                        <div className="text-center py-4 text-xs text-slate-400 font-bold bg-white/50 rounded-lg border border-dashed border-slate-200">
-                                          등록된 {city} 상품이 없습니다. 상단버튼을 눌러 추가하세요.
-                                        </div>
-                                      ) : (
-                                        <div className="grid grid-cols-1 gap-2">
-                                          {cityProducts.map((prod) => (
-                                            <div
-                                              key={prod.id}
-                                              className="bg-white p-3 rounded-xl border border-slate-200 hover:border-teal-300 flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-all"
-                                            >
-                                              <div className="flex items-center gap-3 min-w-0">
-                                                <img
-                                                  src={prod.imageUrl}
-                                                  alt={prod.title}
-                                                  className="w-16 h-12 rounded-lg object-cover shrink-0 border border-slate-100"
-                                                />
-                                                <div className="min-w-0">
-                                                  <div className="flex items-center gap-1.5 text-[10px] font-bold">
-                                                    <span className="bg-teal-50 text-teal-800 px-1.5 py-0.5 rounded border border-teal-100">
-                                                      {prod.category}
-                                                    </span>
-                                                    <span className="text-slate-500">
-                                                      {prod.duration}
-                                                    </span>
-                                                  </div>
-                                                  <h4 className="font-extrabold text-slate-900 text-xs sm:text-sm truncate mt-0.5">
-                                                    {prod.title}
-                                                  </h4>
-                                                  <p className="text-[11px] text-teal-700 font-extrabold">
-                                                    {prod.priceKRW.toLocaleString()}원
-                                                  </p>
+                                      {/* Sub-categorized Products by Category under City */}
+                                      <div className="grid grid-cols-1 gap-3">
+                                        {CATEGORIES.filter(cat => selectedCategoryFilter === '전체' || selectedCategoryFilter === cat).map((cat) => {
+                                          const catProducts = cityProducts.filter(p => p.category === cat);
+                                          
+                                          // If filtering by specific category and no products, don't show empty block unless '전체' selected
+                                          if (selectedCategoryFilter !== '전체' && catProducts.length === 0) return null;
+
+                                          const catBadgeStyle = cat === '자유여행' 
+                                            ? 'bg-sky-100 text-sky-900 border-sky-200' 
+                                            : cat === '골프투어' 
+                                            ? 'bg-emerald-100 text-emerald-900 border-emerald-200' 
+                                            : cat === '풀빌라' 
+                                            ? 'bg-purple-100 text-purple-900 border-purple-200' 
+                                            : 'bg-amber-100 text-amber-900 border-amber-200';
+
+                                          const catIcon = cat === '자유여행' ? '✈️' : cat === '골프투어' ? '⛳' : cat === '풀빌라' ? '🏡' : '📦';
+
+                                          return (
+                                            <div key={cat} className="space-y-2 bg-white/90 p-3 rounded-xl border border-slate-200/70 shadow-2xs">
+                                              <div className="flex items-center justify-between border-b border-slate-100 pb-1.5">
+                                                <div className="flex items-center gap-1.5">
+                                                  <span className="text-xs">{catIcon}</span>
+                                                  <span className={`px-2 py-0.5 rounded-md text-[11px] font-extrabold border ${catBadgeStyle}`}>
+                                                    {cat}
+                                                  </span>
+                                                  <span className="text-[10px] font-bold text-slate-400">
+                                                    ({catProducts.length}개 상품)
+                                                  </span>
                                                 </div>
-                                              </div>
-
-                                              <div className="flex items-center gap-1.5 self-end sm:self-auto shrink-0">
-                                                <button
-                                                  onClick={() => handleStartEdit(prod)}
-                                                  className="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs flex items-center gap-1"
-                                                >
-                                                  <Edit className="w-3.5 h-3.5 text-teal-700" />
-                                                  <span>수정</span>
-                                                </button>
 
                                                 <button
-                                                  onClick={async () => {
-                                                    if (confirm(`'${prod.title}' 상품을 정말 삭제하시겠습니까?`)) {
-                                                      await onDeleteProduct(prod.id);
-                                                    }
-                                                  }}
-                                                  className="px-2.5 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs flex items-center gap-1"
+                                                  onClick={() => handleStartCreate(reg, city, cat)}
+                                                  className="text-[10px] font-bold text-teal-800 hover:text-teal-900 flex items-center gap-0.5 bg-teal-50 px-2 py-0.5 rounded-md border border-teal-200"
                                                 >
-                                                  <Trash2 className="w-3.5 h-3.5 text-rose-600" />
-                                                  <span>삭제</span>
+                                                  <Plus className="w-2.5 h-2.5 text-teal-600" />
+                                                  <span>{cat} 상품 추가</span>
                                                 </button>
                                               </div>
+
+                                              {catProducts.length === 0 ? (
+                                                <div className="text-center py-2.5 text-[11px] text-slate-400 font-bold bg-slate-50/50 rounded-lg border border-dashed border-slate-200">
+                                                  등록된 [{city} / {cat}] 상품이 없습니다. 오른쪽 버튼을 누르면 즉시 등록됩니다.
+                                                </div>
+                                              ) : (
+                                                <div className="grid grid-cols-1 gap-2">
+                                                  {catProducts.map((prod) => (
+                                                    <div
+                                                      key={prod.id}
+                                                      className="bg-white p-2.5 sm:p-3 rounded-xl border border-slate-200 hover:border-teal-300 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 transition-all"
+                                                    >
+                                                      <div className="flex items-center gap-3 min-w-0">
+                                                        <img
+                                                          src={prod.imageUrl}
+                                                          alt={prod.title}
+                                                          className="w-14 h-11 rounded-lg object-cover shrink-0 border border-slate-100"
+                                                        />
+                                                        <div className="min-w-0">
+                                                          <div className="flex items-center gap-1.5 text-[10px] font-bold">
+                                                            <span className="text-slate-500">
+                                                              {prod.duration}
+                                                            </span>
+                                                            {prod.isHotDeal && (
+                                                              <span className="bg-rose-100 text-rose-700 px-1 py-0.2 rounded text-[9px]">HOT</span>
+                                                            )}
+                                                          </div>
+                                                          <h4 className="font-extrabold text-slate-900 text-xs sm:text-sm truncate mt-0.5">
+                                                            {prod.title}
+                                                          </h4>
+                                                          <p className="text-[11px] text-teal-700 font-extrabold">
+                                                            {prod.priceKRW.toLocaleString()}원
+                                                          </p>
+                                                        </div>
+                                                      </div>
+
+                                                      <div className="flex items-center gap-1.5 self-end sm:self-auto shrink-0">
+                                                        <button
+                                                          onClick={() => handleStartEdit(prod)}
+                                                          className="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs flex items-center gap-1"
+                                                        >
+                                                          <Edit className="w-3.5 h-3.5 text-teal-700" />
+                                                          <span>수정</span>
+                                                        </button>
+
+                                                        <button
+                                                          onClick={async () => {
+                                                            if (confirm(`'${prod.title}' 상품을 정말 삭제하시겠습니까?`)) {
+                                                              await onDeleteProduct(prod.id);
+                                                            }
+                                                          }}
+                                                          className="px-2.5 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs flex items-center gap-1"
+                                                        >
+                                                          <Trash2 className="w-3.5 h-3.5 text-rose-600" />
+                                                          <span>삭제</span>
+                                                        </button>
+                                                      </div>
+                                                    </div>
+                                                  ))}
+                                                </div>
+                                              )}
                                             </div>
-                                          ))}
-                                        </div>
-                                      )}
+                                          );
+                                        })}
+                                      </div>
                                     </div>
                                   );
                                 })}
@@ -788,10 +1328,11 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                         .filter(p => {
                           const matchReg = selectedRegionFilter === '전체' || p.region === selectedRegionFilter;
                           const matchCity = selectedCityFilter === '전체' || p.city === selectedCityFilter;
+                          const matchCat = selectedCategoryFilter === '전체' || p.category === selectedCategoryFilter;
                           const matchQuery = !adminSearchQuery || 
                             p.title.toLowerCase().includes(adminSearchQuery.toLowerCase()) ||
                             p.city.toLowerCase().includes(adminSearchQuery.toLowerCase());
-                          return matchReg && matchCity && matchQuery;
+                          return matchReg && matchCity && matchCat && matchQuery;
                         })
                         .map((prod) => (
                           <div
@@ -849,124 +1390,6 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                   )}
                 </>
               )}
-            </div>
-          )}
-
-          {/* TAB 2: BULK EXPORT / IMPORT */}
-          {activeTab === 'import_export' && (
-            <div className="space-y-6">
-              {/* Export Box */}
-              <div className="bg-white p-5 rounded-2xl border border-slate-200 space-y-3 shadow-2xs">
-                <div className="flex items-center gap-2">
-                  <Download className="w-5 h-5 text-amber-600" />
-                  <h4 className="font-extrabold text-slate-900 text-sm">
-                    1. 데이터 다운로드 (Export)
-                  </h4>
-                </div>
-                <p className="text-xs text-slate-600">
-                  현재 등록되어 있는 상품 전체({products.length}개)를 엑셀 편집용 CSV 또는 백업용 JSON 파일로 한 번에 다운로드합니다.
-                </p>
-
-                <div className="flex flex-wrap items-center gap-3 pt-1">
-                  <button
-                    onClick={handleExportCSV}
-                    className="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center gap-2 shadow-xs"
-                  >
-                    <FileSpreadsheet className="w-4 h-4" />
-                    <span>CSV 파일 다운로드</span>
-                  </button>
-
-                  <button
-                    onClick={handleExportJSON}
-                    className="px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs flex items-center gap-2 shadow-xs"
-                  >
-                    <FileJson className="w-4 h-4" />
-                    <span>JSON 백업 파일 다운로드</span>
-                  </button>
-                </div>
-              </div>
-
-              {/* Import Box */}
-              <div className="bg-white p-5 rounded-2xl border border-slate-200 space-y-4 shadow-2xs">
-                <div className="flex items-center gap-2">
-                  <Upload className="w-5 h-5 text-teal-600" />
-                  <h4 className="font-extrabold text-slate-900 text-sm">
-                    2. 데이터 업로드 (Import)
-                  </h4>
-                </div>
-                <p className="text-xs text-slate-600">
-                  수정되거나 추가된 JSON/CSV 파일을 선택하여 상품 목록을 수시로 갱신합니다.
-                </p>
-
-                <div className="flex items-center gap-2 text-xs font-bold text-slate-700 bg-slate-50 p-3 rounded-xl border border-slate-200">
-                  <input
-                    type="checkbox"
-                    id="replaceCheck"
-                    checked={importReplace}
-                    onChange={(e) => setImportReplace(e.target.checked)}
-                    className="rounded text-teal-600"
-                  />
-                  <label htmlFor="replaceCheck" className="cursor-pointer">
-                    기존 상품 전체 덮어쓰기 (체크 해제 시 기존 상품 뒤에 추가됨)
-                  </label>
-                </div>
-
-                {/* File input */}
-                <div className="space-y-2">
-                  <label className="text-xs font-bold text-slate-800 block">
-                    📁 JSON 파일 직접 파일 선택:
-                  </label>
-                  <input
-                    type="file"
-                    accept=".json"
-                    onChange={handleFileUpload}
-                    className="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100"
-                  />
-                </div>
-
-                {/* Text Paste */}
-                <div className="space-y-2 pt-2 border-t border-slate-100">
-                  <label className="text-xs font-bold text-slate-800 block">
-                    📝 JSON 텍스트 직접 붙여넣기:
-                  </label>
-                  <textarea
-                    rows={4}
-                    placeholder="[{ &quot;title&quot;: &quot;다낭 골프 3박5일&quot;, &quot;priceKRW&quot;: 700000, ... }]"
-                    value={jsonInputText}
-                    onChange={(e) => setJsonInputText(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs font-mono"
-                  />
-                  <button
-                    onClick={handleTextImport}
-                    disabled={!jsonInputText.trim()}
-                    className="px-4 py-2 rounded-xl bg-teal-700 hover:bg-teal-800 disabled:opacity-40 text-white font-bold text-xs"
-                  >
-                    텍스트 데이터 업로드 적용
-                  </button>
-                </div>
-              </div>
-
-              {/* Reset Box */}
-              <div className="bg-rose-50/60 p-5 rounded-2xl border border-rose-200 space-y-2">
-                <div className="flex items-center gap-2 text-rose-900 font-extrabold text-xs">
-                  <RotateCcw className="w-4 h-4 text-rose-600" />
-                  <span>초기 데모 데이터 복원</span>
-                </div>
-                <p className="text-xs text-rose-800">
-                  모든 상품을 기본 신차오투어 12개 초기 상품 세트로 초기화합니다.
-                </p>
-                <button
-                  onClick={async () => {
-                    if (confirm('초기 데모 데이터로 복원하시겠습니까?')) {
-                      await onResetProducts();
-                      alert('초기 상품 데이터로 복원되었습니다.');
-                    }
-                  }}
-                  className="px-3.5 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs"
-                >
-                  기본 데모 상품 복원하기
-                </button>
-              </div>
             </div>
           )}
 
