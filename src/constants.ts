@@ -1,6 +1,6 @@
 export const COMPANY_PHONE = '010-5365-6019';
 export const COMPANY_PHONE_TEL = 'tel:010-5365-6019';
-export const DEFAULT_KAKAO_LINK = '';
+export const DEFAULT_KAKAO_LINK = 'https://open.kakao.com/o/sSweaL8b';
 export const DEFAULT_KAKAO_CHANNEL = 'https://pf.kakao.com/_xincaotour';
 export const KAKAO_ID = 'wonjutrade';
 
@@ -9,7 +9,7 @@ export const getKakaoDirectLink = (): string => {
   if (saved && saved.trim().length > 0 && !saved.includes('/me/wonjutrade')) {
     return saved.trim();
   }
-  return '';
+  return DEFAULT_KAKAO_LINK;
 };
 
 export const setKakaoDirectLink = (url: string) => {
@@ -26,11 +26,8 @@ export const openKakaoModal = () => {
 
 export const handleOpenKakaoTalkDirect = () => {
   const link = getKakaoDirectLink();
-  if (link && link.startsWith('http')) {
-    window.open(link, '_blank', 'noopener,noreferrer');
-  } else {
-    openKakaoModal();
-  }
+  const targetUrl = (link && link.startsWith('http')) ? link : DEFAULT_KAKAO_LINK;
+  window.open(targetUrl, '_blank', 'noopener,noreferrer');
 };
 
 
