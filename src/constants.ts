@@ -7,7 +7,7 @@ export const KAKAO_ID = 'wonjutrade';
 export const getKakaoDirectLink = (): string => {
   if (typeof window !== 'undefined') {
     const saved = localStorage.getItem('kakao_direct_link');
-    if (saved && saved.startsWith('http') && saved.includes('open.kakao.com/o/sxeekUBi')) {
+    if (saved && saved.trim().startsWith('http')) {
       return saved.trim();
     }
   }
@@ -27,22 +27,24 @@ export const openKakaoModal = () => {
 };
 
 export const handleOpenKakaoTalkDirect = (e?: React.MouseEvent) => {
-  if (e && e.preventDefault) {
-    e.preventDefault();
+  if (e) {
+    if (e.preventDefault) e.preventDefault();
+    if (e.stopPropagation) e.stopPropagation();
   }
   const targetUrl = getKakaoDirectLink() || DEFAULT_KAKAO_LINK;
   
-  // Directly open KakaoTalk open chat link in new tab/window
-  try {
-    const a = document.createElement('a');
-    a.href = targetUrl;
-    a.target = '_blank';
-    a.rel = 'noopener noreferrer';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-  } catch (err) {
-    window.open(targetUrl, '_blank', 'noopener,noreferrer');
+  if (typeof window !== 'undefined') {
+    try {
+      const a = document.createElement('a');
+      a.href = targetUrl;
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    } catch (err) {
+      window.open(targetUrl, '_blank', 'noopener,noreferrer');
+    }
   }
 };
 
