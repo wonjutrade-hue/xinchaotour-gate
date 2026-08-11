@@ -30,8 +30,20 @@ export const handleOpenKakaoTalkDirect = (e?: React.MouseEvent) => {
   if (e && e.preventDefault) {
     e.preventDefault();
   }
-  // Immediately open the in-app 1:1 Chat Modal (Photo 3) directly without landing page or popups
-  openKakaoModal();
+  const targetUrl = getKakaoDirectLink() || DEFAULT_KAKAO_LINK;
+  
+  // Directly open KakaoTalk open chat link in new tab/window
+  try {
+    const a = document.createElement('a');
+    a.href = targetUrl;
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  } catch (err) {
+    window.open(targetUrl, '_blank', 'noopener,noreferrer');
+  }
 };
 
 
