@@ -105,6 +105,78 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   const [tagsText, setTagsText] = useState('');
   const [additionalImagesText, setAdditionalImagesText] = useState('');
 
+  // Helper function to process and compress user uploaded image file
+  const compressAndConvertImage = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (evt) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          const MAX_SIZE = 1200;
+
+          if (width > height) {
+            if (width > MAX_SIZE) {
+              height = Math.round((height * MAX_SIZE) / width);
+              width = MAX_SIZE;
+            }
+          } else {
+            if (height > MAX_SIZE) {
+              width = Math.round((width * MAX_SIZE) / height);
+              height = MAX_SIZE;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx?.drawImage(img, 0, 0, width, height);
+
+          const dataUrl = canvas.toDataURL('image/jpeg', 0.82);
+          resolve(dataUrl);
+        };
+        img.onerror = () => reject(new Error('이미지 로드 실패'));
+        img.src = evt.target?.result as string;
+      };
+      reader.onerror = () => reject(new Error('파일 읽기 실패'));
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const handleMainImageFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      const dataUrl = await compressAndConvertImage(file);
+      setFormData((prev) => ({ ...prev, imageUrl: dataUrl }));
+      alert('대표 메인 사진이 PC 파일에서 성공적으로 등록되었습니다!');
+    } catch (err) {
+      alert('이미지 파일 업로드 중 오류가 발생했습니다.');
+    }
+    e.target.value = '';
+  };
+
+  const handleSubImagesFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+    try {
+      const urls: string[] = [];
+      for (let i = 0; i < files.length; i++) {
+        const dataUrl = await compressAndConvertImage(files[i]);
+        urls.push(dataUrl);
+      }
+      const existing = additionalImagesText.trim();
+      const newCombined = existing ? `${existing}\n${urls.join('\n')}` : urls.join('\n');
+      setAdditionalImagesText(newCombined);
+      alert(`${files.length}개의 추가 서브 사진이 PC 파일에서 성공적으로 등록되었습니다!`);
+    } catch (err) {
+      alert('서브 이미지 파일 업로드 중 오류가 발생했습니다.');
+    }
+    e.target.value = '';
+  };
+
   // Helper for Itinerary
   const [itineraryList, setItineraryList] = useState<ItineraryDay[]>([]);
 
@@ -611,40 +683,135 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                     </div>
                   </div>
 
-                  {/* Section 2: 대표 및 추가 이미지 URL */}
-                  <div className="space-y-3 bg-slate-50 p-4 rounded-2xl border border-slate-200">
-                    <h5 className="font-extrabold text-xs text-slate-800 flex items-center gap-1.5 border-b pb-2 border-slate-200">
-                      <ImageIcon className="w-4 h-4 text-teal-700" />
-                      <span>2. 이미지 URL 사진 등록</span>
+                  {/* Section 2: 대표 및 추가 사진 등록 (내 컴퓨터 파일 선택 & URL 입력 지원) */}
+                  <div className="space-y-4 bg-slate-50 p-4 sm:p-5 rounded-2xl border border-slate-200">
+                    <h5 className="font-extrabold text-xs text-slate-800 flex items-center justify-between border-b pb-2 border-slate-200">
+                      <div className="flex items-center gap-1.5">
+                        <ImageIcon className="w-4 h-4 text-teal-700" />
+                        <span>2. 상품 사진 등록 (컴퓨터 파일 선택 / 이미지 URL)</span>
+                      </div>
+                      <span className="text-[11px] text-teal-800 bg-teal-50 px-2 py-0.5 rounded-md border border-teal-200 font-bold">
+                        📁 내 컴퓨터 사진 직접 등록 가능
+                      </span>
                     </h5>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      <div className="space-y-1">
-                        <label className="text-[11px] font-bold text-slate-700">대표 메인 사진 Image URL</label>
-                        <input
-                          type="url"
-                          value={formData.imageUrl || ''}
-                          onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
-                          placeholder="https://images.unsplash.com/..."
-                          className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs"
-                        />
-                        {formData.imageUrl && (
-                          <div className="pt-1 flex items-center gap-2">
-                            <img src={formData.imageUrl} alt="preview" className="w-20 h-14 object-cover rounded-xl border border-slate-200" />
-                            <span className="text-[11px] text-slate-500 font-bold">메인 사진 미리보기</span>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {/* 1. 대표 메인 사진 */}
+                      <div className="space-y-2.5 bg-white p-3.5 rounded-xl border border-slate-200">
+                        <label className="text-xs font-extrabold text-slate-900 block">
+                          📸 대표 메인 사진
+                        </label>
+
+                        {/* File Upload Button */}
+                        <div>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            id="main-image-file-input"
+                            className="hidden"
+                            onChange={handleMainImageFileUpload}
+                          />
+                          <label
+                            htmlFor="main-image-file-input"
+                            className="w-full py-2.5 px-3 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-extrabold text-xs flex items-center justify-center gap-2 cursor-pointer transition-all shadow-sm"
+                          >
+                            <Upload className="w-4 h-4" />
+                            <span>💻 내 컴퓨터에서 메인 사진 파일 선택</span>
+                          </label>
+                        </div>
+
+                        <div className="relative flex items-center justify-center my-1">
+                          <span className="bg-white px-2 text-[10px] text-slate-400 font-bold z-10">또는</span>
+                          <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-slate-200"></div></div>
+                        </div>
+
+                        {/* URL Input */}
+                        <div className="space-y-1">
+                          <label className="text-[10px] font-bold text-slate-500 block">웹 이미지 URL 직접 입력:</label>
+                          <input
+                            type="url"
+                            value={formData.imageUrl || ''}
+                            onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
+                            placeholder="https://images.unsplash.com/..."
+                            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs"
+                          />
+                        </div>
+
+                        {/* Preview */}
+                        {formData.imageUrl ? (
+                          <div className="pt-2 flex items-center justify-between bg-slate-50 p-2 rounded-xl border border-slate-200">
+                            <div className="flex items-center gap-2 min-w-0">
+                              <img src={formData.imageUrl} alt="preview" className="w-16 h-12 object-cover rounded-lg border border-slate-200 shrink-0" />
+                              <span className="text-[11px] text-slate-600 font-bold truncate">메인 사진 등록 완료</span>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => setFormData({ ...formData, imageUrl: '' })}
+                              className="text-[10px] text-rose-600 font-bold hover:underline shrink-0"
+                            >
+                              삭제
+                            </button>
+                          </div>
+                        ) : (
+                          <div className="text-center py-3 text-[11px] text-slate-400 border border-dashed border-slate-200 rounded-xl">
+                            등록된 메인 사진이 없습니다.
                           </div>
                         )}
                       </div>
 
-                      <div className="space-y-1">
-                        <label className="text-[11px] font-bold text-slate-700">추가 서브 사진 URL 목록 (한 줄에 1개씩)</label>
-                        <textarea
-                          rows={3}
-                          value={additionalImagesText}
-                          onChange={(e) => setAdditionalImagesText(e.target.value)}
-                          placeholder={'https://images.unsplash.com/photo-1...\nhttps://images.unsplash.com/photo-2...'}
-                          className="w-full bg-white border border-slate-200 rounded-xl p-2.5 text-xs font-mono"
-                        />
+                      {/* 2. 추가 서브 사진 */}
+                      <div className="space-y-2.5 bg-white p-3.5 rounded-xl border border-slate-200">
+                        <label className="text-xs font-extrabold text-slate-900 block">
+                          🖼️ 추가 서브 사진 (다중 선택 가능)
+                        </label>
+
+                        {/* File Upload Button Multiple */}
+                        <div>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            multiple
+                            id="sub-images-file-input"
+                            className="hidden"
+                            onChange={handleSubImagesFileUpload}
+                          />
+                          <label
+                            htmlFor="sub-images-file-input"
+                            className="w-full py-2.5 px-3 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-extrabold text-xs flex items-center justify-center gap-2 cursor-pointer transition-all shadow-sm"
+                          >
+                            <Upload className="w-4 h-4" />
+                            <span>💻 내 컴퓨터에서 서브 사진 동시 선택 (다중)</span>
+                          </label>
+                        </div>
+
+                        <div className="relative flex items-center justify-center my-1">
+                          <span className="bg-white px-2 text-[10px] text-slate-400 font-bold z-10">또는</span>
+                          <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-slate-200"></div></div>
+                        </div>
+
+                        {/* URL List Textarea */}
+                        <div className="space-y-1">
+                          <label className="text-[10px] font-bold text-slate-500 block">웹 서브 사진 URL 목록 (한 줄에 1개씩):</label>
+                          <textarea
+                            rows={3}
+                            value={additionalImagesText}
+                            onChange={(e) => setAdditionalImagesText(e.target.value)}
+                            placeholder={'https://images.unsplash.com/photo-1...\nhttps://images.unsplash.com/photo-2...'}
+                            className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs font-mono"
+                          />
+                        </div>
+
+                        {/* Sub Images Preview Gallery */}
+                        {additionalImagesText.trim() && (
+                          <div className="pt-1">
+                            <div className="text-[10px] font-bold text-slate-500 mb-1">등록된 서브 사진 미리보기:</div>
+                            <div className="flex items-center gap-1.5 overflow-x-auto pb-1">
+                              {additionalImagesText.split('\n').filter(Boolean).map((url, i) => (
+                                <img key={`sub-img-${i}-${url.slice(0, 15)}`} src={url.trim()} alt={`sub-${i}`} className="w-12 h-10 object-cover rounded-lg border border-slate-200 shrink-0" />
+                              ))}
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
