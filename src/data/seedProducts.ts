@@ -853,6 +853,60 @@ export const INITIAL_PRODUCTS: Product[] = [
 
   // --- 다낭 (Da Nang Villa) ---
   {
+    id: 'villa-dn-airbnb-1596807485',
+    title: '[풀빌라/중부] 다낭 미케비치 럭셔리 에어비앤비 4베드룸 독채 풀빌라 (성인 8인 기준)',
+    subTitle: '대형 프라이빗 수영장 + 4베드룸 독채 + 미케비치 도보 5분 & 에어비앤비 직영 호스트 스테이',
+    category: '풀빌라',
+    region: '중부',
+    city: '다낭',
+    priceKRW: 580000,
+    priceVND: 0,
+    duration: '1박 기준 (연박/단체 가능)',
+    imageUrl: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1000&q=80',
+    additionalImages: [
+      'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=1000&q=80',
+      'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1000&q=80',
+      'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1000&q=80'
+    ],
+    rating: 4.98,
+    reviewCount: 142,
+    isPopular: true,
+    isHotDeal: true,
+    departureCities: ['자율일정/단독차량연계'],
+    tags: ['에어비앤비', '다낭풀빌라', '8인추천', '4베드룸', '독채풀빌라', '미케비치', '프라이빗수영장'],
+    description: '신짜오투어(xinchaotour.com) 추천! 다낭 미케비치 및 안트엉 관광거리 도보 5분 거리의 럭셔리 에어비앤비 프라이빗 독채 풀빌라입니다. 성인 8명(최대 10인) 그룹 투숙에 최적화된 4개 독립 베드룸과 개별 와이드 야외 수영장, 야외 바비큐 테라스, 세련된 거실/주방 시설을 독채로 이용하실 수 있습니다.',
+    included: [
+      '에어비앤비 공식 4베드룸 독채 풀빌라 1박 (성인 8인 기준)',
+      '프라이빗 개별 대형 수영장 무제한 이용',
+      '다낭 국제공항 <-> 빌라 단독 픽업 & 샌딩 전용 차량',
+      '야외 바비큐(BBQ) 그릴 및 테라스 이용',
+      '웰컴 드링크 및 무료 고속 와이파이',
+      '1일 1회 하우스키핑 청소 서비스'
+    ],
+    excluded: [
+      '개인 식음료 및 추가 바비큐 재료비',
+      '가이드/기사 매너팁'
+    ],
+    externalBookingUrl: 'https://www.airbnb.co.kr/rooms/1596807485988738548?adults=8&search_mode=regular_search&source_impression_id=p3_1773058617_P3xK6pEU9aoIJDMS&previous_page_section_name=1000&federated_search_id=a2420d66-c7ca-4754-98c4-1f72afdd15e6&guests=1&check_in=2026-08-04&check_out=2026-08-05',
+    itinerary: [
+      {
+        day: 1,
+        title: '다낭 공항 단독 픽업 -> 에어비앤비 독채 풀빌라 입실 -> 프라이빗 수영 & 테라스 BBQ',
+        description: '공항 도착 후 피켓을 든 전용 기사 미팅 (약 20분 이동). 15:00 빌라 익스프레스 체크인 후 개별 전용 수영장 수영 및 야외 테라스 BBQ 파티.',
+        meal: '자유식 (빌라 내 BBQ 세팅 가능)',
+        hotel: '다낭 미케비치 에어비앤비 4베드룸 럭셔리 독채 풀빌라'
+      }
+    ],
+    villaSpecs: {
+      bedrooms: 4,
+      privatePool: true,
+      oceanView: true,
+      maxOccupancy: 10,
+      features: ['에어비앤비 슈퍼호스트 독채', '개별 야외 수영장', '성인 8인 최적화 4베드룸', '미케비치 도보 5분', '야외 BBQ 테라스', '공항 단독 픽샌딩 차량 포함'],
+      areaSqm: 320
+    }
+  },
+  {
     id: 'villa-dn-01',
     title: '[풀빌라/중부] 다낭 하얏트 리젠시 오션뷰 프라이빗 3베드룸 독채 풀빌라',
     subTitle: '독채 프라이빗 풀 + 파노라마 오션뷰 + 대가족 최적화 (성인 6인+아동 3인)',

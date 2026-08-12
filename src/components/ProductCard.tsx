@@ -50,6 +50,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
         {/* Category & Discount Sticker */}
         <div className="absolute top-3 right-3 flex items-center gap-1">
+          {product.externalBookingUrl && (
+            <span className="bg-rose-500 text-white text-[11px] font-black px-2 py-0.5 rounded-lg shadow-sm flex items-center gap-1">
+              <span>Airbnb</span>
+            </span>
+          )}
           {product.discountPercent && (
             <span className="bg-rose-600 text-white text-[11px] font-black px-2 py-0.5 rounded-lg shadow-sm">
               {product.discountPercent}% OFF

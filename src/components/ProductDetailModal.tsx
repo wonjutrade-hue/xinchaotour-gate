@@ -14,7 +14,8 @@ import {
   MessageCircle, 
   ShieldCheck, 
   Share2,
-  Sparkles
+  Sparkles,
+  ExternalLink
 } from 'lucide-react';
 import { ExchangeRates, calculateVNDFromKRW, calculateUSDFromKRW, formatVND, formatUSD } from '../lib/exchangeRate';
 import { handleOpenKakaoTalkDirect } from '../constants';
@@ -295,6 +296,19 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
           </div>
 
           <div className="flex flex-wrap items-center gap-2.5 w-full sm:w-auto">
+            {product.externalBookingUrl && (
+              <a
+                href={product.externalBookingUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-4 py-3 rounded-2xl bg-rose-600 hover:bg-rose-500 text-white font-black text-xs shadow-lg transition-all flex items-center justify-center gap-1.5"
+                title="에어비앤비 공식 숙소 상세 및 직접 예약 페이지로 이동"
+              >
+                <ExternalLink className="w-4 h-4" />
+                <span>에어비앤비 원본보기</span>
+              </a>
+            )}
+
             <button
               onClick={handleOpenKakaoTalkDirect}
               className="px-4 py-3 rounded-2xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs shadow-lg transition-all flex items-center justify-center gap-1.5"
