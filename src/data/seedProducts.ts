@@ -974,6 +974,106 @@ export const INITIAL_PRODUCTS: Product[] = [
       areaSqm: 150
     }
   },
+  {
+    id: 'villa-dn-nguhanhson-garden',
+    title: '[풀빌라/중부] 응우한손에 위치한 정원과 개인 수영장을 갖춘 빌라',
+    subTitle: '🏡 다낭 응우한손 프라이빗 독채 가든 빌라 & 대형 개별 수영장 (성인 10인 기준)',
+    category: '풀빌라',
+    region: '중부',
+    city: '다낭',
+    priceKRW: 680000,
+    priceVND: 0,
+    duration: '1박 기준',
+    imageUrl: 'https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=1000&q=80',
+    additionalImages: [
+      'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=1000&q=80',
+      'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1000&q=80'
+    ],
+    rating: 5.0,
+    reviewCount: 168,
+    isPopular: true,
+    departureCities: ['자율일정/단독차량연계'],
+    tags: ['응우한손풀빌라', '정원빌라', '개인수영장', '다낭독채', '5베드룸'],
+    description: '다낭 응우한손 중심에 위치한 넓은 단독 푸른 정원과 프라이빗 대형 개인 수영장을 완비한 럭셔리 독채 빌라입니다. 가족 및 대그룹 단체 여행객에게 최상의 휴양 공간을 제공합니다.',
+    included: [
+      '응우한손 독채 가든 풀빌라 1박',
+      '프라이빗 대형 개인 수영장 무제한 이용',
+      '단독 푸른 잔디 정원 & 야외 BBQ 그릴 이용',
+      '다낭 공항 <-> 빌라 단독 왕복 픽샌딩 차량',
+      '무료 와이파이 & 일일 청소 서비스'
+    ],
+    excluded: [
+      '개인 미니바 및 추가 바비큐 식재료비'
+    ],
+    address: 'Khu B2-21, Phường Hòa Hải, Quận Ngũ Hành Sơn, Đà Nẵng (응우한손 프라이빗 가든 빌라 단지)',
+    itinerary: [
+      {
+        day: 1,
+        title: '다낭 공항 단독 픽업 -> 응우한손 가든 풀빌라 입실 -> 정원 BBQ & 야간 프라이빗 수영',
+        description: '공항 피켓 미팅 후 전용 차량으로 빌라 이동 (약 15분). 입실 후 아름다운 단독 정원과 프라이빗 개별 수영장에서 자유로운 휴식 및 가든 바비큐.',
+        meal: '자유식 (가든 BBQ 세팅 가능)',
+        hotel: '다낭 응우한손 가든 프라이빗 독채 풀빌라'
+      }
+    ],
+    villaSpecs: {
+      bedrooms: 5,
+      privatePool: true,
+      oceanView: false,
+      maxOccupancy: 12,
+      features: ['독채 단독 잔디 정원', '대형 개인 프라이빗 수영장', '야외 가든 BBQ 테라스', '5개 전용 침실', '공항 단독 왕복 픽샌딩 차량 포함'],
+      areaSqm: 380
+    }
+  },
+  {
+    id: 'villa-dn-luxury-5bed',
+    title: '[풀빌라/중부] 🏡 다낭의 럭셔리 5베드룸 빌라 ✅✅',
+    subTitle: '최대 12인 투숙 5베드룸 초특가 + 초대형 인피니티 프라이빗 풀 + 24시간 피켓 버틀러',
+    category: '풀빌라',
+    region: '중부',
+    city: '다낭',
+    priceKRW: 780000,
+    priceVND: 0,
+    duration: '1박 기준',
+    imageUrl: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1000&q=80',
+    additionalImages: [
+      'https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=1000&q=80',
+      'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1000&q=80'
+    ],
+    rating: 5.0,
+    reviewCount: 215,
+    isPopular: true,
+    departureCities: ['자율일정/단독차량연계'],
+    tags: ['다낭5베드룸', '럭셔리풀빌라', '인피니티풀', '미케비치', '대가족추천'],
+    description: '다낭 최고의 럭셔리 5베드룸 프라이빗 독채 빌라! 넉넉한 5개의 침실과 각 방 전용 욕실, 초대형 개별 인피니티 수영장, 풀사이드 테라스를 갖춘 프라이미엄 독채 휴양지입니다.',
+    included: [
+      '다낭 럭셔리 5베드룸 독채 풀빌라 1박',
+      '전 투숙객 조식 뷔페 서비스',
+      '초대형 개별 인피니티 수영장 무제한 이용',
+      '공항 <-> 빌라 VIP 단독 픽업 & 샌딩 전용 차량',
+      '웰컴 과일 바스켓 및 24시간 보안'
+    ],
+    excluded: [
+      '개인 주류 및 팁'
+    ],
+    address: 'Võ Nguyên Giáp, Phường Khuê Mỹ, Quận Ngũ Hành Sơn, Đà Nẵng (다낭 해변 산책로 럭셔리 빌라 단지)',
+    itinerary: [
+      {
+        day: 1,
+        title: '다낭 공항 단독 픽업 -> 5베드룸 럭셔리 빌라 체크인 -> 풀사이드 바비큐 & 물놀이',
+        description: '공항 픽업 후 빌라 전용 차량 이동. 익스프레스 체크인 후 5베드룸 독채와 대형 수영장에서 프라이빗 수영 및 파티.',
+        meal: '조식: 조식 제공',
+        hotel: '다낭 럭셔리 5베드룸 독채 풀빌라'
+      }
+    ],
+    villaSpecs: {
+      bedrooms: 5,
+      privatePool: true,
+      oceanView: true,
+      maxOccupancy: 12,
+      features: ['5개 럭셔리 독립 침실', '초대형 프라이빗 인피니티 풀', '미케비치 도보 3분', '풀사이드 BBQ 파티 존', 'VIP 단독 차량 연계'],
+      areaSqm: 420
+    }
+  },
 
   // --- 나트랑 (Nha Trang Villa) ---
   {

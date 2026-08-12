@@ -171,7 +171,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   onClick={() => {
                     onSelectCategory(cat.key);
                     setTimeout(() => {
-                      document.getElementById('products-section')?.scrollIntoView({ behavior: 'smooth' });
+                      document.getElementById('filter-section')?.scrollIntoView({ behavior: 'smooth' });
                     }, 50);
                   }}
                   className={`flex items-center gap-1.5 px-2.5 py-1.5 xl:px-3.5 xl:py-2 rounded-xl font-bold text-xs xl:text-sm whitespace-nowrap transition-all shrink-0 ${
@@ -260,7 +260,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     onSelectCategory(cat.key);
                     setMobileMenuOpen(false);
                     setTimeout(() => {
-                      document.getElementById('products-section')?.scrollIntoView({ behavior: 'smooth' });
+                      document.getElementById('filter-section')?.scrollIntoView({ behavior: 'smooth' });
                     }, 50);
                   }}
                   className={`flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold ${

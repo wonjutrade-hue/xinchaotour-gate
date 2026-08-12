@@ -33,14 +33,14 @@ export const CategoryNav: React.FC<CategoryNavProps> = ({
   onSortChange,
   totalProductsCount,
 }) => {
-  const scrollToProducts = () => {
+  const scrollToFilter = () => {
     setTimeout(() => {
-      document.getElementById('products-section')?.scrollIntoView({ behavior: 'smooth' });
+      document.getElementById('filter-section')?.scrollIntoView({ behavior: 'smooth' });
     }, 50);
   };
 
   return (
-    <div className="bg-slate-50 border-y border-slate-200/80 py-4 px-3 sm:px-6 lg:px-8">
+    <div id="filter-section" className="bg-slate-50 border-y border-slate-200/80 py-4 px-3 sm:px-6 lg:px-8 scroll-mt-20">
       <div className="max-w-7xl mx-auto space-y-3">
         {/* Unified Main Filter Card */}
         <div className="bg-white p-3.5 sm:p-4 rounded-2xl border border-slate-200/90 shadow-xs space-y-3">
@@ -58,7 +58,7 @@ export const CategoryNav: React.FC<CategoryNavProps> = ({
                   onClick={() => {
                     onSelectRegion(reg);
                     onSelectCity('전체');
-                    scrollToProducts();
+                    scrollToFilter();
                   }}
                   className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap ${
                     activeRegion === reg
@@ -97,7 +97,7 @@ export const CategoryNav: React.FC<CategoryNavProps> = ({
           </div>
 
           {/* Major Cities Pills under selected Region */}
-          {activeRegion !== '전체' && (
+          {activeRegion !== '전체' ? (
             <div className="pt-2 flex items-center gap-2 flex-wrap border-t border-slate-100 text-xs">
               <span className="font-bold text-teal-700 bg-teal-50 px-2 py-0.5 rounded text-[11px] whitespace-nowrap">
                 {activeRegion} 주요 도시:
@@ -105,7 +105,7 @@ export const CategoryNav: React.FC<CategoryNavProps> = ({
               <button
                 onClick={() => {
                   onSelectCity('전체');
-                  scrollToProducts();
+                  scrollToFilter();
                 }}
                 className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors whitespace-nowrap ${
                   activeCity === '전체'
@@ -120,7 +120,7 @@ export const CategoryNav: React.FC<CategoryNavProps> = ({
                   key={city}
                   onClick={() => {
                     onSelectCity(city);
-                    scrollToProducts();
+                    scrollToFilter();
                   }}
                   className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors whitespace-nowrap ${
                     activeCity === city
@@ -131,6 +131,10 @@ export const CategoryNav: React.FC<CategoryNavProps> = ({
                   {city}
                 </button>
               ))}
+            </div>
+          ) : (
+            <div className="pt-2 border-t border-slate-100/80 text-[11px] font-medium text-slate-400 flex items-center gap-1.5">
+              <span>💡 [북부], [중부], [남부] 권역 중 하나를 클릭하시면 각 지역별 주요 도시(다낭, 하노이, 푸꾸옥 등) 필터가 바로 나타납니다.</span>
             </div>
           )}
         </div>

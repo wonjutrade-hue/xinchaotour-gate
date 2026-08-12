@@ -34,17 +34,6 @@ export const Footer: React.FC<FooterProps> = ({
             <p className="text-xs leading-relaxed text-slate-400 max-w-sm">
               한국인 여행객을 위한 100% 맞춤형 베트남 대표 전문 여행사. 현지 직영 시스템으로 거품 없는 최저가와 24시간 한국어 가이드 및 카카오톡 케어를 보장합니다.
             </p>
-
-            <div className="flex flex-wrap items-center gap-2 text-xs font-bold text-slate-300">
-              <span className="flex items-center gap-1 bg-slate-900 px-3 py-1.5 rounded-xl border border-slate-800">
-                <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                여행자 보험 1억원 무료
-              </span>
-              <span className="flex items-center gap-1 bg-slate-900 px-3 py-1.5 rounded-xl border border-slate-800">
-                <Heart className="w-4 h-4 text-rose-400" />
-                NO 쇼핑 / NO 옵션 선택
-              </span>
-            </div>
           </div>
 
           {/* Categories Quick Links */}
