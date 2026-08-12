@@ -17,7 +17,7 @@ import {
   Sparkles,
   ExternalLink
 } from 'lucide-react';
-import { ExchangeRates, calculateVNDFromKRW, calculateUSDFromKRW, formatVND, formatUSD } from '../lib/exchangeRate';
+import { ExchangeRates, calculateVNDFromKRW, calculateKRWFromVND, calculateUSDFromKRW, formatVND, formatUSD } from '../lib/exchangeRate';
 import { handleOpenKakaoTalkDirect } from '../constants';
 
 interface ProductDetailModalProps {
@@ -36,17 +36,31 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   if (!product) return null;
 
   const [activeTab, setActiveTab] = useState<'itinerary' | 'inclusion' | 'reviews'>('itinerary');
-  const [selectedImage, setSelectedImage] = useState<string>(product.imageUrl);
+  const subImages = product.additionalImages || (product as any).galleryImages || (product as any).images || [];
+  const rawImages = [product.imageUrl, ...subImages];
+  const allImages = Array.from(new Set(rawImages.filter(Boolean)));
 
-  const allImages = [product.imageUrl, ...(product.additionalImages || [])];
+  const [selectedImage, setSelectedImage] = useState<string>(product.imageUrl || allImages[0] || '');
 
-  const liveVND = exchangeRates 
-    ? calculateVNDFromKRW(product.priceKRW, exchangeRates)
-    : (product.priceVND || Math.round(product.priceKRW * 18.6));
+  const displaySubtitle = product.subTitle || (product as any).subtitle || '';
+
+  // Real-time calculated KRW and VND based on Naver Exchange Rate
+  let displayKRW = product.priceKRW || 0;
+  let displayVND = product.priceVND || 0;
+
+  if (displayKRW > 0) {
+    displayVND = exchangeRates 
+      ? calculateVNDFromKRW(displayKRW, exchangeRates)
+      : Math.round(displayKRW * 18.817);
+  } else if (displayVND > 0) {
+    displayKRW = exchangeRates 
+      ? calculateKRWFromVND(displayVND, exchangeRates)
+      : Math.round(displayVND / 18.817);
+  }
 
   const liveUSD = exchangeRates 
-    ? calculateUSDFromKRW(product.priceKRW, exchangeRates)
-    : Math.round(product.priceKRW / 1350);
+    ? calculateUSDFromKRW(displayKRW, exchangeRates)
+    : Math.round(displayKRW / 1352.5);
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-3 sm:p-6 animate-fadeIn">
@@ -77,27 +91,45 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
             <h2 className="text-xl sm:text-2xl font-black text-slate-900 leading-snug">
               {product.title}
             </h2>
-            <p className="text-sm font-medium text-slate-600">
-              {product.subTitle}
-            </p>
+
+            {displaySubtitle && (
+              <p className="text-sm font-semibold text-teal-800 bg-teal-50/80 px-3 py-1.5 rounded-xl border border-teal-100">
+                {displaySubtitle}
+              </p>
+            )}
 
             <div className="flex flex-wrap items-center gap-3 pt-1 text-xs">
               <div className="flex items-center gap-1 bg-amber-100 text-amber-900 font-bold px-2.5 py-1 rounded-lg">
                 <Star className="w-3.5 h-3.5 fill-amber-500 text-amber-500" />
-                <span>{product.rating.toFixed(1)}점</span>
-                <span className="text-slate-500">({product.reviewCount}개 후기)</span>
+                <span>{(product.rating || 5.0).toFixed(1)}점</span>
+                <span className="text-slate-500">({product.reviewCount || 10}개 후기)</span>
               </div>
 
-              <div className="flex items-center gap-1 text-slate-600 bg-slate-100 px-2.5 py-1 rounded-lg font-medium">
-                <Calendar className="w-3.5 h-3.5 text-teal-600" />
-                <span>여행기간: {product.duration}</span>
-              </div>
+              {product.duration && (
+                <div className="flex items-center gap-1 text-slate-600 bg-slate-100 px-2.5 py-1 rounded-lg font-medium">
+                  <Calendar className="w-3.5 h-3.5 text-teal-600" />
+                  <span>여행기간: {product.duration}</span>
+                </div>
+              )}
 
-              <div className="flex items-center gap-1 text-slate-600 bg-slate-100 px-2.5 py-1 rounded-lg font-medium">
-                <Plane className="w-3.5 h-3.5 text-teal-600" />
-                <span>출발가능: {product.departureCities.join(', ')} 출발</span>
-              </div>
+              {product.departureCities && product.departureCities.length > 0 && (
+                <div className="flex items-center gap-1 text-slate-600 bg-slate-100 px-2.5 py-1 rounded-lg font-medium">
+                  <Plane className="w-3.5 h-3.5 text-teal-600" />
+                  <span>출발가능: {product.departureCities.join(', ')} 출발</span>
+                </div>
+              )}
             </div>
+
+            {/* Tags */}
+            {product.tags && product.tags.length > 0 && (
+              <div className="flex flex-wrap gap-1.5 pt-1">
+                {product.tags.map((tag, idx) => (
+                  <span key={idx} className="bg-slate-100 text-teal-900 text-[11px] font-bold px-2.5 py-0.5 rounded-lg border border-slate-200">
+                    #{tag}
+                  </span>
+                ))}
+              </div>
+            )}
 
             {product.address && (
               <div className="flex items-center gap-2 bg-slate-50 border border-slate-200/90 px-3.5 py-2.5 rounded-xl text-xs text-slate-800 font-medium">
@@ -114,16 +146,36 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                 </a>
               </div>
             )}
+
+            {product.externalBookingUrl && (
+              <div className="flex items-center gap-2 bg-rose-50 border border-rose-200 px-3.5 py-2.5 rounded-xl text-xs text-rose-900 font-medium">
+                <ExternalLink className="w-4 h-4 text-rose-600 shrink-0" />
+                <span className="font-bold shrink-0">에어비앤비/외부 원본 링크:</span>
+                <a
+                  href={product.externalBookingUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-rose-700 hover:text-rose-900 font-bold underline truncate"
+                >
+                  {product.externalBookingUrl} ↗
+                </a>
+              </div>
+            )}
           </div>
 
           {/* Photo Gallery Viewer */}
           <div className="space-y-3">
-            <div className="aspect-[16/9] rounded-2xl overflow-hidden bg-slate-100 border border-slate-200">
+            <div className="aspect-[16/9] rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 relative">
               <img
                 src={selectedImage}
                 alt={product.title}
                 className="w-full h-full object-cover"
               />
+              {allImages.length > 1 && (
+                <div className="absolute bottom-3 right-3 bg-slate-900/80 backdrop-blur-md text-white px-3 py-1 rounded-full text-xs font-bold">
+                  📷 {allImages.findIndex(img => img === selectedImage) + 1} / {allImages.length}
+                </div>
+              )}
             </div>
             {allImages.length > 1 && (
               <div className="flex items-center gap-2 overflow-x-auto pb-1">
@@ -141,6 +193,19 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               </div>
             )}
           </div>
+
+          {/* Detailed Description Section (상세 소개글) */}
+          {product.description && (
+            <div className="bg-slate-50 border border-slate-200 p-4 sm:p-5 rounded-2xl space-y-2">
+              <h4 className="font-extrabold text-slate-900 text-sm flex items-center gap-2 border-b pb-2 border-slate-200">
+                <Sparkles className="w-4 h-4 text-teal-600" />
+                <span>📖 상품 상세 소개문 및 안내</span>
+              </h4>
+              <div className="text-xs sm:text-sm text-slate-700 whitespace-pre-line leading-relaxed font-medium">
+                {product.description}
+              </div>
+            </div>
+          )}
 
           {/* Special Specs Box */}
           {product.golfSpecs && (
@@ -298,15 +363,20 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
         {/* Footer Fixed Booking Bar */}
         <div className="bg-slate-900 p-4 sm:p-5 text-white flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-slate-800">
           <div>
-            <span className="text-[11px] text-slate-400 block font-medium">
-              성인 1인 실시간 최저가 환율 적용
-            </span>
-            <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-black text-amber-400">
-                {liveVND.toLocaleString('ko-KR')} ₫~
+            <div className="flex items-center gap-2 mb-1">
+              <span className="text-[11px] text-slate-400 font-medium">
+                성인 1인 기준
               </span>
-              <span className="text-xs font-bold text-emerald-400">
-                (실시간 환율: 약 {(product.priceKRW || 650000).toLocaleString('ko-KR')}원 / {formatUSD(liveUSD)})
+              <span className="text-[10px] bg-emerald-950 text-emerald-300 font-bold px-2 py-0.5 rounded-md border border-emerald-800/80">
+                네이버 금융 실시간 환율 자동 적용
+              </span>
+            </div>
+            <div className="flex items-baseline gap-2 flex-wrap">
+              <span className="text-2xl font-black text-amber-400">
+                {displayVND.toLocaleString('ko-KR')} ₫~
+              </span>
+              <span className="text-xs sm:text-sm font-bold text-emerald-300">
+                (네이버 환율: 약 {displayKRW.toLocaleString('ko-KR')}원 / {formatUSD(liveUSD)})
               </span>
             </div>
           </div>

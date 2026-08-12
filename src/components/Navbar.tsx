@@ -95,11 +95,11 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               onClick={onOpenRateCalculator}
               className="hidden md:inline-flex items-center gap-1.5 text-amber-300 hover:text-amber-200 font-bold bg-slate-800/90 px-2.5 py-0.5 rounded-full border border-slate-700 transition-colors whitespace-nowrap"
-              title="실시간 환율 상세 및 환율 계산기 보기"
+              title="네이버 실시간 환율 상세 및 환율 계산기 보기"
             >
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
               <TrendingUp className="w-3 h-3 text-emerald-400 shrink-0" />
-              <span>실시간 연동 환율: 1,000원 ≒ {vndPerThousandKRW.toLocaleString()} ₫</span>
+              <span>네이버 환율 연동: 1,000원 ≒ {vndPerThousandKRW.toLocaleString()} ₫</span>
               <span className="text-[10px] text-slate-400 ml-0.5">($1 = {Math.round(exchangeRates.KRW).toLocaleString()}원)</span>
             </button>
           </div>

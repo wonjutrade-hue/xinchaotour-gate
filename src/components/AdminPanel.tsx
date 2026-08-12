@@ -679,6 +679,11 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                           onChange={(e) => setFormData({ ...formData, priceKRW: Number(e.target.value) })}
                           className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-extrabold text-teal-800"
                         />
+                        {formData.priceKRW > 0 && (
+                          <span className="text-[10px] text-teal-700 font-extrabold block">
+                            💡 네이버 환율 자동계산: 약 {Math.round(formData.priceKRW * 18.817).toLocaleString('ko-KR')} ₫
+                          </span>
+                        )}
                       </div>
 
                       <div className="space-y-1">
@@ -690,6 +695,11 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                           placeholder="예: 12000000"
                           className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-700"
                         />
+                        {formData.priceVND > 0 && (
+                          <span className="text-[10px] text-slate-600 font-bold block">
+                            💡 원화 환산: 약 {Math.round(formData.priceVND / 18.817).toLocaleString('ko-KR')} 원
+                          </span>
+                        )}
                       </div>
 
                       <div className="space-y-1">

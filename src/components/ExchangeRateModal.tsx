@@ -39,9 +39,9 @@ export const ExchangeRateModal: React.FC<ExchangeRateModalProps> = ({
               <TrendingUp className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="font-extrabold text-base">실시간 환율 연동 정보</h3>
+              <h3 className="font-extrabold text-base">네이버 금융 실시간 환율 연동</h3>
               <p className="text-[11px] text-slate-300">
-                마지막 업데이트: {new Date(rates.lastUpdated).toLocaleTimeString('ko-KR')}
+                마지막 고시 업데이트: {new Date(rates.lastUpdated || Date.now()).toLocaleTimeString('ko-KR')}
               </p>
             </div>
           </div>

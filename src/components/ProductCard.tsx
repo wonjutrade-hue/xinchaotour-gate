@@ -1,13 +1,13 @@
 import React from 'react';
 import { Product } from '../types';
 import { Star, MapPin, Calendar, CheckCircle2, ArrowRight, MessageCircle } from 'lucide-react';
-import { ExchangeRates, calculateVNDFromKRW, calculateUSDFromKRW, formatVND, formatUSD } from '../lib/exchangeRate';
+import { ExchangeRates, calculateVNDFromKRW, calculateKRWFromVND, calculateUSDFromKRW, formatUSD } from '../lib/exchangeRate';
 import { handleOpenKakaoTalkDirect } from '../constants';
 
 interface ProductCardProps {
   product: Product;
   onSelectProduct: (product: Product) => void;
-  onQuickInquire: (product: Product) => void;
+  onQuickInquire?: (product: Product) => void;
   exchangeRates?: ExchangeRates;
 }
 
@@ -17,21 +17,32 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   onQuickInquire,
   exchangeRates,
 }) => {
-  const formattedPriceKRW = product.priceKRW.toLocaleString('ko-KR') + '원';
-  
-  // Real-time calculated VND and USD
-  const liveVND = exchangeRates 
-    ? calculateVNDFromKRW(product.priceKRW, exchangeRates)
-    : (product.priceVND || Math.round(product.priceKRW * 18.6));
+  const displaySubtitle = product.subTitle || (product as any).subtitle || product.description || '';
+  const subImages = product.additionalImages || (product as any).galleryImages || (product as any).images || [];
+  const subImagesCount = subImages.filter(Boolean).length;
+
+  // Real-time calculated KRW and VND based on Naver Exchange Rate
+  let displayKRW = product.priceKRW || 0;
+  let displayVND = product.priceVND || 0;
+
+  if (displayKRW > 0) {
+    displayVND = exchangeRates 
+      ? calculateVNDFromKRW(displayKRW, exchangeRates)
+      : Math.round(displayKRW * 18.817);
+  } else if (displayVND > 0) {
+    displayKRW = exchangeRates 
+      ? calculateKRWFromVND(displayVND, exchangeRates)
+      : Math.round(displayVND / 18.817);
+  }
 
   const liveUSD = exchangeRates 
-    ? calculateUSDFromKRW(product.priceKRW, exchangeRates)
-    : Math.round(product.priceKRW / 1350);
+    ? calculateUSDFromKRW(displayKRW, exchangeRates)
+    : Math.round(displayKRW / 1352.5);
 
   return (
     <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col overflow-hidden group">
       {/* Image Container with Badges */}
-      <div className="relative aspect-[16/10] overflow-hidden bg-slate-100">
+      <div className="relative aspect-[16/10] overflow-hidden bg-slate-100 cursor-pointer" onClick={() => onSelectProduct(product)}>
         <img
           src={product.imageUrl}
           alt={product.title}
@@ -48,34 +59,51 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           <span className="text-amber-300">{product.city}</span>
         </div>
 
-        {/* Category & Discount Sticker */}
-        <div className="absolute top-3 right-3 flex items-center gap-1">
+        {/* Category & Badges Sticker */}
+        <div className="absolute top-3 right-3 flex flex-wrap items-center justify-end gap-1">
+          {product.isHotDeal && (
+            <span className="bg-rose-600 text-white text-[10px] font-black px-2 py-0.5 rounded-lg shadow-xs">
+              ⚡ HOT딜
+            </span>
+          )}
+          {product.isPopular && (
+            <span className="bg-amber-500 text-slate-950 text-[10px] font-black px-2 py-0.5 rounded-lg shadow-xs">
+              🔥 인기추천
+            </span>
+          )}
           {product.externalBookingUrl && (
-            <span className="bg-rose-500 text-white text-[11px] font-black px-2 py-0.5 rounded-lg shadow-sm flex items-center gap-1">
+            <span className="bg-rose-500 text-white text-[10px] font-black px-2 py-0.5 rounded-lg shadow-xs flex items-center gap-1">
               <span>Airbnb</span>
             </span>
           )}
-          {product.discountPercent && (
-            <span className="bg-rose-600 text-white text-[11px] font-black px-2 py-0.5 rounded-lg shadow-sm">
+          {product.discountPercent ? (
+            <span className="bg-rose-600 text-white text-[10px] font-black px-2 py-0.5 rounded-lg shadow-xs">
               {product.discountPercent}% OFF
             </span>
-          )}
+          ) : null}
           <span className="bg-teal-700/90 backdrop-blur-md text-white text-[11px] font-extrabold px-2 py-0.5 rounded-lg">
             {product.category}
           </span>
         </div>
 
-        {/* Duration Badge */}
-        <div className="absolute bottom-3 left-3 flex items-center gap-1 bg-white/90 backdrop-blur-md text-slate-800 px-2.5 py-1 rounded-md text-xs font-bold">
-          <Calendar className="w-3 h-3 text-teal-600" />
-          <span>{product.duration}</span>
+        {/* Duration & Sub-Photos Badge */}
+        <div className="absolute bottom-3 left-3 flex items-center gap-1.5">
+          <div className="flex items-center gap-1 bg-white/90 backdrop-blur-md text-slate-800 px-2.5 py-1 rounded-md text-xs font-bold shadow-xs">
+            <Calendar className="w-3 h-3 text-teal-600" />
+            <span>{product.duration}</span>
+          </div>
+          {subImagesCount > 0 && (
+            <div className="bg-slate-900/80 backdrop-blur-md text-amber-300 px-2 py-1 rounded-md text-[11px] font-black shadow-xs">
+              📷 사진 {subImagesCount + 1}장
+            </div>
+          )}
         </div>
 
         {/* Rating */}
         <div className="absolute bottom-3 right-3 flex items-center gap-1 bg-amber-400 text-slate-950 px-2 py-0.5 rounded-md text-xs font-black">
           <Star className="w-3 h-3 fill-slate-950" />
-          <span>{product.rating.toFixed(1)}</span>
-          <span className="text-[10px] text-slate-800 font-semibold">({product.reviewCount})</span>
+          <span>{(product.rating || 5.0).toFixed(1)}</span>
+          <span className="text-[10px] text-slate-800 font-semibold">({product.reviewCount || 10})</span>
         </div>
       </div>
 
@@ -83,16 +111,18 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       <div className="p-4 flex-1 flex flex-col justify-between space-y-3">
         <div className="space-y-2">
           {/* Tags */}
-          <div className="flex flex-wrap gap-1">
-            {product.tags.slice(0, 3).map((tag, idx) => (
-              <span
-                key={idx}
-                className="text-[10px] font-bold text-teal-800 bg-teal-50 px-2 py-0.5 rounded border border-teal-100"
-              >
-                #{tag}
-              </span>
-            ))}
-          </div>
+          {product.tags && product.tags.length > 0 && (
+            <div className="flex flex-wrap gap-1">
+              {product.tags.slice(0, 4).map((tag, idx) => (
+                <span
+                  key={idx}
+                  className="text-[10px] font-bold text-teal-800 bg-teal-50 px-2 py-0.5 rounded border border-teal-100"
+                >
+                  #{tag}
+                </span>
+              ))}
+            </div>
+          )}
 
           {/* Title */}
           <h3 
@@ -102,17 +132,31 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             {product.title}
           </h3>
 
-          {/* Subtitle */}
-          <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed">
-            {product.subTitle}
-          </p>
+          {/* Subtitle / Description */}
+          {displaySubtitle && (
+            <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed font-medium">
+              {displaySubtitle}
+            </p>
+          )}
 
           {/* Address Line */}
           {product.address && (
-            <div className="flex items-center gap-1 text-[11px] text-slate-600 bg-slate-50 px-2 py-1 rounded-lg border border-slate-200/70 truncate">
+            <div className="flex items-center gap-1 text-[11px] text-slate-700 bg-slate-50 px-2 py-1 rounded-lg border border-slate-200/80 truncate">
               <MapPin className="w-3 h-3 text-rose-500 shrink-0" />
-              <span className="truncate">{product.address}</span>
+              <span className="truncate font-medium">{product.address}</span>
             </div>
+          )}
+
+          {/* External Booking Link */}
+          {product.externalBookingUrl && (
+            <a
+              href={product.externalBookingUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 text-[11px] text-rose-600 font-bold hover:underline"
+            >
+              <span>🔗 에어비앤비/외부 원본 상세 ↗</span>
+            </a>
           )}
         </div>
 
@@ -138,15 +182,20 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         {/* Price & Action Buttons */}
         <div className="pt-2 border-t border-slate-100 flex items-end justify-between gap-2">
           <div>
-            <span className="text-[10px] font-bold text-slate-400 block">성인 1인 기준</span>
+            <div className="flex items-center gap-1 mb-0.5">
+              <span className="text-[10px] font-bold text-slate-400">성인 1인 기준</span>
+              <span className="text-[9px] bg-emerald-50 text-emerald-800 font-black px-1.5 py-0.2 rounded border border-emerald-200">
+                네이버 환율 연동
+              </span>
+            </div>
             <div className="flex items-baseline gap-1">
               <span className="text-lg font-black text-slate-900">
-                {liveVND.toLocaleString('ko-KR')} ₫
+                {displayVND.toLocaleString('ko-KR')} ₫
               </span>
               <span className="text-xs font-bold text-slate-700">~</span>
             </div>
-            <div className="text-[11px] text-teal-700 font-bold flex items-center gap-1.5 mt-0.5">
-              <span>약 {(product.priceKRW || 650000).toLocaleString('ko-KR')}원</span>
+            <div className="text-[11px] text-teal-700 font-extrabold flex items-center gap-1.5 mt-0.5">
+              <span>약 {displayKRW.toLocaleString('ko-KR')}원</span>
               <span className="text-slate-300">•</span>
               <span className="text-slate-500 font-normal">{formatUSD(liveUSD)}</span>
             </div>
