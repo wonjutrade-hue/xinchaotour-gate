@@ -286,10 +286,10 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
             </span>
             <div className="flex items-baseline gap-2">
               <span className="text-2xl font-black text-amber-400">
-                {product.priceKRW.toLocaleString('ko-KR')}원~
+                {liveVND.toLocaleString('ko-KR')} ₫~
               </span>
               <span className="text-xs font-bold text-emerald-400">
-                (약 {formatVND(liveVND)} / {formatUSD(liveUSD)})
+                (실시간 환율: 약 {(product.priceKRW || 650000).toLocaleString('ko-KR')}원 / {formatUSD(liveUSD)})
               </span>
             </div>
           </div>

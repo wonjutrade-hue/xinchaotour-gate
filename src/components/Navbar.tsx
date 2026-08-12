@@ -35,7 +35,6 @@ interface NavbarProps {
   onSelectRegion: (reg: Region) => void;
   onSelectCity: (city: City) => void;
   onOpenConsultation: () => void;
-  onOpenAiAssistant: () => void;
   onOpenAdmin: () => void;
   searchTerm: string;
   onSearchChange: (val: string) => void;
@@ -52,7 +51,6 @@ export const Navbar: React.FC<NavbarProps> = ({
   onSelectRegion,
   onSelectCity,
   onOpenConsultation,
-  onOpenAiAssistant,
   onOpenAdmin,
   searchTerm,
   onSearchChange,
@@ -227,15 +225,6 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           {/* Action Buttons */}
           <div className="hidden sm:flex items-center gap-2 shrink-0">
-            {/* AI Assistant Button */}
-            <button
-              onClick={onOpenAiAssistant}
-              className="flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-bold text-xs shadow-xs hover:shadow transition-all whitespace-nowrap shrink-0"
-            >
-              <Sparkles className="w-3.5 h-3.5 text-slate-950 animate-bounce shrink-0" />
-              <span>AI 여행 가이드</span>
-            </button>
-
             {/* Quick Consultation Button */}
             <button
               onClick={onOpenConsultation}
@@ -248,14 +237,6 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           {/* Mobile Menu Button */}
           <div className="flex lg:hidden items-center gap-1.5 shrink-0">
-            <button
-              onClick={onOpenAiAssistant}
-              className="p-2 text-amber-600 bg-amber-50 rounded-xl hover:bg-amber-100 flex items-center gap-1 text-xs font-bold"
-              title="AI 여행가이드"
-            >
-              <Sparkles className="w-4 h-4 text-amber-500" />
-              <span className="hidden xs:inline">AI 가이드</span>
-            </button>
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="p-2 text-slate-700 hover:bg-slate-100 rounded-xl"

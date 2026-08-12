@@ -284,7 +284,6 @@ export default function App() {
           setConsultationTargetProduct(null);
           setIsConsultationOpen(true);
         }}
-        onOpenAiAssistant={() => setIsAiAssistantOpen(true)}
         onOpenAdmin={() => setIsAdminOpen(true)}
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
@@ -467,7 +466,6 @@ export default function App() {
           setConsultationTargetProduct(null);
           setIsConsultationOpen(true);
         }}
-        onOpenAiAssistant={() => setIsAiAssistantOpen(true)}
       />
 
       {/* Product Details Modal */}
@@ -499,16 +497,6 @@ export default function App() {
           setConsultationTargetProduct(null);
         }}
         onSubmitInquiry={handleSubmitInquiry}
-      />
-
-      {/* Gemini AI Assistant Modal */}
-      <AiTravelAssistantModal
-        isOpen={isAiAssistantOpen}
-        onClose={() => setIsAiAssistantOpen(false)}
-        onOpenConsultation={() => {
-          setIsAiAssistantOpen(false);
-          setIsConsultationOpen(true);
-        }}
       />
 
       {/* Admin Panel (Edit products, upload & download CSV/JSON) */}

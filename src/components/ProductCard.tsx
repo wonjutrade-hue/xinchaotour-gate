@@ -128,12 +128,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             <span className="text-[10px] font-bold text-slate-400 block">성인 1인 기준</span>
             <div className="flex items-baseline gap-1">
               <span className="text-lg font-black text-slate-900">
-                {formattedPriceKRW}
+                {liveVND.toLocaleString('ko-KR')} ₫
               </span>
               <span className="text-xs font-bold text-slate-700">~</span>
             </div>
             <div className="text-[11px] text-teal-700 font-bold flex items-center gap-1.5 mt-0.5">
-              <span>약 {formatVND(liveVND)}</span>
+              <span>약 {(product.priceKRW || 650000).toLocaleString('ko-KR')}원</span>
               <span className="text-slate-300">•</span>
               <span className="text-slate-500 font-normal">{formatUSD(liveUSD)}</span>
             </div>

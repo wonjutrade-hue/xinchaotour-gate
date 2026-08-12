@@ -4,12 +4,10 @@ import { COMPANY_PHONE, COMPANY_PHONE_TEL, handleOpenKakaoTalkDirect } from '../
 
 interface FloatingChatWidgetProps {
   onOpenConsultation: () => void;
-  onOpenAiAssistant: () => void;
 }
 
 export const FloatingChatWidget: React.FC<FloatingChatWidgetProps> = ({
   onOpenConsultation,
-  onOpenAiAssistant,
 }) => {
   const [expanded, setExpanded] = useState(false);
 
@@ -52,22 +50,6 @@ export const FloatingChatWidget: React.FC<FloatingChatWidgetProps> = ({
             <div>
               <p className="font-extrabold text-slate-900">1:1 맞춤 견적 신청</p>
               <p className="text-[10px] text-teal-700">무료 상세 견적서 작성</p>
-            </div>
-          </button>
-
-          <button
-            onClick={() => {
-              setExpanded(false);
-              onOpenAiAssistant();
-            }}
-            className="flex items-center gap-2.5 p-2.5 rounded-2xl bg-slate-50 hover:bg-slate-100 text-slate-900 text-xs font-bold transition-colors text-left"
-          >
-            <div className="w-8 h-8 rounded-xl bg-slate-800 text-white flex items-center justify-center shrink-0">
-              <Sparkles className="w-4 h-4 text-amber-300" />
-            </div>
-            <div>
-              <p className="font-extrabold text-slate-900">AI 여행 가이드</p>
-              <p className="text-[10px] text-slate-500">실시간 질문 추천 가이드</p>
             </div>
           </button>
 
