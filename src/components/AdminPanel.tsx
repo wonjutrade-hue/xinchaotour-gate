@@ -379,6 +379,42 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     setIsCreating(false);
   };
 
+  const handleExportJson = () => {
+    try {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(products, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `xinchaotour_products_backup_${new Date().toISOString().slice(0, 10)}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+      alert('현재 등록된 모든 상품 데이터가 JSON 백업 파일로 다운로드되었습니다!');
+    } catch (err) {
+      alert('백업 파일 다운로드 중 오류가 발생했습니다.');
+    }
+  };
+
+  const handleFileUploadJson = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = async (evt) => {
+      try {
+        const parsed = JSON.parse(evt.target?.result as string);
+        if (Array.isArray(parsed)) {
+          await onImportProducts(parsed, false);
+          alert(`${parsed.length}개의 상품 데이터가 성공적으로 복원/업로드되었습니다.`);
+        } else {
+          alert('올바른 JSON 데이터 배열 형식의 파일이 아닙니다.');
+        }
+      } catch (err) {
+        alert('JSON 백업 파일을 읽는 중 오류가 발생했습니다.');
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+  };
+
   if (!isAuthenticated) {
     return (
       <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-xs flex items-center justify-center p-4">
@@ -1154,6 +1190,45 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
               ) : (
                 /* PRODUCT LIST TABLE & REGION/CITY FILTERING */
                 <>
+                  {/* Data Persistence Safety Notice & Backup Toolbar */}
+                  <div className="bg-teal-900/90 text-white p-3 sm:p-4 rounded-2xl border border-teal-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
+                    <div className="flex items-start sm:items-center gap-2.5">
+                      <div className="p-2 rounded-xl bg-teal-800 text-amber-300 shrink-0">
+                        <CheckCircle className="w-5 h-5" />
+                      </div>
+                      <div className="text-xs space-y-0.5">
+                        <p className="font-extrabold text-amber-300">
+                          🛡️ [데이터 이중 영구 보존 적용 중]
+                        </p>
+                        <p className="text-[11px] text-teal-100">
+                          등록 및 수정하신 상품은 서버 데이터베이스와 브라우저 로컬 저장소에 이중 자동 저장됩니다. (재접속시 자동 유지)
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2 shrink-0 self-end sm:self-auto">
+                      <button
+                        onClick={handleExportJson}
+                        className="px-3 py-1.5 rounded-xl bg-teal-800 hover:bg-teal-700 text-amber-300 font-bold text-xs flex items-center gap-1.5 border border-teal-700 transition-colors"
+                        title="현재 등록된 모든 상품 데이터를 JSON 파일로 다운로드합니다."
+                      >
+                        <Download className="w-3.5 h-3.5" />
+                        <span>전체 백업 (JSON)</span>
+                      </button>
+
+                      <label className="px-3 py-1.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-extrabold text-xs flex items-center gap-1.5 cursor-pointer shadow-xs transition-colors">
+                        <Upload className="w-3.5 h-3.5" />
+                        <span>JSON 복원/업로드</span>
+                        <input
+                          type="file"
+                          accept=".json"
+                          onChange={handleFileUploadJson}
+                          className="hidden"
+                        />
+                      </label>
+                    </div>
+                  </div>
+
                   {/* Top Bar: Search, View Mode, and Add Button */}
                   <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-2xs space-y-3">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
