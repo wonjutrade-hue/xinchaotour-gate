@@ -98,6 +98,22 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                 <span>출발가능: {product.departureCities.join(', ')} 출발</span>
               </div>
             </div>
+
+            {product.address && (
+              <div className="flex items-center gap-2 bg-slate-50 border border-slate-200/90 px-3.5 py-2.5 rounded-xl text-xs text-slate-800 font-medium">
+                <MapPin className="w-4 h-4 text-rose-500 shrink-0" />
+                <span className="font-bold text-slate-500 shrink-0">상세 위치:</span>
+                <span className="font-bold text-slate-800 break-all">{product.address}</span>
+                <a
+                  href={`https://maps.google.com/?q=${encodeURIComponent(product.address)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="ml-auto text-teal-700 hover:text-teal-800 font-bold underline text-xs shrink-0 whitespace-nowrap"
+                >
+                  구글 지도 보기 ↗
+                </a>
+              </div>
+            )}
           </div>
 
           {/* Photo Gallery Viewer */}

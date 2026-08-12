@@ -106,6 +106,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed">
             {product.subTitle}
           </p>
+
+          {/* Address Line */}
+          {product.address && (
+            <div className="flex items-center gap-1 text-[11px] text-slate-600 bg-slate-50 px-2 py-1 rounded-lg border border-slate-200/70 truncate">
+              <MapPin className="w-3 h-3 text-rose-500 shrink-0" />
+              <span className="truncate">{product.address}</span>
+            </div>
+          )}
         </div>
 
         {/* Specs Highlights */}

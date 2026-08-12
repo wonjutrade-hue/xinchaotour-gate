@@ -79,6 +79,7 @@ export interface Product {
   itinerary: ItineraryDay[];
   villaSpecs?: VillaSpecs;
   golfSpecs?: GolfSpecs;
+  address?: string;
   externalBookingUrl?: string;
   createdAt?: string;
 }

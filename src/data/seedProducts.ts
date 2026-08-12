@@ -888,6 +888,7 @@ export const INITIAL_PRODUCTS: Product[] = [
       '가이드/기사 매너팁'
     ],
     externalBookingUrl: 'https://www.airbnb.co.kr/rooms/1596807485988738548?adults=8&search_mode=regular_search&source_impression_id=p3_1773058617_P3xK6pEU9aoIJDMS&previous_page_section_name=1000&federated_search_id=a2420d66-c7ca-4754-98c4-1f72afdd15e6&guests=1&check_in=2026-08-04&check_out=2026-08-05',
+    address: 'An Thương 26, Phường Mỹ An, Quận Ngũ Hành Sơn, Đà Nẵng (미케비치 안트엉 거리)',
     itinerary: [
       {
         day: 1,

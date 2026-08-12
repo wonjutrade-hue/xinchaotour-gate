@@ -263,6 +263,8 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
       discountPercent: 0,
       departureCities: ['인천', '김해', '대구'],
       tags: ['신규상품', cit, cat],
+      address: '',
+      externalBookingUrl: '',
       description: '새로운 베트남 맞춤형 여행 상품 정보입니다.',
       included: ['전 일정 전용차량', '한국어 가이드', '5성급 호텔 숙박', '조식 및 주요 특식'],
       excluded: ['왕복 항공권', '가이드/기사 매너팁', '개인 경비'],
@@ -537,6 +539,36 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                           onChange={(e) => setFormData({ ...formData, subTitle: e.target.value })}
                           placeholder="예: 다낭 3대 챔피언십 코스 그린피 포함 & 5성급 호이안 리조트 숙박"
                           className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div className="space-y-1">
+                        <label className="text-[11px] font-bold text-slate-700 flex items-center gap-1">
+                          <MapPin className="w-3.5 h-3.5 text-rose-500" />
+                          <span>상세 주소 (위치 / 구글 지도 주소)</span>
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.address || ''}
+                          onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                          placeholder="예: An Thương 26, Phường Mỹ An, Quận Ngũ Hành Sơn, Đà Nẵng"
+                          className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-medium"
+                        />
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="text-[11px] font-bold text-slate-700 flex items-center gap-1">
+                          <ExternalLink className="w-3.5 h-3.5 text-rose-600" />
+                          <span>외부 예약 링크 (에어비앤비 / 원본 상세 URL)</span>
+                        </label>
+                        <input
+                          type="url"
+                          value={formData.externalBookingUrl || ''}
+                          onChange={(e) => setFormData({ ...formData, externalBookingUrl: e.target.value })}
+                          placeholder="예: https://www.airbnb.co.kr/rooms/1596807485..."
+                          className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-medium"
                         />
                       </div>
                     </div>
