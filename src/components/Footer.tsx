@@ -157,9 +157,7 @@ export const Footer: React.FC<FooterProps> = ({
         {/* Legal & Business Info Bottom */}
         <div className="pt-8 border-t border-slate-900 flex flex-col md:flex-row items-center justify-between gap-4 text-[11px] text-slate-500">
           <div className="space-y-1 text-center md:text-left">
-            <p>상호: (주)신차오투어여행사 | 대표자: 홍길동 | 사업자등록번호: 120-88-99999</p>
-            <p>통신판매업신고: 제 2026-서울강남-0123호 | 관광사업자 등록번호: 제2026-000012호</p>
-            <p>서울 본사: 서울시 강남구 테헤란로 123 신차오타워 8층 | 다낭 지사: Lot 12 My Khe Beach, Da Nang, Vietnam</p>
+            <p>© {new Date().getFullYear()} 신차오투어 (Xin Chào Tour). All rights reserved.</p>
           </div>
 
           <div className="flex items-center gap-4">
