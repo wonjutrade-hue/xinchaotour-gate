@@ -61,8 +61,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [travelDropdownOpen, setTravelDropdownOpen] = useState(false);
 
-  const categories: { key: Category | '전체'; label: string; icon: string }[] = [
-    { key: '전체', label: '전체 보기', icon: '🌏' },
+  const categories: { key: Category; label: string; icon: string }[] = [
     { key: '추천패키지', label: '추천 패키지', icon: '🎒' },
     { key: '자유여행', label: '자유 여행', icon: '🛫' },
     { key: '골프투어', label: '골프 투어', icon: '⛳' },
@@ -173,6 +172,9 @@ export const Navbar: React.FC<NavbarProps> = ({
                     onSelectCategory(cat.key);
                     onSelectRegion('전체');
                     onSelectCity('전체');
+                    setTimeout(() => {
+                      document.getElementById('products-section')?.scrollIntoView({ behavior: 'smooth' });
+                    }, 50);
                   }}
                   className={`flex items-center gap-1.5 px-2.5 py-1.5 xl:px-3.5 xl:py-2 rounded-xl font-bold text-xs xl:text-sm whitespace-nowrap transition-all shrink-0 ${
                     isActive
@@ -261,6 +263,9 @@ export const Navbar: React.FC<NavbarProps> = ({
                     onSelectRegion('전체');
                     onSelectCity('전체');
                     setMobileMenuOpen(false);
+                    setTimeout(() => {
+                      document.getElementById('products-section')?.scrollIntoView({ behavior: 'smooth' });
+                    }, 50);
                   }}
                   className={`flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold ${
                     activeCategory === cat.key

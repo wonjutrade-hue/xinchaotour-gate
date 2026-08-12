@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Search, MapPin, Sparkles, ShieldCheck, Compass, Home, Award } from 'lucide-react';
-import { Category, Region, City } from '../types';
+import { Sparkles } from 'lucide-react';
+import { Category } from '../types';
 import goldenBridgeImg from '../assets/images/danang_golden_bridge_1786255489649.jpg';
 import myKheBeachImg from '../assets/images/my_khe_beach_1786255505556.jpg';
 import sapaFansipanImg from '../assets/images/sapa_fansipan_terraces_1786458401102.jpg';
 
 interface HeroProps {
-  onSearch: (city: City, category: Category | '전체', keyword: string) => void;
   onSelectCategory: (cat: Category | '전체') => void;
   onOpenQuiz: () => void;
 }
@@ -49,11 +48,8 @@ const HERO_SLIDES = [
   }
 ];
 
-export const Hero: React.FC<HeroProps> = ({ onSearch, onSelectCategory, onOpenQuiz }) => {
+export const Hero: React.FC<HeroProps> = ({ onSelectCategory, onOpenQuiz }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [searchCity, setSearchCity] = useState<City>('전체');
-  const [searchCategory, setSearchCategory] = useState<Category | '전체'>('전체');
-  const [keyword, setKeyword] = useState('');
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -63,11 +59,6 @@ export const Hero: React.FC<HeroProps> = ({ onSearch, onSelectCategory, onOpenQu
   }, []);
 
   const slide = HERO_SLIDES[currentSlide];
-
-  const handleSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onSearch(searchCity, searchCategory, keyword);
-  };
 
   return (
     <div className="relative bg-slate-900 text-white overflow-hidden min-h-[520px] flex flex-col justify-between">
@@ -84,7 +75,7 @@ export const Hero: React.FC<HeroProps> = ({ onSearch, onSelectCategory, onOpenQu
       </div>
 
       {/* Hero Content */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-8 w-full flex-1 flex flex-col justify-center">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 w-full flex-1 flex flex-col justify-center">
         <div className="max-w-2xl space-y-4">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/20 border border-teal-400/40 backdrop-blur-md text-teal-300 text-xs font-bold">
             <Sparkles className="w-3.5 h-3.5 text-amber-300 animate-spin" />
@@ -116,7 +107,7 @@ export const Hero: React.FC<HeroProps> = ({ onSearch, onSelectCategory, onOpenQu
         </div>
 
         {/* Slide Indicators */}
-        <div className="flex items-center gap-2 mt-6">
+        <div className="flex items-center gap-2 mt-8">
           {HERO_SLIDES.map((_, idx) => (
             <button
               key={idx}
@@ -127,90 +118,6 @@ export const Hero: React.FC<HeroProps> = ({ onSearch, onSelectCategory, onOpenQu
             />
           ))}
         </div>
-      </div>
-
-      {/* Floating Integrated Search Bar Container */}
-      <div className="relative z-20 max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 pt-4 pb-6 sm:pb-8 w-full">
-        <form 
-          onSubmit={handleSearchSubmit}
-          className="bg-white rounded-2xl p-4 sm:p-5 shadow-xl border border-slate-200/90 text-slate-800 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 items-end"
-        >
-          {/* City Selection */}
-          <div className="space-y-1.5">
-            <label className="text-[11px] sm:text-xs font-extrabold text-slate-700 flex items-center gap-1.5 whitespace-nowrap">
-              <MapPin className="w-3.5 h-3.5 text-teal-600 shrink-0" />
-              <span>여행 도시 선택</span>
-            </label>
-            <select
-              value={searchCity}
-              onChange={(e) => setSearchCity(e.target.value as City)}
-              className="w-full bg-slate-50 hover:bg-slate-100/80 border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-teal-500 transition-colors"
-            >
-              <option value="전체">베트남 전체 (북부/중부/남부)</option>
-              <optgroup label="북부">
-                <option value="하노이">하노이</option>
-                <option value="하롱베이">하롱베이</option>
-                <option value="사파">사파</option>
-                <option value="닌빈">닌빈</option>
-              </optgroup>
-              <optgroup label="중부">
-                <option value="다낭">다낭</option>
-                <option value="호이안">호이안</option>
-                <option value="나트랑">나트랑</option>
-                <option value="후에">후에</option>
-              </optgroup>
-              <optgroup label="남부">
-                <option value="호치민">호치민</option>
-                <option value="푸꾸옥">푸꾸옥</option>
-                <option value="달랏">달랏</option>
-                <option value="붕따우">붕따우</option>
-              </optgroup>
-            </select>
-          </div>
-
-          {/* Category Selection */}
-          <div className="space-y-1.5">
-            <label className="text-[11px] sm:text-xs font-extrabold text-slate-700 flex items-center gap-1.5 whitespace-nowrap">
-              <Compass className="w-3.5 h-3.5 text-teal-600 shrink-0" />
-              <span>여행 카테고리</span>
-            </label>
-            <select
-              value={searchCategory}
-              onChange={(e) => setSearchCategory(e.target.value as Category | '전체')}
-              className="w-full bg-slate-50 hover:bg-slate-100/80 border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-teal-500 transition-colors"
-            >
-              <option value="전체">전체 카테고리</option>
-              <option value="추천패키지">추천 패키지</option>
-              <option value="자유여행">자유 여행</option>
-              <option value="골프투어">골프 투어</option>
-              <option value="풀빌라">풀빌라 & 리조트</option>
-            </select>
-          </div>
-
-          {/* Keyword Input */}
-          <div className="space-y-1.5">
-            <label className="text-[11px] sm:text-xs font-extrabold text-slate-700 flex items-center gap-1.5 whitespace-nowrap">
-              <Search className="w-3.5 h-3.5 text-teal-600 shrink-0" />
-              <span>검색어 (크루즈, 풀빌라, 바나힐 등)</span>
-            </label>
-            <input
-              type="text"
-              placeholder="관심 키워드 입력..."
-              value={keyword}
-              onChange={(e) => setKeyword(e.target.value)}
-              className="w-full bg-slate-50 hover:bg-slate-100/80 border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-teal-500 transition-colors"
-            />
-          </div>
-
-          {/* Search Button */}
-          <button
-            type="submit"
-            className="w-full bg-teal-700 hover:bg-teal-800 text-white font-extrabold py-2.5 px-4 rounded-xl text-xs flex items-center justify-center gap-2 transition-all shadow-md shadow-teal-700/20 whitespace-nowrap h-[42px]"
-          >
-            <Search className="w-4 h-4 text-amber-300 shrink-0" />
-            <span>맞춤 상품 검색</span>
-          </button>
-        </form>
       </div>
     </div>
   );

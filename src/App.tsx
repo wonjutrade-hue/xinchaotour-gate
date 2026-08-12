@@ -297,16 +297,6 @@ export default function App() {
 
       {/* Hero Carousel Section */}
       <Hero
-        onSearch={(city, category, keyword) => {
-          setActiveCity(city);
-          if (city !== '전체') {
-            if (['하노이', '하롱베이', '사파', '닌빈'].includes(city)) setActiveRegion('북부');
-            else if (['다낭', '호이안', '후에', '나트랑'].includes(city)) setActiveRegion('중부');
-            else if (['호치민', '푸꾸옥', '달랏', '붕따우'].includes(city)) setActiveRegion('남부');
-          }
-          setActiveCategory(category);
-          setSearchTerm(keyword);
-        }}
         onSelectCategory={setActiveCategory}
         onOpenQuiz={() => setIsQuizOpen(true)}
       />
@@ -330,7 +320,7 @@ export default function App() {
       />
 
       {/* Main Content Product Display Grid */}
-      <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full space-y-12">
+      <main id="products-section" className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full space-y-12">
         {/* Active Filter Title Banner */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
           <div>
