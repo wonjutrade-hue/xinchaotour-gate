@@ -7,7 +7,39 @@ import { INITIAL_PRODUCTS } from './src/data/seedProducts.js';
 import { Product, ConsultationRequest } from './src/types.js';
 
 // In-memory or persisted store for products and inquiries
-let products: Product[] = [...INITIAL_PRODUCTS];
+const PRODUCTS_FILE_PATH = path.join(process.cwd(), 'src', 'data', 'stored_products.json');
+
+function loadStoredProducts(): Product[] {
+  try {
+    if (fs.existsSync(PRODUCTS_FILE_PATH)) {
+      const fileData = fs.readFileSync(PRODUCTS_FILE_PATH, 'utf-8');
+      const parsed = JSON.parse(fileData);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        console.log(`[Server] Loaded ${parsed.length} products from stored_products.json`);
+        return parsed;
+      }
+    }
+  } catch (err) {
+    console.warn('[Server] Failed to read stored_products.json, using INITIAL_PRODUCTS:', err);
+  }
+  saveStoredProducts(INITIAL_PRODUCTS);
+  return [...INITIAL_PRODUCTS];
+}
+
+function saveStoredProducts(prods: Product[]) {
+  try {
+    const dir = path.dirname(PRODUCTS_FILE_PATH);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+    fs.writeFileSync(PRODUCTS_FILE_PATH, JSON.stringify(prods, null, 2), 'utf-8');
+    console.log(`[Server] Persisted ${prods.length} products to stored_products.json`);
+  } catch (err) {
+    console.error('[Server] Failed to save products to stored_products.json:', err);
+  }
+}
+
+let products: Product[] = loadStoredProducts();
 let inquiries: ConsultationRequest[] = [
   {
     id: 'inq-101',
@@ -114,6 +146,7 @@ async function startServer() {
         createdAt: new Date().toISOString()
       };
       products.unshift(newProduct);
+      saveStoredProducts(products);
       res.json({ success: true, product: newProduct });
     } catch (err: any) {
       res.status(500).json({ success: false, error: err.message });
@@ -128,6 +161,7 @@ async function startServer() {
       return res.status(404).json({ success: false, error: 'Product not found' });
     }
     products[index] = { ...products[index], ...req.body };
+    saveStoredProducts(products);
     res.json({ success: true, product: products[index] });
   });
 
@@ -135,12 +169,14 @@ async function startServer() {
   app.delete('/api/products/:id', (req: Request, res: Response) => {
     const { id } = req.params;
     products = products.filter(p => p.id !== id);
+    saveStoredProducts(products);
     res.json({ success: true, message: 'Product deleted' });
   });
 
   // 5. Bulk Reset to Initial Seed Data
   app.post('/api/products/reset', (req: Request, res: Response) => {
     products = [...INITIAL_PRODUCTS];
+    saveStoredProducts(products);
     res.json({ success: true, products });
   });
 
@@ -165,6 +201,7 @@ async function startServer() {
         products = [...formatted, ...products];
       }
 
+      saveStoredProducts(products);
       res.json({ success: true, productsCount: products.length, products });
     } catch (err: any) {
       res.status(500).json({ success: false, error: err.message });

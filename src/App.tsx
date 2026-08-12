@@ -30,10 +30,34 @@ import {
   Award
 } from 'lucide-react';
 
+const PRODUCTS_CACHE_KEY = 'xinchao_products_cache_v2';
+
 export default function App() {
-  const [products, setProducts] = useState<Product[]>(INITIAL_PRODUCTS);
+  const [products, setProducts] = useState<Product[]>(() => {
+    try {
+      const cached = localStorage.getItem(PRODUCTS_CACHE_KEY);
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch (e) {
+      // ignore
+    }
+    return INITIAL_PRODUCTS;
+  });
   const [inquiries, setInquiries] = useState<ConsultationRequest[]>([]);
   const [isLoadingProducts, setIsLoadingProducts] = useState(true);
+
+  // Sync products state to localStorage
+  useEffect(() => {
+    try {
+      if (products && products.length > 0) {
+        localStorage.setItem(PRODUCTS_CACHE_KEY, JSON.stringify(products));
+      }
+    } catch (e) {
+      console.warn('Failed to cache products to localStorage:', e);
+    }
+  }, [products]);
 
   // Exchange Rates state
   const [exchangeRates, setExchangeRates] = useState<ExchangeRates>(DEFAULT_RATES);
