@@ -170,8 +170,6 @@ export const Navbar: React.FC<NavbarProps> = ({
                   key={cat.key}
                   onClick={() => {
                     onSelectCategory(cat.key);
-                    onSelectRegion('전체');
-                    onSelectCity('전체');
                     setTimeout(() => {
                       document.getElementById('products-section')?.scrollIntoView({ behavior: 'smooth' });
                     }, 50);
@@ -260,8 +258,6 @@ export const Navbar: React.FC<NavbarProps> = ({
                   key={cat.key}
                   onClick={() => {
                     onSelectCategory(cat.key);
-                    onSelectRegion('전체');
-                    onSelectCity('전체');
                     setMobileMenuOpen(false);
                     setTimeout(() => {
                       document.getElementById('products-section')?.scrollIntoView({ behavior: 'smooth' });

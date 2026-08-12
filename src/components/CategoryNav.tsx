@@ -44,43 +44,8 @@ export const CategoryNav: React.FC<CategoryNavProps> = ({
       <div className="max-w-7xl mx-auto space-y-3">
         {/* Unified Main Filter Card */}
         <div className="bg-white p-3.5 sm:p-4 rounded-2xl border border-slate-200/90 shadow-xs space-y-3">
-          {/* Category Selector Tabs */}
-          <div className="flex items-center justify-between flex-wrap gap-2.5">
-            <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto pb-1 max-w-full scrollbar-none">
-              <span className="text-xs font-black text-slate-400 uppercase tracking-wider mr-1 hidden sm:inline whitespace-nowrap">
-                카테고리:
-              </span>
-              {(['전체', '추천패키지', '자유여행', '골프투어', '풀빌라'] as const).map((cat) => (
-                <button
-                  key={cat}
-                  onClick={() => {
-                    onSelectCategory(cat);
-                    onSelectCity('전체');
-                    scrollToProducts();
-                  }}
-                  className={`px-3.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all shrink-0 ${
-                    activeCategory === cat
-                      ? 'bg-teal-700 text-white shadow-sm'
-                      : 'bg-slate-50 text-slate-700 border border-slate-200/80 hover:bg-slate-100'
-                  }`}
-                >
-                  {cat === '전체' && '🌏 전체 상품'}
-                  {cat === '추천패키지' && '🎒 추천 패키지'}
-                  {cat === '자유여행' && '🛫 자유 여행'}
-                  {cat === '골프투어' && '⛳ 골프 투어'}
-                  {cat === '풀빌라' && '🏰 풀빌라 & 리조트'}
-                </button>
-              ))}
-            </div>
-
-            <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-600 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-200/80 whitespace-nowrap shrink-0">
-              <span className="text-teal-700 font-extrabold">{totalProductsCount}개</span>
-              <span>의 상품</span>
-            </div>
-          </div>
-
           {/* Region & Sort Controls Row */}
-          <div className="pt-2.5 border-t border-slate-100 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 text-xs">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 text-xs">
             {/* Region buttons */}
             <div className="flex items-center gap-2 flex-wrap">
               <span className="font-extrabold text-slate-500 flex items-center gap-1 shrink-0">
@@ -106,20 +71,28 @@ export const CategoryNav: React.FC<CategoryNavProps> = ({
               ))}
             </div>
 
-            {/* Sorting selector */}
-            <div className="flex items-center gap-2 font-medium text-slate-600 self-end md:self-auto whitespace-nowrap">
-              <ArrowUpDown className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-              <span>정렬:</span>
-              <select
-                value={sortBy}
-                onChange={(e) => onSortChange(e.target.value as any)}
-                className="bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1 text-xs font-bold text-slate-700 focus:outline-none focus:ring-1 focus:ring-teal-500"
-              >
-                <option value="popular">인기순 추천</option>
-                <option value="price_asc">가격 낮은 순</option>
-                <option value="price_desc">가격 높은 순</option>
-                <option value="rating">평점 높은순</option>
-              </select>
+            <div className="flex items-center gap-3 self-end md:self-auto">
+              {/* Product Count */}
+              <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-600 bg-slate-50 px-3 py-1 rounded-xl border border-slate-200/80 whitespace-nowrap shrink-0">
+                <span className="text-teal-700 font-extrabold">{totalProductsCount}개</span>
+                <span>의 상품</span>
+              </div>
+
+              {/* Sorting selector */}
+              <div className="flex items-center gap-2 font-medium text-slate-600 whitespace-nowrap">
+                <ArrowUpDown className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                <span>정렬:</span>
+                <select
+                  value={sortBy}
+                  onChange={(e) => onSortChange(e.target.value as any)}
+                  className="bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1 text-xs font-bold text-slate-700 focus:outline-none focus:ring-1 focus:ring-teal-500"
+                >
+                  <option value="popular">인기순 추천</option>
+                  <option value="price_asc">가격 낮은 순</option>
+                  <option value="price_desc">가격 높은 순</option>
+                  <option value="rating">평점 높은순</option>
+                </select>
+              </div>
             </div>
           </div>
 
