@@ -36,15 +36,15 @@ import {
 } from 'lucide-react';
 import { getKakaoDirectLink, setKakaoDirectLink, COMPANY_PHONE } from '../constants';
 
-const REGION_LIST: Exclude<Region, '전체'>[] = ['북부', '중부', '남부'];
+const REGION_LIST: Exclude<Region, '전체'>[] = ['중부', '북부', '남부'];
 
 const REGION_CITIES_MAP: Record<Exclude<Region, '전체'>, City[]> = {
-  '북부': ['하노이', '사파', '하롱베이', '닌빈'],
   '중부': ['다낭', '호이안', '후에', '나트랑'],
+  '북부': ['하노이', '사파', '하롱베이', '닌빈'],
   '남부': ['호치민', '푸꾸옥', '달랏', '붕따우'],
 };
 
-const CATEGORIES: Category[] = ['자유여행', '골프투어', '풀빌라', '추천패키지'];
+const CATEGORIES: Category[] = ['풀빌라', '자유여행', '골프투어', '추천패키지'];
 
 interface AdminPanelProps {
   isOpen: boolean;
@@ -196,7 +196,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   const [formData, setFormData] = useState<Partial<Product>>({
     title: '',
     subTitle: '',
-    category: '추천패키지',
+    category: '풀빌라',
     region: '중부',
     city: '다낭',
     priceKRW: 0,
@@ -243,7 +243,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
       ? targetCity
       : (selectedCityFilter !== '전체' && availableCities.includes(selectedCityFilter) ? selectedCityFilter : availableCities[0]);
 
-    const cat: Category = targetCategory || (selectedCategoryFilter !== '전체' ? selectedCategoryFilter : '자유여행');
+    const cat: Category = targetCategory || (selectedCategoryFilter !== '전체' ? selectedCategoryFilter : '풀빌라');
 
     setFormData({
       title: `[${cit}/${cat}] 신규 여행 상품`,
@@ -617,10 +617,10 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                           onChange={(e) => setFormData({ ...formData, category: e.target.value as Category })}
                           className="w-full bg-white border border-slate-200 rounded-xl px-2.5 py-2 text-xs font-bold text-teal-800"
                         >
-                          <option value="추천패키지">📦 추천패키지</option>
+                          <option value="풀빌라">🏡 풀빌라</option>
                           <option value="자유여행">✈️ 자유여행</option>
                           <option value="골프투어">⛳ 골프투어</option>
-                          <option value="풀빌라">🏡 풀빌라</option>
+                          <option value="추천패키지">📦 추천패키지</option>
                         </select>
                       </div>
 
@@ -639,8 +639,8 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                           }}
                           className="w-full bg-white border border-slate-200 rounded-xl px-2.5 py-2 text-xs font-bold text-slate-800"
                         >
-                          <option value="북부">북부 (하노이/사파/하롱베이/닌빈)</option>
                           <option value="중부">중부 (다낭/호이안/후에/나트랑)</option>
+                          <option value="북부">북부 (하노이/사파/하롱베이/닌빈)</option>
                           <option value="남부">남부 (호치민/푸꾸옥/달랏/붕따우)</option>
                         </select>
                       </div>
@@ -1290,16 +1290,47 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                       </div>
                     </div>
 
-                    {/* Region Filter Tabs */}
+                    {/* 1. Category (Theme) Filter Pills (Product Category First) */}
                     <div className="pt-2 border-t border-slate-100 flex flex-wrap items-center gap-2">
+                      <span className="text-[11px] font-extrabold text-slate-500 flex items-center gap-1 mr-1">
+                        <Filter className="w-3.5 h-3.5 text-teal-600" />
+                        테마 구분 (상품):
+                      </span>
+                      {(['전체', '풀빌라', '자유여행', '골프투어', '추천패키지'] as const).map((cat) => {
+                        const count = products.filter(p => {
+                          const matchReg = selectedRegionFilter === '전체' || p.region === selectedRegionFilter;
+                          const matchCity = selectedCityFilter === '전체' || p.city === selectedCityFilter;
+                          const matchCat = cat === '전체' || p.category === cat;
+                          return matchReg && matchCity && matchCat;
+                        }).length;
+                        return (
+                          <button
+                            key={cat}
+                            onClick={() => setSelectedCategoryFilter(cat as Category | '전체')}
+                            className={`px-3 py-1.5 rounded-xl text-xs font-extrabold transition-all ${
+                              selectedCategoryFilter === cat
+                                ? 'bg-teal-800 text-white shadow-xs'
+                                : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                            }`}
+                          >
+                            {cat} ({count})
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    {/* 2. Region Filter Tabs (Region Second) */}
+                    <div className="flex flex-wrap items-center gap-2 pt-1 pl-1 text-xs border-t border-dashed border-slate-100">
                       <span className="text-[11px] font-extrabold text-slate-500 flex items-center gap-1 mr-1">
                         <MapPin className="w-3.5 h-3.5 text-teal-600" />
                         지역 권역:
                       </span>
-                      {(['전체', '북부', '중부', '남부'] as Region[]).map((reg) => {
-                        const count = reg === '전체' 
-                          ? products.length 
-                          : products.filter(p => p.region === reg).length;
+                      {(['전체', '중부', '북부', '남부'] as Region[]).map((reg) => {
+                        const count = products.filter(p => {
+                          const matchReg = reg === '전체' || p.region === reg;
+                          const matchCat = selectedCategoryFilter === '전체' || p.category === selectedCategoryFilter;
+                          return matchReg && matchCat;
+                        }).length;
                         return (
                           <button
                             key={reg}
@@ -1307,10 +1338,10 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                               setSelectedRegionFilter(reg);
                               setSelectedCityFilter('전체');
                             }}
-                            className={`px-3 py-1.5 rounded-xl text-xs font-extrabold transition-all ${
+                            className={`px-3 py-1 rounded-lg text-[11px] font-bold transition-all ${
                               selectedRegionFilter === reg
-                                ? 'bg-teal-700 text-white shadow-xs'
-                                : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                                ? 'bg-teal-700 text-white shadow-2xs'
+                                : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
                             }`}
                           >
                             {reg} ({count})
@@ -1319,9 +1350,9 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                       })}
                     </div>
 
-                    {/* Sub City Filter Pills */}
+                    {/* 3. Sub City Filter Pills (City Third) */}
                     {selectedRegionFilter !== '전체' && (
-                      <div className="flex flex-wrap items-center gap-1.5 pt-1 pl-1 text-xs">
+                      <div className="flex flex-wrap items-center gap-1.5 pt-1 pl-1 text-xs border-t border-dashed border-slate-100">
                         <span className="text-[10px] font-bold text-slate-400">도시:</span>
                         <button
                           onClick={() => setSelectedCityFilter('전체')}
@@ -1334,7 +1365,12 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                           전체 도시
                         </button>
                         {(REGION_CITIES_MAP[selectedRegionFilter as Exclude<Region, '전체'>] || []).map((cit) => {
-                          const count = products.filter(p => p.region === selectedRegionFilter && p.city === cit).length;
+                          const count = products.filter(p => {
+                            const matchReg = p.region === selectedRegionFilter;
+                            const matchCity = p.city === cit;
+                            const matchCat = selectedCategoryFilter === '전체' || p.category === selectedCategoryFilter;
+                            return matchReg && matchCity && matchCat;
+                          }).length;
                           return (
                             <button
                               key={cit}
@@ -1351,34 +1387,6 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                         })}
                       </div>
                     )}
-
-                    {/* Category Filter Pills */}
-                    <div className="flex flex-wrap items-center gap-1.5 pt-1 pl-1 text-xs border-t border-dashed border-slate-100">
-                      <span className="text-[10px] font-bold text-slate-400 flex items-center gap-1">
-                        <Filter className="w-3 h-3 text-teal-600" /> 테마 구분:
-                      </span>
-                      {(['전체', '자유여행', '골프투어', '풀빌라', '추천패키지'] as const).map((cat) => {
-                        const count = products.filter(p => {
-                          const matchReg = selectedRegionFilter === '전체' || p.region === selectedRegionFilter;
-                          const matchCity = selectedCityFilter === '전체' || p.city === selectedCityFilter;
-                          const matchCat = cat === '전체' || p.category === cat;
-                          return matchReg && matchCity && matchCat;
-                        }).length;
-                        return (
-                          <button
-                            key={cat}
-                            onClick={() => setSelectedCategoryFilter(cat as Category | '전체')}
-                            className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all ${
-                              selectedCategoryFilter === cat
-                                ? 'bg-teal-800 text-white shadow-2xs'
-                                : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
-                            }`}
-                          >
-                            {cat} ({count})
-                          </button>
-                        );
-                      })}
-                    </div>
                   </div>
 
                   {/* PRODUCTS DISPLAY MODE */}
@@ -1411,6 +1419,13 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
                                 <div className="flex items-center gap-1.5">
                                   <button
+                                    onClick={() => handleStartCreate(reg, citiesInRegion[0] || '다낭', '풀빌라')}
+                                    className="text-[11px] text-purple-800 hover:text-purple-900 font-extrabold flex items-center gap-1 bg-purple-50 px-2.5 py-1 rounded-lg border border-purple-200"
+                                  >
+                                    <Plus className="w-3.5 h-3.5 text-purple-600" />
+                                    <span>+{reg} 풀빌라</span>
+                                  </button>
+                                  <button
                                     onClick={() => handleStartCreate(reg, citiesInRegion[0] || '다낭', '자유여행')}
                                     className="text-[11px] text-sky-800 hover:text-sky-900 font-extrabold flex items-center gap-1 bg-sky-50 px-2.5 py-1 rounded-lg border border-sky-200"
                                   >
@@ -1423,13 +1438,6 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                                   >
                                     <Plus className="w-3.5 h-3.5 text-emerald-600" />
                                     <span>+{reg} 골프</span>
-                                  </button>
-                                  <button
-                                    onClick={() => handleStartCreate(reg, citiesInRegion[0] || '다낭', '풀빌라')}
-                                    className="text-[11px] text-purple-800 hover:text-purple-900 font-extrabold flex items-center gap-1 bg-purple-50 px-2.5 py-1 rounded-lg border border-purple-200"
-                                  >
-                                    <Plus className="w-3.5 h-3.5 text-purple-600" />
-                                    <span>+{reg} 풀빌라</span>
                                   </button>
                                 </div>
                               </div>
@@ -1463,6 +1471,13 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                                         {/* City-level Quick Category Registration Buttons */}
                                         <div className="flex items-center gap-1 flex-wrap">
                                           <button
+                                            onClick={() => handleStartCreate(reg, city, '풀빌라')}
+                                            className="text-[10px] font-extrabold text-purple-800 bg-purple-50 hover:bg-purple-100 px-2 py-1 rounded-md border border-purple-200 flex items-center gap-0.5"
+                                          >
+                                            <Plus className="w-3 h-3 text-purple-600" />
+                                            <span>+ 풀빌라</span>
+                                          </button>
+                                          <button
                                             onClick={() => handleStartCreate(reg, city, '자유여행')}
                                             className="text-[10px] font-extrabold text-sky-800 bg-sky-50 hover:bg-sky-100 px-2 py-1 rounded-md border border-sky-200 flex items-center gap-0.5"
                                           >
@@ -1475,13 +1490,6 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                                           >
                                             <Plus className="w-3 h-3 text-emerald-600" />
                                             <span>+ 골프투어</span>
-                                          </button>
-                                          <button
-                                            onClick={() => handleStartCreate(reg, city, '풀빌라')}
-                                            className="text-[10px] font-extrabold text-purple-800 bg-purple-50 hover:bg-purple-100 px-2 py-1 rounded-md border border-purple-200 flex items-center gap-0.5"
-                                          >
-                                            <Plus className="w-3 h-3 text-purple-600" />
-                                            <span>+ 풀빌라</span>
                                           </button>
                                           <button
                                             onClick={() => handleStartCreate(reg, city, '추천패키지')}
