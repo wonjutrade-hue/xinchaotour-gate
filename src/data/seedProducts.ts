@@ -976,13 +976,13 @@ export const INITIAL_PRODUCTS: Product[] = [
   },
   {
     id: 'villa-dn-nguhanhson-garden',
-    title: '[풀빌라/중부] 응우한손에 위치한 정원과 개인 수영장을 갖춘 빌라',
-    subTitle: '🏡 다낭 응우한손 프라이빗 독채 가든 빌라 & 대형 개별 수영장 (성인 10인 기준)',
+    title: '[풀빌라/중부] 응우한손에 위치한 정원과 개인 수영장을 갖춘 빌라.',
+    subTitle: '최대 12인 투숙 6베드룸 초특가 + 초대형 인피니티 프라이빗 풀 + 24시간 피켓 버틀러',
     category: '풀빌라',
     region: '중부',
     city: '다낭',
-    priceKRW: 680000,
-    priceVND: 0,
+    priceKRW: 328000,
+    priceVND: 6023217,
     duration: '1박 기준',
     imageUrl: 'https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=1000&q=80',
     additionalImages: [
@@ -990,38 +990,41 @@ export const INITIAL_PRODUCTS: Product[] = [
       'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1000&q=80'
     ],
     rating: 5.0,
-    reviewCount: 168,
+    reviewCount: 215,
     isPopular: true,
+    isHotDeal: true,
     departureCities: ['자율일정/단독차량연계'],
-    tags: ['응우한손풀빌라', '정원빌라', '개인수영장', '다낭독채', '5베드룸'],
-    description: '다낭 응우한손 중심에 위치한 넓은 단독 푸른 정원과 프라이빗 대형 개인 수영장을 완비한 럭셔리 독채 빌라입니다. 가족 및 대그룹 단체 여행객에게 최상의 휴양 공간을 제공합니다.',
+    tags: ['다낭5베드룸', '럭셔리풀빌라', '인피니티풀', '미케비치', '응우한손풀빌라'],
+    description: '다낭 응우한손 중심에 위치한 넓은 단독 푸른 정원과 프라이빗 초대형 인피니티 수영장을 완비한 6베드룸 럭셔리 독채 빌라입니다. 최대 12인 투숙 가능하며 24시간 피켓 버틀러 서비스를 제공합니다.',
     included: [
-      '응우한손 독채 가든 풀빌라 1박',
-      '프라이빗 대형 개인 수영장 무제한 이용',
-      '단독 푸른 잔디 정원 & 야외 BBQ 그릴 이용',
+      '6베드룸 독채 프라이빗 풀빌라 1박',
+      '초대형 인피니티 개인 수영장 무제한 이용',
+      '24시간 피켓 버틀러 집사 서비스',
       '다낭 공항 <-> 빌라 단독 왕복 픽샌딩 차량',
-      '무료 와이파이 & 일일 청소 서비스'
+      '웰컴 과일 및 1일 1회 하우스키핑 청소'
     ],
     excluded: [
-      '개인 미니바 및 추가 바비큐 식재료비'
+      '개인 미니바 및 추가 바비큐 식재료비',
+      '기사/버틀러 매너팁'
     ],
-    address: 'Khu B2-21, Phường Hòa Hải, Quận Ngũ Hành Sơn, Đà Nẵng (응우한손 프라이빗 가든 빌라 단지)',
+    externalBookingUrl: 'https://www.airbnb.co.kr/rooms/1596807485988738548',
+    address: '23 Chế Lan Viên, Ngũ Hành Sơn, Đà Nẵng (응우한손 독채 가든 풀빌라 단지)',
     itinerary: [
       {
         day: 1,
-        title: '다낭 공항 단독 픽업 -> 응우한손 가든 풀빌라 입실 -> 정원 BBQ & 야간 프라이빗 수영',
-        description: '공항 피켓 미팅 후 전용 차량으로 빌라 이동 (약 15분). 입실 후 아름다운 단독 정원과 프라이빗 개별 수영장에서 자유로운 휴식 및 가든 바비큐.',
+        title: '다낭 공항 단독 픽업 -> 응우한손 6베드룸 빌라 입실 -> 인피니티 풀 수영 & 버틀러 케어',
+        description: '공항 피켓 미팅 후 전용 차량으로 빌라 이동. 버틀러 안내 후 6베드룸 독채와 대형 인피니티 수영장에서 자유 수영 및 파티.',
         meal: '자유식 (가든 BBQ 세팅 가능)',
-        hotel: '다낭 응우한손 가든 프라이빗 독채 풀빌라'
+        hotel: '다낭 응우한손 6베드룸 럭셔리 독채 풀빌라'
       }
     ],
     villaSpecs: {
-      bedrooms: 5,
+      bedrooms: 6,
       privatePool: true,
-      oceanView: false,
+      oceanView: true,
       maxOccupancy: 12,
-      features: ['독채 단독 잔디 정원', '대형 개인 프라이빗 수영장', '야외 가든 BBQ 테라스', '5개 전용 침실', '공항 단독 왕복 픽샌딩 차량 포함'],
-      areaSqm: 380
+      features: ['6개 독립 베드룸 독채', '초대형 프라이빗 인피니티 풀', '24시간 피켓 버틀러 케어', '미케비치 인근', '공항 단독 왕복 픽샌딩 포함'],
+      areaSqm: 450
     }
   },
   {

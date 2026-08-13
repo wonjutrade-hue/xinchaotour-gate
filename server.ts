@@ -39,10 +39,16 @@ function loadStoredProducts(): Product[] {
 
 function saveStoredProducts(prods: Product[]) {
   try {
-    const tempPath = PRODUCTS_FILE_PATH + '.tmp';
-    fs.writeFileSync(tempPath, JSON.stringify(prods, null, 2), 'utf-8');
-    fs.renameSync(tempPath, PRODUCTS_FILE_PATH);
-    console.log(`[Server] Persisted ${prods.length} products to root stored_products.json`);
+    const dataStr = JSON.stringify(prods, null, 2);
+    // 1. Root stored_products.json
+    fs.writeFileSync(PRODUCTS_FILE_PATH, dataStr, 'utf-8');
+    // 2. Backup src/data/stored_products.json
+    const backupDir = path.dirname(BACKUP_PRODUCTS_FILE_PATH);
+    if (!fs.existsSync(backupDir)) {
+      fs.mkdirSync(backupDir, { recursive: true });
+    }
+    fs.writeFileSync(BACKUP_PRODUCTS_FILE_PATH, dataStr, 'utf-8');
+    console.log(`[Server] Persisted ${prods.length} products to both stored_products.json files`);
   } catch (err) {
     console.error('[Server] Failed to save products to stored_products.json:', err);
   }
