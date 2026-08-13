@@ -172,18 +172,28 @@ export default function App() {
   };
 
   const handleUpdateProduct = async (id: string, updated: Partial<Product>) => {
+    let serverUpdatedProd: Product | null = null;
     try {
-      await fetch(`/api/products/${id}`, {
+      const res = await fetch(`/api/products/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updated)
       });
+      const data = await res.json();
+      if (data.success && data.product) {
+        serverUpdatedProd = data.product;
+      }
     } catch (err) {
       console.warn('API update failed');
     }
 
     setProducts(prev => {
-      const updatedList = prev.map(p => p.id === id ? { ...p, ...updated } : p);
+      const updatedList = prev.map(p => {
+        if (p.id === id) {
+          return serverUpdatedProd || { ...p, ...updated };
+        }
+        return p;
+      });
       setStoredJson(PRODUCTS_CACHE_KEY, updatedList);
       return updatedList;
     });

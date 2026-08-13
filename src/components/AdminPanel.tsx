@@ -115,7 +115,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
           const canvas = document.createElement('canvas');
           let width = img.width;
           let height = img.height;
-          const MAX_SIZE = 1200;
+          const MAX_SIZE = 800;
 
           if (width > height) {
             if (width > MAX_SIZE) {
@@ -134,7 +134,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
           const ctx = canvas.getContext('2d');
           ctx?.drawImage(img, 0, 0, width, height);
 
-          const dataUrl = canvas.toDataURL('image/jpeg', 0.82);
+          const dataUrl = canvas.toDataURL('image/jpeg', 0.70);
           resolve(dataUrl);
         };
         img.onerror = () => reject(new Error('이미지 로드 실패'));

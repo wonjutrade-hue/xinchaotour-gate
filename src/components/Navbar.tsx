@@ -247,6 +247,56 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
       </div>
 
+      {/* Mobile Horizontal Category Nav Bar (Always visible on smartphone header) */}
+      <div className="lg:hidden bg-slate-900 border-t border-slate-800 px-3 py-2 overflow-x-auto scrollbar-none flex items-center gap-2 whitespace-nowrap shadow-inner">
+        <button
+          onClick={() => {
+            onSelectCategory('전체');
+            setTimeout(() => {
+              document.getElementById('filter-section')?.scrollIntoView({ behavior: 'smooth' });
+            }, 50);
+          }}
+          className={`px-3 py-1.5 rounded-xl text-xs font-black shrink-0 transition-all ${
+            activeCategory === '전체'
+              ? 'bg-amber-400 text-slate-950 font-black shadow-xs'
+              : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+          }`}
+        >
+          🌐 전체상품
+        </button>
+        {categories.map((cat) => {
+          const isActive = activeCategory === cat.key;
+          return (
+            <button
+              key={`mob-cat-${cat.key}`}
+              onClick={() => {
+                onSelectCategory(cat.key);
+                setTimeout(() => {
+                  document.getElementById('filter-section')?.scrollIntoView({ behavior: 'smooth' });
+                }, 50);
+              }}
+              className={`flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-black shrink-0 transition-all ${
+                isActive
+                  ? 'bg-teal-500 text-slate-950 font-black shadow-xs'
+                  : 'bg-slate-800 text-slate-200 hover:bg-slate-700'
+              }`}
+            >
+              <span>{cat.icon}</span>
+              <span>{cat.label}</span>
+            </button>
+          );
+        })}
+        <button
+          onClick={() => {
+            if (onOpenTravelInfo) onOpenTravelInfo('course');
+          }}
+          className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-black text-amber-300 bg-slate-800 border border-slate-700 shrink-0"
+        >
+          <span>🧭</span>
+          <span>여행정보</span>
+        </button>
+      </div>
+
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
         <div className="lg:hidden bg-white border-b border-slate-200 px-4 pt-3 pb-6 space-y-4">
