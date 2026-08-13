@@ -110,14 +110,14 @@ export default function App() {
     try {
       const res = await fetch('/api/products');
       const data = await res.json();
-      if (data.success && Array.isArray(data.products) && data.products.length > 0) {
+      if (data.success && Array.isArray(data.products)) {
         setProducts(data.products);
         setStoredJson(PRODUCTS_CACHE_KEY, data.products);
       }
     } catch (err) {
       console.warn('API fetch failed, falling back to cached products');
       const cached = getStoredJson<Product[]>(PRODUCTS_CACHE_KEY, []);
-      if (cached.length > 0) {
+      if (cached && Array.isArray(cached)) {
         setProducts(cached);
       }
     } finally {

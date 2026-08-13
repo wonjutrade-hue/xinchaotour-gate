@@ -18,7 +18,10 @@ import {
   ExternalLink,
   ChevronLeft,
   ChevronRight,
-  Maximize2
+  Maximize2,
+  Grid,
+  Layers,
+  Camera
 } from 'lucide-react';
 import { ExchangeRates, calculateVNDFromKRW, calculateKRWFromVND, calculateUSDFromKRW, formatVND, formatUSD } from '../lib/exchangeRate';
 import { handleOpenKakaoTalkDirect } from '../constants';
@@ -41,6 +44,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   const [activeTab, setActiveTab] = useState<'itinerary' | 'inclusion' | 'reviews'>('itinerary');
   const [currentImgIndex, setCurrentImgIndex] = useState<number>(0);
   const [isLightboxOpen, setIsLightboxOpen] = useState<boolean>(false);
+  const [lightboxMode, setLightboxMode] = useState<'slide' | 'grid'>('slide');
 
   const subImages = product.additionalImages || (product as any).galleryImages || (product as any).images || [];
   const rawImages = [product.imageUrl, ...subImages];
@@ -48,6 +52,12 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
 
   const validIndex = currentImgIndex >= 0 && currentImgIndex < allImages.length ? currentImgIndex : 0;
   const currentPhoto = allImages[validIndex] || product.imageUrl || '';
+
+  const handleOpenPhotoTour = (startIndex: number = 0, mode: 'slide' | 'grid' = 'slide') => {
+    setCurrentImgIndex(startIndex);
+    setLightboxMode(mode);
+    setIsLightboxOpen(true);
+  };
 
   const handlePrevImage = (e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
@@ -63,11 +73,12 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
 
   React.useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      if (!isLightboxOpen) return;
       if (e.key === 'ArrowLeft') {
         handlePrevImage();
       } else if (e.key === 'ArrowRight') {
         handleNextImage();
-      } else if (e.key === 'Escape' && isLightboxOpen) {
+      } else if (e.key === 'Escape') {
         setIsLightboxOpen(false);
       }
     };
@@ -196,56 +207,118 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
             )}
           </div>
 
-          {/* Photo Gallery Viewer */}
+          {/* Airbnb-style Photo Showcase Gallery */}
           <div className="space-y-3">
-            <div className="aspect-[16/10] sm:aspect-[16/9] rounded-2xl overflow-hidden bg-slate-950 border border-slate-200 relative group shadow-inner">
-              <img
-                src={currentPhoto}
-                alt={product.title}
-                className="w-full h-full object-cover cursor-pointer transition-transform duration-300 hover:scale-[1.01]"
-                onClick={() => setIsLightboxOpen(true)}
-              />
-
-              {/* Click to expand hint overlay */}
-              <div 
-                onClick={() => setIsLightboxOpen(true)}
-                className="absolute top-3 right-3 bg-slate-900/80 hover:bg-teal-600 text-white text-xs font-bold px-3 py-1.5 rounded-xl backdrop-blur-md transition-all flex items-center gap-1.5 cursor-pointer shadow-md z-10"
-              >
-                <Maximize2 className="w-3.5 h-3.5" />
-                <span>크게 보기</span>
-              </div>
-
-              {/* Prev / Next Arrows on Main Image */}
-              {allImages.length > 1 && (
-                <>
-                  <button
-                    type="button"
-                    onClick={handlePrevImage}
-                    className="absolute left-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-slate-900/80 hover:bg-teal-500 text-white flex items-center justify-center backdrop-blur-md transition-all shadow-xl hover:scale-110 active:scale-95 z-20"
-                    title="이전 사진 보기"
+            {allImages.length >= 5 ? (
+              /* Airbnb Signature 5-Photo Grid */
+              <div className="relative rounded-2xl overflow-hidden border border-slate-200 bg-slate-950 group">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-1.5 h-[280px] sm:h-[360px]">
+                  {/* Big Hero Photo (Left - 2 Cols) */}
+                  <div
+                    onClick={() => handleOpenPhotoTour(0, 'slide')}
+                    className="md:col-span-2 h-full relative overflow-hidden cursor-pointer group/hero bg-slate-900"
                   >
-                    <ChevronLeft className="w-7 h-7 stroke-[2.5]" />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleNextImage}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-slate-900/80 hover:bg-teal-500 text-white flex items-center justify-center backdrop-blur-md transition-all shadow-xl hover:scale-110 active:scale-95 z-20"
-                    title="다음 사진 보기"
-                  >
-                    <ChevronRight className="w-7 h-7 stroke-[2.5]" />
-                  </button>
-                </>
-              )}
+                    <img
+                      src={allImages[0]}
+                      alt={`${product.title} - 1`}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover/hero:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-black/10 group-hover/hero:bg-transparent transition-colors" />
+                    <div className="absolute top-3 left-3 bg-slate-900/80 text-white text-[10px] font-black px-2.5 py-1 rounded-lg backdrop-blur-xs flex items-center gap-1">
+                      <span>👑 대표 커버</span>
+                    </div>
+                  </div>
 
-              {/* Photo Counter Badge */}
-              {allImages.length > 1 && (
-                <div className="absolute bottom-3 left-3 bg-slate-900/85 backdrop-blur-md text-white px-3 py-1.5 rounded-xl text-xs font-black shadow-md flex items-center gap-1.5 border border-white/10">
-                  <span className="text-amber-400 font-bold">📷 사진</span>
-                  <span>{validIndex + 1} / {allImages.length}</span>
-                  <span className="hidden sm:inline text-slate-400 text-[10px] ml-1">(화살표를 클릭하여 사진 전환)</span>
+                  {/* Secondary 4 Photos (Right 2 Cols - 2x2 Grid) */}
+                  <div className="hidden md:grid md:col-span-2 grid-cols-2 gap-1.5 h-full">
+                    {allImages.slice(1, 5).map((img, idx) => (
+                      <div
+                        key={`hero-grid-${idx}`}
+                        onClick={() => handleOpenPhotoTour(idx + 1, 'slide')}
+                        className="relative h-full overflow-hidden cursor-pointer group/sub bg-slate-900"
+                      >
+                        <img
+                          src={img}
+                          alt={`${product.title} - ${idx + 2}`}
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover/sub:scale-105"
+                        />
+                        <div className="absolute inset-0 bg-black/10 group-hover/sub:bg-transparent transition-colors" />
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              )}
-            </div>
+
+                {/* Floating "Show All X Photos" Button (Airbnb Style) */}
+                <button
+                  type="button"
+                  onClick={() => handleOpenPhotoTour(0, 'grid')}
+                  className="absolute bottom-3 right-3 bg-white/95 hover:bg-white text-slate-900 hover:text-rose-600 px-3.5 py-2 rounded-xl text-xs font-black shadow-lg backdrop-blur-md transition-all flex items-center gap-2 border border-slate-200/80 hover:scale-105 active:scale-95 cursor-pointer z-10"
+                >
+                  <Grid className="w-4 h-4 text-rose-500" />
+                  <span>사진 {allImages.length}장 모두 보기</span>
+                </button>
+              </div>
+            ) : (
+              /* Standard High-Impact Photo Frame (for 1~4 photos) */
+              <div className="aspect-[16/10] sm:aspect-[16/9] rounded-2xl overflow-hidden bg-slate-950 border border-slate-200 relative group shadow-inner">
+                <img
+                  src={currentPhoto}
+                  alt={product.title}
+                  className="w-full h-full object-cover cursor-pointer transition-transform duration-300 hover:scale-[1.01]"
+                  onClick={() => handleOpenPhotoTour(validIndex, 'slide')}
+                />
+
+                {/* Click to expand hint overlay */}
+                <div 
+                  onClick={() => handleOpenPhotoTour(validIndex, 'slide')}
+                  className="absolute top-3 right-3 bg-slate-900/80 hover:bg-rose-600 text-white text-xs font-bold px-3 py-1.5 rounded-xl backdrop-blur-md transition-all flex items-center gap-1.5 cursor-pointer shadow-md z-10"
+                >
+                  <Maximize2 className="w-3.5 h-3.5" />
+                  <span>크게 보기</span>
+                </div>
+
+                {/* Prev / Next Arrows on Main Image */}
+                {allImages.length > 1 && (
+                  <>
+                    <button
+                      type="button"
+                      onClick={handlePrevImage}
+                      className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-slate-900/80 hover:bg-teal-500 text-white flex items-center justify-center backdrop-blur-md transition-all shadow-xl hover:scale-110 active:scale-95 z-20"
+                      title="이전 사진 보기"
+                    >
+                      <ChevronLeft className="w-6 h-6 stroke-[2.5]" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleNextImage}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-slate-900/80 hover:bg-teal-500 text-white flex items-center justify-center backdrop-blur-md transition-all shadow-xl hover:scale-110 active:scale-95 z-20"
+                      title="다음 사진 보기"
+                    >
+                      <ChevronRight className="w-6 h-6 stroke-[2.5]" />
+                    </button>
+                  </>
+                )}
+
+                {/* Photo Counter Badge */}
+                {allImages.length > 1 && (
+                  <div className="absolute bottom-3 left-3 bg-slate-900/85 backdrop-blur-md text-white px-3 py-1.5 rounded-xl text-xs font-black shadow-md flex items-center gap-1.5 border border-white/10">
+                    <span className="text-amber-400 font-bold">📷 사진</span>
+                    <span>{validIndex + 1} / {allImages.length}</span>
+                  </div>
+                )}
+
+                {allImages.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={() => handleOpenPhotoTour(0, 'grid')}
+                    className="absolute bottom-3 right-3 bg-white/95 hover:bg-white text-slate-900 px-3 py-1.5 rounded-xl text-xs font-black shadow-md backdrop-blur-md transition-all flex items-center gap-1.5 border border-slate-200"
+                  >
+                    <Grid className="w-3.5 h-3.5 text-rose-500" />
+                    <span>전체 사진 모아보기</span>
+                  </button>
+                )}
+              </div>
+            )}
 
             {/* Thumbnail Navigation Row */}
             {allImages.length > 1 && (
@@ -254,11 +327,11 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                   const isActive = validIndex === idx;
                   return (
                     <button
-                      key={idx}
+                      key={`thumb-strip-${idx}`}
                       onClick={() => setCurrentImgIndex(idx)}
                       className={`relative w-20 h-14 rounded-xl overflow-hidden border-2 transition-all shrink-0 cursor-pointer ${
                         isActive
-                          ? 'border-teal-500 ring-4 ring-teal-500/20 scale-105'
+                          ? 'border-teal-500 ring-3 ring-teal-500/30 scale-105'
                           : 'border-slate-200 opacity-60 hover:opacity-100 hover:border-slate-400'
                       }`}
                     >
@@ -266,6 +339,9 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                       {isActive && (
                         <div className="absolute inset-0 bg-teal-500/10 pointer-events-none" />
                       )}
+                      <span className="absolute bottom-0.5 right-1 text-[9px] font-black text-white bg-slate-900/70 px-1 rounded">
+                        #{idx + 1}
+                      </span>
                     </button>
                   );
                 })}
@@ -496,77 +572,147 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
         </div>
       </div>
 
-      {/* High-Res Fullscreen Lightbox Modal */}
+      {/* Airbnb Fullscreen Photo Tour Modal (Dual Mode: Slide & Grid Wall) */}
       {isLightboxOpen && (
-        <div className="fixed inset-0 z-60 bg-slate-950/95 backdrop-blur-md flex flex-col items-center justify-between p-4 sm:p-6 animate-fadeIn">
-          {/* Lightbox Header */}
-          <div className="w-full max-w-5xl flex items-center justify-between text-white pb-3 border-b border-slate-800">
+        <div className="fixed inset-0 z-60 bg-slate-950/98 backdrop-blur-md flex flex-col items-center justify-between p-3 sm:p-6 animate-fadeIn select-none">
+          {/* Header Bar */}
+          <div className="w-full max-w-6xl flex flex-wrap items-center justify-between text-white pb-3 border-b border-slate-800 gap-3">
             <div className="flex items-center gap-2 overflow-hidden">
-              <span className="bg-teal-600 text-white text-xs font-black px-2.5 py-1 rounded-lg shrink-0">
+              <span className="bg-rose-600 text-white text-xs font-black px-2.5 py-1 rounded-lg shrink-0">
                 {product.category}
               </span>
-              <span className="text-sm font-bold truncate">
+              <span className="text-sm font-bold truncate text-slate-200">
                 {product.title}
               </span>
             </div>
+
+            {/* View Mode Toggle: Slide vs Grid */}
+            <div className="flex items-center gap-2 bg-slate-900 p-1 rounded-xl border border-slate-800">
+              <button
+                type="button"
+                onClick={() => setLightboxMode('slide')}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+                  lightboxMode === 'slide' 
+                    ? 'bg-rose-600 text-white shadow-md' 
+                    : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                <Layers className="w-3.5 h-3.5" />
+                <span>슬라이드 뷰</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setLightboxMode('grid')}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+                  lightboxMode === 'grid' 
+                    ? 'bg-rose-600 text-white shadow-md' 
+                    : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                <Grid className="w-3.5 h-3.5" />
+                <span>전체 모아보기 ({allImages.length}장)</span>
+              </button>
+            </div>
+
+            {/* Counter & Close */}
             <div className="flex items-center gap-3 shrink-0">
-              <span className="text-xs bg-slate-800 text-amber-300 font-bold px-3 py-1.5 rounded-xl border border-slate-700">
+              <span className="text-xs bg-slate-900 text-amber-300 font-bold px-3 py-1.5 rounded-xl border border-slate-800">
                 📷 {validIndex + 1} / {allImages.length}
               </span>
               <button
                 onClick={() => setIsLightboxOpen(false)}
-                className="w-10 h-10 rounded-full bg-slate-800 hover:bg-rose-600 text-white flex items-center justify-center transition-colors cursor-pointer"
-                title="닫기"
+                className="w-10 h-10 rounded-full bg-slate-900 hover:bg-rose-600 text-white flex items-center justify-center transition-colors cursor-pointer border border-slate-800"
+                title="닫기 (ESC)"
               >
                 <X className="w-6 h-6" />
               </button>
             </div>
           </div>
 
-          {/* Lightbox Main Photo View with Prev/Next */}
-          <div className="relative w-full max-w-5xl my-auto flex items-center justify-center max-h-[80vh]">
-            <img
-              src={currentPhoto}
-              alt={product.title}
-              className="max-w-full max-h-[75vh] object-contain rounded-2xl shadow-2xl border border-slate-800"
-            />
+          {/* Mode 1: Slide View Mode */}
+          {lightboxMode === 'slide' && (
+            <>
+              <div className="relative w-full max-w-6xl my-auto flex items-center justify-center max-h-[75vh]">
+                <img
+                  src={currentPhoto}
+                  alt={`${product.title} - ${validIndex + 1}`}
+                  className="max-w-full max-h-[72vh] object-contain rounded-2xl shadow-2xl border border-slate-800 transition-all duration-200"
+                />
 
-            {allImages.length > 1 && (
-              <>
-                <button
-                  type="button"
-                  onClick={handlePrevImage}
-                  className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-slate-900/80 hover:bg-teal-500 text-white flex items-center justify-center transition-all shadow-2xl hover:scale-110 active:scale-95 cursor-pointer z-20"
-                  title="이전 사진"
-                >
-                  <ChevronLeft className="w-8 h-8 stroke-[2.5]" />
-                </button>
-                <button
-                  type="button"
-                  onClick={handleNextImage}
-                  className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-slate-900/80 hover:bg-teal-500 text-white flex items-center justify-center transition-all shadow-2xl hover:scale-110 active:scale-95 cursor-pointer z-20"
-                  title="다음 사진"
-                >
-                  <ChevronRight className="w-8 h-8 stroke-[2.5]" />
-                </button>
-              </>
-            )}
-          </div>
+                {allImages.length > 1 && (
+                  <>
+                    <button
+                      type="button"
+                      onClick={handlePrevImage}
+                      className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-slate-900/90 hover:bg-rose-600 text-white flex items-center justify-center transition-all shadow-2xl hover:scale-110 active:scale-95 cursor-pointer z-20 border border-white/10"
+                      title="이전 사진 (←)"
+                    >
+                      <ChevronLeft className="w-8 h-8 stroke-[2.5]" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleNextImage}
+                      className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-slate-900/90 hover:bg-rose-600 text-white flex items-center justify-center transition-all shadow-2xl hover:scale-110 active:scale-95 cursor-pointer z-20 border border-white/10"
+                      title="다음 사진 (→)"
+                    >
+                      <ChevronRight className="w-8 h-8 stroke-[2.5]" />
+                    </button>
+                  </>
+                )}
+              </div>
 
-          {/* Lightbox Thumbnails Footer */}
-          {allImages.length > 1 && (
-            <div className="w-full max-w-5xl flex items-center justify-center gap-2 overflow-x-auto pt-2 pb-1 scrollbar-none">
-              {allImages.map((img, idx) => (
-                <button
-                  key={`lb-thumb-${idx}`}
-                  onClick={() => setCurrentImgIndex(idx)}
-                  className={`w-16 h-12 rounded-xl overflow-hidden border-2 transition-all shrink-0 cursor-pointer ${
-                    validIndex === idx ? 'border-teal-400 ring-2 ring-teal-400/30 scale-105' : 'border-slate-800 opacity-50 hover:opacity-100'
-                  }`}
-                >
-                  <img src={img} alt="thumb" className="w-full h-full object-cover" />
-                </button>
-              ))}
+              {/* Slide Thumbnails Scrubber */}
+              {allImages.length > 1 && (
+                <div className="w-full max-w-6xl flex items-center justify-start sm:justify-center gap-2 overflow-x-auto pt-2 pb-1 scrollbar-none">
+                  {allImages.map((img, idx) => (
+                    <button
+                      key={`lb-thumb-${idx}`}
+                      onClick={() => setCurrentImgIndex(idx)}
+                      className={`relative w-16 h-12 rounded-xl overflow-hidden border-2 transition-all shrink-0 cursor-pointer ${
+                        validIndex === idx 
+                          ? 'border-rose-500 ring-2 ring-rose-500/40 scale-105 opacity-100' 
+                          : 'border-slate-800 opacity-40 hover:opacity-90'
+                      }`}
+                    >
+                      <img src={img} alt={`thumb-${idx}`} className="w-full h-full object-cover" />
+                      <span className="absolute bottom-0.5 right-1 text-[8px] font-black text-white bg-slate-900/80 px-1 rounded">
+                        #{idx + 1}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </>
+          )}
+
+          {/* Mode 2: Airbnb Photo Wall Grid Mode (전체 모아보기) */}
+          {lightboxMode === 'grid' && (
+            <div className="w-full max-w-6xl flex-1 overflow-y-auto my-4 p-2 sm:p-4 bg-slate-900/60 rounded-2xl border border-slate-800/80">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+                {allImages.map((img, idx) => (
+                  <div
+                    key={`wall-photo-${idx}`}
+                    onClick={() => {
+                      setCurrentImgIndex(idx);
+                      setLightboxMode('slide');
+                    }}
+                    className="relative aspect-[4/3] rounded-xl overflow-hidden bg-slate-950 border border-slate-800 group cursor-pointer hover:border-rose-500 transition-all hover:scale-[1.03]"
+                  >
+                    <img
+                      src={img}
+                      alt={`photo-${idx}`}
+                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors" />
+                    <div className="absolute top-1.5 left-1.5 bg-slate-900/85 text-white text-[10px] font-black px-2 py-0.5 rounded shadow">
+                      {idx === 0 ? '👑 대표 커버' : `#${idx + 1}`}
+                    </div>
+                    <div className="absolute bottom-1.5 right-1.5 opacity-0 group-hover:opacity-100 bg-rose-600 text-white text-[10px] font-bold px-2 py-0.5 rounded transition-opacity">
+                      클릭하여 크게 보기
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
         </div>

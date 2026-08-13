@@ -104,25 +104,59 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   const [departureCitiesText, setDepartureCitiesText] = useState('');
   const [tagsText, setTagsText] = useState('');
   
-  // Sub Images List State (Visual management)
+  // Sub Images List State (Visual management for Airbnb-level photo gallery)
   const [subImagesList, setSubImagesList] = useState<string[]>([]);
   const [newSubImageUrlInput, setNewSubImageUrlInput] = useState<string>('');
   const [uploadProgressStatus, setUploadProgressStatus] = useState<string | null>(null);
+  const [uploadProgressPercent, setUploadProgressPercent] = useState<number>(0);
   const [isSavingProduct, setIsSavingProduct] = useState<boolean>(false);
+  const [selectedPhotoIndexes, setSelectedPhotoIndexes] = useState<number[]>([]);
+  const [isDraggingOver, setIsDraggingOver] = useState<boolean>(false);
 
   const handleAddSubImageUrl = () => {
     if (!newSubImageUrlInput.trim()) return;
-    setSubImagesList(prev => [...prev, newSubImageUrlInput.trim()]);
+    // Support multiple URLs separated by newline or commas
+    const rawUrls = newSubImageUrlInput
+      .split(/[\n,]+/)
+      .map(u => u.trim())
+      .filter(u => u.startsWith('http://') || u.startsWith('https://') || u.startsWith('data:image/'));
+
+    if (rawUrls.length === 0) {
+      alert('유효한 이미지 URL(http://, https://)을 입력해주세요.');
+      return;
+    }
+
+    setSubImagesList(prev => [...prev, ...rawUrls]);
     setNewSubImageUrlInput('');
   };
 
   const handleRemoveSubImage = (index: number) => {
     setSubImagesList(prev => prev.filter((_, i) => i !== index));
+    setSelectedPhotoIndexes(prev => prev.filter(i => i !== index).map(i => (i > index ? i - 1 : i)));
   };
 
-  const handleMoveSubImage = (index: number, direction: 'up' | 'down') => {
+  const handleSetAsCoverPhoto = (index: number) => {
+    if (index < 0 || index >= subImagesList.length) return;
+    const targetUrl = subImagesList[index];
+    const remaining = subImagesList.filter((_, i) => i !== index);
+    const newList = [targetUrl, ...remaining];
+    setSubImagesList(newList);
+    setFormData(prev => ({ ...prev, imageUrl: targetUrl }));
+  };
+
+  const handleMoveSubImage = (index: number, direction: 'up' | 'down' | 'first' | 'last') => {
     setSubImagesList(prev => {
       const copy = [...prev];
+      if (direction === 'first') {
+        const item = copy.splice(index, 1)[0];
+        copy.unshift(item);
+        return copy;
+      }
+      if (direction === 'last') {
+        const item = copy.splice(index, 1)[0];
+        copy.push(item);
+        return copy;
+      }
       const targetIndex = direction === 'up' ? index - 1 : index + 1;
       if (targetIndex < 0 || targetIndex >= copy.length) return copy;
       const temp = copy[index];
@@ -132,7 +166,29 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     });
   };
 
-  // Helper function to process and compress user uploaded image file
+  const handleToggleSelectPhoto = (index: number) => {
+    setSelectedPhotoIndexes(prev => 
+      prev.includes(index) ? prev.filter(i => i !== index) : [...prev, index]
+    );
+  };
+
+  const handleSelectAllPhotos = () => {
+    if (selectedPhotoIndexes.length === subImagesList.length) {
+      setSelectedPhotoIndexes([]);
+    } else {
+      setSelectedPhotoIndexes(subImagesList.map((_, i) => i));
+    }
+  };
+
+  const handleDeleteSelectedPhotos = () => {
+    if (selectedPhotoIndexes.length === 0) return;
+    if (!confirm(`선택한 ${selectedPhotoIndexes.length}장의 사진을 삭제하시겠습니까?`)) return;
+    const indexSet = new Set(selectedPhotoIndexes);
+    setSubImagesList(prev => prev.filter((_, i) => !indexSet.has(i)));
+    setSelectedPhotoIndexes([]);
+  };
+
+  // Helper function to process and compress user uploaded image file with high fidelity Airbnb standards
   const compressAndConvertImage = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -142,7 +198,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
           const canvas = document.createElement('canvas');
           let width = img.width;
           let height = img.height;
-          const MAX_SIZE = 650;
+          const MAX_SIZE = 720;
 
           if (width > height) {
             if (width > MAX_SIZE) {
@@ -161,7 +217,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
           const ctx = canvas.getContext('2d');
           ctx?.drawImage(img, 0, 0, width, height);
 
-          const dataUrl = canvas.toDataURL('image/jpeg', 0.55);
+          const dataUrl = canvas.toDataURL('image/jpeg', 0.58);
           resolve(dataUrl);
         };
         img.onerror = () => reject(new Error('이미지 로드 실패'));
@@ -172,15 +228,57 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     });
   };
 
+  // Batch processor for multiple files (supports 100+ files smoothly)
+  const processBatchFiles = async (fileList: File[]) => {
+    if (fileList.length === 0) return;
+    const total = fileList.length;
+    const urls: string[] = [];
+
+    // Process in batches of 4 to prevent UI stutter while keeping max speed
+    const batchSize = 4;
+    for (let i = 0; i < total; i += batchSize) {
+      const currentBatch = fileList.slice(i, i + batchSize);
+      const percent = Math.round(((i + currentBatch.length) / total) * 100);
+      setUploadProgressPercent(percent);
+      setUploadProgressStatus(`📸 [Airbnb 고화질 최적화] ${total}장 중 ${Math.min(i + currentBatch.length, total)}번째 사진 압축 완료 (${percent}%)`);
+
+      const batchResults = await Promise.all(
+        currentBatch.map(file => compressAndConvertImage(file).catch(err => {
+          console.warn('Failed to compress image:', file.name, err);
+          return null;
+        }))
+      );
+
+      for (const res of batchResults) {
+        if (res) urls.push(res);
+      }
+    }
+
+    setSubImagesList(prev => {
+      const combined = [...prev, ...urls];
+      // Automatically sync cover photo if not set yet
+      if (!formData.imageUrl && combined.length > 0) {
+        setFormData(f => ({ ...f, imageUrl: combined[0] }));
+      }
+      return combined;
+    });
+
+    setUploadProgressStatus(null);
+    setUploadProgressPercent(0);
+    alert(`🎉 ${urls.length}장의 고화질 사진이 Airbnb 규격으로 성공적으로 변환 및 등록되었습니다! (현재 총 ${subImagesList.length + urls.length}장)`);
+  };
+
   const handleMainImageFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     try {
-      setUploadProgressStatus('📷 메인 이미지 최적화 중...');
+      setUploadProgressStatus('📷 메인 커버 이미지 최적화 중...');
       const dataUrl = await compressAndConvertImage(file);
       setFormData((prev) => ({ ...prev, imageUrl: dataUrl }));
+      // Also ensure it is at top of subImagesList
+      setSubImagesList(prev => [dataUrl, ...prev.filter(u => u !== dataUrl)]);
       setUploadProgressStatus(null);
-      alert('대표 메인 사진이 PC 파일에서 성공적으로 등록되었습니다!');
+      alert('대표 메인 커버 사진이 성공적으로 등록되었습니다!');
     } catch (err) {
       setUploadProgressStatus(null);
       alert('이미지 파일 업로드 중 오류가 발생했습니다.');
@@ -193,21 +291,25 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     if (!files || files.length === 0) return;
     try {
       const fileList = Array.from(files);
-      const total = fileList.length;
-      const urls: string[] = [];
-      for (let i = 0; i < total; i++) {
-        setUploadProgressStatus(`📷 서브 사진 최적화 및 압축 중... (${i + 1} / ${total})`);
-        const dataUrl = await compressAndConvertImage(fileList[i]);
-        urls.push(dataUrl);
-      }
-      setSubImagesList(prev => [...prev, ...urls]);
-      setUploadProgressStatus(null);
-      alert(`✅ ${total}개의 서브 사진이 성공적으로 변환 및 추가 등록되었습니다!`);
+      await processBatchFiles(fileList);
     } catch (err) {
       setUploadProgressStatus(null);
-      alert('서브 이미지 파일 업로드 중 오류가 발생했습니다.');
+      alert('사진 일괄 업로드 중 오류가 발생했습니다.');
     }
     e.target.value = '';
+  };
+
+  const handleDropPhotos = async (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDraggingOver(false);
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      const imageFiles = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'));
+      if (imageFiles.length === 0) {
+        alert('이미지 파일(JPG, PNG, WebP 등)만 드롭해주세요.');
+        return;
+      }
+      await processBatchFiles(imageFiles);
+    }
   };
 
   // Helper for Itinerary
@@ -454,7 +556,10 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     setDepartureCitiesText((prod.departureCities || []).join('\n'));
     setTagsText((prod.tags || []).join('\n'));
     const existingSubImages = prod.additionalImages || (prod as any).galleryImages || (prod as any).images || [];
-    setSubImagesList(Array.isArray(existingSubImages) ? [...existingSubImages] : []);
+    const allInitial = prod.imageUrl 
+      ? [prod.imageUrl, ...existingSubImages.filter((u: string) => u !== prod.imageUrl)]
+      : existingSubImages;
+    setSubImagesList(Array.isArray(allInitial) ? [...allInitial] : []);
     setItineraryList(prod.itinerary && prod.itinerary.length > 0 ? [...prod.itinerary] : [
       { day: 1, title: '공항 도착 및 가이드 미팅', description: '체크인 후 휴식' }
     ]);
@@ -492,8 +597,11 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
       const splitLines = (str: string) => str.split('\n').map(s => s.trim()).filter(Boolean);
 
       const cleanSubImages = subImagesList.filter(Boolean);
+      const mainImageUrl = formData.imageUrl || cleanSubImages[0] || 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1000&q=80';
+
       const finalData: Partial<Product> = {
         ...formData,
+        imageUrl: mainImageUrl,
         included: splitLines(includedText),
         excluded: splitLines(excludedText),
         departureCities: splitLines(departureCitiesText),
@@ -927,171 +1035,253 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                     </div>
                   </div>
 
-                  {/* Section 2: 대표 및 추가 사진 등록 (내 컴퓨터 파일 선택 & URL 입력 지원) */}
+                  {/* Section 2: Airbnb 규격 고화질 사진 대량 등록 및 갤러리 관리 */}
                   <div className="space-y-4 bg-slate-50 p-4 sm:p-5 rounded-2xl border border-slate-200">
-                    <h5 className="font-extrabold text-xs text-slate-800 flex items-center justify-between border-b pb-2 border-slate-200">
-                      <div className="flex items-center gap-1.5">
-                        <ImageIcon className="w-4 h-4 text-teal-700" />
-                        <span>2. 상품 사진 등록 (컴퓨터 파일 선택 / 이미지 URL)</span>
-                      </div>
-                      <span className="text-[11px] text-teal-800 bg-teal-50 px-2 py-0.5 rounded-md border border-teal-200 font-bold">
-                        📁 내 컴퓨터 사진 직접 등록 가능
-                      </span>
-                    </h5>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {/* 1. 대표 메인 사진 */}
-                      <div className="space-y-2.5 bg-white p-3.5 rounded-xl border border-slate-200">
-                        <label className="text-xs font-extrabold text-slate-900 block">
-                          📸 대표 메인 사진
-                        </label>
-
-                        {/* File Upload Button */}
+                    <div className="flex flex-wrap items-center justify-between gap-2 border-b pb-3 border-slate-200">
+                      <div className="flex items-center gap-2">
+                        <div className="w-7 h-7 rounded-lg bg-rose-500 text-white flex items-center justify-center font-black text-xs shadow-xs">
+                          📷
+                        </div>
                         <div>
-                          <input
-                            type="file"
-                            accept="image/*"
-                            id="main-image-file-input"
-                            className="hidden"
-                            onChange={handleMainImageFileUpload}
-                          />
-                          <label
-                            htmlFor="main-image-file-input"
-                            className="w-full py-2.5 px-3 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-extrabold text-xs flex items-center justify-center gap-2 cursor-pointer transition-all shadow-sm"
-                          >
-                            <Upload className="w-4 h-4" />
-                            <span>💻 내 컴퓨터에서 메인 사진 파일 선택</span>
-                          </label>
+                          <h5 className="font-extrabold text-sm text-slate-900 flex items-center gap-1.5">
+                            <span>2. 에어비앤비(Airbnb) 규격 사진 갤러리 관리</span>
+                          </h5>
+                          <p className="text-[11px] text-slate-500">
+                            PC 파일 일괄 선택(30~100장 이상) 또는 드래그 앤 드롭으로 고화질 사진을 대량 등록하세요.
+                          </p>
                         </div>
-
-                        <div className="relative flex items-center justify-center my-1">
-                          <span className="bg-white px-2 text-[10px] text-slate-400 font-bold z-10">또는</span>
-                          <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-slate-200"></div></div>
-                        </div>
-
-                        {/* URL Input */}
-                        <div className="space-y-1">
-                          <label className="text-[10px] font-bold text-slate-500 block">웹 이미지 URL 직접 입력:</label>
-                          <input
-                            type="url"
-                            value={formData.imageUrl || ''}
-                            onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
-                            placeholder="https://images.unsplash.com/..."
-                            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs"
-                          />
-                        </div>
-
-                        {/* Preview */}
-                        {formData.imageUrl ? (
-                          <div className="pt-2 flex items-center justify-between bg-slate-50 p-2 rounded-xl border border-slate-200">
-                            <div className="flex items-center gap-2 min-w-0">
-                              <img src={formData.imageUrl} alt="preview" className="w-16 h-12 object-cover rounded-lg border border-slate-200 shrink-0" />
-                              <span className="text-[11px] text-slate-600 font-bold truncate">메인 사진 등록 완료</span>
-                            </div>
-                            <button
-                              type="button"
-                              onClick={() => setFormData({ ...formData, imageUrl: '' })}
-                              className="text-[10px] text-rose-600 font-bold hover:underline shrink-0"
-                            >
-                              삭제
-                            </button>
-                          </div>
-                        ) : (
-                          <div className="text-center py-3 text-[11px] text-slate-400 border border-dashed border-slate-200 rounded-xl">
-                            등록된 메인 사진이 없습니다.
-                          </div>
-                        )}
                       </div>
+                      <div className="flex items-center gap-2">
+                        <span className={`text-xs font-black px-3 py-1 rounded-xl border flex items-center gap-1 ${
+                          subImagesList.length >= 20 
+                            ? 'bg-emerald-50 text-emerald-700 border-emerald-200' 
+                            : subImagesList.length >= 5 
+                            ? 'bg-amber-50 text-amber-700 border-amber-200' 
+                            : 'bg-rose-50 text-rose-700 border-rose-200'
+                        }`}>
+                          <span>📸 등록된 사진:</span>
+                          <strong className="text-sm">{subImagesList.length}</strong>장
+                          <span className="text-[10px] font-medium hidden sm:inline">
+                            {subImagesList.length >= 25 ? '(Airbnb 권장 충족 ✅)' : '(Airbnb 권장: 25~50장 이상)'}
+                          </span>
+                        </span>
+                      </div>
+                    </div>
 
-                      {/* 2. 추가 서브 사진 */}
-                      <div className="space-y-3 bg-white p-3.5 rounded-xl border border-slate-200">
-                        <div className="flex items-center justify-between">
-                          <label className="text-xs font-extrabold text-slate-900 block">
-                            🖼️ 추가 서브 사진 ({subImagesList.length}장)
-                          </label>
-                          {subImagesList.length > 0 && (
-                            <button
-                              type="button"
-                              onClick={() => {
-                                if (confirm('등록된 모든 서브 사진을 삭제하시겠습니까?')) {
-                                  setSubImagesList([]);
-                                }
-                              }}
-                              className="text-[10px] text-rose-600 font-bold hover:underline"
-                            >
-                              전체 삭제
-                            </button>
-                          )}
+                    {/* Airbnb Upload & Dropzone Area */}
+                    <div
+                      onDragOver={(e) => { e.preventDefault(); setIsDraggingOver(true); }}
+                      onDragLeave={() => setIsDraggingOver(false)}
+                      onDrop={handleDropPhotos}
+                      className={`relative border-2 border-dashed rounded-2xl p-4 sm:p-6 text-center transition-all ${
+                        isDraggingOver 
+                          ? 'border-rose-500 bg-rose-50/70 scale-[1.01]' 
+                          : 'border-slate-300 bg-white hover:border-slate-400'
+                      }`}
+                    >
+                      <div className="max-w-xl mx-auto space-y-3">
+                        <div className="w-12 h-12 mx-auto rounded-full bg-rose-100 text-rose-600 flex items-center justify-center">
+                          <Upload className="w-6 h-6" />
+                        </div>
+                        <div>
+                          <p className="text-sm font-extrabold text-slate-800">
+                            사진을 여기에 끌어다 놓거나(Drag & Drop), 아래 버튼을 눌러 한 번에 여러 장 선택하세요
+                          </p>
+                          <p className="text-xs text-slate-500 mt-0.5">
+                            JPG, PNG, WebP 등 대용량 사진 지원 · 자동 무손실 최적화 적용
+                          </p>
                         </div>
 
-                        {/* File Upload Button Multiple */}
-                        <div>
+                        {/* Upload Trigger Buttons */}
+                        <div className="flex flex-wrap items-center justify-center gap-2 pt-1">
                           <input
                             type="file"
                             accept="image/*"
                             multiple
-                            id="sub-images-file-input"
+                            id="airbnb-bulk-photos-input"
                             className="hidden"
                             onChange={handleSubImagesFileUpload}
                           />
                           <label
-                            htmlFor="sub-images-file-input"
-                            className="w-full py-2.5 px-3 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-extrabold text-xs flex items-center justify-center gap-2 cursor-pointer transition-all shadow-sm"
+                            htmlFor="airbnb-bulk-photos-input"
+                            className="px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-xs flex items-center gap-2 cursor-pointer shadow-md shadow-rose-600/20 transition-all hover:scale-105 active:scale-95"
                           >
                             <Upload className="w-4 h-4" />
-                            <span>💻 내 컴퓨터에서 서브 사진 동시 선택 (다중)</span>
+                            <span>📁 컴퓨터에서 사진 일괄 업로드 (다중 선택)</span>
+                          </label>
+
+                          <input
+                            type="file"
+                            accept="image/*"
+                            id="single-cover-photo-input"
+                            className="hidden"
+                            onChange={handleMainImageFileUpload}
+                          />
+                          <label
+                            htmlFor="single-cover-photo-input"
+                            className="px-3.5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs flex items-center gap-1.5 cursor-pointer transition-all"
+                          >
+                            <span>👑 대표 커버 사진만 교체</span>
                           </label>
                         </div>
 
-                        <div className="relative flex items-center justify-center my-1">
-                          <span className="bg-white px-2 text-[10px] text-slate-400 font-bold z-10">또는</span>
-                          <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-slate-200"></div></div>
-                        </div>
+                        {/* Progress Bar Display */}
+                        {uploadProgressStatus && (
+                          <div className="pt-2 space-y-1.5 animate-fadeIn">
+                            <div className="flex items-center justify-between text-xs font-bold text-rose-700">
+                              <span>{uploadProgressStatus}</span>
+                              {uploadProgressPercent > 0 && <span>{uploadProgressPercent}%</span>}
+                            </div>
+                            <div className="w-full bg-slate-200 rounded-full h-2 overflow-hidden">
+                              <div
+                                className="bg-gradient-to-r from-rose-500 to-teal-500 h-2 rounded-full transition-all duration-200"
+                                style={{ width: `${Math.max(uploadProgressPercent, 10)}%` }}
+                              />
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
 
-                        {/* Single URL Input + Add Button */}
-                        <div className="space-y-1">
-                          <label className="text-[10px] font-bold text-slate-500 block">웹 이미지 URL 단건 추가:</label>
-                          <div className="flex gap-1.5">
-                            <input
-                              type="url"
-                              value={newSubImageUrlInput}
-                              onChange={(e) => setNewSubImageUrlInput(e.target.value)}
-                              placeholder="https://images.unsplash.com/photo-..."
-                              className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs"
-                            />
+                    {/* Batch URL Adder Accordion */}
+                    <div className="bg-white p-3.5 rounded-xl border border-slate-200 space-y-2">
+                      <div className="flex items-center justify-between">
+                        <label className="text-xs font-bold text-slate-700 block">
+                          🔗 웹 이미지 URL로 대량 추가 (줄바꿈 또는 쉼표로 구분하여 여러 개 입력 가능):
+                        </label>
+                      </div>
+                      <div className="flex flex-col sm:flex-row gap-2">
+                        <textarea
+                          rows={2}
+                          value={newSubImageUrlInput}
+                          onChange={(e) => setNewSubImageUrlInput(e.target.value)}
+                          placeholder="https://images.unsplash.com/photo-1...\nhttps://images.unsplash.com/photo-2..."
+                          className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-mono"
+                        />
+                        <button
+                          type="button"
+                          onClick={handleAddSubImageUrl}
+                          className="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-xs shrink-0 self-end sm:self-center"
+                        >
+                          + URL 사진 추가
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Airbnb Photo Gallery Visual Grid & Controls */}
+                    {subImagesList.length > 0 ? (
+                      <div className="space-y-3 pt-2">
+                        {/* Action Bar */}
+                        <div className="flex flex-wrap items-center justify-between gap-2 bg-white px-3.5 py-2.5 rounded-xl border border-slate-200">
+                          <div className="flex items-center gap-2">
                             <button
                               type="button"
-                              onClick={handleAddSubImageUrl}
-                              className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs shrink-0"
+                              onClick={handleSelectAllPhotos}
+                              className="text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 px-2.5 py-1 rounded-lg transition-colors"
                             >
-                              + 추가
+                              {selectedPhotoIndexes.length === subImagesList.length ? '선택 해제' : '전체 선택'}
+                            </button>
+                            {selectedPhotoIndexes.length > 0 && (
+                              <button
+                                type="button"
+                                onClick={handleDeleteSelectedPhotos}
+                                className="text-xs font-extrabold text-rose-600 bg-rose-50 hover:bg-rose-100 px-2.5 py-1 rounded-lg border border-rose-200 transition-colors"
+                              >
+                                선택한 {selectedPhotoIndexes.length}장 삭제
+                              </button>
+                            )}
+                          </div>
+
+                          <div className="flex items-center gap-2">
+                            <span className="text-[11px] text-slate-500 font-bold hidden sm:inline">
+                              💡 첫 번째 사진이 자동으로 상품의 대표 커버 사진이 됩니다.
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (confirm('등록된 모든 사진을 삭제하시겠습니까?')) {
+                                  setSubImagesList([]);
+                                  setFormData(prev => ({ ...prev, imageUrl: '' }));
+                                }
+                              }}
+                              className="text-xs font-bold text-slate-400 hover:text-rose-600 hover:underline"
+                            >
+                              전체 비우기
                             </button>
                           </div>
                         </div>
 
-                        {/* Visual Gallery Grid */}
-                        {subImagesList.length > 0 ? (
-                          <div className="pt-2 space-y-1.5">
-                            <div className="text-[10px] font-bold text-slate-500 flex items-center justify-between">
-                              <span>📸 등록된 서브 사진 갤러리 목록:</span>
-                              <span className="text-teal-700 font-extrabold">개별 삭제 / 순서 이동 가능</span>
-                            </div>
-                            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-56 overflow-y-auto p-1 bg-slate-50 rounded-xl border border-slate-200">
-                              {subImagesList.map((url, idx) => (
-                                <div key={`sub-img-card-${idx}`} className="relative bg-white rounded-lg border border-slate-200 overflow-hidden group p-1 flex flex-col justify-between">
-                                  <div className="relative h-20 w-full rounded overflow-hidden bg-slate-100">
-                                    <img src={url} alt={`sub-${idx}`} className="w-full h-full object-cover" />
-                                    <span className="absolute top-1 left-1 bg-slate-900/80 text-white text-[9px] font-black px-1.5 py-0.5 rounded">
-                                      #{idx + 1}
-                                    </span>
+                        {/* Photo Cards Grid */}
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 max-h-[460px] overflow-y-auto p-2 bg-slate-100/70 rounded-2xl border border-slate-200">
+                          {subImagesList.map((url, idx) => {
+                            const isCover = idx === 0;
+                            const isSelected = selectedPhotoIndexes.includes(idx);
+                            return (
+                              <div
+                                key={`photo-card-${idx}`}
+                                className={`relative bg-white rounded-xl border overflow-hidden group p-1.5 flex flex-col justify-between transition-all ${
+                                  isCover 
+                                    ? 'ring-2 ring-rose-500 border-rose-500 shadow-md bg-rose-50/20' 
+                                    : isSelected 
+                                    ? 'ring-2 ring-teal-500 border-teal-500 bg-teal-50/20' 
+                                    : 'border-slate-200 hover:border-slate-400 shadow-xs'
+                                }`}
+                              >
+                                {/* Thumbnail Image Box */}
+                                <div className="relative aspect-[4/3] w-full rounded-lg overflow-hidden bg-slate-900">
+                                  <img src={url} alt={`photo-${idx}`} className="w-full h-full object-cover" />
+
+                                  {/* Select Checkbox */}
+                                  <input
+                                    type="checkbox"
+                                    checked={isSelected}
+                                    onChange={() => handleToggleSelectPhoto(idx)}
+                                    className="absolute top-1.5 right-1.5 w-4 h-4 rounded text-rose-600 z-10 cursor-pointer shadow-sm"
+                                  />
+
+                                  {/* Index & Cover Badge */}
+                                  <div className="absolute top-1.5 left-1.5 flex items-center gap-1 z-10">
+                                    {isCover ? (
+                                      <span className="bg-rose-600 text-white text-[10px] font-black px-2 py-0.5 rounded shadow-md flex items-center gap-0.5">
+                                        👑 대표 커버
+                                      </span>
+                                    ) : (
+                                      <span className="bg-slate-900/80 text-white text-[10px] font-black px-1.5 py-0.5 rounded">
+                                        #{idx + 1}
+                                      </span>
+                                    )}
                                   </div>
-                                  <div className="flex items-center justify-between pt-1 text-[10px]">
+                                </div>
+
+                                {/* Controls Toolbar */}
+                                <div className="pt-2 space-y-1.5">
+                                  {!isCover && (
+                                    <button
+                                      type="button"
+                                      onClick={() => handleSetAsCoverPhoto(idx)}
+                                      className="w-full py-1 rounded bg-slate-100 hover:bg-rose-600 hover:text-white text-slate-700 text-[10px] font-extrabold transition-colors flex items-center justify-center gap-1"
+                                      title="이 사진을 대표 메인 커버 사진으로 지정합니다"
+                                    >
+                                      <span>👑 대표 사진 지정</span>
+                                    </button>
+                                  )}
+
+                                  <div className="flex items-center justify-between text-[10px] pt-0.5 border-t border-slate-100">
                                     <div className="flex items-center gap-1">
                                       <button
                                         type="button"
                                         disabled={idx === 0}
+                                        onClick={() => handleMoveSubImage(idx, 'first')}
+                                        className="px-1.5 py-0.5 bg-slate-100 hover:bg-slate-200 rounded text-slate-700 disabled:opacity-20 font-bold"
+                                        title="맨 앞으로"
+                                      >
+                                        ⏮
+                                      </button>
+                                      <button
+                                        type="button"
+                                        disabled={idx === 0}
                                         onClick={() => handleMoveSubImage(idx, 'up')}
-                                        className="px-1 bg-slate-100 hover:bg-slate-200 rounded text-slate-600 disabled:opacity-30"
+                                        className="px-1.5 py-0.5 bg-slate-100 hover:bg-slate-200 rounded text-slate-700 disabled:opacity-20 font-bold"
                                         title="앞으로 이동"
                                       >
                                         ◀
@@ -1100,31 +1290,41 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                                         type="button"
                                         disabled={idx === subImagesList.length - 1}
                                         onClick={() => handleMoveSubImage(idx, 'down')}
-                                        className="px-1 bg-slate-100 hover:bg-slate-200 rounded text-slate-600 disabled:opacity-30"
+                                        className="px-1.5 py-0.5 bg-slate-100 hover:bg-slate-200 rounded text-slate-700 disabled:opacity-20 font-bold"
                                         title="뒤로 이동"
                                       >
                                         ▶
+                                      </button>
+                                      <button
+                                        type="button"
+                                        disabled={idx === subImagesList.length - 1}
+                                        onClick={() => handleMoveSubImage(idx, 'last')}
+                                        className="px-1.5 py-0.5 bg-slate-100 hover:bg-slate-200 rounded text-slate-700 disabled:opacity-20 font-bold"
+                                        title="맨 뒤로"
+                                      >
+                                        ⏭
                                       </button>
                                     </div>
                                     <button
                                       type="button"
                                       onClick={() => handleRemoveSubImage(idx)}
-                                      className="px-1.5 py-0.5 bg-rose-50 text-rose-600 hover:bg-rose-100 font-extrabold rounded"
+                                      className="px-1.5 py-0.5 text-rose-600 hover:bg-rose-50 font-black rounded"
+                                      title="삭제"
                                     >
-                                      삭제
+                                      ✕
                                     </button>
                                   </div>
                                 </div>
-                              ))}
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="text-center py-3 text-[11px] text-slate-400 border border-dashed border-slate-200 rounded-xl">
-                            등록된 추가 서브 사진이 없습니다. (위 버튼으로 내 컴퓨터의 사진을 여러 장 업로드할 수 있습니다)
-                          </div>
-                        )}
+                              </div>
+                            );
+                          })}
+                        </div>
                       </div>
-                    </div>
+                    ) : (
+                      <div className="text-center py-6 bg-white rounded-xl border border-dashed border-slate-200 text-slate-400 text-xs">
+                        📷 아직 등록된 사진이 없습니다. 상단 드롭존이나 파일 선택 버튼을 눌러 사진을 등록해주세요.
+                      </div>
+                    )}
                   </div>
 
                   {/* Section 3: 상세 소개글 */}
