@@ -103,7 +103,34 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   const [excludedText, setExcludedText] = useState('');
   const [departureCitiesText, setDepartureCitiesText] = useState('');
   const [tagsText, setTagsText] = useState('');
-  const [additionalImagesText, setAdditionalImagesText] = useState('');
+  
+  // Sub Images List State (Visual management)
+  const [subImagesList, setSubImagesList] = useState<string[]>([]);
+  const [newSubImageUrlInput, setNewSubImageUrlInput] = useState<string>('');
+  const [uploadProgressStatus, setUploadProgressStatus] = useState<string | null>(null);
+  const [isSavingProduct, setIsSavingProduct] = useState<boolean>(false);
+
+  const handleAddSubImageUrl = () => {
+    if (!newSubImageUrlInput.trim()) return;
+    setSubImagesList(prev => [...prev, newSubImageUrlInput.trim()]);
+    setNewSubImageUrlInput('');
+  };
+
+  const handleRemoveSubImage = (index: number) => {
+    setSubImagesList(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const handleMoveSubImage = (index: number, direction: 'up' | 'down') => {
+    setSubImagesList(prev => {
+      const copy = [...prev];
+      const targetIndex = direction === 'up' ? index - 1 : index + 1;
+      if (targetIndex < 0 || targetIndex >= copy.length) return copy;
+      const temp = copy[index];
+      copy[index] = copy[targetIndex];
+      copy[targetIndex] = temp;
+      return copy;
+    });
+  };
 
   // Helper function to process and compress user uploaded image file
   const compressAndConvertImage = (file: File): Promise<string> => {
@@ -115,7 +142,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
           const canvas = document.createElement('canvas');
           let width = img.width;
           let height = img.height;
-          const MAX_SIZE = 800;
+          const MAX_SIZE = 650;
 
           if (width > height) {
             if (width > MAX_SIZE) {
@@ -134,7 +161,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
           const ctx = canvas.getContext('2d');
           ctx?.drawImage(img, 0, 0, width, height);
 
-          const dataUrl = canvas.toDataURL('image/jpeg', 0.70);
+          const dataUrl = canvas.toDataURL('image/jpeg', 0.55);
           resolve(dataUrl);
         };
         img.onerror = () => reject(new Error('이미지 로드 실패'));
@@ -149,10 +176,13 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     const file = e.target.files?.[0];
     if (!file) return;
     try {
+      setUploadProgressStatus('📷 메인 이미지 최적화 중...');
       const dataUrl = await compressAndConvertImage(file);
       setFormData((prev) => ({ ...prev, imageUrl: dataUrl }));
+      setUploadProgressStatus(null);
       alert('대표 메인 사진이 PC 파일에서 성공적으로 등록되었습니다!');
     } catch (err) {
+      setUploadProgressStatus(null);
       alert('이미지 파일 업로드 중 오류가 발생했습니다.');
     }
     e.target.value = '';
@@ -162,16 +192,19 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     const files = e.target.files;
     if (!files || files.length === 0) return;
     try {
+      const fileList = Array.from(files);
+      const total = fileList.length;
       const urls: string[] = [];
-      for (let i = 0; i < files.length; i++) {
-        const dataUrl = await compressAndConvertImage(files[i]);
+      for (let i = 0; i < total; i++) {
+        setUploadProgressStatus(`📷 서브 사진 최적화 및 압축 중... (${i + 1} / ${total})`);
+        const dataUrl = await compressAndConvertImage(fileList[i]);
         urls.push(dataUrl);
       }
-      const existing = additionalImagesText.trim();
-      const newCombined = existing ? `${existing}\n${urls.join('\n')}` : urls.join('\n');
-      setAdditionalImagesText(newCombined);
-      alert(`${files.length}개의 추가 서브 사진이 PC 파일에서 성공적으로 등록되었습니다!`);
+      setSubImagesList(prev => [...prev, ...urls]);
+      setUploadProgressStatus(null);
+      alert(`✅ ${total}개의 서브 사진이 성공적으로 변환 및 추가 등록되었습니다!`);
     } catch (err) {
+      setUploadProgressStatus(null);
       alert('서브 이미지 파일 업로드 중 오류가 발생했습니다.');
     }
     e.target.value = '';
@@ -351,7 +384,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
       setExcludedText('왕복 항공권\n가이드/기사 매너팁\n개인 선택옵션 및 기타 개인 경비');
       setDepartureCitiesText('인천\n김해\n대구\n청주');
       setTagsText(`#프라이빗풀빌라\n#단독독채\n#럭셔리휴양\n#${cit}풀빌라`);
-      setAdditionalImagesText('');
+      setSubImagesList([]);
       setItineraryList([
         { day: 1, title: '공항 도착 후 가이드 미팅 & 풀빌라 체크인', description: '단독 전용차량 이동 후 프라이빗 풀빌라 체크인, 미니바 및 전용 수영장 이용 안내', meal: '석식: 현지 특식', hotel: '프라이빗 럭셔리 독채 풀빌라' },
         { day: 2, title: '프라이빗 수영장 물놀이 & 시티 명소 가이드 투어', description: '빌라 내 전용 수영장 자유 물놀이 및 한국어 가이드 동행 시티 명소 관람, 씨푸드 다이닝', meal: '조: 빌라 조식 / 중: 현지 특식 / 석: 씨푸드', hotel: '프라이빗 럭셔리 독채 풀빌라' },
@@ -397,7 +430,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
       setExcludedText('왕복 항공권\n가이드/기사 매너팁\n개인 경비');
       setDepartureCitiesText('인천\n김해\n대구');
       setTagsText(`#신규상품\n#${cit}\n#${cat}`);
-      setAdditionalImagesText('');
+      setSubImagesList([]);
       setItineraryList([
         { day: 1, title: '공항 도착 및 현지 가이드 미팅', description: '전용 차량으로 호텔 이동 후 체크인 및 자유 휴식', meal: '석식: 현지 특식', hotel: '5성급 리조트/호텔' },
         { day: 2, title: '주요 관광지 가이드 투어 및 특식', description: '단독 차량과 가이드로 여유로운 코스 진행', meal: '조: 호텔식 / 중: 특식 / 석: 씨푸드', hotel: '5성급 리조트/호텔' },
@@ -420,7 +453,8 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     setExcludedText((prod.excluded || []).join('\n'));
     setDepartureCitiesText((prod.departureCities || []).join('\n'));
     setTagsText((prod.tags || []).join('\n'));
-    setAdditionalImagesText((prod.additionalImages || []).join('\n'));
+    const existingSubImages = prod.additionalImages || (prod as any).galleryImages || (prod as any).images || [];
+    setSubImagesList(Array.isArray(existingSubImages) ? [...existingSubImages] : []);
     setItineraryList(prod.itinerary && prod.itinerary.length > 0 ? [...prod.itinerary] : [
       { day: 1, title: '공항 도착 및 가이드 미팅', description: '체크인 후 휴식' }
     ]);
@@ -452,45 +486,54 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
   const handleSaveProduct = async (e: React.FormEvent) => {
     e.preventDefault();
-    const splitLines = (str: string) => str.split('\n').map(s => s.trim()).filter(Boolean);
+    if (isSavingProduct) return;
+    setIsSavingProduct(true);
+    try {
+      const splitLines = (str: string) => str.split('\n').map(s => s.trim()).filter(Boolean);
 
-    const finalData: Partial<Product> = {
-      ...formData,
-      included: splitLines(includedText),
-      excluded: splitLines(excludedText),
-      departureCities: splitLines(departureCitiesText),
-      tags: splitLines(tagsText),
-      additionalImages: splitLines(additionalImagesText),
-      itinerary: itineraryList,
-    };
-
-    if (formData.category === '골프투어') {
-      finalData.golfSpecs = {
-        holes: golfHoles,
-        greenFeeIncluded,
-        caddieFeeIncluded,
-        golfCourseNames: splitLines(golfCourseNamesText),
+      const cleanSubImages = subImagesList.filter(Boolean);
+      const finalData: Partial<Product> = {
+        ...formData,
+        included: splitLines(includedText),
+        excluded: splitLines(excludedText),
+        departureCities: splitLines(departureCitiesText),
+        tags: splitLines(tagsText),
+        additionalImages: cleanSubImages,
+        itinerary: itineraryList,
       };
-    }
 
-    if (formData.category === '풀빌라') {
-      finalData.villaSpecs = {
-        bedrooms: villaBedrooms,
-        privatePool: villaPrivatePool,
-        oceanView: villaOceanView,
-        maxOccupancy: villaMaxOccupancy,
-      };
-    }
+      if (formData.category === '골프투어') {
+        finalData.golfSpecs = {
+          holes: golfHoles,
+          greenFeeIncluded,
+          caddieFeeIncluded,
+          golfCourseNames: splitLines(golfCourseNamesText),
+        };
+      }
 
-    if (isCreating) {
-      await onAddProduct(finalData as any);
-      alert('새 상품이 성공적으로 등록되었습니다.');
-    } else if (editingProduct) {
-      await onUpdateProduct(editingProduct.id, finalData);
-      alert('상품 정보가 성공적으로 수정되었습니다.');
+      if (formData.category === '풀빌라') {
+        finalData.villaSpecs = {
+          bedrooms: villaBedrooms,
+          privatePool: villaPrivatePool,
+          oceanView: villaOceanView,
+          maxOccupancy: villaMaxOccupancy,
+        };
+      }
+
+      if (isCreating) {
+        await onAddProduct(finalData as any);
+        alert('✅ 새 상품이 성공적으로 서버에 등록/저장되었습니다.');
+      } else if (editingProduct) {
+        await onUpdateProduct(editingProduct.id, finalData);
+        alert('✅ 상품 정보가 성공적으로 서버에 수정/저장되었습니다.');
+      }
+      setEditingProduct(null);
+      setIsCreating(false);
+    } catch (err) {
+      console.error('Save product error:', err);
+    } finally {
+      setIsSavingProduct(false);
     }
-    setEditingProduct(null);
-    setIsCreating(false);
   };
 
   const handleExportJson = () => {
@@ -961,10 +1004,25 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                       </div>
 
                       {/* 2. 추가 서브 사진 */}
-                      <div className="space-y-2.5 bg-white p-3.5 rounded-xl border border-slate-200">
-                        <label className="text-xs font-extrabold text-slate-900 block">
-                          🖼️ 추가 서브 사진 (다중 선택 가능)
-                        </label>
+                      <div className="space-y-3 bg-white p-3.5 rounded-xl border border-slate-200">
+                        <div className="flex items-center justify-between">
+                          <label className="text-xs font-extrabold text-slate-900 block">
+                            🖼️ 추가 서브 사진 ({subImagesList.length}장)
+                          </label>
+                          {subImagesList.length > 0 && (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (confirm('등록된 모든 서브 사진을 삭제하시겠습니까?')) {
+                                  setSubImagesList([]);
+                                }
+                              }}
+                              className="text-[10px] text-rose-600 font-bold hover:underline"
+                            >
+                              전체 삭제
+                            </button>
+                          )}
+                        </div>
 
                         {/* File Upload Button Multiple */}
                         <div>
@@ -990,27 +1048,79 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                           <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-slate-200"></div></div>
                         </div>
 
-                        {/* URL List Textarea */}
+                        {/* Single URL Input + Add Button */}
                         <div className="space-y-1">
-                          <label className="text-[10px] font-bold text-slate-500 block">웹 서브 사진 URL 목록 (한 줄에 1개씩):</label>
-                          <textarea
-                            rows={3}
-                            value={additionalImagesText}
-                            onChange={(e) => setAdditionalImagesText(e.target.value)}
-                            placeholder={'https://images.unsplash.com/photo-1...\nhttps://images.unsplash.com/photo-2...'}
-                            className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs font-mono"
-                          />
+                          <label className="text-[10px] font-bold text-slate-500 block">웹 이미지 URL 단건 추가:</label>
+                          <div className="flex gap-1.5">
+                            <input
+                              type="url"
+                              value={newSubImageUrlInput}
+                              onChange={(e) => setNewSubImageUrlInput(e.target.value)}
+                              placeholder="https://images.unsplash.com/photo-..."
+                              className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs"
+                            />
+                            <button
+                              type="button"
+                              onClick={handleAddSubImageUrl}
+                              className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs shrink-0"
+                            >
+                              + 추가
+                            </button>
+                          </div>
                         </div>
 
-                        {/* Sub Images Preview Gallery */}
-                        {additionalImagesText.trim() && (
-                          <div className="pt-1">
-                            <div className="text-[10px] font-bold text-slate-500 mb-1">등록된 서브 사진 미리보기:</div>
-                            <div className="flex items-center gap-1.5 overflow-x-auto pb-1">
-                              {additionalImagesText.split('\n').filter(Boolean).map((url, i) => (
-                                <img key={`sub-img-${i}-${url.slice(0, 15)}`} src={url.trim()} alt={`sub-${i}`} className="w-12 h-10 object-cover rounded-lg border border-slate-200 shrink-0" />
+                        {/* Visual Gallery Grid */}
+                        {subImagesList.length > 0 ? (
+                          <div className="pt-2 space-y-1.5">
+                            <div className="text-[10px] font-bold text-slate-500 flex items-center justify-between">
+                              <span>📸 등록된 서브 사진 갤러리 목록:</span>
+                              <span className="text-teal-700 font-extrabold">개별 삭제 / 순서 이동 가능</span>
+                            </div>
+                            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-56 overflow-y-auto p-1 bg-slate-50 rounded-xl border border-slate-200">
+                              {subImagesList.map((url, idx) => (
+                                <div key={`sub-img-card-${idx}`} className="relative bg-white rounded-lg border border-slate-200 overflow-hidden group p-1 flex flex-col justify-between">
+                                  <div className="relative h-20 w-full rounded overflow-hidden bg-slate-100">
+                                    <img src={url} alt={`sub-${idx}`} className="w-full h-full object-cover" />
+                                    <span className="absolute top-1 left-1 bg-slate-900/80 text-white text-[9px] font-black px-1.5 py-0.5 rounded">
+                                      #{idx + 1}
+                                    </span>
+                                  </div>
+                                  <div className="flex items-center justify-between pt-1 text-[10px]">
+                                    <div className="flex items-center gap-1">
+                                      <button
+                                        type="button"
+                                        disabled={idx === 0}
+                                        onClick={() => handleMoveSubImage(idx, 'up')}
+                                        className="px-1 bg-slate-100 hover:bg-slate-200 rounded text-slate-600 disabled:opacity-30"
+                                        title="앞으로 이동"
+                                      >
+                                        ◀
+                                      </button>
+                                      <button
+                                        type="button"
+                                        disabled={idx === subImagesList.length - 1}
+                                        onClick={() => handleMoveSubImage(idx, 'down')}
+                                        className="px-1 bg-slate-100 hover:bg-slate-200 rounded text-slate-600 disabled:opacity-30"
+                                        title="뒤로 이동"
+                                      >
+                                        ▶
+                                      </button>
+                                    </div>
+                                    <button
+                                      type="button"
+                                      onClick={() => handleRemoveSubImage(idx)}
+                                      className="px-1.5 py-0.5 bg-rose-50 text-rose-600 hover:bg-rose-100 font-extrabold rounded"
+                                    >
+                                      삭제
+                                    </button>
+                                  </div>
+                                </div>
                               ))}
                             </div>
+                          </div>
+                        ) : (
+                          <div className="text-center py-3 text-[11px] text-slate-400 border border-dashed border-slate-200 rounded-xl">
+                            등록된 추가 서브 사진이 없습니다. (위 버튼으로 내 컴퓨터의 사진을 여러 장 업로드할 수 있습니다)
                           </div>
                         )}
                       </div>
@@ -1298,18 +1408,34 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                     </div>
                   )}
 
+                  {/* Upload Progress Status Banner */}
+                  {uploadProgressStatus && (
+                    <div className="bg-amber-500 text-slate-950 px-4 py-3 rounded-2xl font-black text-xs flex items-center justify-between shadow-lg animate-pulse">
+                      <span>{uploadProgressStatus}</span>
+                      <span className="text-[10px] bg-slate-900 text-white px-2 py-0.5 rounded-lg">처리중...</span>
+                    </div>
+                  )}
+
                   {/* Submit Buttons */}
                   <div className="flex items-center gap-3 pt-3 border-t border-slate-100">
                     <button
                       type="submit"
-                      className="flex-1 py-3 rounded-2xl bg-teal-700 hover:bg-teal-800 text-white font-extrabold text-xs flex items-center justify-center gap-2 shadow-md transition-all"
+                      disabled={isSavingProduct || Boolean(uploadProgressStatus)}
+                      className="flex-1 py-3 rounded-2xl bg-teal-700 hover:bg-teal-800 disabled:bg-slate-400 text-white font-extrabold text-xs flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer disabled:cursor-not-allowed"
                     >
                       <Save className="w-4 h-4 text-amber-300" />
-                      <span>{isCreating ? '신규 상품 등록 완료하기' : '수정 사항 저장 완료하기'}</span>
+                      <span>
+                        {isSavingProduct
+                          ? '💾 서버에 상품 데이터를 영구 저장하는 중...'
+                          : isCreating
+                          ? '신규 상품 등록 완료하기'
+                          : '수정 사항 저장 완료하기'}
+                      </span>
                     </button>
 
                     <button
                       type="button"
+                      disabled={isSavingProduct}
                       onClick={() => {
                         setIsCreating(false);
                         setEditingProduct(null);

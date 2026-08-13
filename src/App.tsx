@@ -145,65 +145,69 @@ export default function App() {
 
   // API Actions
   const handleAddProduct = async (newProd: Omit<Product, 'id'>) => {
-    let createdProd: Product | null = null;
     try {
       const res = await fetch('/api/products', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newProd)
       });
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}`);
+      }
       const data = await res.json();
       if (data.success && data.product) {
-        createdProd = data.product;
+        setProducts(prev => {
+          const updated = [data.product, ...prev.filter(p => p.id !== data.product.id)];
+          setStoredJson(PRODUCTS_CACHE_KEY, updated);
+          return updated;
+        });
+        return data.product;
+      } else {
+        throw new Error(data.error || '상품 추가에 실패했습니다.');
       }
-    } catch (err) {
-      console.warn('API add product failed, using local creation');
+    } catch (err: any) {
+      console.error('API add product failed:', err);
+      alert(`❌ [상품 등록 오류] 서버 저장이 완료되지 않았습니다: ${err.message || '네트워크 문제'}`);
+      throw err;
     }
-
-    if (!createdProd) {
-      createdProd = { ...newProd, id: `prod-${Date.now()}` } as Product;
-    }
-
-    setProducts(prev => {
-      const updated = [createdProd!, ...prev.filter(p => p.id !== createdProd!.id)];
-      setStoredJson(PRODUCTS_CACHE_KEY, updated);
-      return updated;
-    });
   };
 
   const handleUpdateProduct = async (id: string, updated: Partial<Product>) => {
-    let serverUpdatedProd: Product | null = null;
     try {
       const res = await fetch(`/api/products/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updated)
       });
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}`);
+      }
       const data = await res.json();
       if (data.success && data.product) {
-        serverUpdatedProd = data.product;
+        setProducts(prev => {
+          const updatedList = prev.map(p => (p.id === id ? data.product : p));
+          setStoredJson(PRODUCTS_CACHE_KEY, updatedList);
+          return updatedList;
+        });
+        return data.product;
+      } else {
+        throw new Error(data.error || '상품 수정에 실패했습니다.');
       }
-    } catch (err) {
-      console.warn('API update failed');
+    } catch (err: any) {
+      console.error('API update failed:', err);
+      alert(`❌ [상품 수정 오류] 서버 저장이 완료되지 않았습니다: ${err.message || '네트워크 문제'}`);
+      throw err;
     }
-
-    setProducts(prev => {
-      const updatedList = prev.map(p => {
-        if (p.id === id) {
-          return serverUpdatedProd || { ...p, ...updated };
-        }
-        return p;
-      });
-      setStoredJson(PRODUCTS_CACHE_KEY, updatedList);
-      return updatedList;
-    });
   };
 
   const handleDeleteProduct = async (id: string) => {
     try {
-      await fetch(`/api/products/${id}`, { method: 'DELETE' });
+      const res = await fetch(`/api/products/${id}`, { method: 'DELETE' });
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}`);
+      }
     } catch (err) {
-      console.warn('API delete failed');
+      console.warn('API delete failed:', err);
     }
 
     setProducts(prev => {
