@@ -30,7 +30,7 @@ import {
   Award
 } from 'lucide-react';
 
-const PRODUCTS_CACHE_KEY = 'xinchao_products_cache_v4';
+const PRODUCTS_CACHE_KEY = 'xinchao_products_cache_v5';
 
 function getStoredJson<T>(key: string, fallback: T): T {
   try {
