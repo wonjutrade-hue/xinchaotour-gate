@@ -111,21 +111,15 @@ export default function App() {
       const res = await fetch('/api/products');
       const data = await res.json();
       if (data.success && Array.isArray(data.products) && data.products.length > 0) {
-        // Merge server products with local cached products so user additions are never lost
-        const cached = getStoredJson<Product[]>(PRODUCTS_CACHE_KEY, []);
-        const mergedMap = new Map<string, Product>();
-        data.products.forEach((p: Product) => mergedMap.set(p.id, p));
-        cached.forEach((cp: Product) => {
-          if (!mergedMap.has(cp.id)) {
-            mergedMap.set(cp.id, cp);
-          }
-        });
-        const mergedList = Array.from(mergedMap.values());
-        setProducts(mergedList);
-        setStoredJson(PRODUCTS_CACHE_KEY, mergedList);
+        setProducts(data.products);
+        setStoredJson(PRODUCTS_CACHE_KEY, data.products);
       }
     } catch (err) {
       console.warn('API fetch failed, falling back to cached products');
+      const cached = getStoredJson<Product[]>(PRODUCTS_CACHE_KEY, []);
+      if (cached.length > 0) {
+        setProducts(cached);
+      }
     } finally {
       setIsLoadingProducts(false);
     }
