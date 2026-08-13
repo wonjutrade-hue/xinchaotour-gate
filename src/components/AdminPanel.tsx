@@ -229,6 +229,77 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     }
   };
 
+  // Villa Sample Preset Auto-Fill Helper
+  const applyVillaPreset = (city: City = (formData.city as City) || '다낭') => {
+    setFormData(prev => ({
+      ...prev,
+      title: prev.title && !prev.title.includes('신규 여행 상품') ? prev.title : `[${city}/풀빌라] 럭셔리 단독 프라이빗 독채 풀빌라`,
+      subTitle: '대형 프라이빗 수영장 & 단독 독채 빌라에서 즐기는 최고급 럭셔리 휴양',
+      category: '풀빌라',
+      priceKRW: prev.priceKRW && prev.priceKRW > 0 ? prev.priceKRW : 850000,
+      priceVND: prev.priceVND && prev.priceVND > 0 ? prev.priceVND : 16000000,
+      duration: '3박 5일',
+      description: '단독 수영장과 독채 공간을 갖춘 프리미엄 럭셔리 풀빌라 패키지입니다. 전 일정 단독 전용차량과 한국어 가이드가 동행하여 더욱 편안하고 안전한 단독 여행을 보장합니다.',
+    }));
+
+    setIncludedText([
+      '단독 프라이빗 독채 풀빌라 숙박',
+      '전 일정 단독 전용차량 & 전담 기사',
+      '한국어 전문 가이드 전 일정 동행',
+      '빌라 조식 뷔페 및 무제한 미니바',
+      '단독 공항 픽업 & 샌딩 서비스'
+    ].join('\n'));
+
+    setExcludedText([
+      '왕복 항공권',
+      '가이드/기사 매너팁',
+      '개인 선택옵션 및 기타 개인 경비'
+    ].join('\n'));
+
+    setDepartureCitiesText([
+      '인천',
+      '김해',
+      '대구',
+      '청주'
+    ].join('\n'));
+
+    setTagsText([
+      '#프라이빗풀빌라',
+      '#단독독채',
+      '#럭셔리휴양',
+      `#${city}풀빌라`
+    ].join('\n'));
+
+    setItineraryList([
+      { 
+        day: 1, 
+        title: '공항 도착 후 가이드 미팅 & 풀빌라 체크인', 
+        description: '단독 전용차량 이동 후 프라이빗 풀빌라 체크인, 미니바 및 전용 수영장 이용 안내', 
+        meal: '석식: 현지 특식', 
+        hotel: '프라이빗 럭셔리 독채 풀빌라' 
+      },
+      { 
+        day: 2, 
+        title: '프라이빗 수영장 물놀이 & 시티 명소 가이드 투어', 
+        description: '빌라 내 전용 수영장 자유 물놀이 및 한국어 가이드 동행 시티 명소 관람, 씨푸드 다이닝', 
+        meal: '조: 빌라 조식 / 중: 현지 특식 / 석: 씨푸드', 
+        hotel: '프라이빗 럭셔리 독채 풀빌라' 
+      },
+      { 
+        day: 3, 
+        title: '여유로운 레이트 체크아웃, 쇼핑 & 공항 배웅', 
+        description: '여유로운 레이트 체크아웃 후 시내 인기 카페/기념품 명소 방문 및 단독 차량 공항 샌딩', 
+        meal: '조: 빌라 조식 / 중: 자유식', 
+        hotel: '기내박' 
+      }
+    ]);
+
+    setVillaBedrooms(3);
+    setVillaPrivatePool(true);
+    setVillaOceanView(false);
+    setVillaMaxOccupancy(6);
+  };
+
   // Smart product creation with region, city, and category prefilled
   const handleStartCreate = (targetRegion?: Region, targetCity?: City, targetCategory?: Category) => {
     setEditingProduct(null);
@@ -245,56 +316,99 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
     const cat: Category = targetCategory || (selectedCategoryFilter !== '전체' ? selectedCategoryFilter : '풀빌라');
 
-    setFormData({
-      title: `[${cit}/${cat}] 신규 여행 상품`,
-      subTitle: '상품에 대한 매력적인 한 줄 설명을 적어주세요.',
-      category: cat,
-      region: reg,
-      city: cit,
-      priceKRW: 650000,
-      priceVND: 12000000,
-      duration: '3박 5일',
-      imageUrl: 'https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?auto=format&fit=crop&w=1000&q=80',
-      additionalImages: [],
-      rating: 5.0,
-      reviewCount: 1,
-      isPopular: false,
-      isHotDeal: false,
-      discountPercent: 0,
-      departureCities: ['인천', '김해', '대구'],
-      tags: ['신규상품', cit, cat],
-      address: '',
-      externalBookingUrl: '',
-      description: '새로운 베트남 맞춤형 여행 상품 정보입니다.',
-      included: ['전 일정 전용차량', '한국어 가이드', '5성급 호텔 숙박', '조식 및 주요 특식'],
-      excluded: ['왕복 항공권', '가이드/기사 매너팁', '개인 경비'],
-      itinerary: [
+    if (cat === '풀빌라') {
+      setFormData({
+        title: `[${cit}/풀빌라] 럭셔리 단독 프라이빗 독채 풀빌라`,
+        subTitle: '대형 프라이빗 수영장 & 단독 독채 빌라에서 즐기는 최고급 럭셔리 휴양',
+        category: '풀빌라',
+        region: reg,
+        city: cit,
+        priceKRW: 850000,
+        priceVND: 16000000,
+        duration: '3박 5일',
+        imageUrl: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1000&q=80',
+        additionalImages: [],
+        rating: 5.0,
+        reviewCount: 12,
+        isPopular: true,
+        isHotDeal: false,
+        discountPercent: 0,
+        departureCities: ['인천', '김해', '대구', '청주'],
+        tags: ['#프라이빗풀빌라', '#단독독채', '#럭셔리휴양', `#${cit}풀빌라`],
+        address: '',
+        externalBookingUrl: '',
+        description: '단독 수영장과 독채 공간을 갖춘 프리미엄 럭셔리 풀빌라 패키지입니다. 전 일정 단독 전용차량과 한국어 가이드가 동행하여 더욱 편안하고 안전한 단독 여행을 보장합니다.',
+        included: ['단독 프라이빗 독채 풀빌라 숙박', '전 일정 단독 전용차량 & 전담 기사', '한국어 전문 가이드 전 일정 동행', '빌라 조식 뷔페 및 무제한 미니바', '단독 공항 픽업 & 샌딩 서비스'],
+        excluded: ['왕복 항공권', '가이드/기사 매너팁', '개인 선택옵션 및 기타 개인 경비'],
+        itinerary: [
+          { day: 1, title: '공항 도착 후 가이드 미팅 & 풀빌라 체크인', description: '단독 전용차량 이동 후 프라이빗 풀빌라 체크인, 미니바 및 전용 수영장 이용 안내', meal: '석식: 현지 특식', hotel: '프라이빗 럭셔리 독채 풀빌라' },
+          { day: 2, title: '프라이빗 수영장 물놀이 & 시티 명소 가이드 투어', description: '빌라 내 전용 수영장 자유 물놀이 및 한국어 가이드 동행 시티 명소 관람, 씨푸드 다이닝', meal: '조: 빌라 조식 / 중: 현지 특식 / 석: 씨푸드', hotel: '프라이빗 럭셔리 독채 풀빌라' },
+          { day: 3, title: '여유로운 레이트 체크아웃, 쇼핑 & 공항 배웅', description: '여유로운 레이트 체크아웃 후 시내 인기 카페/기념품 명소 방문 및 단독 차량 공항 샌딩', meal: '조: 빌라 조식 / 중: 자유식', hotel: '기내박' }
+        ]
+      });
+
+      setIncludedText('단독 프라이빗 독채 풀빌라 숙박\n전 일정 단독 전용차량 & 전담 기사\n한국어 전문 가이드 전 일정 동행\n빌라 조식 뷔페 및 무제한 미니바\n단독 공항 픽업 & 샌딩 서비스');
+      setExcludedText('왕복 항공권\n가이드/기사 매너팁\n개인 선택옵션 및 기타 개인 경비');
+      setDepartureCitiesText('인천\n김해\n대구\n청주');
+      setTagsText(`#프라이빗풀빌라\n#단독독채\n#럭셔리휴양\n#${cit}풀빌라`);
+      setAdditionalImagesText('');
+      setItineraryList([
+        { day: 1, title: '공항 도착 후 가이드 미팅 & 풀빌라 체크인', description: '단독 전용차량 이동 후 프라이빗 풀빌라 체크인, 미니바 및 전용 수영장 이용 안내', meal: '석식: 현지 특식', hotel: '프라이빗 럭셔리 독채 풀빌라' },
+        { day: 2, title: '프라이빗 수영장 물놀이 & 시티 명소 가이드 투어', description: '빌라 내 전용 수영장 자유 물놀이 및 한국어 가이드 동행 시티 명소 관람, 씨푸드 다이닝', meal: '조: 빌라 조식 / 중: 현지 특식 / 석: 씨푸드', hotel: '프라이빗 럭셔리 독채 풀빌라' },
+        { day: 3, title: '여유로운 레이트 체크아웃, 쇼핑 & 공항 배웅', description: '여유로운 레이트 체크아웃 후 시내 인기 카페/기념품 명소 방문 및 단독 차량 공항 샌딩', meal: '조: 빌라 조식 / 중: 자유식', hotel: '기내박' }
+      ]);
+
+      setVillaBedrooms(3);
+      setVillaPrivatePool(true);
+      setVillaOceanView(false);
+      setVillaMaxOccupancy(6);
+    } else {
+      setFormData({
+        title: `[${cit}/${cat}] 신규 여행 상품`,
+        subTitle: '상품에 대한 매력적인 한 줄 설명을 적어주세요.',
+        category: cat,
+        region: reg,
+        city: cit,
+        priceKRW: 650000,
+        priceVND: 12000000,
+        duration: '3박 5일',
+        imageUrl: 'https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?auto=format&fit=crop&w=1000&q=80',
+        additionalImages: [],
+        rating: 5.0,
+        reviewCount: 1,
+        isPopular: false,
+        isHotDeal: false,
+        discountPercent: 0,
+        departureCities: ['인천', '김해', '대구'],
+        tags: ['#신규상품', `#${cit}`, `#${cat}`],
+        address: '',
+        externalBookingUrl: '',
+        description: '새로운 베트남 맞춤형 여행 상품 정보입니다.',
+        included: ['전 일정 전용차량', '한국어 가이드', '5성급 호텔 숙박', '조식 및 주요 특식'],
+        excluded: ['왕복 항공권', '가이드/기사 매너팁', '개인 경비'],
+        itinerary: [
+          { day: 1, title: '공항 도착 및 현지 가이드 미팅', description: '전용 차량으로 호텔 이동 후 체크인 및 자유 휴식', meal: '석식: 현지 특식', hotel: '5성급 리조트/호텔' },
+          { day: 2, title: '주요 관광지 가이드 투어 및 특식', description: '단독 차량과 가이드로 여유로운 코스 진행', meal: '조: 호텔식 / 중: 특식 / 석: 씨푸드', hotel: '5성급 리조트/호텔' },
+          { day: 3, title: '자유 일정 및 공항 배웅', description: '체크아웃 후 기념품 샵 방문 및 공항 이동', meal: '조: 호텔식 / 중: 자유식', hotel: '기내박' }
+        ]
+      });
+
+      setIncludedText('전 일정 전용차량\n한국어 가이드\n5성급 호텔 숙박\n조식 및 주요 특식');
+      setExcludedText('왕복 항공권\n가이드/기사 매너팁\n개인 경비');
+      setDepartureCitiesText('인천\n김해\n대구');
+      setTagsText(`#신규상품\n#${cit}\n#${cat}`);
+      setAdditionalImagesText('');
+      setItineraryList([
         { day: 1, title: '공항 도착 및 현지 가이드 미팅', description: '전용 차량으로 호텔 이동 후 체크인 및 자유 휴식', meal: '석식: 현지 특식', hotel: '5성급 리조트/호텔' },
         { day: 2, title: '주요 관광지 가이드 투어 및 특식', description: '단독 차량과 가이드로 여유로운 코스 진행', meal: '조: 호텔식 / 중: 특식 / 석: 씨푸드', hotel: '5성급 리조트/호텔' },
         { day: 3, title: '자유 일정 및 공항 배웅', description: '체크아웃 후 기념품 샵 방문 및 공항 이동', meal: '조: 호텔식 / 중: 자유식', hotel: '기내박' }
-      ]
-    });
-
-    setIncludedText('전 일정 전용차량\n한국어 가이드\n5성급 호텔 숙박\n조식 및 주요 특식');
-    setExcludedText('왕복 항공권\n가이드/기사 매너팁\n개인 경비');
-    setDepartureCitiesText('인천\n김해\n대구');
-    setTagsText(`신규상품\n${cit}\n${cat}`);
-    setAdditionalImagesText('');
-    setItineraryList([
-      { day: 1, title: '공항 도착 및 현지 가이드 미팅', description: '전용 차량으로 호텔 이동 후 체크인 및 자유 휴식', meal: '석식: 현지 특식', hotel: '5성급 리조트/호텔' },
-      { day: 2, title: '주요 관광지 가이드 투어 및 특식', description: '단독 차량과 가이드로 여유로운 코스 진행', meal: '조: 호텔식 / 중: 특식 / 석: 씨푸드', hotel: '5성급 리조트/호텔' },
-      { day: 3, title: '자유 일정 및 공항 배웅', description: '체크아웃 후 기념품 샵 방문 및 공항 이동', meal: '조: 호텔식 / 중: 자유식', hotel: '기내박' }
-    ]);
+      ]);
+    }
 
     setGolfCourseNamesText(`${cit} CC\n몽고메리 링스`);
     setGolfHoles(18);
     setGreenFeeIncluded(true);
     setCaddieFeeIncluded(true);
-
-    setVillaBedrooms(3);
-    setVillaPrivatePool(true);
-    setVillaOceanView(false);
-    setVillaMaxOccupancy(6);
   };
 
   const handleStartEdit = (prod: Product) => {
@@ -549,10 +663,19 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
                   {/* Section 1: 기본 정보 & 카테고리 */}
                   <div className="space-y-3 bg-slate-50 p-4 rounded-2xl border border-slate-200">
-                    <h5 className="font-extrabold text-xs text-slate-800 flex items-center gap-1.5 border-b pb-2 border-slate-200">
-                      <Layers className="w-4 h-4 text-teal-700" />
-                      <span>1. 기본 정보 및 카테고리 분류</span>
-                    </h5>
+                    <div className="flex flex-wrap items-center justify-between gap-2 border-b pb-2 border-slate-200">
+                      <h5 className="font-extrabold text-xs text-slate-800 flex items-center gap-1.5">
+                        <Layers className="w-4 h-4 text-teal-700" />
+                        <span>1. 기본 정보 및 카테고리 분류</span>
+                      </h5>
+                      <button
+                        type="button"
+                        onClick={() => applyVillaPreset(formData.city as City)}
+                        className="px-2.5 py-1 rounded-xl bg-purple-100 hover:bg-purple-200 text-purple-900 border border-purple-300 font-extrabold text-[11px] flex items-center gap-1 transition-colors"
+                      >
+                        <span>✨ 풀빌라 추천 양식 자동 채우기 (포함/불포함/출발도시/태그/3일차 일정)</span>
+                      </button>
+                    </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div className="space-y-1">
