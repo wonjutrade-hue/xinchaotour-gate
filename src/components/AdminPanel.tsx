@@ -1201,17 +1201,17 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                 /* PRODUCT LIST TABLE & REGION/CITY FILTERING */
                 <>
                   {/* Data Persistence Safety Notice & Backup Toolbar */}
-                  <div className="bg-teal-900/90 text-white p-3 sm:p-4 rounded-2xl border border-teal-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
+                  <div className="bg-teal-900 text-white p-3.5 sm:p-4 rounded-2xl border border-teal-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm">
                     <div className="flex items-start sm:items-center gap-2.5">
                       <div className="p-2 rounded-xl bg-teal-800 text-amber-300 shrink-0">
                         <CheckCircle className="w-5 h-5" />
                       </div>
                       <div className="text-xs space-y-0.5">
-                        <p className="font-extrabold text-amber-300">
-                          🛡️ [데이터 이중 영구 보존 적용 중]
+                        <p className="font-extrabold text-amber-300 text-sm">
+                          ✅ 서버 영구 보존 적용 완료 (F5 새로고침 시에도 유지)
                         </p>
                         <p className="text-[11px] text-teal-100">
-                          등록 및 수정하신 상품은 서버 데이터베이스와 브라우저 로컬 저장소에 이중 자동 저장됩니다. (재접속시 자동 유지)
+                          등록, 수정, 삭제된 상품은 서버 JSON 및 캐시에 자동 동기화되어 페이지를 새로고침(F5)하거나 재접속해도 유지됩니다.
                         </p>
                       </div>
                     </div>

@@ -7,7 +7,8 @@ import { INITIAL_PRODUCTS } from './src/data/seedProducts.js';
 import { Product, ConsultationRequest } from './src/types.js';
 
 // In-memory or persisted store for products and inquiries
-const PRODUCTS_FILE_PATH = path.join(process.cwd(), 'src', 'data', 'stored_products.json');
+const PRODUCTS_FILE_PATH = path.join(process.cwd(), 'stored_products.json');
+const BACKUP_PRODUCTS_FILE_PATH = path.join(process.cwd(), 'src', 'data', 'stored_products.json');
 
 function loadStoredProducts(): Product[] {
   try {
@@ -15,12 +16,22 @@ function loadStoredProducts(): Product[] {
       const fileData = fs.readFileSync(PRODUCTS_FILE_PATH, 'utf-8');
       const parsed = JSON.parse(fileData);
       if (Array.isArray(parsed) && parsed.length > 0) {
-        console.log(`[Server] Loaded ${parsed.length} products from stored_products.json`);
+        console.log(`[Server] Loaded ${parsed.length} products from root stored_products.json`);
+        return parsed;
+      }
+    }
+    // Fallback to src/data/stored_products.json if root doesn't exist yet
+    if (fs.existsSync(BACKUP_PRODUCTS_FILE_PATH)) {
+      const fileData = fs.readFileSync(BACKUP_PRODUCTS_FILE_PATH, 'utf-8');
+      const parsed = JSON.parse(fileData);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        console.log(`[Server] Loaded ${parsed.length} products from seed stored_products.json`);
+        saveStoredProducts(parsed);
         return parsed;
       }
     }
   } catch (err) {
-    console.warn('[Server] Failed to read stored_products.json, using INITIAL_PRODUCTS:', err);
+    console.warn('[Server] Failed to read stored_products.json, using INITIAL_PRODUCTS fallback:', err);
   }
   saveStoredProducts(INITIAL_PRODUCTS);
   return [...INITIAL_PRODUCTS];
@@ -28,12 +39,10 @@ function loadStoredProducts(): Product[] {
 
 function saveStoredProducts(prods: Product[]) {
   try {
-    const dir = path.dirname(PRODUCTS_FILE_PATH);
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
-    }
-    fs.writeFileSync(PRODUCTS_FILE_PATH, JSON.stringify(prods, null, 2), 'utf-8');
-    console.log(`[Server] Persisted ${prods.length} products to stored_products.json`);
+    const tempPath = PRODUCTS_FILE_PATH + '.tmp';
+    fs.writeFileSync(tempPath, JSON.stringify(prods, null, 2), 'utf-8');
+    fs.renameSync(tempPath, PRODUCTS_FILE_PATH);
+    console.log(`[Server] Persisted ${prods.length} products to root stored_products.json`);
   } catch (err) {
     console.error('[Server] Failed to save products to stored_products.json:', err);
   }

@@ -30,17 +30,14 @@ import {
   Award
 } from 'lucide-react';
 
-const PRODUCTS_CACHE_KEY = 'xinchao_products_cache_v3';
-const CUSTOM_ADDED_KEY = 'xinchao_custom_added_products_v3';
-const CUSTOM_EDITED_KEY = 'xinchao_custom_edited_products_v3';
-const DELETED_IDS_KEY = 'xinchao_deleted_product_ids_v3';
+const PRODUCTS_CACHE_KEY = 'xinchao_products_cache_v4';
 
 function getStoredJson<T>(key: string, fallback: T): T {
   try {
     const raw = localStorage.getItem(key);
     if (raw) {
       const parsed = JSON.parse(raw);
-      if (parsed !== null && parsed !== undefined) return parsed;
+      if (parsed !== null && parsed !== undefined && Array.isArray(parsed) && parsed.length > 0) return parsed as T;
     }
   } catch (e) {
     console.warn(`Failed to parse localStorage key ${key}:`, e);
@@ -56,48 +53,14 @@ function setStoredJson(key: string, data: any) {
   }
 }
 
-function mergeProductsWithLocalOverrides(serverProducts?: Product[]): Product[] {
-  const baseList: Product[] = (serverProducts && Array.isArray(serverProducts) && serverProducts.length > 0)
-    ? serverProducts
-    : INITIAL_PRODUCTS;
-
-  const customAdded = getStoredJson<Product[]>(CUSTOM_ADDED_KEY, []);
-  const customEdited = getStoredJson<Record<string, Partial<Product>>>(CUSTOM_EDITED_KEY, {});
-  const deletedIds = getStoredJson<string[]>(DELETED_IDS_KEY, []);
-
-  // 1. Combine baseList and custom added products
-  const existingIds = new Set(baseList.map(p => p.id));
-  const uniqueAdded = customAdded.filter(p => p && p.id && !existingIds.has(p.id));
-
-  let merged = [...uniqueAdded, ...baseList];
-
-  // 2. Remove deleted products
-  if (deletedIds.length > 0) {
-    const deletedSet = new Set(deletedIds);
-    merged = merged.filter(p => p && !deletedSet.has(p.id));
-  }
-
-  // 3. Apply custom edits
-  if (Object.keys(customEdited).length > 0) {
-    merged = merged.map(p => {
-      if (p && p.id && customEdited[p.id]) {
-        return { ...p, ...customEdited[p.id] };
-      }
-      return p;
-    });
-  }
-
-  return merged;
-}
-
 export default function App() {
   const [products, setProducts] = useState<Product[]>(() => {
-    return mergeProductsWithLocalOverrides();
+    return getStoredJson<Product[]>(PRODUCTS_CACHE_KEY, INITIAL_PRODUCTS);
   });
   const [inquiries, setInquiries] = useState<ConsultationRequest[]>([]);
   const [isLoadingProducts, setIsLoadingProducts] = useState(true);
 
-  // Sync products state to localStorage
+  // Sync products state to localStorage cache
   useEffect(() => {
     if (products && products.length > 0) {
       setStoredJson(PRODUCTS_CACHE_KEY, products);
@@ -147,15 +110,12 @@ export default function App() {
     try {
       const res = await fetch('/api/products');
       const data = await res.json();
-      if (data.success && Array.isArray(data.products)) {
-        const merged = mergeProductsWithLocalOverrides(data.products);
-        setProducts(merged);
-      } else {
-        setProducts(mergeProductsWithLocalOverrides());
+      if (data.success && Array.isArray(data.products) && data.products.length > 0) {
+        setProducts(data.products);
+        setStoredJson(PRODUCTS_CACHE_KEY, data.products);
       }
     } catch (err) {
-      console.warn('API fetch failed, falling back to local persistent products');
-      setProducts(mergeProductsWithLocalOverrides());
+      console.warn('API fetch failed, falling back to cached products');
     } finally {
       setIsLoadingProducts(false);
     }
@@ -200,12 +160,11 @@ export default function App() {
       createdProd = { ...newProd, id: `prod-${Date.now()}` } as Product;
     }
 
-    // Persist to custom added list
-    const currentCustomAdded = getStoredJson<Product[]>(CUSTOM_ADDED_KEY, []);
-    const updatedCustomAdded = [createdProd, ...currentCustomAdded.filter(p => p.id !== createdProd!.id)];
-    setStoredJson(CUSTOM_ADDED_KEY, updatedCustomAdded);
-
-    setProducts(prev => mergeProductsWithLocalOverrides([createdProd!, ...prev]));
+    setProducts(prev => {
+      const updated = [createdProd!, ...prev.filter(p => p.id !== createdProd!.id)];
+      setStoredJson(PRODUCTS_CACHE_KEY, updated);
+      return updated;
+    });
   };
 
   const handleUpdateProduct = async (id: string, updated: Partial<Product>) => {
@@ -219,19 +178,11 @@ export default function App() {
       console.warn('API update failed');
     }
 
-    // Update in custom added if present
-    const currentCustomAdded = getStoredJson<Product[]>(CUSTOM_ADDED_KEY, []);
-    if (currentCustomAdded.some(p => p.id === id)) {
-      const updatedAdded = currentCustomAdded.map(p => p.id === id ? { ...p, ...updated } : p);
-      setStoredJson(CUSTOM_ADDED_KEY, updatedAdded);
-    }
-
-    // Store in custom edited map
-    const currentEdited = getStoredJson<Record<string, Partial<Product>>>(CUSTOM_EDITED_KEY, {});
-    currentEdited[id] = { ...(currentEdited[id] || {}), ...updated };
-    setStoredJson(CUSTOM_EDITED_KEY, currentEdited);
-
-    setProducts(prev => mergeProductsWithLocalOverrides(prev.map(p => p.id === id ? { ...p, ...updated } : p)));
+    setProducts(prev => {
+      const updatedList = prev.map(p => p.id === id ? { ...p, ...updated } : p);
+      setStoredJson(PRODUCTS_CACHE_KEY, updatedList);
+      return updatedList;
+    });
   };
 
   const handleDeleteProduct = async (id: string) => {
@@ -241,40 +192,42 @@ export default function App() {
       console.warn('API delete failed');
     }
 
-    // Remove from custom added
-    const currentCustomAdded = getStoredJson<Product[]>(CUSTOM_ADDED_KEY, []);
-    setStoredJson(CUSTOM_ADDED_KEY, currentCustomAdded.filter(p => p.id !== id));
-
-    // Record in deleted IDs
-    const deletedIds = getStoredJson<string[]>(DELETED_IDS_KEY, []);
-    if (!deletedIds.includes(id)) {
-      deletedIds.push(id);
-      setStoredJson(DELETED_IDS_KEY, deletedIds);
-    }
-
-    setProducts(prev => mergeProductsWithLocalOverrides(prev.filter(p => p.id !== id)));
+    setProducts(prev => {
+      const updatedList = prev.filter(p => p.id !== id);
+      setStoredJson(PRODUCTS_CACHE_KEY, updatedList);
+      return updatedList;
+    });
   };
 
   const handleResetProducts = async () => {
     try {
-      await fetch('/api/products/reset', { method: 'POST' });
+      const res = await fetch('/api/products/reset', { method: 'POST' });
+      const data = await res.json();
+      if (data.success && Array.isArray(data.products)) {
+        setProducts(data.products);
+        setStoredJson(PRODUCTS_CACHE_KEY, data.products);
+        return;
+      }
     } catch (err) {
       console.warn('API reset failed');
     }
-    localStorage.removeItem(CUSTOM_ADDED_KEY);
-    localStorage.removeItem(CUSTOM_EDITED_KEY);
-    localStorage.removeItem(DELETED_IDS_KEY);
-    localStorage.removeItem(PRODUCTS_CACHE_KEY);
     setProducts([...INITIAL_PRODUCTS]);
+    setStoredJson(PRODUCTS_CACHE_KEY, INITIAL_PRODUCTS);
   };
 
   const handleImportProducts = async (items: any[], replace: boolean) => {
     try {
-      await fetch('/api/products/import', {
+      const res = await fetch('/api/products/import', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ items, replaceExisting: replace })
       });
+      const data = await res.json();
+      if (data.success && Array.isArray(data.products)) {
+        setProducts(data.products);
+        setStoredJson(PRODUCTS_CACHE_KEY, data.products);
+        return;
+      }
     } catch (err) {
       console.warn('API import failed');
     }
@@ -284,16 +237,11 @@ export default function App() {
       id: it.id || `imp-${Date.now()}-${idx}`
     }));
 
-    if (replace) {
-      localStorage.removeItem(DELETED_IDS_KEY);
-      localStorage.removeItem(CUSTOM_EDITED_KEY);
-      setStoredJson(CUSTOM_ADDED_KEY, formattedItems);
-      setProducts(formattedItems);
-    } else {
-      const currentCustomAdded = getStoredJson<Product[]>(CUSTOM_ADDED_KEY, []);
-      setStoredJson(CUSTOM_ADDED_KEY, [...formattedItems, ...currentCustomAdded]);
-      setProducts(prev => mergeProductsWithLocalOverrides([...formattedItems, ...prev]));
-    }
+    setProducts(prev => {
+      const newList = replace ? formattedItems : [...formattedItems, ...prev];
+      setStoredJson(PRODUCTS_CACHE_KEY, newList);
+      return newList;
+    });
   };
 
   const handleSubmitInquiry = async (payload: any): Promise<boolean> => {
