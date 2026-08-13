@@ -15,7 +15,10 @@ import {
   ShieldCheck, 
   Share2,
   Sparkles,
-  ExternalLink
+  ExternalLink,
+  ChevronLeft,
+  ChevronRight,
+  Maximize2
 } from 'lucide-react';
 import { ExchangeRates, calculateVNDFromKRW, calculateKRWFromVND, calculateUSDFromKRW, formatVND, formatUSD } from '../lib/exchangeRate';
 import { handleOpenKakaoTalkDirect } from '../constants';
@@ -36,11 +39,41 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   if (!product) return null;
 
   const [activeTab, setActiveTab] = useState<'itinerary' | 'inclusion' | 'reviews'>('itinerary');
+  const [currentImgIndex, setCurrentImgIndex] = useState<number>(0);
+  const [isLightboxOpen, setIsLightboxOpen] = useState<boolean>(false);
+
   const subImages = product.additionalImages || (product as any).galleryImages || (product as any).images || [];
   const rawImages = [product.imageUrl, ...subImages];
   const allImages = Array.from(new Set(rawImages.filter(Boolean)));
 
-  const [selectedImage, setSelectedImage] = useState<string>(product.imageUrl || allImages[0] || '');
+  const validIndex = currentImgIndex >= 0 && currentImgIndex < allImages.length ? currentImgIndex : 0;
+  const currentPhoto = allImages[validIndex] || product.imageUrl || '';
+
+  const handlePrevImage = (e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    if (allImages.length <= 1) return;
+    setCurrentImgIndex((prev) => (prev === 0 ? allImages.length - 1 : prev - 1));
+  };
+
+  const handleNextImage = (e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    if (allImages.length <= 1) return;
+    setCurrentImgIndex((prev) => (prev === allImages.length - 1 ? 0 : prev + 1));
+  };
+
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft') {
+        handlePrevImage();
+      } else if (e.key === 'ArrowRight') {
+        handleNextImage();
+      } else if (e.key === 'Escape' && isLightboxOpen) {
+        setIsLightboxOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [allImages.length, isLightboxOpen]);
 
   const displaySubtitle = product.subTitle || (product as any).subtitle || '';
 
@@ -165,31 +198,77 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
 
           {/* Photo Gallery Viewer */}
           <div className="space-y-3">
-            <div className="aspect-[16/9] rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 relative">
+            <div className="aspect-[16/10] sm:aspect-[16/9] rounded-2xl overflow-hidden bg-slate-950 border border-slate-200 relative group shadow-inner">
               <img
-                src={selectedImage}
+                src={currentPhoto}
                 alt={product.title}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover cursor-pointer transition-transform duration-300 hover:scale-[1.01]"
+                onClick={() => setIsLightboxOpen(true)}
               />
+
+              {/* Click to expand hint overlay */}
+              <div 
+                onClick={() => setIsLightboxOpen(true)}
+                className="absolute top-3 right-3 bg-slate-900/80 hover:bg-teal-600 text-white text-xs font-bold px-3 py-1.5 rounded-xl backdrop-blur-md transition-all flex items-center gap-1.5 cursor-pointer shadow-md z-10"
+              >
+                <Maximize2 className="w-3.5 h-3.5" />
+                <span>크게 보기</span>
+              </div>
+
+              {/* Prev / Next Arrows on Main Image */}
               {allImages.length > 1 && (
-                <div className="absolute bottom-3 right-3 bg-slate-900/80 backdrop-blur-md text-white px-3 py-1 rounded-full text-xs font-bold">
-                  📷 {allImages.findIndex(img => img === selectedImage) + 1} / {allImages.length}
+                <>
+                  <button
+                    type="button"
+                    onClick={handlePrevImage}
+                    className="absolute left-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-slate-900/80 hover:bg-teal-500 text-white flex items-center justify-center backdrop-blur-md transition-all shadow-xl hover:scale-110 active:scale-95 z-20"
+                    title="이전 사진 보기"
+                  >
+                    <ChevronLeft className="w-7 h-7 stroke-[2.5]" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleNextImage}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-slate-900/80 hover:bg-teal-500 text-white flex items-center justify-center backdrop-blur-md transition-all shadow-xl hover:scale-110 active:scale-95 z-20"
+                    title="다음 사진 보기"
+                  >
+                    <ChevronRight className="w-7 h-7 stroke-[2.5]" />
+                  </button>
+                </>
+              )}
+
+              {/* Photo Counter Badge */}
+              {allImages.length > 1 && (
+                <div className="absolute bottom-3 left-3 bg-slate-900/85 backdrop-blur-md text-white px-3 py-1.5 rounded-xl text-xs font-black shadow-md flex items-center gap-1.5 border border-white/10">
+                  <span className="text-amber-400 font-bold">📷 사진</span>
+                  <span>{validIndex + 1} / {allImages.length}</span>
+                  <span className="hidden sm:inline text-slate-400 text-[10px] ml-1">(화살표를 클릭하여 사진 전환)</span>
                 </div>
               )}
             </div>
+
+            {/* Thumbnail Navigation Row */}
             {allImages.length > 1 && (
-              <div className="flex items-center gap-2 overflow-x-auto pb-1">
-                {allImages.map((img, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => setSelectedImage(img)}
-                    className={`w-20 h-14 rounded-xl overflow-hidden border-2 transition-all shrink-0 ${
-                      selectedImage === img ? 'border-teal-600 ring-2 ring-teal-500/30' : 'border-transparent opacity-70 hover:opacity-100'
-                    }`}
-                  >
-                    <img src={img} alt="thumb" className="w-full h-full object-cover" />
-                  </button>
-                ))}
+              <div className="flex items-center gap-2 overflow-x-auto pb-1 pt-1 scrollbar-none">
+                {allImages.map((img, idx) => {
+                  const isActive = validIndex === idx;
+                  return (
+                    <button
+                      key={idx}
+                      onClick={() => setCurrentImgIndex(idx)}
+                      className={`relative w-20 h-14 rounded-xl overflow-hidden border-2 transition-all shrink-0 cursor-pointer ${
+                        isActive
+                          ? 'border-teal-500 ring-4 ring-teal-500/20 scale-105'
+                          : 'border-slate-200 opacity-60 hover:opacity-100 hover:border-slate-400'
+                      }`}
+                    >
+                      <img src={img} alt={`thumb-${idx}`} className="w-full h-full object-cover" />
+                      {isActive && (
+                        <div className="absolute inset-0 bg-teal-500/10 pointer-events-none" />
+                      )}
+                    </button>
+                  );
+                })}
               </div>
             )}
           </div>
@@ -416,6 +495,82 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
           </div>
         </div>
       </div>
+
+      {/* High-Res Fullscreen Lightbox Modal */}
+      {isLightboxOpen && (
+        <div className="fixed inset-0 z-60 bg-slate-950/95 backdrop-blur-md flex flex-col items-center justify-between p-4 sm:p-6 animate-fadeIn">
+          {/* Lightbox Header */}
+          <div className="w-full max-w-5xl flex items-center justify-between text-white pb-3 border-b border-slate-800">
+            <div className="flex items-center gap-2 overflow-hidden">
+              <span className="bg-teal-600 text-white text-xs font-black px-2.5 py-1 rounded-lg shrink-0">
+                {product.category}
+              </span>
+              <span className="text-sm font-bold truncate">
+                {product.title}
+              </span>
+            </div>
+            <div className="flex items-center gap-3 shrink-0">
+              <span className="text-xs bg-slate-800 text-amber-300 font-bold px-3 py-1.5 rounded-xl border border-slate-700">
+                📷 {validIndex + 1} / {allImages.length}
+              </span>
+              <button
+                onClick={() => setIsLightboxOpen(false)}
+                className="w-10 h-10 rounded-full bg-slate-800 hover:bg-rose-600 text-white flex items-center justify-center transition-colors cursor-pointer"
+                title="닫기"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+          </div>
+
+          {/* Lightbox Main Photo View with Prev/Next */}
+          <div className="relative w-full max-w-5xl my-auto flex items-center justify-center max-h-[80vh]">
+            <img
+              src={currentPhoto}
+              alt={product.title}
+              className="max-w-full max-h-[75vh] object-contain rounded-2xl shadow-2xl border border-slate-800"
+            />
+
+            {allImages.length > 1 && (
+              <>
+                <button
+                  type="button"
+                  onClick={handlePrevImage}
+                  className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-slate-900/80 hover:bg-teal-500 text-white flex items-center justify-center transition-all shadow-2xl hover:scale-110 active:scale-95 cursor-pointer z-20"
+                  title="이전 사진"
+                >
+                  <ChevronLeft className="w-8 h-8 stroke-[2.5]" />
+                </button>
+                <button
+                  type="button"
+                  onClick={handleNextImage}
+                  className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-slate-900/80 hover:bg-teal-500 text-white flex items-center justify-center transition-all shadow-2xl hover:scale-110 active:scale-95 cursor-pointer z-20"
+                  title="다음 사진"
+                >
+                  <ChevronRight className="w-8 h-8 stroke-[2.5]" />
+                </button>
+              </>
+            )}
+          </div>
+
+          {/* Lightbox Thumbnails Footer */}
+          {allImages.length > 1 && (
+            <div className="w-full max-w-5xl flex items-center justify-center gap-2 overflow-x-auto pt-2 pb-1 scrollbar-none">
+              {allImages.map((img, idx) => (
+                <button
+                  key={`lb-thumb-${idx}`}
+                  onClick={() => setCurrentImgIndex(idx)}
+                  className={`w-16 h-12 rounded-xl overflow-hidden border-2 transition-all shrink-0 cursor-pointer ${
+                    validIndex === idx ? 'border-teal-400 ring-2 ring-teal-400/30 scale-105' : 'border-slate-800 opacity-50 hover:opacity-100'
+                  }`}
+                >
+                  <img src={img} alt="thumb" className="w-full h-full object-cover" />
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };
