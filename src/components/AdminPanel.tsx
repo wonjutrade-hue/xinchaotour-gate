@@ -1,69 +1,37 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Product, Category, Region, City, ConsultationRequest, ItineraryDay } from '../types';
 import { 
-  X, 
-  Plus, 
-  Edit, 
-  Trash2, 
-  Download, 
-  Upload, 
-  RotateCcw, 
-  CheckCircle, 
-  Lock, 
-  Unlock, 
-  Eye, 
-  Save, 
-  FileSpreadsheet, 
-  FileJson,
-  FileText,
-  Calendar,
-  Layers,
-  Inbox,
-  Image as ImageIcon,
-  Settings,
-  MessageCircle,
-  Globe,
-  ExternalLink,
-  Phone,
-  MapPin,
-  Search,
-  Grid,
-  List,
-  Filter,
-  Building2,
-  ChevronRight,
-  Sparkles,
-  Camera,
-  AlertTriangle,
-  Check,
-  CheckSquare,
-  Square,
-  ArrowLeft
+  X, Plus, Edit3, Trash2, Download, Upload, RotateCcw, Lock, Unlock, 
+  Eye, Save, Layers, Inbox, Camera, Settings, MessageCircle, Phone, 
+  MapPin, Search, Grid, List, Sparkles, AlertTriangle, Check, 
+  Copy, ArrowLeft, ArrowUpDown, ChevronRight, Image as ImageIcon
 } from 'lucide-react';
-import { getKakaoDirectLink, setKakaoDirectLink, COMPANY_PHONE } from '../constants';
+import { getKakaoDirectLink, setKakaoDirectLink, COMPANY_PHONE, COMPANY_PHONE_TEL } from '../constants';
+import { ExchangeRates, calculateVNDFromKRW } from '../lib/exchangeRate';
 
-const REGION_LIST: Exclude<Region, '전체'>[] = ['중부', '북부', '남부'];
+const REGIONS: Exclude<Region, '전체'>[] = ['중부', '북부', '남부'];
 
-const REGION_CITIES_MAP: Record<Exclude<Region, '전체'>, City[]> = {
+const REGION_CITIES: Record<Exclude<Region, '전체'>, City[]> = {
   '중부': ['다낭', '호이안', '후에', '나트랑'],
   '북부': ['하노이', '사파', '하롱베이', '닌빈'],
   '남부': ['호치민', '푸꾸옥', '달랏', '붕따우'],
 };
 
-const CATEGORIES: Category[] = ['풀빌라', '자유여행', '골프투어', '추천패키지'];
+const CATEGORIES: Category[] = ['풀빌라', '골프투어', '추천패키지', '자유여행'];
 
 interface AdminPanelProps {
   isOpen: boolean;
   onClose: () => void;
   products: Product[];
   inquiries: ConsultationRequest[];
-  onAddProduct: (prod: Omit<Product, 'id'>) => Promise<void>;
-  onUpdateProduct: (id: string, updated: Partial<Product>) => Promise<void>;
+  onAddProduct: (prod: Omit<Product, 'id'>) => Promise<Product | undefined>;
+  onUpdateProduct: (id: string, updated: Partial<Product>) => Promise<Product | undefined>;
   onDeleteProduct: (id: string) => Promise<void>;
   onClearAllProducts?: () => Promise<void>;
   onResetProducts: () => Promise<void>;
   onImportProducts: (items: any[], replace: boolean) => Promise<void>;
   onUpdateInquiryStatus: (id: string, status: ConsultationRequest['status']) => Promise<void>;
+  exchangeRates?: ExchangeRates;
 }
 
 export const AdminPanel: React.FC<AdminPanelProps> = ({
@@ -78,670 +46,357 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   onResetProducts,
   onImportProducts,
   onUpdateInquiryStatus,
+  exchangeRates,
 }) => {
   if (!isOpen) return null;
 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState('');
-  const [activeTab, setActiveTab] = useState<'products' | 'photos' | 'inquiries' | 'settings'>('products');
-  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
-  const [isCreating, setIsCreating] = useState(false);
-
-  // In-app confirmation dialog state (replaces broken window.confirm)
-  const [confirmModal, setConfirmModal] = useState<{
-    isOpen: boolean;
-    title: string;
-    description: string;
-    confirmText: string;
-    confirmAction: () => Promise<void> | void;
-    isDestructive?: boolean;
-  }>({
-    isOpen: false,
-    title: '',
-    description: '',
-    confirmText: '확인',
-    confirmAction: () => {},
-    isDestructive: false
-  });
-
-  // Regional, City & Category Filtering State for Product Management
-  const [selectedRegionFilter, setSelectedRegionFilter] = useState<Region>('전체');
-  const [selectedCityFilter, setSelectedCityFilter] = useState<City>('전체');
-  const [selectedCategoryFilter, setSelectedCategoryFilter] = useState<Category | '전체'>('전체');
-  const [adminSearchQuery, setAdminSearchQuery] = useState('');
-  const [viewMode, setViewMode] = useState<'grouped' | 'list'>('grouped');
-
-  // Settings State
-  const [kakaoUrlInput, setKakaoUrlInput] = useState('');
-
-  useEffect(() => {
-    setKakaoUrlInput(getKakaoDirectLink());
-  }, [isOpen]);
-
-  const handleSaveKakaoLink = () => {
-    setKakaoDirectLink(kakaoUrlInput);
-    alert('카카오톡 상담 링크가 성공적으로 저장되었습니다! 홈페이지의 모든 카톡 상담 버튼에 적용됩니다.');
-  };
-
-  // Helper Form States for Multiline Text & Complex Specs
-  const [includedText, setIncludedText] = useState('');
-  const [excludedText, setExcludedText] = useState('');
-  const [departureCitiesText, setDepartureCitiesText] = useState('');
-  const [tagsText, setTagsText] = useState('');
+  const [activeTab, setActiveTab] = useState<'products' | 'editor' | 'photos' | 'inquiries' | 'settings'>('products');
   
-  // Sub Images List State (Visual management for Airbnb-level photo gallery)
-  const [subImagesList, setSubImagesList] = useState<string[]>([]);
-  const [newSubImageUrlInput, setNewSubImageUrlInput] = useState<string>('');
-  const [uploadProgressStatus, setUploadProgressStatus] = useState<string | null>(null);
-  const [uploadProgressPercent, setUploadProgressPercent] = useState<number>(0);
-  const [isSavingProduct, setIsSavingProduct] = useState<boolean>(false);
-  const [selectedPhotoIndexes, setSelectedPhotoIndexes] = useState<number[]>([]);
-  const [isDraggingOver, setIsDraggingOver] = useState<boolean>(false);
+  // Filter & Search states
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filterCategory, setFilterCategory] = useState<Category | '전체'>('전체');
+  const [filterRegion, setFilterRegion] = useState<Region>('전체');
+  const [filterCity, setFilterCity] = useState<City>('전체');
+  const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
+  const [selectedProductIds, setSelectedProductIds] = useState<string[]>([]);
 
-  // Dedicated Photo Hub state (for photos tab)
-  const [photoHubList, setPhotoHubList] = useState<string[]>([]);
-  const [selectedHubPhotoIndexes, setSelectedHubPhotoIndexes] = useState<number[]>([]);
-
-  useEffect(() => {
-    // Populate Photo Hub with all images currently across products
-    const collected: string[] = [];
-    products.forEach(p => {
-      if (p.imageUrl && !collected.includes(p.imageUrl)) collected.push(p.imageUrl);
-      (p.additionalImages || []).forEach(img => {
-        if (img && !collected.includes(img)) collected.push(img);
-      });
-    });
-    setPhotoHubList(collected);
-  }, [products]);
-
-  const handleAddSubImageUrl = () => {
-    if (!newSubImageUrlInput.trim()) return;
-    const rawUrls = newSubImageUrlInput
-      .split(/[\n,]+/)
-      .map(u => u.trim())
-      .filter(u => u.startsWith('http://') || u.startsWith('https://') || u.startsWith('data:image/') || u.startsWith('/uploads/'));
-
-    if (rawUrls.length === 0) {
-      alert('유효한 이미지 URL(http://, https://)을 입력해주세요.');
-      return;
-    }
-
-    setSubImagesList(prev => [...prev, ...rawUrls]);
-    setNewSubImageUrlInput('');
-  };
-
-  const handleRemoveSubImage = (index: number) => {
-    setSubImagesList(prev => {
-      const filtered = prev.filter((_, i) => i !== index);
-      setFormData(f => ({ ...f, imageUrl: filtered[0] || '' }));
-      return filtered;
-    });
-    setSelectedPhotoIndexes(prev => prev.filter(i => i !== index).map(i => (i > index ? i - 1 : i)));
-  };
-
-  const handleSetAsCoverPhoto = (index: number) => {
-    if (index < 0 || index >= subImagesList.length) return;
-    const targetUrl = subImagesList[index];
-    const remaining = subImagesList.filter((_, i) => i !== index);
-    const newList = [targetUrl, ...remaining];
-    setSubImagesList(newList);
-    setFormData(prev => ({ ...prev, imageUrl: targetUrl }));
-  };
-
-  const handleMoveSubImage = (index: number, direction: 'up' | 'down' | 'first' | 'last') => {
-    setSubImagesList(prev => {
-      const copy = [...prev];
-      if (direction === 'first') {
-        const item = copy.splice(index, 1)[0];
-        copy.unshift(item);
-        return copy;
-      }
-      if (direction === 'last') {
-        const item = copy.splice(index, 1)[0];
-        copy.push(item);
-        return copy;
-      }
-      const targetIndex = direction === 'up' ? index - 1 : index + 1;
-      if (targetIndex < 0 || targetIndex >= copy.length) return copy;
-      const temp = copy[index];
-      copy[index] = copy[targetIndex];
-      copy[targetIndex] = temp;
-      return copy;
-    });
-  };
-
-  const handleToggleSelectPhoto = (index: number) => {
-    setSelectedPhotoIndexes(prev => 
-      prev.includes(index) ? prev.filter(i => i !== index) : [...prev, index]
-    );
-  };
-
-  const handleSelectAllPhotos = () => {
-    if (selectedPhotoIndexes.length === subImagesList.length) {
-      setSelectedPhotoIndexes([]);
-    } else {
-      setSelectedPhotoIndexes(subImagesList.map((_, i) => i));
-    }
-  };
-
-  const handleDeleteSelectedPhotos = () => {
-    if (selectedPhotoIndexes.length === 0) return;
-    const indexSet = new Set(selectedPhotoIndexes);
-    setSubImagesList(prev => {
-      const filtered = prev.filter((_, i) => !indexSet.has(i));
-      setFormData(f => ({ ...f, imageUrl: filtered[0] || '' }));
-      return filtered;
-    });
-    setSelectedPhotoIndexes([]);
-  };
-
-  const handleClearAllPhotos = () => {
-    setSubImagesList([]);
-    setFormData(prev => ({ ...prev, imageUrl: '' }));
-    setSelectedPhotoIndexes([]);
-  };
-
-  // Helper function to compress user uploaded image file with Airbnb standards (1440px max, 0.82 high quality)
-  const compressAndConvertImage = (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = (evt) => {
-        const img = new Image();
-        img.onload = () => {
-          const canvas = document.createElement('canvas');
-          let width = img.width;
-          let height = img.height;
-          const MAX_SIZE = 1440;
-
-          if (width > height) {
-            if (width > MAX_SIZE) {
-              height = Math.round((height * MAX_SIZE) / width);
-              width = MAX_SIZE;
-            }
-          } else {
-            if (height > MAX_SIZE) {
-              width = Math.round((width * MAX_SIZE) / height);
-              height = MAX_SIZE;
-            }
-          }
-
-          canvas.width = width;
-          canvas.height = height;
-          const ctx = canvas.getContext('2d');
-          ctx?.drawImage(img, 0, 0, width, height);
-
-          const dataUrl = canvas.toDataURL('image/jpeg', 0.82);
-          resolve(dataUrl);
-        };
-        img.onerror = () => reject(new Error('이미지 로드 실패'));
-        img.src = evt.target?.result as string;
-      };
-      reader.onerror = () => reject(new Error('파일 읽기 실패'));
-      reader.readAsDataURL(file);
-    });
-  };
-
-  // Batch processor for multiple files
-  const processBatchFiles = async (fileList: File[], target: 'editor' | 'hub' = 'editor') => {
-    if (fileList.length === 0) return;
-    const total = fileList.length;
-    const rawDataUrls: string[] = [];
-
-    const batchSize = 4;
-    for (let i = 0; i < total; i += batchSize) {
-      const currentBatch = fileList.slice(i, i + batchSize);
-      const percent = Math.round(((i + currentBatch.length) / total) * 100);
-      setUploadProgressPercent(percent);
-      setUploadProgressStatus(`📸 [고화질 최적화] ${total}장 중 ${Math.min(i + currentBatch.length, total)}번째 사진 압축 완료 (${percent}%)`);
-
-      const batchResults = await Promise.all(
-        currentBatch.map(file => compressAndConvertImage(file).catch(err => {
-          console.warn('Failed to compress image:', file.name, err);
-          return null;
-        }))
-      );
-
-      for (const res of batchResults) {
-        if (res) rawDataUrls.push(res);
-      }
-    }
-
-    setUploadProgressStatus(`💾 [서버 영구 보관] ${rawDataUrls.length}장의 사진을 서버 디스크로 영구 저장 중...`);
-    let finalUrls = rawDataUrls;
-    try {
-      const uploadRes = await fetch('/api/upload-images', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ images: rawDataUrls })
-      });
-      const uploadData = await uploadRes.json();
-      if (uploadData.success && Array.isArray(uploadData.urls) && uploadData.urls.length > 0) {
-        finalUrls = uploadData.urls;
-      }
-    } catch (uErr) {
-      console.warn('Server disk image upload fallback to client data URL:', uErr);
-    }
-
-    if (target === 'editor') {
-      setSubImagesList(prev => {
-        const combined = [...prev, ...finalUrls];
-        if (combined.length > 0) {
-          setFormData(f => ({ ...f, imageUrl: combined[0] }));
-        }
-        return combined;
-      });
-    } else {
-      setPhotoHubList(prev => [...finalUrls, ...prev]);
-    }
-
-    setUploadProgressStatus(null);
-    setUploadProgressPercent(0);
-  };
-
-  const handleSubImagesFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files || files.length === 0) return;
-    try {
-      const fileList = Array.from(files) as File[];
-      await processBatchFiles(fileList, 'editor');
-    } catch (err) {
-      setUploadProgressStatus(null);
-      alert('사진 일괄 업로드 중 오류가 발생했습니다.');
-    }
-    e.target.value = '';
-  };
-
-  const handlePhotoHubUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files || files.length === 0) return;
-    try {
-      const fileList = Array.from(files) as File[];
-      await processBatchFiles(fileList, 'hub');
-    } catch (err) {
-      setUploadProgressStatus(null);
-      alert('사진 일괄 업로드 중 오류가 발생했습니다.');
-    }
-    e.target.value = '';
-  };
-
-  const handleDropPhotos = async (e: React.DragEvent<HTMLDivElement>, target: 'editor' | 'hub' = 'editor') => {
-    e.preventDefault();
-    setIsDraggingOver(false);
-    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      const allFiles = Array.from(e.dataTransfer.files) as File[];
-      const imageFiles = allFiles.filter(f => f.type && f.type.startsWith('image/'));
-      if (imageFiles.length === 0) {
-        alert('이미지 파일(JPG, PNG, WebP 등)만 드롭해주세요.');
-        return;
-      }
-      await processBatchFiles(imageFiles, target);
-    }
-  };
-
-  // Helper for Itinerary
-  const [itineraryList, setItineraryList] = useState<ItineraryDay[]>([]);
-
-  // Helper for Golf Specs
-  const [golfCourseNamesText, setGolfCourseNamesText] = useState('');
-  const [golfHoles, setGolfHoles] = useState<number>(18);
-  const [greenFeeIncluded, setGreenFeeIncluded] = useState<boolean>(true);
-  const [caddieFeeIncluded, setCaddieFeeIncluded] = useState<boolean>(true);
-
-  // Helper for Villa Specs
-  const [villaBedrooms, setVillaBedrooms] = useState<number>(3);
-  const [villaPrivatePool, setVillaPrivatePool] = useState<boolean>(true);
-  const [villaOceanView, setVillaOceanView] = useState<boolean>(false);
-  const [villaMaxOccupancy, setVillaMaxOccupancy] = useState<number>(6);
-
-  // Form State for Create/Edit
+  // Editor Form States
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
   const [formData, setFormData] = useState<Partial<Product>>({
     title: '',
     subTitle: '',
     category: '풀빌라',
     region: '중부',
     city: '다낭',
-    priceKRW: 0,
-    priceVND: 0,
+    priceKRW: 850000,
+    priceVND: 16000000,
     duration: '3박 5일',
-    imageUrl: 'https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?auto=format&fit=crop&w=1000&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1000&q=80',
     additionalImages: [],
-    rating: 4.9,
-    reviewCount: 10,
-    isPopular: false,
+    rating: 5.0,
+    reviewCount: 12,
+    isPopular: true,
     isHotDeal: false,
     discountPercent: 0,
-    departureCities: ['인천', '김해'],
-    tags: ['인기패키지', 'NO쇼핑'],
-    description: '베트남 맞춤형 프리미엄 패키지입니다.',
-    included: ['왕복 항공권', '5성급 호텔 숙박', '한국어 가이드'],
-    excluded: ['가이드 매너팁'],
-    itinerary: [
-      { day: 1, title: '공항 도착 및 호텔 체크인', description: '가이드 미팅 후 전용 차량 이동', meal: '석식: 현지식', hotel: '5성급 호텔' },
-      { day: 2, title: '시티 주요 관광지 투어', description: '관광지 관람 및 특식 다이닝', meal: '조: 호텔식 / 중: 특식', hotel: '5성급 호텔' }
-    ]
+    departureCities: ['인천', '김해', '대구'],
+    tags: ['#프라이빗풀빌라', '#단독독채', '#럭셔리휴양'],
+    description: '',
+    included: [],
+    excluded: [],
+    itinerary: []
   });
 
-  const handlePasswordSubmit = (e: React.FormEvent) => {
+  const [includedText, setIncludedText] = useState('');
+  const [excludedText, setExcludedText] = useState('');
+  const [departureCitiesText, setDepartureCitiesText] = useState('');
+  const [tagsText, setTagsText] = useState('');
+  const [galleryImages, setGalleryImages] = useState<string[]>([]);
+  const [itineraryList, setItineraryList] = useState<ItineraryDay[]>([]);
+
+  // Villa / Golf specs
+  const [villaBedrooms, setVillaBedrooms] = useState(3);
+  const [villaPrivatePool, setVillaPrivatePool] = useState(true);
+  const [villaOceanView, setVillaOceanView] = useState(false);
+  const [villaMaxOccupancy, setVillaMaxOccupancy] = useState(6);
+  const [golfHoles, setGolfHoles] = useState(18);
+  const [greenFeeIncluded, setGreenFeeIncluded] = useState(true);
+  const [caddieFeeIncluded, setCaddieFeeIncluded] = useState(true);
+  const [golfCourseNamesText, setGolfCourseNamesText] = useState('');
+
+  // Photo Hub & Upload States
+  const [uploadStatus, setUploadStatus] = useState<string | null>(null);
+  const [allSitePhotos, setAllSitePhotos] = useState<string[]>([]);
+  const [kakaoLinkInput, setKakaoLinkInput] = useState(getKakaoDirectLink());
+  const [copiedUrl, setCopiedUrl] = useState<string | null>(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+
+  // Sync photos across site
+  useEffect(() => {
+    const photos: string[] = [];
+    products.forEach(p => {
+      if (p.imageUrl && !photos.includes(p.imageUrl)) photos.push(p.imageUrl);
+      (p.additionalImages || []).forEach(img => {
+        if (img && !photos.includes(img)) photos.push(img);
+      });
+    });
+    setAllSitePhotos(photos);
+  }, [products]);
+
+  // Auth Handler
+  const handleAuth = (e: React.FormEvent) => {
     e.preventDefault();
-    if (password === 'xinchao123' || password === '1234' || password === '') {
+    if (password === '1234' || password === 'xinchao123' || password === '') {
       setIsAuthenticated(true);
     } else {
-      alert('비밀번호가 일치하지 않습니다. (기본 암호: xinchao123 또는 1234)');
+      alert('비밀번호가 올바르지 않습니다. (기본: 1234)');
     }
   };
 
-  // Villa Sample Preset Auto-Fill Helper
-  const applyVillaPreset = (city: City = (formData.city as City) || '다낭') => {
-    setFormData(prev => ({
-      ...prev,
-      title: prev.title && !prev.title.includes('신규 여행 상품') ? prev.title : `[${city}/풀빌라] 럭셔리 단독 프라이빗 독채 풀빌라`,
-      subTitle: '대형 프라이빗 수영장 & 단독 독채 빌라에서 즐기는 최고급 럭셔리 휴양',
-      category: '풀빌라',
-      priceKRW: prev.priceKRW && prev.priceKRW > 0 ? prev.priceKRW : 850000,
-      priceVND: prev.priceVND && prev.priceVND > 0 ? prev.priceVND : 16000000,
-      duration: '3박 5일',
-      description: '단독 수영장과 독채 공간을 갖춘 프리미엄 럭셔리 풀빌라 패키지입니다. 전 일정 단독 전용차량과 한국어 가이드가 동행하여 더욱 편안하고 안전한 단독 여행을 보장합니다.',
-    }));
+  // Image Compressor & Disk Uploader
+  const compressImage = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let { width, height } = img;
+          const MAX_SIZE = 1440;
+          if (width > height && width > MAX_SIZE) {
+            height = Math.round((height * MAX_SIZE) / width);
+            width = MAX_SIZE;
+          } else if (height > MAX_SIZE) {
+            width = Math.round((width * MAX_SIZE) / height);
+            height = MAX_SIZE;
+          }
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx?.drawImage(img, 0, 0, width, height);
+          resolve(canvas.toDataURL('image/jpeg', 0.85));
+        };
+        img.onerror = () => reject(new Error('이미지 변환 실패'));
+        img.src = e.target?.result as string;
+      };
+      reader.onerror = () => reject(new Error('파일 읽기 실패'));
+      reader.readAsDataURL(file);
+    });
+  };
 
-    setIncludedText([
-      '단독 프라이빗 독채 풀빌라 숙박',
-      '전 일정 단독 전용차량 & 전담 기사',
-      '한국어 전문 가이드 전 일정 동행',
-      '빌라 조식 뷔페 및 무제한 미니바',
-      '단독 공항 픽업 & 샌딩 서비스'
-    ].join('\n'));
-
-    setExcludedText([
-      '왕복 항공권',
-      '가이드/기사 매너팁',
-      '개인 선택옵션 및 기타 개인 경비'
-    ].join('\n'));
-
-    setDepartureCitiesText(['인천', '김해', '대구', '청주'].join('\n'));
-    setTagsText(['#프라이빗풀빌라', '#단독독채', '#럭셔리휴양', `#${city}풀빌라`].join('\n'));
-
-    setItineraryList([
-      { 
-        day: 1, 
-        title: '공항 도착 후 가이드 미팅 & 풀빌라 체크인', 
-        description: '단독 전용차량 이동 후 프라이빗 풀빌라 체크인, 미니바 및 전용 수영장 이용 안내', 
-        meal: '석식: 현지 특식', 
-        hotel: '프라이빗 럭셔리 독채 풀빌라' 
-      },
-      { 
-        day: 2, 
-        title: '프라이빗 수영장 물놀이 & 시티 명소 가이드 투어', 
-        description: '빌라 내 전용 수영장 자유 물놀이 및 한국어 가이드 동행 시티 명소 관람, 씨푸드 다이닝', 
-        meal: '조: 빌라 조식 / 중: 현지 특식 / 석: 씨푸드', 
-        hotel: '프라이빗 럭셔리 독채 풀빌라' 
-      },
-      { 
-        day: 3, 
-        title: '여유로운 레이트 체크아웃, 쇼핑 & 공항 배웅', 
-        description: '여유로운 레이트 체크아웃 후 시내 인기 카페/기념품 명소 방문 및 단독 차량 공항 샌딩', 
-        meal: '조: 빌라 조식 / 중: 자유식', 
-        hotel: '기내박' 
+  const uploadFilesToDisk = async (files: File[]): Promise<string[]> => {
+    if (files.length === 0) return [];
+    setUploadStatus(`고화질 사진 ${files.length}장 처리 중...`);
+    const base64List: string[] = [];
+    for (let i = 0; i < files.length; i++) {
+      try {
+        const compressed = await compressImage(files[i]);
+        base64List.push(compressed);
+      } catch (err) {
+        console.warn('Compress failed:', err);
       }
+    }
+
+    try {
+      const res = await fetch('/api/upload-images', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ images: base64List })
+      });
+      const data = await res.json();
+      setUploadStatus(null);
+      if (data.success && Array.isArray(data.urls) && data.urls.length > 0) {
+        return data.urls;
+      }
+    } catch (e) {
+      console.warn('Upload API fallback to client base64');
+    }
+    setUploadStatus(null);
+    return base64List;
+  };
+
+  // Open New Product Creator
+  const handleOpenCreator = (presetCategory: Category = '풀빌라', presetCity: City = '다낭') => {
+    const region = Object.entries(REGION_CITIES).find(([_, cities]) => cities.includes(presetCity))?.[0] as Region || '중부';
+    
+    setEditingId(null);
+    setFormData({
+      title: `[${presetCity}/${presetCategory}] 베트남 최고급 단독 ${presetCategory}`,
+      subTitle: '전 일정 단독 전용차량 & 100% 한국인 전담 가이드 동행 힐링 여행',
+      category: presetCategory,
+      region,
+      city: presetCity,
+      priceKRW: presetCategory === '풀빌라' ? 850000 : presetCategory === '골프투어' ? 950000 : 650000,
+      priceVND: presetCategory === '풀빌라' ? 16000000 : presetCategory === '골프투어' ? 18000000 : 12000000,
+      duration: '3박 5일',
+      imageUrl: presetCategory === '풀빌라' 
+        ? 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1000&q=80'
+        : presetCategory === '골프투어'
+        ? 'https://images.unsplash.com/photo-1535131749006-b7f58c99034b?auto=format&fit=crop&w=1000&q=80'
+        : 'https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?auto=format&fit=crop&w=1000&q=80',
+      additionalImages: [],
+      rating: 5.0,
+      reviewCount: 15,
+      isPopular: true,
+      isHotDeal: false,
+      discountPercent: 0,
+      departureCities: ['인천', '김해', '대구', '청주'],
+      tags: [`#${presetCity}여행`, `#${presetCategory}`, '#단독차량', '#노쇼핑'],
+      description: '고객 맞춤형 1:1 단독 프라이빗 여행 상품입니다. 원하시는 일정과 호텔로 자유롭게 조정 가능합니다.',
+      included: ['전 일정 단독 전용차량 & 기사', '한국어 전문 가이드 동행', '최고급 숙박 및 조식', '공항 단독 픽업/샌딩', '여행자 보험'],
+      excluded: ['왕복 항공권 (선택 발권 가능)', '가이드/기사 매너팁', '개인 경비'],
+      itinerary: [
+        { day: 1, title: '공항 도착 및 가이드 미팅 & 체크인', description: '단독 차량으로 숙소 이동 후 체크인 및 자유 휴식', meal: '석식: 현지 특식', hotel: '5성급 호텔/풀빌라' },
+        { day: 2, title: '시티 주요 명소 투어 & 힐링 스파', description: '인기 관광지 관람 및 특식 다이닝, 90분 마사지', meal: '조: 호텔식 / 중: 특식 / 석: 씨푸드', hotel: '5성급 호텔/풀빌라' },
+        { day: 3, title: '자유 일정 & 기념품 쇼핑 후 공항 배웅', description: '체크아웃 후 인기 카페 방문 및 공항 단독 샌딩', meal: '조: 호텔식 / 중: 자유식', hotel: '기내박' }
+      ]
+    });
+
+    setIncludedText('전 일정 단독 전용차량 & 기사\n한국어 전문 가이드 동행\n최고급 숙박 및 조식\n공항 단독 픽업/샌딩\n여행자 보험');
+    setExcludedText('왕복 항공권 (선택 발권 가능)\n가이드/기사 매너팁\n개인 경비');
+    setDepartureCitiesText('인천\n김해\n대구\n청주');
+    setTagsText(`#${presetCity}여행\n#${presetCategory}\n#단독차량\n#노쇼핑`);
+    setGalleryImages([]);
+    setItineraryList([
+      { day: 1, title: '공항 도착 및 가이드 미팅 & 체크인', description: '단독 차량으로 숙소 이동 후 체크인 및 자유 휴식', meal: '석식: 현지 특식', hotel: '5성급 호텔/풀빌라' },
+      { day: 2, title: '시티 주요 명소 투어 & 힐링 스파', description: '인기 관광지 관람 및 특식 다이닝, 90분 마사지', meal: '조: 호텔식 / 중: 특식 / 석: 씨푸드', hotel: '5성급 호텔/풀빌라' },
+      { day: 3, title: '자유 일정 & 기념품 쇼핑 후 공항 배웅', description: '체크아웃 후 인기 카페 방문 및 공항 단독 샌딩', meal: '조: 호텔식 / 중: 자유식', hotel: '기내박' }
     ]);
 
     setVillaBedrooms(3);
     setVillaPrivatePool(true);
     setVillaOceanView(false);
     setVillaMaxOccupancy(6);
-  };
-
-  // Smart product creation with region, city, and category prefilled
-  const handleStartCreate = (targetRegion?: Region, targetCity?: City, targetCategory?: Category) => {
-    setEditingProduct(null);
-    setIsCreating(true);
-
-    const reg: Region = (targetRegion && targetRegion !== '전체')
-      ? targetRegion
-      : (selectedRegionFilter !== '전체' ? selectedRegionFilter : '중부');
-
-    const availableCities = REGION_CITIES_MAP[reg as Exclude<Region, '전체'>] || ['다낭'];
-    const cit: City = (targetCity && targetCity !== '전체')
-      ? targetCity
-      : (selectedCityFilter !== '전체' && availableCities.includes(selectedCityFilter) ? selectedCityFilter : availableCities[0]);
-
-    const cat: Category = targetCategory || (selectedCategoryFilter !== '전체' ? selectedCategoryFilter : '풀빌라');
-
-    if (cat === '풀빌라') {
-      setFormData({
-        title: `[${cit}/풀빌라] 럭셔리 단독 프라이빗 독채 풀빌라`,
-        subTitle: '대형 프라이빗 수영장 & 단독 독채 빌라에서 즐기는 최고급 럭셔리 휴양',
-        category: '풀빌라',
-        region: reg,
-        city: cit,
-        priceKRW: 850000,
-        priceVND: 16000000,
-        duration: '3박 5일',
-        imageUrl: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1000&q=80',
-        additionalImages: [],
-        rating: 5.0,
-        reviewCount: 12,
-        isPopular: true,
-        isHotDeal: false,
-        discountPercent: 0,
-        departureCities: ['인천', '김해', '대구', '청주'],
-        tags: ['#프라이빗풀빌라', '#단독독채', '#럭셔리휴양', `#${cit}풀빌라`],
-        address: '',
-        externalBookingUrl: '',
-        description: '단독 수영장과 독채 공간을 갖춘 프리미엄 럭셔리 풀빌라 패키지입니다. 전 일정 단독 전용차량과 한국어 가이드가 동행하여 더욱 편안하고 안전한 단독 여행을 보장합니다.',
-        included: ['단독 프라이빗 독채 풀빌라 숙박', '전 일정 단독 전용차량 & 전담 기사', '한국어 전문 가이드 전 일정 동행', '빌라 조식 뷔페 및 무제한 미니바', '단독 공항 픽업 & 샌딩 서비스'],
-        excluded: ['왕복 항공권', '가이드/기사 매너팁', '개인 선택옵션 및 기타 개인 경비'],
-        itinerary: [
-          { day: 1, title: '공항 도착 후 가이드 미팅 & 풀빌라 체크인', description: '단독 전용차량 이동 후 프라이빗 풀빌라 체크인, 미니바 및 전용 수영장 이용 안내', meal: '석식: 현지 특식', hotel: '프라이빗 럭셔리 독채 풀빌라' },
-          { day: 2, title: '프라이빗 수영장 물놀이 & 시티 명소 가이드 투어', description: '빌라 내 전용 수영장 자유 물놀이 및 한국어 가이드 동행 시티 명소 관람, 씨푸드 다이닝', meal: '조: 빌라 조식 / 중: 현지 특식 / 석: 씨푸드', hotel: '프라이빗 럭셔리 독채 풀빌라' },
-          { day: 3, title: '여유로운 레이트 체크아웃, 쇼핑 & 공항 배웅', description: '여유로운 레이트 체크아웃 후 시내 인기 카페/기념품 명소 방문 및 단독 차량 공항 샌딩', meal: '조: 빌라 조식 / 중: 자유식', hotel: '기내박' }
-        ]
-      });
-
-      setIncludedText('단독 프라이빗 독채 풀빌라 숙박\n전 일정 단독 전용차량 & 전담 기사\n한국어 전문 가이드 전 일정 동행\n빌라 조식 뷔페 및 무제한 미니바\n단독 공항 픽업 & 샌딩 서비스');
-      setExcludedText('왕복 항공권\n가이드/기사 매너팁\n개인 선택옵션 및 기타 개인 경비');
-      setDepartureCitiesText('인천\n김해\n대구\n청주');
-      setTagsText(`#프라이빗풀빌라\n#단독독채\n#럭셔리휴양\n#${cit}풀빌라`);
-      setSubImagesList([]);
-      setItineraryList([
-        { day: 1, title: '공항 도착 후 가이드 미팅 & 풀빌라 체크인', description: '단독 전용차량 이동 후 프라이빗 풀빌라 체크인, 미니바 및 전용 수영장 이용 안내', meal: '석식: 현지 특식', hotel: '프라이빗 럭셔리 독채 풀빌라' },
-        { day: 2, title: '프라이빗 수영장 물놀이 & 시티 명소 가이드 투어', description: '빌라 내 전용 수영장 자유 물놀이 및 한국어 가이드 동행 시티 명소 관람, 씨푸드 다이닝', meal: '조: 빌라 조식 / 중: 현지 특식 / 석: 씨푸드', hotel: '프라이빗 럭셔리 독채 풀빌라' },
-        { day: 3, title: '여유로운 레이트 체크아웃, 쇼핑 & 공항 배웅', description: '여유로운 레이트 체크아웃 후 시내 인기 카페/기념품 명소 방문 및 단독 차량 공항 샌딩', meal: '조: 빌라 조식 / 중: 자유식', hotel: '기내박' }
-      ]);
-
-      setVillaBedrooms(3);
-      setVillaPrivatePool(true);
-      setVillaOceanView(false);
-      setVillaMaxOccupancy(6);
-    } else {
-      setFormData({
-        title: `[${cit}/${cat}] 신규 여행 상품`,
-        subTitle: '상품에 대한 매력적인 한 줄 설명을 적어주세요.',
-        category: cat,
-        region: reg,
-        city: cit,
-        priceKRW: 650000,
-        priceVND: 12000000,
-        duration: '3박 5일',
-        imageUrl: 'https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?auto=format&fit=crop&w=1000&q=80',
-        additionalImages: [],
-        rating: 5.0,
-        reviewCount: 1,
-        isPopular: false,
-        isHotDeal: false,
-        discountPercent: 0,
-        departureCities: ['인천', '김해', '대구'],
-        tags: ['#신규상품', `#${cit}`, `#${cat}`],
-        address: '',
-        externalBookingUrl: '',
-        description: '새로운 베트남 맞춤형 여행 상품 정보입니다.',
-        included: ['전 일정 전용차량', '한국어 가이드', '5성급 호텔 숙박', '조식 및 주요 특식'],
-        excluded: ['왕복 항공권', '가이드/기사 매너팁', '개인 경비'],
-        itinerary: [
-          { day: 1, title: '공항 도착 및 현지 가이드 미팅', description: '전용 차량으로 호텔 이동 후 체크인 및 자유 휴식', meal: '석식: 현지 특식', hotel: '5성급 리조트/호텔' },
-          { day: 2, title: '주요 관광지 가이드 투어 및 특식', description: '단독 차량과 가이드로 여유로운 코스 진행', meal: '조: 호텔식 / 중: 특식 / 석: 씨푸드', hotel: '5성급 리조트/호텔' },
-          { day: 3, title: '자유 일정 및 공항 배웅', description: '체크아웃 후 기념품 샵 방문 및 공항 이동', meal: '조: 호텔식 / 중: 자유식', hotel: '기내박' }
-        ]
-      });
-
-      setIncludedText('전 일정 전용차량\n한국어 가이드\n5성급 호텔 숙박\n조식 및 주요 특식');
-      setExcludedText('왕복 항공권\n가이드/기사 매너팁\n개인 경비');
-      setDepartureCitiesText('인천\n김해\n대구');
-      setTagsText(`#신규상품\n#${cit}\n#${cat}`);
-      setSubImagesList([]);
-      setItineraryList([
-        { day: 1, title: '공항 도착 및 현지 가이드 미팅', description: '전용 차량으로 호텔 이동 후 체크인 및 자유 휴식', meal: '석식: 현지 특식', hotel: '5성급 리조트/호텔' },
-        { day: 2, title: '주요 관광지 가이드 투어 및 특식', description: '단독 차량과 가이드로 여유로운 코스 진행', meal: '조: 호텔식 / 중: 특식 / 석: 씨푸드', hotel: '5성급 리조트/호텔' },
-        { day: 3, title: '자유 일정 및 공항 배웅', description: '체크아웃 후 기념품 샵 방문 및 공항 이동', meal: '조: 호텔식 / 중: 자유식', hotel: '기내박' }
-      ]);
-    }
-
-    setGolfCourseNamesText(`${cit} CC\n몽고메리 링스`);
     setGolfHoles(18);
     setGreenFeeIncluded(true);
     setCaddieFeeIncluded(true);
+    setGolfCourseNamesText(`${presetCity} CC\n몽고메리 링스`);
+
+    setActiveTab('editor');
   };
 
-  const handleStartEdit = (prod: Product) => {
-    setEditingProduct(prod);
-    setIsCreating(false);
+  // Open Edit Mode for Existing Product
+  const handleOpenEdit = (prod: Product) => {
+    setEditingId(prod.id);
     setFormData({ ...prod });
-
     setIncludedText((prod.included || []).join('\n'));
     setExcludedText((prod.excluded || []).join('\n'));
     setDepartureCitiesText((prod.departureCities || []).join('\n'));
     setTagsText((prod.tags || []).join('\n'));
-    const existingSubImages = prod.additionalImages || (prod as any).galleryImages || (prod as any).images || [];
-    const allInitial = prod.imageUrl 
-      ? [prod.imageUrl, ...existingSubImages.filter((u: string) => u !== prod.imageUrl)]
-      : existingSubImages;
-    setSubImagesList(Array.isArray(allInitial) ? [...allInitial] : []);
-    setItineraryList(prod.itinerary && prod.itinerary.length > 0 ? [...prod.itinerary] : [
-      { day: 1, title: '공항 도착 및 가이드 미팅', description: '체크인 후 휴식' }
-    ]);
+    
+    const initialImages = [
+      prod.imageUrl,
+      ...(prod.additionalImages || []).filter(img => img !== prod.imageUrl)
+    ].filter(Boolean);
+    setGalleryImages(initialImages);
 
-    if (prod.golfSpecs) {
-      setGolfHoles(prod.golfSpecs.holes || 18);
-      setGreenFeeIncluded(prod.golfSpecs.greenFeeIncluded ?? true);
-      setCaddieFeeIncluded(prod.golfSpecs.caddieFeeIncluded ?? true);
-      setGolfCourseNamesText((prod.golfSpecs.golfCourseNames || []).join('\n'));
-    } else {
-      setGolfCourseNamesText(`${prod.city} CC`);
-      setGolfHoles(18);
-      setGreenFeeIncluded(true);
-      setCaddieFeeIncluded(true);
-    }
+    setItineraryList(prod.itinerary && prod.itinerary.length > 0 ? [...prod.itinerary] : [
+      { day: 1, title: '공항 도착 및 체크인', description: '가이드 미팅 후 숙소 이동' }
+    ]);
 
     if (prod.villaSpecs) {
       setVillaBedrooms(prod.villaSpecs.bedrooms || 3);
       setVillaPrivatePool(prod.villaSpecs.privatePool ?? true);
       setVillaOceanView(prod.villaSpecs.oceanView ?? false);
       setVillaMaxOccupancy(prod.villaSpecs.maxOccupancy || 6);
-    } else {
-      setVillaBedrooms(3);
-      setVillaPrivatePool(true);
-      setVillaOceanView(false);
-      setVillaMaxOccupancy(6);
     }
+    if (prod.golfSpecs) {
+      setGolfHoles(prod.golfSpecs.holes || 18);
+      setGreenFeeIncluded(prod.golfSpecs.greenFeeIncluded ?? true);
+      setCaddieFeeIncluded(prod.golfSpecs.caddieFeeIncluded ?? true);
+      setGolfCourseNamesText((prod.golfSpecs.golfCourseNames || []).join('\n'));
+    }
+
+    setActiveTab('editor');
   };
 
+  // Duplicate Product
+  const handleDuplicateProduct = async (prod: Product) => {
+    const duplicated: Omit<Product, 'id'> = {
+      ...prod,
+      title: `${prod.title} (복제본)`,
+      createdAt: new Date().toISOString()
+    };
+    await onAddProduct(duplicated);
+    alert(`📋 "${prod.title}" 상품이 성공적으로 복제되었습니다!`);
+  };
+
+  // Save Product (Add or Update)
   const handleSaveProduct = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (isSavingProduct) return;
-    setIsSavingProduct(true);
+    if (isSaving) return;
+    setIsSaving(true);
+
     try {
-      const splitLines = (str: string) => str.split('\n').map(s => s.trim()).filter(Boolean);
+      const splitText = (text: string) => text.split('\n').map(t => t.trim()).filter(Boolean);
 
-      let cleanSubImages = subImagesList.filter(Boolean);
-      let mainImageUrl = cleanSubImages[0] || formData.imageUrl || 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1000&q=80';
+      const mainImage = galleryImages[0] || formData.imageUrl || 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1000&q=80';
 
-      const base64List = [mainImageUrl, ...cleanSubImages].filter(u => u && u.startsWith('data:image/'));
-      if (base64List.length > 0) {
-        try {
-          const uploadRes = await fetch('/api/upload-images', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ images: base64List })
-          });
-          const uploadData = await uploadRes.json();
-          if (uploadData.success && Array.isArray(uploadData.urls)) {
-            let urlIdx = 0;
-            if (mainImageUrl.startsWith('data:image/')) {
-              mainImageUrl = uploadData.urls[urlIdx++] || mainImageUrl;
-            }
-            cleanSubImages = cleanSubImages.map(img => {
-              if (img.startsWith('data:image/')) {
-                return uploadData.urls[urlIdx++] || img;
-              }
-              return img;
-            });
-          }
-        } catch (uErr) {
-          console.warn('Batch upload on save fallback:', uErr);
-        }
-      }
-
-      const finalData: Partial<Product> = {
+      const payload: Partial<Product> = {
         ...formData,
-        imageUrl: mainImageUrl,
-        included: splitLines(includedText),
-        excluded: splitLines(excludedText),
-        departureCities: splitLines(departureCitiesText),
-        tags: splitLines(tagsText),
-        additionalImages: cleanSubImages,
-        itinerary: itineraryList,
+        imageUrl: mainImage,
+        additionalImages: galleryImages,
+        included: splitText(includedText),
+        excluded: splitText(excludedText),
+        departureCities: splitText(departureCitiesText),
+        tags: splitText(tagsText),
+        itinerary: itineraryList
       };
 
-      if (formData.category === '골프투어') {
-        finalData.golfSpecs = {
-          holes: golfHoles,
-          greenFeeIncluded,
-          caddieFeeIncluded,
-          golfCourseNames: splitLines(golfCourseNamesText),
-        };
-      }
-
       if (formData.category === '풀빌라') {
-        finalData.villaSpecs = {
+        payload.villaSpecs = {
           bedrooms: villaBedrooms,
           privatePool: villaPrivatePool,
           oceanView: villaOceanView,
-          maxOccupancy: villaMaxOccupancy,
+          maxOccupancy: villaMaxOccupancy
+        };
+      } else if (formData.category === '골프투어') {
+        payload.golfSpecs = {
+          holes: golfHoles,
+          greenFeeIncluded,
+          caddieFeeIncluded,
+          golfCourseNames: splitText(golfCourseNamesText)
         };
       }
 
-      if (isCreating) {
-        await onAddProduct(finalData as any);
-        alert(`✅ [저장 완료] "${finalData.title}" 상품이 안전하게 등록되었습니다.`);
-      } else if (editingProduct) {
-        await onUpdateProduct(editingProduct.id, finalData);
-        alert(`✅ [수정 완료] "${finalData.title}" 상품 정보가 안전하게 수정되었습니다.`);
+      if (editingId) {
+        await onUpdateProduct(editingId, payload);
+        alert(`✅ "${payload.title}" 상품 정보가 성공적으로 수정되었습니다!`);
+      } else {
+        await onAddProduct(payload as any);
+        alert(`🎉 새 여행 상품 "${payload.title}"이(가) 등록되었습니다!`);
       }
-      setEditingProduct(null);
-      setIsCreating(false);
+
+      setActiveTab('products');
+      setEditingId(null);
     } catch (err: any) {
-      console.error('Save product error:', err);
-      alert(`⚠️ 저장 중 오류가 발생했습니다: ${err.message || '다시 시도해주세요.'}`);
+      alert(`⚠️ 저장 중 오류가 발생했습니다: ${err.message}`);
     } finally {
-      setIsSavingProduct(false);
+      setIsSaving(false);
     }
   };
 
+  // Bulk Delete Selected
+  const handleBatchDelete = async () => {
+    if (selectedProductIds.length === 0) return;
+    if (!confirm(`선택한 ${selectedProductIds.length}개 상품을 삭제하시겠습니까?`)) return;
+    
+    for (const id of selectedProductIds) {
+      await onDeleteProduct(id);
+    }
+    setSelectedProductIds([]);
+    alert('선택한 상품이 모두 삭제되었습니다.');
+  };
+
+  // Filtered Products List
+  const displayProducts = products.filter(p => {
+    if (filterCategory !== '전체' && p.category !== filterCategory) return false;
+    if (filterRegion !== '전체' && p.region !== filterRegion) return false;
+    if (filterCity !== '전체' && p.city !== filterCity) return false;
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      const matchTitle = p.title.toLowerCase().includes(q);
+      const matchSub = (p.subTitle || '').toLowerCase().includes(q);
+      const matchCity = p.city.toLowerCase().includes(q);
+      const matchTag = (p.tags || []).some(t => t.toLowerCase().includes(q));
+      if (!matchTitle && !matchSub && !matchCity && !matchTag) return false;
+    }
+    return true;
+  });
+
+  // Export JSON
   const handleExportJson = () => {
-    try {
-      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(products, null, 2));
-      const downloadAnchor = document.createElement('a');
-      downloadAnchor.setAttribute("href", dataStr);
-      downloadAnchor.setAttribute("download", `xinchaotour_products_backup_${new Date().toISOString().slice(0, 10)}.json`);
-      document.body.appendChild(downloadAnchor);
-      downloadAnchor.click();
-      downloadAnchor.remove();
-      alert('현재 등록된 모든 상품 데이터가 JSON 백업 파일로 다운로드되었습니다!');
-    } catch (err) {
-      alert('백업 파일 다운로드 중 오류가 발생했습니다.');
-    }
+    const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(products, null, 2));
+    const a = document.createElement('a');
+    a.href = dataStr;
+    a.download = `xinchaotour_products_${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
   };
 
-  const handleFileUploadJson = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Import JSON
+  const handleImportJson = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     const reader = new FileReader();
@@ -750,12 +405,10 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
         const parsed = JSON.parse(evt.target?.result as string);
         if (Array.isArray(parsed)) {
           await onImportProducts(parsed, false);
-          alert(`${parsed.length}개의 상품 데이터가 성공적으로 복원/업로드되었습니다.`);
-        } else {
-          alert('올바른 JSON 데이터 배열 형식의 파일이 아닙니다.');
+          alert(`${parsed.length}개 상품을 성공적으로 가져왔습니다.`);
         }
       } catch (err) {
-        alert('JSON 백업 파일을 읽는 중 오류가 발생했습니다.');
+        alert('올바른 JSON 파일이 아닙니다.');
       }
     };
     reader.readAsText(file);
@@ -765,37 +418,37 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   // Password Lock Screen
   if (!isAuthenticated) {
     return (
-      <div className="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4">
+      <div className="fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-md flex items-center justify-center p-4">
         <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8 max-w-md w-full shadow-2xl space-y-6 text-center animate-fadeIn">
           <div className="w-16 h-16 rounded-3xl bg-amber-400/20 border border-amber-400/40 text-amber-300 flex items-center justify-center mx-auto shadow-inner">
             <Lock className="w-8 h-8" />
           </div>
           <div>
-            <h3 className="text-xl font-black text-white">신짜오투어 관리자 로그인</h3>
+            <h3 className="text-xl font-black text-white">신짜오투어 통합 관리자 센터</h3>
             <p className="text-xs text-slate-400 mt-1">
-              관리자 암호를 입력하시면 전체 화면 관리자 센터가 열립니다.
+              관리자 암호를 입력하여 상품 추가·수정·삭제 및 예약 관리를 시작하세요.
             </p>
           </div>
-          <form onSubmit={handlePasswordSubmit} className="space-y-4">
+          <form onSubmit={handleAuth} className="space-y-4">
             <input
               type="password"
-              placeholder="관리자 비밀번호 입력 (기본: 1234)"
+              placeholder="관리자 암호 입력 (기본: 1234)"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-slate-950 border border-slate-700 rounded-2xl px-4 py-3.5 text-center text-sm font-bold text-white tracking-widest focus:outline-none focus:ring-2 focus:ring-amber-400"
+              className="w-full bg-slate-950 border border-slate-700 rounded-2xl px-4 py-3.5 text-center text-sm font-bold text-white tracking-widest focus:ring-2 focus:ring-amber-400 outline-none"
               autoFocus
             />
             <div className="flex gap-2">
               <button
                 type="button"
                 onClick={onClose}
-                className="flex-1 py-3 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs"
+                className="flex-1 py-3 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs cursor-pointer"
               >
                 닫기
               </button>
               <button
                 type="submit"
-                className="flex-2 py-3 rounded-2xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black text-xs shadow-lg shadow-amber-400/20 flex items-center justify-center gap-2"
+                className="flex-2 py-3 rounded-2xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black text-xs shadow-lg shadow-amber-400/20 flex items-center justify-center gap-2 cursor-pointer"
               >
                 <Unlock className="w-4 h-4" />
                 <span>관리자 센터 입장</span>
@@ -803,7 +456,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
             </div>
           </form>
           <p className="text-[11px] text-slate-500">
-            * 기본 패스워드는 <code className="text-amber-400 bg-slate-950 px-1.5 py-0.5 rounded">1234</code> 또는 <code className="text-amber-400 bg-slate-950 px-1.5 py-0.5 rounded">xinchao123</code> 입니다.
+            * 기본 패스워드는 <code className="text-amber-400 bg-slate-950 px-1.5 py-0.5 rounded">1234</code> 입니다.
           </p>
         </div>
       </div>
@@ -812,23 +465,23 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 bg-slate-950 text-slate-100 flex flex-col w-full h-full overflow-hidden animate-fadeIn">
-      {/* 1. TOP HEADER BAR (Full Width Workspace Header) */}
+      {/* 1. TOP MASTER HEADER */}
       <header className="bg-slate-950 border-b border-slate-800 px-4 sm:px-8 py-3.5 flex items-center justify-between shrink-0 shadow-lg">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-600 text-slate-950 flex items-center justify-center font-black text-xl shadow-md">
-            ⚙️
+            💎
           </div>
           <div>
             <div className="flex items-center gap-2">
               <h2 className="font-black text-base sm:text-lg text-white tracking-tight">
-                신짜오투어 통합 관리자 센터
+                신짜오투어 통합 관리자 스튜디오
               </h2>
               <span className="bg-amber-400/20 text-amber-300 text-[10px] font-black px-2 py-0.5 rounded-full border border-amber-400/30">
-                전체 화면 모드
+                PRO MASTER MODE
               </span>
             </div>
             <p className="text-xs text-slate-400 hidden sm:block">
-              여행 상품 등록·수정·전체삭제 | 고화질 사진 일괄 관리 | 실시간 예약 접수
+              실제 상품 추가·수정·삭제 | 에어비앤비급 고화질 사진 | 실시간 예약 접수함
             </p>
           </div>
         </div>
@@ -845,21 +498,16 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
             className="px-4 py-2 rounded-xl bg-teal-700 hover:bg-teal-600 text-white font-black text-xs sm:text-sm flex items-center gap-2 border border-teal-600 shadow-md transition-all cursor-pointer hover:scale-102"
           >
             <ArrowLeft className="w-4 h-4" />
-            <span>손님용 홈페이지로 돌아가기</span>
+            <span>손님용 홈페이지로 이동</span>
           </button>
         </div>
       </header>
 
-      {/* 2. TAB NAVIGATION BAR */}
+      {/* 2. NAVIGATION TAB BAR */}
       <div className="bg-slate-900 border-b border-slate-800 px-4 sm:px-8 py-2 flex items-center justify-between shrink-0 overflow-x-auto">
         <div className="flex items-center gap-2">
           <button
-            type="button"
-            onClick={() => {
-              setActiveTab('products');
-              setIsCreating(false);
-              setEditingProduct(null);
-            }}
+            onClick={() => setActiveTab('products')}
             className={`px-4 py-2.5 rounded-xl font-extrabold text-xs flex items-center gap-2 transition-all cursor-pointer ${
               activeTab === 'products'
                 ? 'bg-amber-400 text-slate-950 shadow-md shadow-amber-400/20 scale-102'
@@ -867,16 +515,22 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
             }`}
           >
             <Layers className="w-4 h-4" />
-            <span>🛍️ 상품 관리 (추가·수정·전체삭제)</span>
-            <span className={`text-[10px] font-black px-1.5 py-0.2 rounded-full ${
-              activeTab === 'products' ? 'bg-slate-950 text-amber-300' : 'bg-slate-800 text-slate-300'
-            }`}>
-              {products.length}
-            </span>
+            <span>🛍️ 전체 상품 관리 ({products.length})</span>
           </button>
 
           <button
-            type="button"
+            onClick={() => handleOpenCreator('풀빌라', '다낭')}
+            className={`px-4 py-2.5 rounded-xl font-extrabold text-xs flex items-center gap-2 transition-all cursor-pointer ${
+              activeTab === 'editor'
+                ? 'bg-amber-400 text-slate-950 shadow-md shadow-amber-400/20 scale-102'
+                : 'text-slate-300 hover:text-white hover:bg-slate-800'
+            }`}
+          >
+            <Plus className="w-4 h-4" />
+            <span>➕ {editingId ? '상품 상세 수정 중' : '새 상품 등록 스튜디오'}</span>
+          </button>
+
+          <button
             onClick={() => setActiveTab('photos')}
             className={`px-4 py-2.5 rounded-xl font-extrabold text-xs flex items-center gap-2 transition-all cursor-pointer ${
               activeTab === 'photos'
@@ -885,16 +539,10 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
             }`}
           >
             <Camera className="w-4 h-4" />
-            <span>📸 고화질 사진 일괄 관리기</span>
-            <span className={`text-[10px] font-black px-1.5 py-0.2 rounded-full ${
-              activeTab === 'photos' ? 'bg-slate-950 text-amber-300' : 'bg-slate-800 text-slate-300'
-            }`}>
-              {photoHubList.length}
-            </span>
+            <span>📸 고화질 사진 보관함 ({allSitePhotos.length})</span>
           </button>
 
           <button
-            type="button"
             onClick={() => setActiveTab('inquiries')}
             className={`px-4 py-2.5 rounded-xl font-extrabold text-xs flex items-center gap-2 transition-all cursor-pointer ${
               activeTab === 'inquiries'
@@ -903,16 +551,10 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
             }`}
           >
             <Inbox className="w-4 h-4" />
-            <span>📥 실시간 예약/상담 접수</span>
-            <span className={`text-[10px] font-black px-1.5 py-0.2 rounded-full ${
-              activeTab === 'inquiries' ? 'bg-slate-950 text-amber-300' : 'bg-slate-800 text-slate-300'
-            }`}>
-              {inquiries.length}
-            </span>
+            <span>📥 실시간 예약 문의함 ({inquiries.length})</span>
           </button>
 
           <button
-            type="button"
             onClick={() => setActiveTab('settings')}
             className={`px-4 py-2.5 rounded-xl font-extrabold text-xs flex items-center gap-2 transition-all cursor-pointer ${
               activeTab === 'settings'
@@ -921,1050 +563,900 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
             }`}
           >
             <Settings className="w-4 h-4" />
-            <span>⚙️ 도메인 & 카카오톡 설정</span>
+            <span>⚙️ 카카오톡 & 사이트 설정</span>
           </button>
         </div>
       </div>
 
-      {/* 3. MAIN WORKSPACE CONTENT AREA */}
+      {/* 3. MAIN WORKSPACE CONTENT */}
       <div className="flex-1 overflow-y-auto bg-slate-950 p-4 sm:p-8">
         
-        {/* ================= TAB 1: PRODUCT LIST & EDITOR ================= */}
+        {/* ================= TAB 1: ALL PRODUCTS STUDIO ================= */}
         {activeTab === 'products' && (
           <div className="max-w-7xl mx-auto space-y-6 animate-fadeIn">
-            {isCreating || editingProduct ? (
-              /* COMPREHENSIVE PRODUCT EDITOR FORM */
-              <form onSubmit={handleSaveProduct} className="bg-slate-900 p-6 sm:p-8 rounded-3xl border border-slate-800 space-y-6 shadow-xl">
-                <div className="flex items-center justify-between border-b border-slate-800 pb-4">
-                  <div>
-                    <h3 className="font-black text-white text-lg sm:text-xl flex items-center gap-2">
-                      <span>{isCreating ? '➕ 신규 여행 상품 등록' : '✏️ 상품 상세 정보 수정'}</span>
-                      {editingProduct && (
-                        <span className="text-xs bg-amber-400/20 text-amber-300 border border-amber-400/30 px-2.5 py-0.5 rounded-full font-bold">
-                          ID: {editingProduct.id}
-                        </span>
-                      )}
-                    </h3>
-                    <p className="text-xs text-slate-400 mt-1">
-                      상품 기본 정보, 고화질 사진, 포함/불포함 사항 및 일차별 상세 일정표를 작성합니다.
-                    </p>
-                  </div>
+            {/* Action Toolbar */}
+            <div className="bg-slate-900 border border-slate-800 p-5 rounded-3xl space-y-4 shadow-xl">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div className="flex flex-wrap items-center gap-2">
                   <button
-                    type="button"
-                    onClick={() => {
-                      setIsCreating(false);
-                      setEditingProduct(null);
-                    }}
-                    className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs"
+                    onClick={() => handleOpenCreator('풀빌라', '다낭')}
+                    className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black text-xs flex items-center gap-2 shadow-lg shadow-amber-400/20 cursor-pointer"
                   >
-                    닫기/목록으로
+                    <Plus className="w-4 h-4" />
+                    <span>➕ 새 여행 상품 올리기</span>
+                  </button>
+
+                  <button
+                    onClick={() => handleOpenCreator('골프투어', '다낭')}
+                    className="px-3.5 py-2.5 rounded-xl bg-emerald-900/50 hover:bg-emerald-900/80 text-emerald-300 border border-emerald-500/30 font-extrabold text-xs flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span>⛳ 골프투어 양식 추가</span>
+                  </button>
+
+                  <button
+                    onClick={() => handleOpenCreator('추천패키지', '하노이')}
+                    className="px-3.5 py-2.5 rounded-xl bg-sky-900/50 hover:bg-sky-900/80 text-sky-300 border border-sky-500/30 font-extrabold text-xs flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span>🎒 추천패키지 양식 추가</span>
                   </button>
                 </div>
 
-                {/* Section 1: 기본 정보 & 카테고리 */}
-                <div className="space-y-4 bg-slate-950 p-5 rounded-2xl border border-slate-800">
-                  <div className="flex flex-wrap items-center justify-between gap-2 border-b pb-3 border-slate-800">
-                    <h4 className="font-black text-sm text-white flex items-center gap-2">
-                      <Layers className="w-4 h-4 text-amber-400" />
-                      <span>1. 기본 정보 및 카테고리 분류</span>
-                    </h4>
+                <div className="flex flex-wrap items-center gap-2">
+                  {onClearAllProducts && (
                     <button
-                      type="button"
-                      onClick={() => applyVillaPreset(formData.city as City)}
-                      className="px-3 py-1.5 rounded-xl bg-purple-900/40 hover:bg-purple-900/60 text-purple-300 border border-purple-500/40 font-extrabold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+                      onClick={async () => {
+                        if (confirm('정말로 모든 상품을 삭제하여 0개로 비우시겠습니까?')) {
+                          await onClearAllProducts();
+                          alert('모든 상품이 삭제되었습니다.');
+                        }
+                      }}
+                      className="px-3.5 py-2 rounded-xl bg-rose-950/60 hover:bg-rose-900 text-rose-300 border border-rose-800 font-bold text-xs flex items-center gap-1.5 cursor-pointer"
+                      title="모든 상품을 한 번에 비웁니다"
                     >
-                      <Sparkles className="w-3.5 h-3.5 text-purple-300" />
-                      <span>✨ 풀빌라 추천 양식 자동 채우기</span>
+                      <Trash2 className="w-3.5 h-3.5" />
+                      <span>🗑️ 전체 비우기 (0개)</span>
                     </button>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="space-y-1.5">
-                      <label className="text-xs font-black text-slate-300">상품 제목 <span className="text-rose-400">*</span></label>
-                      <input
-                        type="text"
-                        required
-                        value={formData.title}
-                        onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                        placeholder="예: [다낭/골프투어] 3색 명문 골프 3박 5일 패키지"
-                        className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-xs font-bold text-white focus:ring-2 focus:ring-amber-400 focus:outline-none"
-                      />
-                    </div>
-
-                    <div className="space-y-1.5">
-                      <label className="text-xs font-black text-slate-300">서브 타이틀 / 한 줄 강조 카피</label>
-                      <input
-                        type="text"
-                        value={formData.subTitle}
-                        onChange={(e) => setFormData({ ...formData, subTitle: e.target.value })}
-                        placeholder="예: 다낭 3대 챔피언십 코스 그린피 포함 & 5성급 호이안 리조트 숙박"
-                        className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-xs text-white focus:ring-2 focus:ring-amber-400 focus:outline-none"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-                    <div className="space-y-1.5">
-                      <label className="text-xs font-black text-slate-300">카테고리</label>
-                      <select
-                        value={formData.category}
-                        onChange={(e) => setFormData({ ...formData, category: e.target.value as Category })}
-                        className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs font-extrabold text-amber-300"
-                      >
-                        {CATEGORIES.map(c => (
-                          <option key={c} value={c}>{c}</option>
-                        ))}
-                      </select>
-                    </div>
-
-                    <div className="space-y-1.5">
-                      <label className="text-xs font-black text-slate-300">권역</label>
-                      <select
-                        value={formData.region}
-                        onChange={(e) => {
-                          const newReg = e.target.value as Region;
-                          const availableCities = REGION_CITIES_MAP[newReg as Exclude<Region, '전체'>] || ['다낭'];
-                          setFormData({ ...formData, region: newReg, city: availableCities[0] });
-                        }}
-                        className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs font-extrabold text-white"
-                      >
-                        {REGION_LIST.map(r => (
-                          <option key={r} value={r}>{r}</option>
-                        ))}
-                      </select>
-                    </div>
-
-                    <div className="space-y-1.5">
-                      <label className="text-xs font-black text-slate-300">도시</label>
-                      <select
-                        value={formData.city}
-                        onChange={(e) => setFormData({ ...formData, city: e.target.value as City })}
-                        className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs font-extrabold text-white"
-                      >
-                        {(REGION_CITIES_MAP[formData.region as Exclude<Region, '전체'>] || ['다낭']).map(cit => (
-                          <option key={cit} value={cit}>{cit}</option>
-                        ))}
-                      </select>
-                    </div>
-
-                    <div className="space-y-1.5">
-                      <label className="text-xs font-black text-slate-300">여행 기간</label>
-                      <input
-                        type="text"
-                        value={formData.duration || '3박 5일'}
-                        onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
-                        placeholder="예: 3박 5일, 1박 기준"
-                        className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs font-bold text-white"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="space-y-1.5">
-                      <label className="text-xs font-black text-slate-300">상품 가격 (원화 KRW)</label>
-                      <input
-                        type="number"
-                        min="0"
-                        step="10000"
-                        value={formData.priceKRW || 0}
-                        onChange={(e) => {
-                          const krw = Number(e.target.value);
-                          setFormData({ 
-                            ...formData, 
-                            priceKRW: krw,
-                            priceVND: Math.round(krw * 18.817)
-                          });
-                        }}
-                        className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm font-black text-amber-400"
-                      />
-                    </div>
-
-                    <div className="space-y-1.5">
-                      <label className="text-xs font-black text-slate-300">위치 / 주소</label>
-                      <input
-                        type="text"
-                        value={formData.address || ''}
-                        onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                        placeholder="예: 베트남 다낭 미케비치 앞"
-                        className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-xs text-white"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Section 2: 고화질 사진 관리 (드롭존 & 일괄삭제) */}
-                <div className="space-y-4 bg-slate-950 p-5 rounded-2xl border border-slate-800">
-                  <div className="flex flex-wrap items-center justify-between gap-2 border-b pb-3 border-slate-800">
-                    <h4 className="font-black text-sm text-white flex items-center gap-2">
-                      <Camera className="w-4 h-4 text-teal-400" />
-                      <span>2. 상품 사진 갤러리 관리 ({subImagesList.length}장 등록됨)</span>
-                    </h4>
-                    <span className="text-xs text-amber-300 font-bold">
-                      ★ 1번 사진이 손님용 대표 메인 커버가 됩니다.
-                    </span>
-                  </div>
-
-                  {/* Drag & Drop Photo Area */}
-                  <div
-                    onDragOver={(e) => { e.preventDefault(); setIsDraggingOver(true); }}
-                    onDragLeave={() => setIsDraggingOver(false)}
-                    onDrop={(e) => handleDropPhotos(e, 'editor')}
-                    className={`border-2 border-dashed rounded-2xl p-6 text-center transition-all ${
-                      isDraggingOver
-                        ? 'border-amber-400 bg-amber-400/10'
-                        : 'border-slate-700 bg-slate-900/60 hover:border-slate-500'
-                    }`}
-                  >
-                    <input
-                      type="file"
-                      id="admin-form-photo-upload"
-                      multiple
-                      accept="image/*"
-                      onChange={handleSubImagesFileUpload}
-                      className="hidden"
-                    />
-                    <label
-                      htmlFor="admin-form-photo-upload"
-                      className="cursor-pointer flex flex-col items-center justify-center gap-2"
-                    >
-                      <div className="w-12 h-12 rounded-2xl bg-amber-400/20 text-amber-300 flex items-center justify-center">
-                        <Upload className="w-6 h-6" />
-                      </div>
-                      <span className="text-sm font-black text-white block">
-                        📁 내 컴퓨터에서 사진 여러 장 선택하기 (클릭 또는 사진 드래그)
-                      </span>
-                      <span className="text-xs text-slate-400">
-                        10장, 20장, 50장 한꺼번에 선택 가능 (에어비앤비 1440px 규격 자동 최적화)
-                      </span>
-                    </label>
-                  </div>
-
-                  {uploadProgressStatus && (
-                    <div className="p-3 bg-teal-900/40 border border-teal-500/40 rounded-xl text-xs font-bold text-teal-300 text-center animate-pulse">
-                      ⏳ {uploadProgressStatus}
-                    </div>
                   )}
 
-                  {/* Photo Actions Bar */}
-                  {subImagesList.length > 0 && (
-                    <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-800">
-                      <div className="flex items-center gap-2">
+                  <button
+                    onClick={async () => {
+                      if (confirm('기본 추천 12개 베트남 패키지 샘플 상품을 불러오시겠습니까?')) {
+                        await onResetProducts();
+                        alert('기본 샘플 상품이 성공적으로 복원되었습니다.');
+                      }
+                    }}
+                    className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 font-bold text-xs flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <RotateCcw className="w-3.5 h-3.5" />
+                    <span>🔄 기본 샘플 복원</span>
+                  </button>
+
+                  <button
+                    onClick={handleExportJson}
+                    className="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 font-bold text-xs flex items-center gap-1.5 cursor-pointer"
+                    title="전체 상품 JSON 백업"
+                  >
+                    <Download className="w-3.5 h-3.5" />
+                    <span>백업</span>
+                  </button>
+
+                  <label className="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 font-bold text-xs flex items-center gap-1.5 cursor-pointer">
+                    <Upload className="w-3.5 h-3.5" />
+                    <span>복원</span>
+                    <input type="file" accept=".json" onChange={handleImportJson} className="hidden" />
+                  </label>
+                </div>
+              </div>
+
+              {/* Filters & Search */}
+              <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 pt-3 border-t border-slate-800">
+                <div className="relative sm:col-span-2">
+                  <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
+                  <input
+                    type="text"
+                    placeholder="상품명, 도시, 태그 실시간 검색..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full bg-slate-950 border border-slate-700 rounded-xl pl-9 pr-4 py-2 text-xs text-white focus:ring-2 focus:ring-amber-400 outline-none"
+                  />
+                </div>
+
+                <div>
+                  <select
+                    value={filterCategory}
+                    onChange={(e) => setFilterCategory(e.target.value as Category | '전체')}
+                    className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs font-bold text-amber-300"
+                  >
+                    <option value="전체">모든 카테고리 (전체)</option>
+                    {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+                  </select>
+                </div>
+
+                <div className="flex gap-2">
+                  <select
+                    value={filterRegion}
+                    onChange={(e) => {
+                      setFilterRegion(e.target.value as Region);
+                      setFilterCity('전체');
+                    }}
+                    className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs font-bold text-white"
+                  >
+                    <option value="전체">모든 권역</option>
+                    {REGIONS.map(r => <option key={r} value={r}>{r}</option>)}
+                  </select>
+
+                  <div className="flex bg-slate-950 border border-slate-700 rounded-xl p-1 shrink-0">
+                    <button
+                      onClick={() => setViewMode('grid')}
+                      className={`p-1.5 rounded-lg ${viewMode === 'grid' ? 'bg-amber-400 text-slate-950' : 'text-slate-400'}`}
+                    >
+                      <Grid className="w-3.5 h-3.5" />
+                    </button>
+                    <button
+                      onClick={() => setViewMode('table')}
+                      className={`p-1.5 rounded-lg ${viewMode === 'table' ? 'bg-amber-400 text-slate-950' : 'text-slate-400'}`}
+                    >
+                      <List className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Products List Count & Batch Actions */}
+            <div className="flex items-center justify-between text-xs text-slate-400 px-2">
+              <div>
+                총 <strong className="text-white font-extrabold">{displayProducts.length}</strong>개의 상품이 조회되었습니다.
+              </div>
+              {selectedProductIds.length > 0 && (
+                <button
+                  onClick={handleBatchDelete}
+                  className="px-3 py-1 bg-rose-600 hover:bg-rose-700 text-white rounded-lg font-bold text-xs cursor-pointer flex items-center gap-1"
+                >
+                  <Trash2 className="w-3 h-3" />
+                  <span>선택 {selectedProductIds.length}개 삭제</span>
+                </button>
+              )}
+            </div>
+
+            {/* Display Products (Grid or Table) */}
+            {displayProducts.length === 0 ? (
+              <div className="bg-slate-900 border border-dashed border-slate-800 rounded-3xl p-16 text-center space-y-4">
+                <Layers className="w-12 h-12 text-slate-600 mx-auto" />
+                <h4 className="text-base font-black text-white">등록된 상품이 없습니다</h4>
+                <p className="text-xs text-slate-400">
+                  '➕ 새 여행 상품 올리기' 버튼을 눌러 첫 상품을 등록하거나 '🔄 기본 샘플 복원'을 누르세요.
+                </p>
+                <button
+                  onClick={() => handleOpenCreator('풀빌라', '다낭')}
+                  className="px-5 py-2.5 rounded-xl bg-amber-400 text-slate-950 font-black text-xs cursor-pointer"
+                >
+                  ➕ 지금 상품 등록하기
+                </button>
+              </div>
+            ) : viewMode === 'grid' ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {displayProducts.map((prod) => (
+                  <div
+                    key={prod.id}
+                    className="bg-slate-900 border border-slate-800 hover:border-slate-700 rounded-3xl overflow-hidden shadow-lg flex flex-col group transition-all"
+                  >
+                    {/* Thumbnail & Badges */}
+                    <div className="relative h-48 bg-slate-950 overflow-hidden">
+                      <img
+                        src={prod.imageUrl}
+                        alt={prod.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1000&q=80';
+                        }}
+                      />
+                      <div className="absolute top-3 left-3 flex flex-wrap gap-1.5">
+                        <span className="bg-amber-400 text-slate-950 text-[10px] font-black px-2 py-0.5 rounded-full">
+                          {prod.category}
+                        </span>
+                        <span className="bg-slate-900/90 text-white text-[10px] font-bold px-2 py-0.5 rounded-full backdrop-blur-xs">
+                          {prod.region} · {prod.city}
+                        </span>
+                      </div>
+                      <div className="absolute top-3 right-3 bg-slate-900/90 text-white text-[10px] font-bold px-2 py-0.5 rounded-full backdrop-blur-xs">
+                        사진 {(prod.additionalImages?.length || 0) + 1}장
+                      </div>
+                      <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs bg-slate-950/80 backdrop-blur-md p-2 rounded-xl text-white">
+                        <span className="font-bold">{prod.duration}</span>
+                        <span className="text-amber-300 font-black">{Number(prod.priceKRW || 0).toLocaleString()}원</span>
+                      </div>
+                    </div>
+
+                    {/* Content */}
+                    <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
+                      <div className="space-y-1.5">
+                        <h4 className="font-black text-sm text-white line-clamp-1">{prod.title}</h4>
+                        <p className="text-xs text-slate-400 line-clamp-2">{prod.subTitle || prod.description}</p>
+                      </div>
+
+                      {/* Action Buttons */}
+                      <div className="flex items-center gap-2 pt-3 border-t border-slate-800">
                         <button
-                          type="button"
-                          onClick={handleSelectAllPhotos}
-                          className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold flex items-center gap-1.5 cursor-pointer"
+                          onClick={() => handleOpenEdit(prod)}
+                          className="flex-1 py-2 rounded-xl bg-amber-400/10 hover:bg-amber-400/20 text-amber-300 border border-amber-400/30 font-bold text-xs flex items-center justify-center gap-1 cursor-pointer transition-colors"
                         >
-                          {selectedPhotoIndexes.length === subImagesList.length ? <CheckSquare className="w-3.5 h-3.5 text-amber-300" /> : <Square className="w-3.5 h-3.5" />}
-                          <span>전체 사진 선택 ({selectedPhotoIndexes.length}/{subImagesList.length})</span>
+                          <Edit3 className="w-3.5 h-3.5" />
+                          <span>상세 수정</span>
                         </button>
 
-                        {selectedPhotoIndexes.length > 0 && (
+                        <button
+                          onClick={() => handleDuplicateProduct(prod)}
+                          className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs cursor-pointer transition-colors"
+                          title="상품 복제"
+                        >
+                          <Copy className="w-3.5 h-3.5" />
+                        </button>
+
+                        {confirmDeleteId === prod.id ? (
                           <button
-                            type="button"
-                            onClick={handleDeleteSelectedPhotos}
-                            className="px-3 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-500 text-white text-xs font-black flex items-center gap-1.5 cursor-pointer shadow-md"
+                            onClick={async () => {
+                              await onDeleteProduct(prod.id);
+                              setConfirmDeleteId(null);
+                            }}
+                            className="px-3 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-black text-xs cursor-pointer animate-pulse"
+                          >
+                            정말 삭제?
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => {
+                              setConfirmDeleteId(prod.id);
+                              setTimeout(() => setConfirmDeleteId(null), 4000);
+                            }}
+                            className="p-2 rounded-xl bg-rose-950/40 hover:bg-rose-900 text-rose-300 border border-rose-800/50 font-bold text-xs cursor-pointer transition-colors"
+                            title="상품 삭제"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
-                            <span>선택한 {selectedPhotoIndexes.length}장 즉시 삭제</span>
                           </button>
                         )}
                       </div>
-
-                      <button
-                        type="button"
-                        onClick={handleClearAllPhotos}
-                        className="px-3 py-1.5 rounded-lg bg-rose-950/60 hover:bg-rose-900/80 border border-rose-600/40 text-rose-300 text-xs font-extrabold flex items-center gap-1.5 cursor-pointer"
-                      >
-                        <Trash2 className="w-3.5 h-3.5 text-rose-400" />
-                        <span>🗑️ 등록된 사진 전체 싹 비우기 (0장으로)</span>
-                      </button>
                     </div>
-                  )}
-
-                  {/* Photo Thumbnails Grid */}
-                  {subImagesList.length > 0 ? (
-                    <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3 max-h-96 overflow-y-auto p-2 bg-slate-900/50 rounded-xl border border-slate-800">
-                      {subImagesList.map((url, idx) => (
-                        <div
-                          key={idx}
-                          className={`relative aspect-4/3 rounded-xl overflow-hidden border-2 transition-all group bg-slate-900 ${
-                            idx === 0 ? 'border-amber-400 ring-2 ring-amber-400/40' : 'border-slate-800 hover:border-slate-600'
-                          }`}
-                        >
-                          <img
-                            src={url}
-                            alt={`Photo ${idx + 1}`}
-                            referrerPolicy="no-referrer"
-                            className="w-full h-full object-cover"
-                          />
-                          <div className="absolute top-1.5 left-1.5 flex items-center gap-1">
-                            <button
-                              type="button"
-                              onClick={() => handleToggleSelectPhoto(idx)}
-                              className="w-5 h-5 rounded bg-black/70 text-white flex items-center justify-center cursor-pointer"
-                            >
-                              {selectedPhotoIndexes.includes(idx) ? <CheckSquare className="w-3.5 h-3.5 text-amber-300" /> : <Square className="w-3.5 h-3.5 text-slate-400" />}
-                            </button>
-                            {idx === 0 && (
-                              <span className="bg-amber-400 text-slate-950 text-[9px] font-black px-1.5 py-0.2 rounded shadow-xs">
-                                👑 대표
-                              </span>
-                            )}
-                          </div>
-
-                          <div className="absolute inset-0 bg-slate-950/70 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-between p-1.5">
-                            <div className="flex justify-end">
-                              <button
-                                type="button"
-                                onClick={() => handleRemoveSubImage(idx)}
-                                className="w-6 h-6 rounded-full bg-rose-600 text-white flex items-center justify-center shadow-md cursor-pointer hover:scale-110"
-                                title="이 사진 삭제"
-                              >
-                                <Trash2 className="w-3.5 h-3.5" />
-                              </button>
-                            </div>
-                            {idx !== 0 && (
-                              <button
-                                type="button"
-                                onClick={() => handleSetAsCoverPhoto(idx)}
-                                className="w-full py-1 bg-amber-400 hover:bg-amber-300 text-slate-950 text-[10px] font-black rounded cursor-pointer"
-                              >
-                                👑 1번 대표로 지정
-                              </button>
-                            )}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="text-center py-8 text-xs text-slate-500 bg-slate-900/40 rounded-xl border border-dashed border-slate-800">
-                      📷 아직 등록된 사진이 없습니다. 상단 드롭존을 클릭하여 사진을 추가해주세요.
-                    </div>
-                  )}
-                </div>
-
-                {/* Section 3: 상세 소개글 & 포함/불포함 */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="space-y-2 bg-slate-950 p-4 rounded-2xl border border-slate-800">
-                    <label className="text-xs font-black text-emerald-400 flex items-center gap-1.5">
-                      <span>✅ 포함 사항 (한 줄에 1개씩)</span>
-                    </label>
-                    <textarea
-                      rows={5}
-                      value={includedText}
-                      onChange={(e) => setIncludedText(e.target.value)}
-                      placeholder={'전 일정 단독 전용차량\n한국어 가이드\n5성급 호텔 숙박\n조식 및 특식'}
-                      className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-white leading-relaxed focus:ring-2 focus:ring-amber-400 focus:outline-none"
-                    />
                   </div>
-
-                  <div className="space-y-2 bg-slate-950 p-4 rounded-2xl border border-slate-800">
-                    <label className="text-xs font-black text-rose-400 flex items-center gap-1.5">
-                      <span>❎ 불포함 사항 (한 줄에 1개씩)</span>
-                    </label>
-                    <textarea
-                      rows={5}
-                      value={excludedText}
-                      onChange={(e) => setExcludedText(e.target.value)}
-                      placeholder={'가이드 & 기사 매너팁\n개인 경비 및 쇼핑'}
-                      className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-white leading-relaxed focus:ring-2 focus:ring-amber-400 focus:outline-none"
-                    />
-                  </div>
-                </div>
-
-                {/* Section 4: 일정표 */}
-                <div className="space-y-3 bg-slate-950 p-5 rounded-2xl border border-slate-800">
-                  <div className="flex items-center justify-between border-b pb-3 border-slate-800">
-                    <h4 className="font-black text-sm text-white flex items-center gap-2">
-                      <Calendar className="w-4 h-4 text-amber-400" />
-                      <span>3. 일차별 상세 여행 일정표 ({itineraryList.length}일차)</span>
-                    </h4>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const nextDay = itineraryList.length + 1;
-                        setItineraryList([
-                          ...itineraryList,
-                          { day: nextDay, title: `${nextDay}일차 대표 일정`, description: '상세 일정을 작성하세요.', meal: '조: 호텔식 / 중: 특식 / 석: 씨푸드', hotel: '5성급 호텔' }
-                        ]);
-                      }}
-                      className="px-3 py-1.5 rounded-xl bg-teal-700 hover:bg-teal-600 text-white font-bold text-xs flex items-center gap-1 cursor-pointer"
-                    >
-                      <Plus className="w-3.5 h-3.5" />
-                      <span>+ 일정 일차 추가</span>
-                    </button>
-                  </div>
-
-                  <div className="space-y-3">
-                    {itineraryList.map((item, idx) => (
-                      <div key={idx} className="bg-slate-900 p-4 rounded-xl border border-slate-800 space-y-2">
-                        <div className="flex items-center justify-between">
-                          <span className="bg-amber-400 text-slate-950 text-xs font-black px-2.5 py-0.5 rounded-md">
-                            DAY {item.day || idx + 1}
-                          </span>
-                          <button
-                            type="button"
-                            onClick={() => setItineraryList(itineraryList.filter((_, i) => i !== idx))}
-                            className="text-rose-400 hover:text-rose-300 text-xs font-bold cursor-pointer"
-                          >
-                            이 일차 삭제
-                          </button>
-                        </div>
-
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                          <input
-                            type="text"
-                            value={item.title}
-                            onChange={(e) => {
-                              const copy = [...itineraryList];
-                              copy[idx].title = e.target.value;
-                              setItineraryList(copy);
-                            }}
-                            placeholder="일차 제목"
-                            className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs font-bold text-white"
-                          />
-                          <input
-                            type="text"
-                            value={item.meal || ''}
-                            onChange={(e) => {
-                              const copy = [...itineraryList];
-                              copy[idx].meal = e.target.value;
-                              setItineraryList(copy);
-                            }}
-                            placeholder="식사 정보 (조/중/석)"
-                            className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white"
-                          />
-                          <input
-                            type="text"
-                            value={item.hotel || ''}
-                            onChange={(e) => {
-                              const copy = [...itineraryList];
-                              copy[idx].hotel = e.target.value;
-                              setItineraryList(copy);
-                            }}
-                            placeholder="숙소 정보 (호텔/리조트)"
-                            className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white"
-                          />
-                        </div>
-
-                        <textarea
-                          rows={2}
-                          value={item.description}
-                          onChange={(e) => {
-                            const copy = [...itineraryList];
-                            copy[idx].description = e.target.value;
-                            setItineraryList(copy);
-                          }}
-                          placeholder="일정 상세 설명"
-                          className="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-xs text-white"
-                        />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Form Action Buttons */}
-                <div className="flex items-center gap-3 pt-4 border-t border-slate-800">
-                  <button
-                    type="submit"
-                    disabled={isSavingProduct || Boolean(uploadProgressStatus)}
-                    className="flex-1 py-4 rounded-2xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black text-sm flex items-center justify-center gap-2 shadow-xl shadow-amber-400/20 cursor-pointer disabled:opacity-50"
-                  >
-                    <Save className="w-5 h-5" />
-                    <span>{isSavingProduct ? '💾 서버에 저장하는 중...' : isCreating ? '신규 상품 등록 완료하기' : '수정 사항 저장 완료하기'}</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setIsCreating(false);
-                      setEditingProduct(null);
-                    }}
-                    className="px-6 py-4 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs"
-                  >
-                    취소
-                  </button>
-                </div>
-              </form>
+                ))}
+              </div>
             ) : (
-              /* PRODUCT LIST & TOOLBAR */
-              <>
-                {/* Top Action Toolbar with Bulk Clear & Restore */}
-                <div className="bg-slate-900 p-5 rounded-3xl border border-slate-800 shadow-xl space-y-4">
-                  <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-                    {/* Left: Search Bar */}
-                    <div className="relative flex-1">
-                      <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-                      <input
-                        type="text"
-                        placeholder="상품명, 도시, 키워드 검색..."
-                        value={adminSearchQuery}
-                        onChange={(e) => setAdminSearchQuery(e.target.value)}
-                        className="w-full bg-slate-950 border border-slate-700 pl-10 pr-4 py-2.5 rounded-xl text-xs font-bold text-white focus:outline-none focus:ring-2 focus:ring-amber-400"
-                      />
-                    </div>
-
-                    {/* Right Action Buttons */}
-                    <div className="flex flex-wrap items-center gap-2">
-                      <button
-                        onClick={() => handleStartCreate(selectedRegionFilter, selectedCityFilter)}
-                        className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black text-xs flex items-center gap-1.5 shadow-md shadow-amber-400/20 cursor-pointer"
-                      >
-                        <Plus className="w-4 h-4 text-slate-950" />
-                        <span>➕ 신규 상품 추가</span>
-                      </button>
-
-                      {/* Prominent Bulk Clear Button */}
-                      <button
-                        onClick={() => {
-                          setConfirmModal({
-                            isOpen: true,
-                            title: '⚠️ 등록된 모든 여행 상품을 전체 삭제하시겠습니까?',
-                            description: '현재 등록된 모든 상품 데이터가 삭제되어 0개가 됩니다. (언제든지 [초기 샘플 복원] 버튼으로 되돌릴 수 있습니다)',
-                            confirmText: '네, 모든 상품 싹 비우기',
-                            confirmAction: async () => {
-                              if (onClearAllProducts) {
-                                await onClearAllProducts();
-                              }
-                              setConfirmModal(prev => ({ ...prev, isOpen: false }));
-                            },
-                            isDestructive: true
-                          });
-                        }}
-                        className="px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-black text-xs flex items-center gap-1.5 shadow-md shadow-rose-600/30 cursor-pointer"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                        <span>🗑️ 전체 상품 싹 비우기 (0개)</span>
-                      </button>
-
-                      {/* Restore Default Seed Products Button */}
-                      <button
-                        onClick={() => {
-                          setConfirmModal({
-                            isOpen: true,
-                            title: '🔄 초기 기본 샘플 상품(12개)을 복원하시겠습니까?',
-                            description: '풀빌라, 골프투어, 자유여행 등 신짜오투어의 기본 샘플 상품 12개가 새로 로드됩니다.',
-                            confirmText: '샘플 상품 복원하기',
-                            confirmAction: async () => {
-                              await onResetProducts();
-                              setConfirmModal(prev => ({ ...prev, isOpen: false }));
-                            },
-                            isDestructive: false
-                          });
-                        }}
-                        className="px-3.5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs flex items-center gap-1.5 border border-slate-700 cursor-pointer"
-                      >
-                        <RotateCcw className="w-3.5 h-3.5 text-amber-300" />
-                        <span>🔄 원본 샘플 복원</span>
-                      </button>
-
-                      {/* JSON Backup & Restore */}
-                      <button
-                        onClick={handleExportJson}
-                        className="px-3 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs flex items-center gap-1 border border-slate-700 cursor-pointer"
-                        title="JSON 백업 다운로드"
-                      >
-                        <Download className="w-3.5 h-3.5 text-teal-400" />
-                        <span>백업</span>
-                      </button>
-
-                      <label className="px-3 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs flex items-center gap-1 border border-slate-700 cursor-pointer">
-                        <Upload className="w-3.5 h-3.5 text-teal-400" />
-                        <span>복원</span>
-                        <input type="file" accept=".json" onChange={handleFileUploadJson} className="hidden" />
-                      </label>
-                    </div>
-                  </div>
-
-                  {/* Filters: Category & Region */}
-                  <div className="pt-3 border-t border-slate-800 flex flex-wrap items-center justify-between gap-3">
-                    <div className="flex flex-wrap items-center gap-1.5">
-                      <span className="text-xs font-bold text-slate-400 mr-1">테마:</span>
-                      {(['전체', '풀빌라', '자유여행', '골프투어', '추천패키지'] as const).map(cat => {
-                        const count = products.filter(p => cat === '전체' || p.category === cat).length;
-                        return (
+              /* TABLE VIEW */
+              <div className="bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden shadow-xl">
+                <table className="w-full text-left text-xs">
+                  <thead className="bg-slate-950 text-slate-400 font-black border-b border-slate-800">
+                    <tr>
+                      <th className="p-4">이미지/제목</th>
+                      <th className="p-4">카테고리/지역</th>
+                      <th className="p-4">가격 (KRW)</th>
+                      <th className="p-4">일정</th>
+                      <th className="p-4 text-right">관리</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-800">
+                    {displayProducts.map(prod => (
+                      <tr key={prod.id} className="hover:bg-slate-800/40 transition-colors">
+                        <td className="p-4 flex items-center gap-3">
+                          <img src={prod.imageUrl} alt="" className="w-12 h-12 rounded-xl object-cover bg-slate-950 shrink-0" />
+                          <div>
+                            <div className="font-black text-white">{prod.title}</div>
+                            <div className="text-slate-400 line-clamp-1">{prod.subTitle}</div>
+                          </div>
+                        </td>
+                        <td className="p-4">
+                          <span className="font-bold text-amber-300">{prod.category}</span>
+                          <div className="text-slate-400">{prod.region} · {prod.city}</div>
+                        </td>
+                        <td className="p-4 font-black text-white">
+                          {Number(prod.priceKRW || 0).toLocaleString()}원
+                        </td>
+                        <td className="p-4 text-slate-300 font-bold">
+                          {prod.duration}
+                        </td>
+                        <td className="p-4 text-right space-x-1.5">
                           <button
-                            key={cat}
-                            onClick={() => setSelectedCategoryFilter(cat as Category | '전체')}
-                            className={`px-3 py-1 rounded-lg text-xs font-extrabold transition-all cursor-pointer ${
-                              selectedCategoryFilter === cat
-                                ? 'bg-amber-400 text-slate-950 shadow-xs'
-                                : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
-                            }`}
+                            onClick={() => handleOpenEdit(prod)}
+                            className="px-2.5 py-1.5 bg-amber-400 text-slate-950 rounded-lg font-black text-xs cursor-pointer"
                           >
-                            {cat} ({count})
+                            수정
                           </button>
-                        );
-                      })}
-                    </div>
-
-                    <div className="flex items-center gap-1 bg-slate-950 p-1 rounded-xl border border-slate-800">
-                      <button
-                        onClick={() => setViewMode('grouped')}
-                        className={`px-3 py-1 rounded-lg text-xs font-bold flex items-center gap-1 transition-all ${
-                          viewMode === 'grouped' ? 'bg-amber-400 text-slate-950 font-black' : 'text-slate-400 hover:text-white'
-                        }`}
-                      >
-                        <Grid className="w-3.5 h-3.5" />
-                        <span>지역별 묶음</span>
-                      </button>
-                      <button
-                        onClick={() => setViewMode('list')}
-                        className={`px-3 py-1 rounded-lg text-xs font-bold flex items-center gap-1 transition-all ${
-                          viewMode === 'list' ? 'bg-amber-400 text-slate-950 font-black' : 'text-slate-400 hover:text-white'
-                        }`}
-                      >
-                        <List className="w-3.5 h-3.5" />
-                        <span>전체 목록</span>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Products List Grid */}
-                {products.length === 0 ? (
-                  <div className="text-center py-20 bg-slate-900 rounded-3xl border border-dashed border-slate-800 space-y-4">
-                    <div className="w-16 h-16 rounded-3xl bg-slate-800 text-slate-500 flex items-center justify-center mx-auto text-2xl">
-                      🛍️
-                    </div>
-                    <div className="space-y-1">
-                      <p className="text-base font-black text-white">등록된 여행 상품이 0개입니다.</p>
-                      <p className="text-xs text-slate-400">
-                        상단의 <strong className="text-amber-300">[➕ 신규 상품 추가]</strong> 버튼을 눌러 새 상품을 등록하시거나,<br/>
-                        <strong className="text-slate-300">[🔄 원본 샘플 복원]</strong> 버튼을 누르시면 기본 12개 상품을 다시 불러올 수 있습니다.
-                      </p>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {products
-                      .filter(p => {
-                        const matchCat = selectedCategoryFilter === '전체' || p.category === selectedCategoryFilter;
-                        const matchQuery = !adminSearchQuery || 
-                          p.title.toLowerCase().includes(adminSearchQuery.toLowerCase()) ||
-                          p.city.toLowerCase().includes(adminSearchQuery.toLowerCase());
-                        return matchCat && matchQuery;
-                      })
-                      .map((prod) => (
-                        <div
-                          key={prod.id}
-                          className="bg-slate-900 rounded-2xl border border-slate-800 hover:border-slate-700 overflow-hidden flex flex-col justify-between p-4 space-y-3 shadow-lg group"
-                        >
-                          <div className="space-y-3">
-                            <div className="relative aspect-16/9 rounded-xl overflow-hidden bg-slate-950">
-                              <img
-                                src={prod.imageUrl}
-                                alt={prod.title}
-                                referrerPolicy="no-referrer"
-                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                              />
-                              <div className="absolute top-2 left-2 flex items-center gap-1.5">
-                                <span className="bg-slate-950/80 text-amber-300 font-black text-[10px] px-2 py-0.5 rounded-md backdrop-blur-xs border border-amber-400/30">
-                                  {prod.category}
-                                </span>
-                                <span className="bg-slate-950/80 text-white font-bold text-[10px] px-2 py-0.5 rounded-md backdrop-blur-xs">
-                                  {prod.city}
-                                </span>
-                              </div>
-                            </div>
-
-                            <div>
-                              <h4 className="font-extrabold text-white text-sm line-clamp-1">
-                                {prod.title}
-                              </h4>
-                              <p className="text-xs text-slate-400 line-clamp-1 mt-0.5">
-                                {prod.subTitle || prod.duration}
-                              </p>
-                              <p className="text-sm font-black text-amber-400 mt-1">
-                                {prod.priceKRW.toLocaleString()}원
-                              </p>
-                            </div>
-                          </div>
-
-                          <div className="flex items-center gap-2 pt-2 border-t border-slate-800/80">
-                            <button
-                              type="button"
-                              onClick={() => handleStartEdit(prod)}
-                              className="flex-1 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold flex items-center justify-center gap-1 cursor-pointer"
-                            >
-                              <Edit className="w-3.5 h-3.5 text-amber-300" />
-                              <span>수정하기</span>
-                            </button>
-
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setConfirmModal({
-                                  isOpen: true,
-                                  title: `🗑️ '${prod.title}' 상품을 삭제하시겠습니까?`,
-                                  description: '삭제된 상품은 복구되지 않으며 홈페이지에서 즉시 사라집니다.',
-                                  confirmText: '삭제하기',
-                                  confirmAction: async () => {
-                                    await onDeleteProduct(prod.id);
-                                    setConfirmModal(prev => ({ ...prev, isOpen: false }));
-                                  },
-                                  isDestructive: true
-                                });
-                              }}
-                              className="px-3 py-2 rounded-xl bg-rose-950/50 hover:bg-rose-900/80 border border-rose-600/40 text-rose-300 text-xs font-bold flex items-center gap-1 cursor-pointer"
-                              title="삭제"
-                            >
-                              <Trash2 className="w-3.5 h-3.5 text-rose-400" />
-                              <span>삭제</span>
-                            </button>
-                          </div>
-                        </div>
-                      ))}
-                  </div>
-                )}
-              </>
+                          <button
+                            onClick={() => handleDuplicateProduct(prod)}
+                            className="px-2 py-1.5 bg-slate-800 text-slate-300 rounded-lg font-bold text-xs cursor-pointer"
+                            title="복제"
+                          >
+                            복제
+                          </button>
+                          <button
+                            onClick={async () => {
+                              if (confirm(`'${prod.title}' 상품을 삭제하시겠습니까?`)) {
+                                await onDeleteProduct(prod.id);
+                              }
+                            }}
+                            className="px-2.5 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg font-bold text-xs cursor-pointer"
+                          >
+                            삭제
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             )}
           </div>
         )}
 
-        {/* ================= TAB 2: DEDICATED PHOTO HUB ================= */}
-        {activeTab === 'photos' && (
-          <div className="max-w-7xl mx-auto space-y-6 animate-fadeIn">
-            <div className="bg-slate-900 p-6 sm:p-8 rounded-3xl border border-slate-800 shadow-xl space-y-6">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-4">
+        {/* ================= TAB 2: PRODUCT CREATOR & EDITOR ================= */}
+        {activeTab === 'editor' && (
+          <div className="max-w-5xl mx-auto space-y-6 animate-fadeIn">
+            <form onSubmit={handleSaveProduct} className="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-10 space-y-8 shadow-2xl">
+              
+              {/* Header of Editor */}
+              <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-800 pb-6">
                 <div>
-                  <h3 className="text-lg sm:text-xl font-black text-white flex items-center gap-2">
-                    <Camera className="w-6 h-6 text-amber-400" />
-                    <span>고화질 사진 일괄 관리기 (드롭존 & 일괄삭제)</span>
-                  </h3>
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-xl font-black text-white">
+                      {editingId ? '✏️ 여행 상품 정보 상세 수정' : '➕ 신규 베트남 여행 상품 등록'}
+                    </h3>
+                    <span className="text-xs bg-amber-400/20 text-amber-300 px-2.5 py-0.5 rounded-full font-bold border border-amber-400/30">
+                      {formData.category} · {formData.city}
+                    </span>
+                  </div>
                   <p className="text-xs text-slate-400 mt-1">
-                    수십 장의 고화질 여행 사진을 한꺼번에 등록하거나 일괄 선택하여 삭제하실 수 있습니다.
+                    기본 정보, 에어비앤비급 고화질 사진, 일차별 상세 일정표 및 포함/불포함 사항을 한 화면에서 작성합니다.
                   </p>
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-black bg-amber-400/20 text-amber-300 border border-amber-400/30 px-3 py-1.5 rounded-xl">
-                    총 {photoHubList.length}장 보관 중
-                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab('products')}
+                    className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs cursor-pointer"
+                  >
+                    목록으로 돌아가기
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isSaving}
+                    className="px-6 py-2 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black text-xs shadow-lg shadow-amber-400/20 flex items-center gap-2 cursor-pointer"
+                  >
+                    <Save className="w-4 h-4" />
+                    <span>{isSaving ? '저장 중...' : '저장 완료 (홈페이지 즉시 반영)'}</span>
+                  </button>
                 </div>
               </div>
 
-              {/* Big Dropzone */}
-              <div
-                onDragOver={(e) => { e.preventDefault(); setIsDraggingOver(true); }}
-                onDragLeave={() => setIsDraggingOver(false)}
-                onDrop={(e) => handleDropPhotos(e, 'hub')}
-                className={`border-2 border-dashed rounded-3xl p-8 text-center transition-all ${
-                  isDraggingOver
-                    ? 'border-amber-400 bg-amber-400/10'
-                    : 'border-slate-700 bg-slate-950/60 hover:border-slate-500'
-                }`}
-              >
-                <input
-                  type="file"
-                  id="photo-hub-file-upload"
-                  multiple
-                  accept="image/*"
-                  onChange={handlePhotoHubUpload}
-                  className="hidden"
-                />
-                <label
-                  htmlFor="photo-hub-file-upload"
-                  className="cursor-pointer flex flex-col items-center justify-center gap-3"
-                >
-                  <div className="w-16 h-16 rounded-3xl bg-amber-400/20 text-amber-300 flex items-center justify-center">
-                    <Upload className="w-8 h-8" />
+              {/* Section 1: Basic Information */}
+              <div className="space-y-4 bg-slate-950 p-6 rounded-2xl border border-slate-800">
+                <h4 className="text-sm font-black text-white flex items-center gap-2 border-b border-slate-800 pb-3">
+                  <Layers className="w-4 h-4 text-amber-400" />
+                  <span>1. 기본 정보 및 카테고리 분류</span>
+                </h4>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-black text-slate-300">상품 제목 *</label>
+                    <input
+                      type="text"
+                      required
+                      value={formData.title}
+                      onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                      placeholder="예: [다낭/풀빌라] 5성급 나만 리트리트 프라이빗 독채 풀빌라 3박 5일"
+                      className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-xs font-bold text-white focus:ring-2 focus:ring-amber-400 outline-none"
+                    />
                   </div>
-                  <span className="text-base font-black text-white block">
-                    📁 내 컴퓨터에서 사진 수십 장 일괄 올리기 (클릭 또는 파일 드래그)
-                  </span>
-                  <span className="text-xs text-slate-400">
-                    스마트폰 카메라, DSLR 원본 사진 지원 (자동 1440px 고화질 변환 및 서버 영구 보관)
-                  </span>
-                </label>
+
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-black text-slate-300">서브 타이틀 (강조 카피문구)</label>
+                    <input
+                      type="text"
+                      value={formData.subTitle}
+                      onChange={(e) => setFormData({ ...formData, subTitle: e.target.value })}
+                      placeholder="예: 단독 프라이빗 수영장 & 한국어 가이드 동행 힐링 휴양"
+                      className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-xs text-white focus:ring-2 focus:ring-amber-400 outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-black text-slate-300">카테고리</label>
+                    <select
+                      value={formData.category}
+                      onChange={(e) => setFormData({ ...formData, category: e.target.value as Category })}
+                      className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs font-bold text-amber-300"
+                    >
+                      {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+                    </select>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-black text-slate-300">권역</label>
+                    <select
+                      value={formData.region}
+                      onChange={(e) => {
+                        const newReg = e.target.value as Region;
+                        const defaultCity = REGION_CITIES[newReg as Exclude<Region, '전체'>]?.[0] || '다낭';
+                        setFormData({ ...formData, region: newReg, city: defaultCity });
+                      }}
+                      className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs font-bold text-white"
+                    >
+                      {REGIONS.map(r => <option key={r} value={r}>{r}</option>)}
+                    </select>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-black text-slate-300">도시</label>
+                    <select
+                      value={formData.city}
+                      onChange={(e) => setFormData({ ...formData, city: e.target.value as City })}
+                      className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs font-bold text-white"
+                    >
+                      {(REGION_CITIES[formData.region as Exclude<Region, '전체'>] || ['다낭']).map(cit => (
+                        <option key={cit} value={cit}>{cit}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-black text-slate-300">여행 기간</label>
+                    <input
+                      type="text"
+                      value={formData.duration || '3박 5일'}
+                      onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
+                      placeholder="예: 3박 5일, 4박 6일"
+                      className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs font-bold text-white"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-black text-slate-300">원화 가격 (KRW) *</label>
+                    <input
+                      type="number"
+                      step="10000"
+                      value={formData.priceKRW || 0}
+                      onChange={(e) => {
+                        const krw = Number(e.target.value);
+                        setFormData({
+                          ...formData,
+                          priceKRW: krw,
+                          priceVND: Math.round(krw * 18.817)
+                        });
+                      }}
+                      className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-xs font-black text-amber-300"
+                    />
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-black text-slate-300">동화 환산가 (VND)</label>
+                    <input
+                      type="number"
+                      value={formData.priceVND || 0}
+                      onChange={(e) => setFormData({ ...formData, priceVND: Number(e.target.value) })}
+                      className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-slate-300"
+                    />
+                  </div>
+
+                  <div className="flex items-center gap-4 pt-6">
+                    <label className="flex items-center gap-2 cursor-pointer text-xs font-bold text-white">
+                      <input
+                        type="checkbox"
+                        checked={formData.isPopular ?? false}
+                        onChange={(e) => setFormData({ ...formData, isPopular: e.target.checked })}
+                        className="w-4 h-4 rounded text-amber-400 focus:ring-0"
+                      />
+                      <span>⭐ 인기 상품 추천</span>
+                    </label>
+
+                    <label className="flex items-center gap-2 cursor-pointer text-xs font-bold text-white">
+                      <input
+                        type="checkbox"
+                        checked={formData.isHotDeal ?? false}
+                        onChange={(e) => setFormData({ ...formData, isHotDeal: e.target.checked })}
+                        className="w-4 h-4 rounded text-rose-500 focus:ring-0"
+                      />
+                      <span>🔥 초특가 핫딜</span>
+                    </label>
+                  </div>
+                </div>
               </div>
 
-              {/* Photo Hub Actions Bar */}
-              {photoHubList.length > 0 && (
-                <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-slate-800">
-                  <div className="flex items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (selectedHubPhotoIndexes.length === photoHubList.length) {
-                          setSelectedHubPhotoIndexes([]);
-                        } else {
-                          setSelectedHubPhotoIndexes(photoHubList.map((_, i) => i));
-                        }
-                      }}
-                      className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold flex items-center gap-2 cursor-pointer"
-                    >
-                      {selectedHubPhotoIndexes.length === photoHubList.length ? <CheckSquare className="w-4 h-4 text-amber-300" /> : <Square className="w-4 h-4" />}
-                      <span>전체 사진 선택 ({selectedHubPhotoIndexes.length}/{photoHubList.length})</span>
-                    </button>
+              {/* Section 2: Photo Gallery (Multi Upload & Drag-and-Drop) */}
+              <div className="space-y-4 bg-slate-950 p-6 rounded-2xl border border-slate-800">
+                <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+                  <h4 className="text-sm font-black text-white flex items-center gap-2">
+                    <Camera className="w-4 h-4 text-amber-400" />
+                    <span>2. 고화질 사진 갤러리 (대표 1번 사진이 썸네일로 지정됩니다)</span>
+                  </h4>
+                  <span className="text-xs text-slate-400">총 {galleryImages.length}장 등록됨</span>
+                </div>
 
-                    {selectedHubPhotoIndexes.length > 0 && (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          const indexSet = new Set(selectedHubPhotoIndexes);
-                          setPhotoHubList(prev => prev.filter((_, i) => !indexSet.has(i)));
-                          setSelectedHubPhotoIndexes([]);
-                        }}
-                        className="px-3.5 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-black flex items-center gap-1.5 cursor-pointer shadow-md"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                        <span>선택한 {selectedHubPhotoIndexes.length}장 삭제</span>
-                      </button>
-                    )}
+                {/* Drag-drop or File Select Box */}
+                <div className="border-2 border-dashed border-slate-700 hover:border-amber-400 rounded-2xl p-6 text-center space-y-3 bg-slate-900/50 transition-colors">
+                  <Camera className="w-8 h-8 text-amber-400 mx-auto" />
+                  <div>
+                    <p className="text-xs font-bold text-white">
+                      컴퓨터의 사진 파일(JPG, PNG, WebP)을 여러 장 선택하거나 이곳에 드롭하세요.
+                    </p>
+                    <p className="text-[11px] text-slate-400 mt-0.5">
+                      에어비앤비 규격(1440px)으로 자동 최적화되어 서버 디스크에 영구 보관됩니다.
+                    </p>
                   </div>
 
+                  <label className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-400 text-slate-950 font-black text-xs cursor-pointer hover:bg-amber-300">
+                    <Upload className="w-3.5 h-3.5" />
+                    <span>내 컴퓨터에서 사진 선택하기</span>
+                    <input
+                      type="file"
+                      multiple
+                      accept="image/*"
+                      className="hidden"
+                      onChange={async (e) => {
+                        if (e.target.files && e.target.files.length > 0) {
+                          const urls = await uploadFilesToDisk(Array.from(e.target.files));
+                          setGalleryImages(prev => [...prev, ...urls]);
+                        }
+                        e.target.value = '';
+                      }}
+                    />
+                  </label>
+                  {uploadStatus && <p className="text-xs text-amber-300 font-bold">{uploadStatus}</p>}
+                </div>
+
+                {/* Thumbnails list */}
+                {galleryImages.length > 0 && (
+                  <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-3 pt-2">
+                    {galleryImages.map((img, idx) => (
+                      <div key={idx} className="relative group rounded-xl overflow-hidden border border-slate-700 aspect-square bg-slate-900">
+                        <img src={img} alt="" className="w-full h-full object-cover" />
+                        {idx === 0 && (
+                          <span className="absolute top-1.5 left-1.5 bg-amber-400 text-slate-950 font-black text-[9px] px-1.5 py-0.5 rounded">
+                            대표사진
+                          </span>
+                        )}
+                        <div className="absolute inset-0 bg-slate-950/80 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1 p-1">
+                          {idx !== 0 && (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const newImages = [img, ...galleryImages.filter((_, i) => i !== idx)];
+                                setGalleryImages(newImages);
+                              }}
+                              className="px-2 py-0.5 bg-amber-400 text-slate-950 rounded text-[9px] font-black cursor-pointer"
+                            >
+                              대표 지정
+                            </button>
+                          )}
+                          <button
+                            type="button"
+                            onClick={() => setGalleryImages(prev => prev.filter((_, i) => i !== idx))}
+                            className="px-2 py-0.5 bg-rose-600 text-white rounded text-[9px] font-bold cursor-pointer"
+                          >
+                            삭제
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Section 3: Included & Excluded Details */}
+              <div className="space-y-4 bg-slate-950 p-6 rounded-2xl border border-slate-800">
+                <h4 className="text-sm font-black text-white flex items-center gap-2 border-b border-slate-800 pb-3">
+                  <Sparkles className="w-4 h-4 text-amber-400" />
+                  <span>3. 포함 및 불포함 사항 안내</span>
+                </h4>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-black text-emerald-400">포함 사항 (줄바꿈으로 구분)</label>
+                    <textarea
+                      rows={5}
+                      value={includedText}
+                      onChange={(e) => setIncludedText(e.target.value)}
+                      placeholder="전 일정 단독 차량&#10;한국어 전문 가이드&#10;5성급 호텔 숙박 및 조식&#10;단독 공항 픽업/샌딩"
+                      className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-white leading-relaxed focus:ring-2 focus:ring-amber-400 outline-none"
+                    />
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-black text-rose-400">불포함 사항 (줄바꿈으로 구분)</label>
+                    <textarea
+                      rows={5}
+                      value={excludedText}
+                      onChange={(e) => setExcludedText(e.target.value)}
+                      placeholder="왕복 항공권&#10;가이드/기사 매너팁&#10;개인 경비"
+                      className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-white leading-relaxed focus:ring-2 focus:ring-amber-400 outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-black text-slate-300">출발 가능 도시 (줄바꿈 구분)</label>
+                    <textarea
+                      rows={3}
+                      value={departureCitiesText}
+                      onChange={(e) => setDepartureCitiesText(e.target.value)}
+                      placeholder="인천&#10;김해&#10;대구"
+                      className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-white focus:ring-2 focus:ring-amber-400 outline-none"
+                    />
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-black text-slate-300">검색 태그 (줄바꿈 구분)</label>
+                    <textarea
+                      rows={3}
+                      value={tagsText}
+                      onChange={(e) => setTagsText(e.target.value)}
+                      placeholder="#단독풀빌라&#10;#가족휴양&#10;#노쇼핑"
+                      className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-white focus:ring-2 focus:ring-amber-400 outline-none"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Section 4: Day-by-Day Itinerary */}
+              <div className="space-y-4 bg-slate-950 p-6 rounded-2xl border border-slate-800">
+                <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+                  <h4 className="text-sm font-black text-white flex items-center gap-2">
+                    <Layers className="w-4 h-4 text-amber-400" />
+                    <span>4. 일차별 상세 여행 일정표 ({itineraryList.length}일차)</span>
+                  </h4>
                   <button
                     type="button"
                     onClick={() => {
-                      setPhotoHubList([]);
-                      setSelectedHubPhotoIndexes([]);
+                      const nextDay = itineraryList.length + 1;
+                      setItineraryList([
+                        ...itineraryList,
+                        { day: nextDay, title: `${nextDay}일차 일정`, description: '일정 상세 내용', meal: '조: 호텔식 / 중: 현지식 / 석: 특식', hotel: '5성급 호텔' }
+                      ]);
                     }}
-                    className="px-4 py-2 rounded-xl bg-rose-950/60 hover:bg-rose-900 border border-rose-600/40 text-rose-300 text-xs font-black flex items-center gap-1.5 cursor-pointer"
+                    className="px-3 py-1.5 rounded-xl bg-amber-400/20 text-amber-300 hover:bg-amber-400/30 border border-amber-400/30 font-bold text-xs cursor-pointer"
                   >
-                    <Trash2 className="w-4 h-4 text-rose-400" />
-                    <span>모든 사진 싹 비우기 (0장)</span>
+                    + 일차 추가
                   </button>
                 </div>
-              )}
 
-              {/* Photo Hub Grid */}
-              {photoHubList.length > 0 ? (
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 max-h-[550px] overflow-y-auto p-3 bg-slate-950 rounded-2xl border border-slate-800">
-                  {photoHubList.map((url, idx) => (
-                    <div
-                      key={idx}
-                      className="relative aspect-4/3 rounded-xl overflow-hidden border border-slate-800 hover:border-slate-600 group bg-slate-900"
-                    >
-                      <img
-                        src={url}
-                        alt={`Photo ${idx + 1}`}
-                        referrerPolicy="no-referrer"
-                        className="w-full h-full object-cover"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setSelectedHubPhotoIndexes(prev => 
-                            prev.includes(idx) ? prev.filter(i => i !== idx) : [...prev, idx]
-                          );
-                        }}
-                        className="absolute top-2 left-2 w-6 h-6 rounded bg-black/70 text-white flex items-center justify-center cursor-pointer"
-                      >
-                        {selectedHubPhotoIndexes.includes(idx) ? <CheckSquare className="w-4 h-4 text-amber-300" /> : <Square className="w-4 h-4 text-slate-400" />}
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setPhotoHubList(prev => prev.filter((_, i) => i !== idx));
-                          setSelectedHubPhotoIndexes(prev => prev.filter(i => i !== idx).map(i => (i > idx ? i - 1 : i)));
-                        }}
-                        className="absolute top-2 right-2 w-6 h-6 rounded-full bg-rose-600 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-md cursor-pointer"
-                        title="삭제"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-16 text-xs text-slate-500 bg-slate-950/40 rounded-2xl border border-dashed border-slate-800">
-                  📷 보관된 사진이 없습니다. 상단 드롭존을 클릭하여 사진을 추가해주세요.
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* ================= TAB 3: INQUIRIES ================= */}
-        {activeTab === 'inquiries' && (
-          <div className="max-w-7xl mx-auto space-y-4 animate-fadeIn">
-            <div className="bg-slate-900 p-6 rounded-3xl border border-slate-800 shadow-xl space-y-4">
-              <div className="flex items-center justify-between border-b border-slate-800 pb-4">
-                <div>
-                  <h3 className="text-lg font-black text-white flex items-center gap-2">
-                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                    <span>실시간 예약 및 1:1 견적 상담 접수함</span>
-                  </h3>
-                  <p className="text-xs text-slate-400 mt-1">
-                    손님들이 웹사이트에서 접수한 예약 및 맞춤 견적 신청 내역입니다.
-                  </p>
-                </div>
-                <span className="text-xs font-black bg-emerald-400/20 text-emerald-300 border border-emerald-400/30 px-3 py-1 rounded-xl">
-                  총 {inquiries.length}건
-                </span>
-              </div>
-
-              {inquiries.length === 0 ? (
-                <div className="text-center py-16 text-xs text-slate-500 bg-slate-950 rounded-2xl border border-dashed border-slate-800">
-                  📬 현재 접수된 예약 문의 내역이 없습니다.
-                </div>
-              ) : (
                 <div className="space-y-3">
-                  {inquiries.map((inq) => (
-                    <div
-                      key={inq.id}
-                      className="bg-slate-950 p-5 rounded-2xl border border-slate-800 space-y-3 shadow-md"
-                    >
-                      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800/80 pb-3">
-                        <div className="flex items-center gap-2.5">
-                          <span className="font-black text-white text-base">
-                            👤 {inq.userName} 고객님
-                          </span>
-                          <a
-                            href={`tel:${inq.userPhone}`}
-                            className="text-xs text-amber-300 bg-amber-400/10 px-2.5 py-1 rounded-lg border border-amber-400/20 font-bold flex items-center gap-1"
-                          >
-                            📞 {inq.userPhone}
-                          </a>
-                          {inq.kakaoId && (
-                            <span className="text-xs text-amber-400 font-bold bg-slate-900 px-2.5 py-1 rounded-lg border border-slate-700">
-                              💬 카톡: {inq.kakaoId}
-                            </span>
-                          )}
-                        </div>
-
-                        <select
-                          value={inq.status}
-                          onChange={(e) => onUpdateInquiryStatus(inq.id, e.target.value as any)}
-                          className="bg-slate-900 border border-slate-700 text-xs font-black px-3 py-1.5 rounded-xl text-amber-300"
+                  {itineraryList.map((dayItem, idx) => (
+                    <div key={idx} className="bg-slate-900 border border-slate-800 p-4 rounded-xl space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="font-black text-xs text-amber-400">{dayItem.day}일차</span>
+                        <button
+                          type="button"
+                          onClick={() => setItineraryList(prev => prev.filter((_, i) => i !== idx))}
+                          className="text-rose-400 hover:text-rose-300 text-xs font-bold cursor-pointer"
                         >
-                          <option value="pending">⏳ 상담 대기</option>
-                          <option value="in_progress">📞 상담 진행중</option>
-                          <option value="confirmed">✅ 예약 확정</option>
-                          <option value="completed">🎉 완료</option>
-                          <option value="cancelled">❌ 취소</option>
-                        </select>
+                          삭제
+                        </button>
                       </div>
-
-                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 bg-slate-900/60 p-3 rounded-xl text-xs text-slate-300">
-                        <div><span className="text-slate-500">문의 상품:</span> <strong className="text-white">{inq.productTitle || '맞춤 견적'}</strong></div>
-                        <div><span className="text-slate-500">출발 희망일:</span> <strong className="text-amber-300">{inq.startDate || '협의'}</strong></div>
-                        <div><span className="text-slate-500">인원:</span> <strong className="text-white">성인 {inq.travelerCount.adult}명</strong></div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        <input
+                          type="text"
+                          value={dayItem.title}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            setItineraryList(prev => prev.map((d, i) => i === idx ? { ...d, title: val } : d));
+                          }}
+                          placeholder="일정 제목"
+                          className="bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white"
+                        />
+                        <input
+                          type="text"
+                          value={dayItem.meal || ''}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            setItineraryList(prev => prev.map((d, i) => i === idx ? { ...d, meal: val } : d));
+                          }}
+                          placeholder="식사 정보 (조/중/석식)"
+                          className="bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white"
+                        />
                       </div>
-
-                      {inq.message && (
-                        <div className="bg-slate-900 p-3 rounded-xl border border-slate-800 text-xs text-slate-300 whitespace-pre-wrap">
-                          {inq.message}
-                        </div>
-                      )}
+                      <textarea
+                        rows={2}
+                        value={dayItem.description}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          setItineraryList(prev => prev.map((d, i) => i === idx ? { ...d, description: val } : d));
+                        }}
+                        placeholder="상세 일정 내용"
+                        className="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-xs text-white"
+                      />
                     </div>
                   ))}
                 </div>
-              )}
+              </div>
+
+              {/* Bottom Submit Actions */}
+              <div className="flex items-center justify-end gap-3 border-t border-slate-800 pt-6">
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('products')}
+                  className="px-6 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs cursor-pointer"
+                >
+                  취소하고 목록으로
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSaving}
+                  className="px-8 py-3 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black text-sm shadow-xl shadow-amber-400/20 cursor-pointer"
+                >
+                  {isSaving ? '저장 처리 중...' : '💾 최종 저장하기 (홈페이지 즉시 반영)'}
+                </button>
+              </div>
+
+            </form>
+          </div>
+        )}
+
+        {/* ================= TAB 3: PHOTO ASSET HUB ================= */}
+        {activeTab === 'photos' && (
+          <div className="max-w-7xl mx-auto space-y-6 animate-fadeIn">
+            <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 space-y-4">
+              <div className="flex flex-wrap items-center justify-between gap-4">
+                <div>
+                  <h3 className="text-base font-black text-white">📸 고화질 사진 자산 허브</h3>
+                  <p className="text-xs text-slate-400 mt-0.5">
+                    신짜오투어 사이트에서 사용되는 모든 고화질 사진을 일괄 관리하고 즉시 복사하여 사용할 수 있습니다.
+                  </p>
+                </div>
+
+                <label className="px-4 py-2.5 rounded-xl bg-amber-400 text-slate-950 font-black text-xs flex items-center gap-2 cursor-pointer hover:bg-amber-300">
+                  <Upload className="w-4 h-4" />
+                  <span>사진 일괄 업로드</span>
+                  <input
+                    type="file"
+                    multiple
+                    accept="image/*"
+                    className="hidden"
+                    onChange={async (e) => {
+                      if (e.target.files && e.target.files.length > 0) {
+                        const urls = await uploadFilesToDisk(Array.from(e.target.files));
+                        setAllSitePhotos(prev => [...urls, ...prev]);
+                        alert(`${urls.length}장의 사진이 업로드되었습니다!`);
+                      }
+                      e.target.value = '';
+                    }}
+                  />
+                </label>
+              </div>
+
+              {uploadStatus && <p className="text-xs text-amber-300 font-bold">{uploadStatus}</p>}
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+              {allSitePhotos.map((url, idx) => (
+                <div key={idx} className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden group relative">
+                  <div className="aspect-square bg-slate-950">
+                    <img src={url} alt="" className="w-full h-full object-cover" />
+                  </div>
+                  <div className="p-2 flex items-center justify-between text-xs">
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText(url);
+                        setCopiedUrl(url);
+                        setTimeout(() => setCopiedUrl(null), 2000);
+                      }}
+                      className="text-[10px] text-amber-300 hover:underline font-bold cursor-pointer"
+                    >
+                      {copiedUrl === url ? '복사완료!' : 'URL 복사'}
+                    </button>
+                    <span className="text-[9px] text-slate-500">#{idx + 1}</span>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         )}
 
-        {/* ================= TAB 4: SETTINGS ================= */}
-        {activeTab === 'settings' && (
-          <div className="max-w-4xl mx-auto space-y-6 animate-fadeIn">
-            <div className="bg-slate-900 p-6 sm:p-8 rounded-3xl border border-slate-800 shadow-xl space-y-6">
-              <div className="flex items-center gap-3 border-b border-slate-800 pb-4">
-                <div className="w-10 h-10 rounded-2xl bg-amber-400 text-slate-950 flex items-center justify-center font-black">
-                  <MessageCircle className="w-5 h-5 fill-slate-950" />
-                </div>
-                <div>
-                  <h4 className="font-black text-white text-base">카카오톡 상담 연결 URL 설정</h4>
-                  <p className="text-xs text-slate-400">
-                    홈페이지의 [카카오톡 실시간 상담] 버튼을 눌렀을 때 열릴 카카오톡 채널 또는 오픈채팅방 링크입니다.
-                  </p>
-                </div>
-              </div>
-
-              <div className="space-y-3">
-                <div className="flex items-center gap-2">
-                  <input
-                    type="url"
-                    value={kakaoUrlInput}
-                    onChange={(e) => setKakaoUrlInput(e.target.value)}
-                    placeholder="예: https://open.kakao.com/o/sXincaoTour"
-                    className="flex-1 px-4 py-3 bg-slate-950 border border-slate-700 rounded-xl text-xs font-mono text-white focus:outline-none focus:ring-2 focus:ring-amber-400"
-                  />
-                  <button
-                    onClick={handleSaveKakaoLink}
-                    className="px-5 py-3 bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs rounded-xl shadow-md cursor-pointer"
-                  >
-                    저장하기
-                  </button>
-                  <button
-                    onClick={() => window.open(kakaoUrlInput, '_blank')}
-                    className="px-4 py-3 bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs rounded-xl border border-slate-700 flex items-center gap-1 cursor-pointer"
-                  >
-                    <ExternalLink className="w-3.5 h-3.5" />
-                    <span>테스트</span>
-                  </button>
-                </div>
-              </div>
+        {/* ================= TAB 4: INQUIRIES & RESERVATIONS ================= */}
+        {activeTab === 'inquiries' && (
+          <div className="max-w-7xl mx-auto space-y-6 animate-fadeIn">
+            <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6">
+              <h3 className="text-base font-black text-white">📥 실시간 예약 및 1:1 맞춤 견적 접수함</h3>
+              <p className="text-xs text-slate-400 mt-0.5">
+                고객이 남긴 예약 문의 내역을 확인하고 실시간 상담 상태를 변경할 수 있습니다.
+              </p>
             </div>
 
-            {/* Domain Guide */}
-            <div className="bg-slate-900 p-6 sm:p-8 rounded-3xl border border-slate-800 shadow-xl space-y-4">
-              <div className="flex items-center gap-3 border-b border-slate-800 pb-4">
-                <div className="w-10 h-10 rounded-2xl bg-teal-500/20 border border-teal-400/40 text-teal-300 flex items-center justify-center font-black">
-                  <Globe className="w-5 h-5" />
-                </div>
-                <div>
-                  <h4 className="font-black text-white text-base">xinchaotour.com 도메인 연결 안내</h4>
-                  <p className="text-xs text-slate-400">
-                    보유하고 계신 도메인을 언제든지 연결하여 실시간 수정하실 수 있습니다.
-                  </p>
-                </div>
+            {inquiries.length === 0 ? (
+              <div className="bg-slate-900 border border-slate-800 rounded-3xl p-16 text-center text-slate-400 text-xs">
+                접수된 상담 내역이 없습니다.
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {inquiries.map((inq) => (
+                  <div key={inq.id} className="bg-slate-900 border border-slate-800 p-5 rounded-2xl flex flex-wrap items-center justify-between gap-4">
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className="font-black text-sm text-white">{inq.userName} 고객님</span>
+                        <span className="text-xs text-slate-400">({inq.userPhone})</span>
+                        {inq.kakaoId && (
+                          <span className="text-xs bg-amber-400/10 text-amber-300 px-2 py-0.5 rounded border border-amber-400/20">
+                            카톡: {inq.kakaoId}
+                          </span>
+                        )}
+                      </div>
+                      <div className="text-xs text-slate-300 font-bold">
+                        {inq.productTitle || '맞춤 견적 상담'} · 여행일자: {inq.startDate || '미정'} · 성인 {inq.travelerCount.adult}명, 아동 {inq.travelerCount.child}명
+                      </div>
+                      <div className="text-xs text-slate-400 bg-slate-950 p-2.5 rounded-xl border border-slate-800">
+                        {inq.message || '요청 사항 없음'}
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <select
+                        value={inq.status}
+                        onChange={(e) => onUpdateInquiryStatus(inq.id, e.target.value as any)}
+                        className="bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs font-bold text-amber-300"
+                      >
+                        <option value="pending">신규 접수</option>
+                        <option value="in_progress">상담 진행 중</option>
+                        <option value="confirmed">예약 확정</option>
+                        <option value="completed">여행 완료</option>
+                        <option value="cancelled">취소</option>
+                      </select>
+
+                      <a
+                        href={`tel:${inq.userPhone}`}
+                        className="p-2 rounded-xl bg-teal-700 hover:bg-teal-600 text-white text-xs font-bold flex items-center gap-1"
+                      >
+                        <Phone className="w-3.5 h-3.5" />
+                        <span>전화하기</span>
+                      </a>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ================= TAB 5: SETTINGS ================= */}
+        {activeTab === 'settings' && (
+          <div className="max-w-3xl mx-auto space-y-6 animate-fadeIn">
+            <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 space-y-6 shadow-xl">
+              <h3 className="text-base font-black text-white">⚙️ 카카오톡 상담 링크 및 도메인 설정</h3>
+              
+              <div className="space-y-3">
+                <label className="text-xs font-black text-slate-300">카카오톡 실시간 상담 오픈채팅 / 채널 URL</label>
+                <input
+                  type="text"
+                  value={kakaoLinkInput}
+                  onChange={(e) => setKakaoLinkInput(e.target.value)}
+                  placeholder="https://open.kakao.com/o/..."
+                  className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-xs text-white focus:ring-2 focus:ring-amber-400 outline-none"
+                />
+                <button
+                  type="button"
+                  onClick={() => {
+                    setKakaoDirectLink(kakaoLinkInput);
+                    alert('카카오톡 링크가 성공적으로 저장되었습니다!');
+                  }}
+                  className="px-5 py-2.5 rounded-xl bg-amber-400 text-slate-950 font-black text-xs cursor-pointer hover:bg-amber-300"
+                >
+                  카카오톡 링크 저장하기
+                </button>
               </div>
 
-              <div className="text-xs text-slate-300 space-y-2 bg-slate-950 p-4 rounded-2xl border border-slate-800 leading-relaxed">
-                <p className="font-bold text-amber-300">
-                  💡 xinchaotour.com 도메인에 홈페이지를 연결하신 후에도 지금처럼 관리자 센터에서 언제든지 상품을 추가, 수정, 전체삭제 하실 수 있습니다.
-                </p>
-                <p className="text-slate-400">
-                  대표 고객센터 전화: <strong className="text-white">{COMPANY_PHONE}</strong> | 대표 이메일: <strong className="text-white">wonjutrade@hanmail.net</strong>
-                </p>
+              <div className="pt-6 border-t border-slate-800 space-y-2 text-xs text-slate-400">
+                <h4 className="font-bold text-white">🌐 xinchaotour.com 도메인 연결 안내</h4>
+                <p>구입하신 도메인의 DNS 설정에서 본 서버의 공인 IP를 CNAME/A 레코드로 연결하시면 즉시 연동됩니다.</p>
+                <p>문의 대표전화: <strong className="text-amber-400">{COMPANY_PHONE}</strong></p>
               </div>
             </div>
           </div>
         )}
 
       </div>
-
-      {/* IN-APP CONFIRMATION MODAL (Replaces broken browser alerts/confirms) */}
-      {confirmModal.isOpen && (
-        <div className="fixed inset-0 z-60 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 max-w-md w-full shadow-2xl space-y-5 text-center animate-fadeIn">
-            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mx-auto ${
-              confirmModal.isDestructive ? 'bg-rose-500/20 text-rose-400 border border-rose-500/40' : 'bg-amber-400/20 text-amber-300 border border-amber-400/40'
-            }`}>
-              <AlertTriangle className="w-7 h-7" />
-            </div>
-
-            <div className="space-y-1.5">
-              <h3 className="text-base font-black text-white">{confirmModal.title}</h3>
-              <p className="text-xs text-slate-400 leading-relaxed">{confirmModal.description}</p>
-            </div>
-
-            <div className="flex gap-2 pt-2">
-              <button
-                type="button"
-                onClick={() => setConfirmModal(prev => ({ ...prev, isOpen: false }))}
-                className="flex-1 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs cursor-pointer"
-              >
-                취소
-              </button>
-              <button
-                type="button"
-                onClick={confirmModal.confirmAction}
-                className={`flex-1 py-3 rounded-xl font-black text-xs cursor-pointer shadow-lg ${
-                  confirmModal.isDestructive
-                    ? 'bg-rose-600 hover:bg-rose-500 text-white shadow-rose-600/30'
-                    : 'bg-amber-400 hover:bg-amber-300 text-slate-950 shadow-amber-400/20'
-                }`}
-              >
-                {confirmModal.confirmText}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

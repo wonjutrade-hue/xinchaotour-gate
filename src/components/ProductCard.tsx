@@ -1,6 +1,6 @@
-import React, { useState, useRef } from 'react';
+import React from 'react';
 import { Product } from '../types';
-import { Star, MapPin, Calendar, CheckCircle2, ArrowRight, MessageCircle, Edit3, Trash2, Camera } from 'lucide-react';
+import { Star, MapPin, Calendar, CheckCircle2, ArrowRight, MessageCircle } from 'lucide-react';
 import { ExchangeRates, calculateVNDFromKRW, calculateKRWFromVND, calculateUSDFromKRW, formatUSD } from '../lib/exchangeRate';
 import { handleOpenKakaoTalkDirect } from '../constants';
 
@@ -9,11 +9,6 @@ interface ProductCardProps {
   onSelectProduct: (product: Product) => void;
   onQuickInquire?: (product: Product) => void;
   exchangeRates?: ExchangeRates;
-  isAdminMode?: boolean;
-  onQuickEdit?: (product: Product) => void;
-  onProEdit?: (product: Product) => void;
-  onQuickDelete?: (productId: string) => void;
-  onQuickPhotoChange?: (productId: string, newPhotoUrl: string) => void;
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({
@@ -21,41 +16,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   onSelectProduct,
   onQuickInquire,
   exchangeRates,
-  isAdminMode,
-  onQuickEdit,
-  onProEdit,
-  onQuickDelete,
-  onQuickPhotoChange,
 }) => {
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [confirmDelete, setConfirmDelete] = useState(false);
   const displaySubtitle = product.subTitle || (product as any).subtitle || product.description || '';
   const subImages = product.additionalImages || (product as any).galleryImages || (product as any).images || [];
   const subImagesCount = subImages.filter(Boolean).length;
-
-  const handleCardDirectPhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file || !onQuickPhotoChange) return;
-
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = async (event) => {
-      const base64 = event.target?.result as string;
-      try {
-        // Upload to server disk
-        const res = await fetch('/api/upload-images', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ images: [base64] })
-        });
-        const data = await res.json();
-        const finalUrl = (data.success && data.urls?.[0]) ? data.urls[0] : base64;
-        onQuickPhotoChange(product.id, finalUrl);
-      } catch (err) {
-        onQuickPhotoChange(product.id, base64);
-      }
-    };
-  };
 
   // Real-time calculated KRW and VND based on Naver Exchange Rate
   let displayKRW = product.priceKRW || 0;
@@ -84,6 +48,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           alt={product.title}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           loading="lazy"
+          onError={(e) => {
+            (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1000&q=80';
+          }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent opacity-60" />
 
@@ -98,112 +65,33 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         {/* Category & Badges Sticker */}
         <div className="absolute top-3 right-3 flex flex-wrap items-center justify-end gap-1">
           {product.isHotDeal && (
-            <span className="bg-rose-600 text-white text-[10px] font-black px-2 py-0.5 rounded-lg shadow-xs">
-              ⚡ HOT딜
+            <span className="bg-rose-500 text-white font-extrabold text-[10px] px-2 py-0.5 rounded shadow-sm animate-pulse">
+              🔥 초특가
             </span>
           )}
           {product.isPopular && (
-            <span className="bg-amber-500 text-slate-950 text-[10px] font-black px-2 py-0.5 rounded-lg shadow-xs">
-              🔥 인기추천
+            <span className="bg-amber-400 text-slate-950 font-black text-[10px] px-2 py-0.5 rounded shadow-sm">
+              👑 베스트
             </span>
           )}
-          {product.externalBookingUrl && (
-            <span className="bg-rose-500 text-white text-[10px] font-black px-2 py-0.5 rounded-lg shadow-xs flex items-center gap-1">
-              <span>Airbnb</span>
-            </span>
-          )}
-          {product.discountPercent ? (
-            <span className="bg-rose-600 text-white text-[10px] font-black px-2 py-0.5 rounded-lg shadow-xs">
-              {product.discountPercent}% OFF
-            </span>
-          ) : null}
-          <span className="bg-teal-700/90 backdrop-blur-md text-white text-[11px] font-extrabold px-2 py-0.5 rounded-lg">
+          <span className="bg-teal-700/90 backdrop-blur-md text-white text-[10px] font-bold px-2 py-0.5 rounded">
             {product.category}
           </span>
         </div>
 
-        {/* Duration & Sub-Photos Badge */}
-        <div className="absolute bottom-3 left-3 flex items-center gap-1.5">
-          <div className="flex items-center gap-1 bg-white/90 backdrop-blur-md text-slate-800 px-2.5 py-1 rounded-md text-xs font-bold shadow-xs">
-            <Calendar className="w-3 h-3 text-teal-600" />
-            <span>{product.duration}</span>
+        {/* Photo Gallery Count Badge */}
+        {subImagesCount > 0 && (
+          <div className="absolute bottom-3 left-3 bg-slate-900/80 backdrop-blur-md text-white text-[10px] font-bold px-2 py-0.5 rounded-md flex items-center gap-1">
+            <span>📷 사진 {subImagesCount + 1}장</span>
           </div>
-          {subImagesCount > 0 && (
-            <div className="bg-slate-900/80 backdrop-blur-md text-amber-300 px-2 py-1 rounded-md text-[11px] font-black shadow-xs">
-              📷 사진 {subImagesCount + 1}장
-            </div>
-          )}
-        </div>
+        )}
 
-        {/* Rating */}
-        <div className="absolute bottom-3 right-3 flex items-center gap-1 bg-amber-400 text-slate-950 px-2 py-0.5 rounded-md text-xs font-black">
+        {/* Rating Badge */}
+        <div className="absolute bottom-3 right-3 flex items-center gap-1 bg-white/95 backdrop-blur-md text-slate-900 text-xs font-bold px-2 py-0.5 rounded-md shadow-xs">
           <Star className="w-3 h-3 fill-slate-950" />
           <span>{(product.rating || 5.0).toFixed(1)}</span>
           <span className="text-[10px] text-slate-800 font-semibold">({product.reviewCount || 10})</span>
         </div>
-
-        {/* Hidden File Input for Instant Photo Change */}
-        <input
-          type="file"
-          ref={fileInputRef}
-          accept="image/*"
-          className="hidden"
-          onChange={handleCardDirectPhotoUpload}
-        />
-
-        {/* Direct Admin Toolbar on Hover/Always in Admin Mode */}
-        {isAdminMode && (
-          <div className="absolute inset-x-0 top-0 p-2 bg-slate-900/90 backdrop-blur-md flex items-center justify-between gap-1.5 z-20 animate-fadeIn" onClick={(e) => e.stopPropagation()}>
-            <button
-              type="button"
-              onClick={() => fileInputRef.current?.click()}
-              className="px-2.5 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-[11px] font-black flex items-center gap-1 shadow-xs transition-transform active:scale-95 cursor-pointer"
-              title="클릭하여 내 컴퓨터 사진으로 즉시 교체"
-            >
-              <Camera className="w-3.5 h-3.5" />
-              <span>사진 즉시교체</span>
-            </button>
-
-            <div className="flex items-center gap-1">
-              {onProEdit && (
-                <button
-                  type="button"
-                  onClick={() => onProEdit(product)}
-                  className="px-2.5 py-1.5 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-[11px] font-black flex items-center gap-1 shadow-xs transition-transform active:scale-95 cursor-pointer"
-                  title="일정표/포함사항 등 전체 상세내용 수정"
-                >
-                  <Edit3 className="w-3.5 h-3.5" />
-                  <span>상세수정</span>
-                </button>
-              )}
-              {onQuickDelete && (
-                confirmDelete ? (
-                  <button
-                    type="button"
-                    onClick={() => onQuickDelete(product.id)}
-                    className="px-2 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-[11px] font-black flex items-center gap-1 shadow-md animate-pulse cursor-pointer"
-                    title="클릭 시 즉시 삭제"
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                    <span>정말 삭제?</span>
-                  </button>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setConfirmDelete(true);
-                      setTimeout(() => setConfirmDelete(false), 4000);
-                    }}
-                    className="p-1.5 rounded-lg bg-slate-800 hover:bg-rose-600 text-white text-[11px] font-bold flex items-center justify-center shadow-xs transition-colors cursor-pointer"
-                    title="상품 삭제"
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </button>
-                )
-              )}
-            </div>
-          </div>
-        )}
       </div>
 
       {/* Body Content */}
@@ -217,7 +105,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                   key={idx}
                   className="text-[10px] font-bold text-teal-800 bg-teal-50 px-2 py-0.5 rounded border border-teal-100"
                 >
-                  #{tag}
+                  #{tag.replace(/^#/, '')}
                 </span>
               ))}
             </div>
@@ -226,94 +114,74 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           {/* Title */}
           <h3 
             onClick={() => onSelectProduct(product)}
-            className="font-bold text-slate-900 text-base leading-snug hover:text-teal-700 cursor-pointer transition-colors line-clamp-2"
+            className="font-black text-slate-900 text-base leading-snug group-hover:text-teal-700 transition-colors line-clamp-2 cursor-pointer"
           >
             {product.title}
           </h3>
 
           {/* Subtitle / Description */}
           {displaySubtitle && (
-            <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed font-medium">
+            <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed">
               {displaySubtitle}
             </p>
           )}
 
-          {/* Address Line */}
-          {product.address && (
-            <div className="flex items-center gap-1 text-[11px] text-slate-700 bg-slate-50 px-2 py-1 rounded-lg border border-slate-200/80 truncate">
-              <MapPin className="w-3 h-3 text-rose-500 shrink-0" />
-              <span className="truncate font-medium">{product.address}</span>
+          {/* Highlights / Included preview */}
+          {product.included && product.included.length > 0 && (
+            <div className="space-y-1 pt-1">
+              {product.included.slice(0, 2).map((inc, idx) => (
+                <div key={idx} className="flex items-center gap-1.5 text-xs text-slate-600">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-teal-600 shrink-0" />
+                  <span className="truncate">{inc}</span>
+                </div>
+              ))}
             </div>
-          )}
-
-          {/* External Booking Link */}
-          {product.externalBookingUrl && (
-            <a
-              href={product.externalBookingUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 text-[11px] text-rose-600 font-bold hover:underline"
-            >
-              <span>🔗 에어비앤비/외부 원본 상세 ↗</span>
-            </a>
           )}
         </div>
 
-        {/* Specs Highlights */}
-        {product.golfSpecs && (
-          <div className="bg-emerald-50/80 p-2 rounded-xl text-xs text-emerald-900 font-medium space-y-0.5">
-            <p className="font-bold">⛳ Golf: {product.golfSpecs.holes}홀 라운딩 포함</p>
-            <p className="text-[11px] text-emerald-700 line-clamp-1">
-              코스: {product.golfSpecs.golfCourseNames.join(', ')}
-            </p>
-          </div>
-        )}
-
-        {product.villaSpecs && (
-          <div className="bg-sky-50/80 p-2 rounded-xl text-xs text-sky-900 font-medium flex items-center justify-between">
-            <span className="font-bold">🏰 {product.villaSpecs.bedrooms}베드룸 독채 풀빌라</span>
-            <span className="text-[11px] bg-sky-100 text-sky-800 px-1.5 py-0.5 rounded">
-              최대 {product.villaSpecs.maxOccupancy}인
-            </span>
-          </div>
-        )}
-
-        {/* Price & Action Buttons */}
-        <div className="pt-2 border-t border-slate-100 flex items-end justify-between gap-2">
-          <div>
-            <div className="flex items-center gap-1 mb-0.5">
-              <span className="text-[10px] font-bold text-slate-400">성인 1인 기준</span>
-              <span className="text-[9px] bg-emerald-50 text-emerald-800 font-black px-1.5 py-0.2 rounded border border-emerald-200">
-                네이버 환율 연동
-              </span>
+        {/* Pricing & CTA Section */}
+        <div className="pt-3 border-t border-slate-100 space-y-2.5">
+          <div className="flex items-baseline justify-between">
+            <div className="text-xs text-slate-400 font-medium flex items-center gap-1">
+              <Calendar className="w-3.5 h-3.5 text-slate-400" />
+              <span>{product.duration}</span>
             </div>
-            <div className="flex items-baseline gap-1">
-              <span className="text-lg font-black text-slate-900">
-                {displayVND.toLocaleString('ko-KR')} ₫
-              </span>
-              <span className="text-xs font-bold text-slate-700">~</span>
-            </div>
-            <div className="text-[11px] text-teal-700 font-extrabold flex items-center gap-1.5 mt-0.5">
-              <span>약 {displayKRW.toLocaleString('ko-KR')}원</span>
-              <span className="text-slate-300">•</span>
-              <span className="text-slate-500 font-normal">{formatUSD(liveUSD)}</span>
+            <div className="text-right">
+              <div className="text-xs text-slate-400">1인 기준</div>
+              <div className="text-lg font-black text-slate-900">
+                {displayKRW > 0 ? (
+                  <>
+                    <span className="text-teal-700">{displayKRW.toLocaleString()}</span>
+                    <span className="text-xs font-bold ml-0.5 text-slate-700">원</span>
+                  </>
+                ) : (
+                  <span className="text-teal-700 text-sm font-bold">견적 문의</span>
+                )}
+              </div>
+              {displayVND > 0 && (
+                <div className="text-[11px] text-amber-700 font-bold">
+                  {displayVND.toLocaleString()} ₫ <span className="text-[10px] text-slate-400 font-normal">({formatUSD(liveUSD)})</span>
+                </div>
+              )}
             </div>
           </div>
 
-          <div className="flex items-center gap-1.5">
+          <div className="grid grid-cols-2 gap-2 pt-1">
             <button
-              onClick={handleOpenKakaoTalkDirect}
-              className="px-2.5 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs transition-colors flex items-center gap-1 shadow-xs"
-              title="클릭 시 2단계 없이 카카오톡 개인/직영 상담 연결"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleOpenKakaoTalkDirect();
+              }}
+              className="w-full py-2 rounded-xl bg-[#FEE500] hover:bg-[#FADA0A] text-slate-900 font-black text-xs flex items-center justify-center gap-1 shadow-xs transition-transform active:scale-95 cursor-pointer"
             >
-              <MessageCircle className="w-3.5 h-3.5 fill-slate-950" />
-              <span className="hidden sm:inline">카톡상담</span>
+              <MessageCircle className="w-3.5 h-3.5 fill-slate-900 text-slate-900" />
+              <span>카톡문의</span>
             </button>
             <button
               onClick={() => onSelectProduct(product)}
-              className="px-3 py-2 rounded-xl bg-teal-700 hover:bg-teal-800 text-white font-bold text-xs transition-all shadow-xs flex items-center gap-1"
+              className="w-full py-2 rounded-xl bg-slate-900 hover:bg-teal-700 text-white font-black text-xs flex items-center justify-center gap-1 shadow-xs transition-transform active:scale-95 cursor-pointer"
             >
-              <span>상세</span>
+              <span>상세보기</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
