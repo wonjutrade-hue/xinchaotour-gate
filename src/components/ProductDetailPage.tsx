@@ -29,7 +29,9 @@ import {
   Maximize,
   Compass,
   PhoneCall,
-  ListFilter
+  ListFilter,
+  Edit3,
+  Trash2
 } from 'lucide-react';
 import { ExchangeRates, calculateVNDFromKRW, calculateKRWFromVND, calculateUSDFromKRW, formatVND, formatUSD } from '../lib/exchangeRate';
 import { handleOpenKakaoTalkDirect } from '../constants';
@@ -41,6 +43,8 @@ interface ProductDetailPageProps {
   exchangeRates?: ExchangeRates;
   relatedProducts?: Product[];
   onSelectProduct?: (prod: Product) => void;
+  onEditProduct?: (prod: Product) => void;
+  onDeleteProduct?: (id: string) => void;
 }
 
 export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
@@ -50,6 +54,8 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   exchangeRates,
   relatedProducts = [],
   onSelectProduct,
+  onEditProduct,
+  onDeleteProduct,
 }) => {
   const [activeTab, setActiveTab] = useState<'itinerary' | 'inclusion' | 'specs'>('itinerary');
   const [currentImgIndex, setCurrentImgIndex] = useState<number>(0);
@@ -164,6 +170,32 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
 
           {/* Right: Quick Action Buttons */}
           <div className="flex items-center gap-2">
+            {onEditProduct && (
+              <button
+                onClick={() => onEditProduct(product)}
+                className="px-3 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs flex items-center gap-1 shadow-xs transition-transform active:scale-95 cursor-pointer"
+                title="상품 정보 및 사진, 일정표 수정"
+              >
+                <Edit3 className="w-3.5 h-3.5" />
+                <span>상품 수정</span>
+              </button>
+            )}
+
+            {onDeleteProduct && (
+              <button
+                onClick={() => {
+                  if (confirm(`'${product.title}' 상품을 정말 삭제하시겠습니까?`)) {
+                    onDeleteProduct(product.id);
+                    onBackToList();
+                  }
+                }}
+                className="p-2 rounded-xl bg-rose-50 hover:bg-rose-600 text-rose-600 hover:text-white font-bold text-xs flex items-center gap-1 transition-colors cursor-pointer border border-rose-200"
+                title="상품 삭제"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+              </button>
+            )}
+
             <button
               onClick={handleShare}
               className="p-2 sm:px-3 sm:py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"

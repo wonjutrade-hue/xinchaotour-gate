@@ -9,6 +9,7 @@ import { ConsultationModal } from './components/ConsultationModal';
 import { AiTravelAssistantModal } from './components/AiTravelAssistantModal';
 import { AdminPanel } from './components/AdminPanel';
 import { QuickProductUploadModal } from './components/QuickProductUploadModal';
+import { ProfessionalProductEditorModal } from './components/ProfessionalProductEditorModal';
 import { TravelQuiz } from './components/TravelQuiz';
 import { FloatingChatWidget } from './components/FloatingChatWidget';
 import { Footer } from './components/Footer';
@@ -100,6 +101,8 @@ export default function App() {
   const [isAiAssistantOpen, setIsAiAssistantOpen] = useState(false);
   const [isAdminOpen, setIsAdminOpen] = useState(false);
   const [isQuickUploadOpen, setIsQuickUploadOpen] = useState(false);
+  const [isProEditorOpen, setIsProEditorOpen] = useState(false);
+  const [proEditProduct, setProEditProduct] = useState<Product | null>(null);
   const [quickEditProduct, setQuickEditProduct] = useState<Product | null>(null);
   const [isDirectEditMode, setIsDirectEditMode] = useState(false);
   const [isQuizOpen, setIsQuizOpen] = useState(false);
@@ -523,6 +526,11 @@ export default function App() {
             p => p.id !== selectedProduct.id && (p.city === selectedProduct.city || p.category === selectedProduct.category)
           )}
           onSelectProduct={handleSelectProduct}
+          onEditProduct={(p) => {
+            setProEditProduct(p);
+            setIsProEditorOpen(true);
+          }}
+          onDeleteProduct={handleDeleteProduct}
         />
       ) : (
         <>
@@ -577,12 +585,26 @@ export default function App() {
                 <button
                   type="button"
                   onClick={() => {
+                    setProEditProduct(null);
+                    setIsProEditorOpen(true);
+                  }}
+                  className="px-4 py-2.5 rounded-xl bg-teal-400 hover:bg-teal-300 text-slate-950 font-black text-xs flex items-center gap-1.5 shadow-lg shadow-teal-500/20 transition-all hover:scale-105 active:scale-95 cursor-pointer"
+                  title="일정표, 포함/불포함 사항 등 모든 상세내용이 포함된 새 상품 올리기"
+                >
+                  <Sparkles className="w-4 h-4 text-slate-950" />
+                  <span>✨ 전문 상세 새 상품 올리기 (+)</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
                     setQuickEditProduct(null);
                     setIsQuickUploadOpen(true);
                   }}
-                  className="px-4 py-2.5 rounded-xl bg-teal-500 hover:bg-teal-400 text-slate-950 font-black text-xs flex items-center gap-1.5 shadow-lg shadow-teal-500/20 transition-all hover:scale-105 active:scale-95 cursor-pointer"
+                  className="px-3.5 py-2.5 rounded-xl bg-teal-800 hover:bg-teal-700 text-teal-100 font-bold text-xs flex items-center gap-1.5 border border-teal-600 transition-all cursor-pointer"
+                  title="제목, 가격, 사진만 넣는 10초 초간단 모드"
                 >
-                  <span>✨ 10초 초간단 새 상품 올리기 (+)</span>
+                  <span>⚡ 10초 초간단 올리기</span>
                 </button>
 
                 <button
@@ -590,10 +612,10 @@ export default function App() {
                   onClick={() => setIsDirectEditMode(!isDirectEditMode)}
                   className={`px-3.5 py-2.5 rounded-xl font-extrabold text-xs flex items-center gap-1.5 transition-all cursor-pointer border ${
                     isDirectEditMode
-                      ? 'bg-amber-400 text-slate-950 border-amber-300 shadow-md shadow-amber-400/30'
+                      ? 'bg-amber-400 text-slate-950 border-amber-300 shadow-md shadow-amber-400/30 ring-2 ring-amber-300'
                       : 'bg-white/10 hover:bg-white/20 text-white border-white/20'
                   }`}
-                  title="상품 카드 위에 '사진 즉시교체 / 삭제' 버튼을 표시합니다"
+                  title="상품 카드 위에 '사진 즉시교체 / 상세수정 / 삭제' 버튼을 켭니다"
                 >
                   <span>{isDirectEditMode ? '📸 카드 직접수정 모드 [ON]' : '📸 카드 직접수정 모드 [OFF]'}</span>
                 </button>
@@ -604,7 +626,7 @@ export default function App() {
                   className="px-3 py-2.5 rounded-xl bg-rose-500/20 hover:bg-rose-600 text-rose-300 hover:text-white font-bold text-xs flex items-center gap-1 transition-all border border-rose-500/30 cursor-pointer"
                   title="등록된 모든 상품을 삭제하고 빈 상태로 만듭니다"
                 >
-                  <span>🗑️ 전체 상품 싹 비우기</span>
+                  <span>🗑️ 전체 상품 비우기</span>
                 </button>
 
                 <button
@@ -613,7 +635,7 @@ export default function App() {
                   className="px-3 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs flex items-center gap-1 transition-all border border-slate-700 cursor-pointer"
                   title="초기 샘플 12개로 복원"
                 >
-                  <span>🔄 원본 샘플 복구</span>
+                  <span>🔄 샘플 복원</span>
                 </button>
               </div>
             </div>
@@ -699,6 +721,10 @@ export default function App() {
                     onQuickEdit={(p) => {
                       setQuickEditProduct(p);
                       setIsQuickUploadOpen(true);
+                    }}
+                    onProEdit={(p) => {
+                      setProEditProduct(p);
+                      setIsProEditorOpen(true);
                     }}
                     onQuickDelete={handleDeleteProduct}
                     onQuickPhotoChange={handleDirectPhotoChange}
@@ -805,6 +831,18 @@ export default function App() {
         }}
         onSaveProduct={handleQuickSaveProduct}
         initialProduct={quickEditProduct}
+        exchangeRates={exchangeRates}
+      />
+
+      {/* Professional Full-Spec Product Editor Modal (Airbnb/HanaTour Style) */}
+      <ProfessionalProductEditorModal
+        isOpen={isProEditorOpen}
+        onClose={() => {
+          setIsProEditorOpen(false);
+          setProEditProduct(null);
+        }}
+        onSaveProduct={handleQuickSaveProduct}
+        product={proEditProduct}
         exchangeRates={exchangeRates}
       />
 

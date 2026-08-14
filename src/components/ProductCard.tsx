@@ -11,6 +11,7 @@ interface ProductCardProps {
   exchangeRates?: ExchangeRates;
   isAdminMode?: boolean;
   onQuickEdit?: (product: Product) => void;
+  onProEdit?: (product: Product) => void;
   onQuickDelete?: (productId: string) => void;
   onQuickPhotoChange?: (productId: string, newPhotoUrl: string) => void;
 }
@@ -22,6 +23,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   exchangeRates,
   isAdminMode,
   onQuickEdit,
+  onProEdit,
   onQuickDelete,
   onQuickPhotoChange,
 }) => {
@@ -162,15 +164,15 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             </button>
 
             <div className="flex items-center gap-1">
-              {onQuickEdit && (
+              {onProEdit && (
                 <button
                   type="button"
-                  onClick={() => onQuickEdit(product)}
-                  className="px-2.5 py-1.5 rounded-lg bg-teal-600 hover:bg-teal-700 text-white text-[11px] font-bold flex items-center gap-1 shadow-xs transition-transform active:scale-95 cursor-pointer"
-                  title="간편 수정"
+                  onClick={() => onProEdit(product)}
+                  className="px-2.5 py-1.5 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-[11px] font-black flex items-center gap-1 shadow-xs transition-transform active:scale-95 cursor-pointer"
+                  title="일정표/포함사항 등 전체 상세내용 수정"
                 >
                   <Edit3 className="w-3.5 h-3.5" />
-                  <span>수정</span>
+                  <span>상세수정</span>
                 </button>
               )}
               {onQuickDelete && (
