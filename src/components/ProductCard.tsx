@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { Product } from '../types';
-import { Star, MapPin, Calendar, CheckCircle2, ArrowRight, MessageCircle } from 'lucide-react';
+import { Star, MapPin, Calendar, CheckCircle2, ArrowRight, MessageCircle, Edit3, Trash2, Camera } from 'lucide-react';
 import { ExchangeRates, calculateVNDFromKRW, calculateKRWFromVND, calculateUSDFromKRW, formatUSD } from '../lib/exchangeRate';
 import { handleOpenKakaoTalkDirect } from '../constants';
 
@@ -9,6 +9,10 @@ interface ProductCardProps {
   onSelectProduct: (product: Product) => void;
   onQuickInquire?: (product: Product) => void;
   exchangeRates?: ExchangeRates;
+  isAdminMode?: boolean;
+  onQuickEdit?: (product: Product) => void;
+  onQuickDelete?: (productId: string) => void;
+  onQuickPhotoChange?: (productId: string, newPhotoUrl: string) => void;
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({
@@ -16,10 +20,39 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   onSelectProduct,
   onQuickInquire,
   exchangeRates,
+  isAdminMode,
+  onQuickEdit,
+  onQuickDelete,
+  onQuickPhotoChange,
 }) => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const displaySubtitle = product.subTitle || (product as any).subtitle || product.description || '';
   const subImages = product.additionalImages || (product as any).galleryImages || (product as any).images || [];
   const subImagesCount = subImages.filter(Boolean).length;
+
+  const handleCardDirectPhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !onQuickPhotoChange) return;
+
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = async (event) => {
+      const base64 = event.target?.result as string;
+      try {
+        // Upload to server disk
+        const res = await fetch('/api/upload-images', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ images: [base64] })
+        });
+        const data = await res.json();
+        const finalUrl = (data.success && data.urls?.[0]) ? data.urls[0] : base64;
+        onQuickPhotoChange(product.id, finalUrl);
+      } catch (err) {
+        onQuickPhotoChange(product.id, base64);
+      }
+    };
+  };
 
   // Real-time calculated KRW and VND based on Naver Exchange Rate
   let displayKRW = product.priceKRW || 0;
@@ -105,6 +138,58 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           <span>{(product.rating || 5.0).toFixed(1)}</span>
           <span className="text-[10px] text-slate-800 font-semibold">({product.reviewCount || 10})</span>
         </div>
+
+        {/* Hidden File Input for Instant Photo Change */}
+        <input
+          type="file"
+          ref={fileInputRef}
+          accept="image/*"
+          className="hidden"
+          onChange={handleCardDirectPhotoUpload}
+        />
+
+        {/* Direct Admin Toolbar on Hover/Always in Admin Mode */}
+        {isAdminMode && (
+          <div className="absolute inset-x-0 top-0 p-2 bg-slate-900/90 backdrop-blur-md flex items-center justify-between gap-1.5 z-20 animate-fadeIn" onClick={(e) => e.stopPropagation()}>
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              className="px-2.5 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-[11px] font-black flex items-center gap-1 shadow-xs transition-transform active:scale-95 cursor-pointer"
+              title="클릭하여 내 컴퓨터 사진으로 즉시 교체"
+            >
+              <Camera className="w-3.5 h-3.5" />
+              <span>사진 즉시교체</span>
+            </button>
+
+            <div className="flex items-center gap-1">
+              {onQuickEdit && (
+                <button
+                  type="button"
+                  onClick={() => onQuickEdit(product)}
+                  className="px-2.5 py-1.5 rounded-lg bg-teal-600 hover:bg-teal-700 text-white text-[11px] font-bold flex items-center gap-1 shadow-xs transition-transform active:scale-95 cursor-pointer"
+                  title="간편 수정"
+                >
+                  <Edit3 className="w-3.5 h-3.5" />
+                  <span>수정</span>
+                </button>
+              )}
+              {onQuickDelete && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (confirm(`'${product.title}' 상품을 정말 삭제하시겠습니까?`)) {
+                      onQuickDelete(product.id);
+                    }
+                  }}
+                  className="p-1.5 rounded-lg bg-slate-800 hover:bg-rose-600 text-white text-[11px] font-bold flex items-center justify-center shadow-xs transition-colors cursor-pointer"
+                  title="상품 삭제"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                </button>
+              )}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Body Content */}

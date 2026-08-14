@@ -8,6 +8,7 @@ import { ProductDetailPage } from './components/ProductDetailPage';
 import { ConsultationModal } from './components/ConsultationModal';
 import { AiTravelAssistantModal } from './components/AiTravelAssistantModal';
 import { AdminPanel } from './components/AdminPanel';
+import { QuickProductUploadModal } from './components/QuickProductUploadModal';
 import { TravelQuiz } from './components/TravelQuiz';
 import { FloatingChatWidget } from './components/FloatingChatWidget';
 import { Footer } from './components/Footer';
@@ -98,6 +99,9 @@ export default function App() {
   const [consultationTargetProduct, setConsultationTargetProduct] = useState<Product | null>(null);
   const [isAiAssistantOpen, setIsAiAssistantOpen] = useState(false);
   const [isAdminOpen, setIsAdminOpen] = useState(false);
+  const [isQuickUploadOpen, setIsQuickUploadOpen] = useState(false);
+  const [quickEditProduct, setQuickEditProduct] = useState<Product | null>(null);
+  const [isDirectEditMode, setIsDirectEditMode] = useState(false);
   const [isQuizOpen, setIsQuizOpen] = useState(false);
   const [isTravelInfoOpen, setIsTravelInfoOpen] = useState(false);
   const [travelInfoTab, setTravelInfoTab] = useState<TravelInfoTab>('course');
@@ -328,6 +332,42 @@ export default function App() {
     setStoredJson(PRODUCTS_CACHE_KEY, INITIAL_PRODUCTS);
   };
 
+  // Quick Action Handlers
+  const handleQuickSaveProduct = async (productData: Partial<Product>) => {
+    if (productData.id) {
+      await handleUpdateProduct(productData.id, productData);
+    } else {
+      await handleAddProduct(productData as any);
+    }
+  };
+
+  const handleDirectPhotoChange = async (productId: string, newPhotoUrl: string) => {
+    const prod = products.find(p => p.id === productId);
+    const existingAdditional = prod?.additionalImages || [];
+    await handleUpdateProduct(productId, {
+      imageUrl: newPhotoUrl,
+      additionalImages: [newPhotoUrl, ...existingAdditional]
+    });
+    alert('📸 상품 대표 사진이 즉시 변경되었습니다!');
+  };
+
+  const handleClearAllProducts = async () => {
+    if (!confirm('정말로 모든 상품을 삭제하시겠습니까? (삭제 후 새 상품을 자유롭게 등록하실 수 있습니다)')) return;
+    try {
+      await fetch('/api/products/import', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ items: [], replaceExisting: true })
+      });
+    } catch (e) {
+      console.warn('Clear all API error:', e);
+    }
+    setProducts([]);
+    await saveProductsToIndexedDB([]);
+    setStoredJson(PRODUCTS_CACHE_KEY, []);
+    alert('🗑️ 모든 상품이 삭제되었습니다. 이제 [+ 10초 초간단 새 상품 올리기]로 상품을 등록해 보세요!');
+  };
+
   const handleImportProducts = async (items: any[], replace: boolean) => {
     try {
       const res = await fetch('/api/products/import', {
@@ -511,7 +551,73 @@ export default function App() {
           />
 
           {/* Main Content Product Display Grid */}
-          <main id="products-section" className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full space-y-12">
+          <main id="products-section" className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full space-y-8">
+            {/* Quick Admin Bar (초간단 상품 관리 & 사진 교체 툴바) */}
+            <div className="bg-gradient-to-r from-slate-900 via-teal-950 to-slate-900 rounded-2xl p-4 sm:p-5 text-white border border-teal-500/30 shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-teal-500/20 border border-teal-400/40 flex items-center justify-center shrink-0">
+                  <Sparkles className="w-5 h-5 text-amber-300" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-sm sm:text-base font-black text-white">
+                      ⚡ 신차오 초간단 상품 & 사진 관리자
+                    </h3>
+                    <span className="text-[10px] font-extrabold bg-teal-500/30 text-teal-300 px-2 py-0.5 rounded-full border border-teal-400/30">
+                      대표자 전용
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-300 mt-0.5">
+                    버튼 한 번으로 사진을 즉시 바꾸거나 새 상품을 10초 만에 올릴 수 있습니다.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setQuickEditProduct(null);
+                    setIsQuickUploadOpen(true);
+                  }}
+                  className="px-4 py-2.5 rounded-xl bg-teal-500 hover:bg-teal-400 text-slate-950 font-black text-xs flex items-center gap-1.5 shadow-lg shadow-teal-500/20 transition-all hover:scale-105 active:scale-95 cursor-pointer"
+                >
+                  <span>✨ 10초 초간단 새 상품 올리기 (+)</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setIsDirectEditMode(!isDirectEditMode)}
+                  className={`px-3.5 py-2.5 rounded-xl font-extrabold text-xs flex items-center gap-1.5 transition-all cursor-pointer border ${
+                    isDirectEditMode
+                      ? 'bg-amber-400 text-slate-950 border-amber-300 shadow-md shadow-amber-400/30'
+                      : 'bg-white/10 hover:bg-white/20 text-white border-white/20'
+                  }`}
+                  title="상품 카드 위에 '사진 즉시교체 / 삭제' 버튼을 표시합니다"
+                >
+                  <span>{isDirectEditMode ? '📸 카드 직접수정 모드 [ON]' : '📸 카드 직접수정 모드 [OFF]'}</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleClearAllProducts}
+                  className="px-3 py-2.5 rounded-xl bg-rose-500/20 hover:bg-rose-600 text-rose-300 hover:text-white font-bold text-xs flex items-center gap-1 transition-all border border-rose-500/30 cursor-pointer"
+                  title="등록된 모든 상품을 삭제하고 빈 상태로 만듭니다"
+                >
+                  <span>🗑️ 전체 상품 싹 비우기</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleResetProducts}
+                  className="px-3 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs flex items-center gap-1 transition-all border border-slate-700 cursor-pointer"
+                  title="초기 샘플 12개로 복원"
+                >
+                  <span>🔄 원본 샘플 복구</span>
+                </button>
+              </div>
+            </div>
+
             {/* Active Filter Title Banner */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
               <div>
@@ -524,7 +630,13 @@ export default function App() {
                   </span>
                 </h2>
                 <p className="text-xs font-medium text-slate-500 mt-0.5">
-                  엄선된 베트남 단독 전용 차량 및 100% 한국인 전문 가이드 결합 상품
+                  {isDirectEditMode ? (
+                    <span className="text-amber-600 font-bold">
+                      ⚠️ [카드 직접수정 모드 활성화 중]: 각 상품 카드의 [사진 즉시교체] 또는 [수정/삭제] 버튼을 눌러보세요!
+                    </span>
+                  ) : (
+                    '엄선된 베트남 단독 전용 차량 및 100% 한국인 전문 가이드 결합 상품'
+                  )}
                 </p>
               </div>
 
@@ -545,25 +657,31 @@ export default function App() {
 
             {/* Product Cards Grid */}
             {filteredProducts.length === 0 ? (
-              <div className="py-20 text-center bg-slate-50 rounded-3xl border border-dashed border-slate-200 space-y-3">
+              <div className="py-20 text-center bg-slate-50 rounded-3xl border border-dashed border-slate-200 space-y-4">
                 <SearchX className="w-12 h-12 text-slate-400 mx-auto" />
                 <h3 className="text-base font-extrabold text-slate-800">
-                  선택한 필터 조건에 맞는 여행 상품이 없습니다.
+                  등록되어 있는 여행 상품이 없습니다.
                 </h3>
                 <p className="text-xs text-slate-500 max-w-sm mx-auto">
-                  다른 지역이나 카테고리를 선택하시거나, 실시간 카톡 맞춤 견적 신청으로 나만의 여행을 만드실 수 있습니다.
+                  사장님만의 멋진 사진과 상품 정보를 지금 바로 간편하게 올려보세요!
                 </p>
-                <button
-                  onClick={() => {
-                    setActiveCategory('전체');
-                    setActiveRegion('전체');
-                    setActiveCity('전체');
-                    setSearchTerm('');
-                  }}
-                  className="px-4 py-2 bg-teal-700 text-white rounded-xl font-bold text-xs shadow-sm hover:bg-teal-800"
-                >
-                  전체 상품 보기
-                </button>
+                <div className="flex items-center justify-center gap-3">
+                  <button
+                    onClick={() => {
+                      setQuickEditProduct(null);
+                      setIsQuickUploadOpen(true);
+                    }}
+                    className="px-5 py-3 bg-teal-700 hover:bg-teal-800 text-white rounded-2xl font-black text-xs shadow-md shadow-teal-700/20"
+                  >
+                    ✨ 10초 초간단 새 상품 올리기
+                  </button>
+                  <button
+                    onClick={handleResetProducts}
+                    className="px-4 py-3 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-2xl font-bold text-xs"
+                  >
+                    🔄 기본 샘플 불러오기
+                  </button>
+                </div>
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -577,6 +695,13 @@ export default function App() {
                       setIsConsultationOpen(true);
                     }}
                     exchangeRates={exchangeRates}
+                    isAdminMode={isDirectEditMode}
+                    onQuickEdit={(p) => {
+                      setQuickEditProduct(p);
+                      setIsQuickUploadOpen(true);
+                    }}
+                    onQuickDelete={handleDeleteProduct}
+                    onQuickPhotoChange={handleDirectPhotoChange}
                   />
                 ))}
               </div>
@@ -669,6 +794,18 @@ export default function App() {
           setConsultationTargetProduct(null);
         }}
         onSubmitInquiry={handleSubmitInquiry}
+      />
+
+      {/* 10-Second Quick Product Upload / Edit Modal */}
+      <QuickProductUploadModal
+        isOpen={isQuickUploadOpen}
+        onClose={() => {
+          setIsQuickUploadOpen(false);
+          setQuickEditProduct(null);
+        }}
+        onSaveProduct={handleQuickSaveProduct}
+        initialProduct={quickEditProduct}
+        exchangeRates={exchangeRates}
       />
 
       {/* Admin Panel (Edit products, upload & download CSV/JSON) */}
