@@ -188,7 +188,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     setSelectedPhotoIndexes([]);
   };
 
-  // Helper function to process and compress user uploaded image file with high fidelity Airbnb standards
+  // Helper function to process and compress user uploaded image file with high fidelity Airbnb standards (1440px max, 0.82 high quality)
   const compressAndConvertImage = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -198,7 +198,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
           const canvas = document.createElement('canvas');
           let width = img.width;
           let height = img.height;
-          const MAX_SIZE = 720;
+          const MAX_SIZE = 1440; // Airbnb standard resolution
 
           if (width > height) {
             if (width > MAX_SIZE) {
@@ -217,7 +217,8 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
           const ctx = canvas.getContext('2d');
           ctx?.drawImage(img, 0, 0, width, height);
 
-          const dataUrl = canvas.toDataURL('image/jpeg', 0.58);
+          // Airbnb clear JPEG quality
+          const dataUrl = canvas.toDataURL('image/jpeg', 0.82);
           resolve(dataUrl);
         };
         img.onerror = () => reject(new Error('이미지 로드 실패'));
@@ -228,7 +229,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     });
   };
 
-  // Batch processor for multiple files (supports 100+ files smoothly)
+  // Batch processor for multiple files (supports 100+ files smoothly with permanent disk + memory retention)
   const processBatchFiles = async (fileList: File[]) => {
     if (fileList.length === 0) return;
     const total = fileList.length;
@@ -282,7 +283,6 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
     setUploadProgressStatus(null);
     setUploadProgressPercent(0);
-    alert(`🎉 ${finalUrls.length}장의 고화질 사진이 Airbnb 규격으로 성공적으로 서버 및 브라우저에 등록되었습니다! (현재 등록 총 ${subImagesList.length + finalUrls.length}장)`);
   };
 
   const handleMainImageFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
