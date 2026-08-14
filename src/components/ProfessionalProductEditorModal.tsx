@@ -814,14 +814,10 @@ export const ProfessionalProductEditorModal: React.FC<ProfessionalProductEditorM
                     </span>
                     <button
                       type="button"
-                      onClick={() => {
-                        if (confirm('모든 사진을 삭제하시겠습니까?')) {
-                          setImages([]);
-                        }
-                      }}
-                      className="text-xs text-rose-600 hover:underline font-bold cursor-pointer"
+                      onClick={() => setImages([])}
+                      className="px-3 py-1 bg-rose-50 hover:bg-rose-100 text-xs text-rose-600 rounded-lg border border-rose-200 font-bold cursor-pointer transition-colors"
                     >
-                      전체 사진 비우기
+                      🗑️ 모든 사진 싹 비우기 (0장)
                     </button>
                   </div>
 

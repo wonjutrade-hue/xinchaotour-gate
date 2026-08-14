@@ -24,7 +24,7 @@ function loadStoredProducts(): Product[] {
     if (fs.existsSync(PRODUCTS_FILE_PATH)) {
       const fileData = fs.readFileSync(PRODUCTS_FILE_PATH, 'utf-8');
       const parsed = JSON.parse(fileData);
-      if (Array.isArray(parsed) && parsed.length > 0) {
+      if (Array.isArray(parsed)) {
         console.log(`[Server] Loaded ${parsed.length} products from root stored_products.json`);
         return parsed;
       }
@@ -35,7 +35,7 @@ function loadStoredProducts(): Product[] {
       if (fs.existsSync(PRODUCTS_BACKUP_PATH)) {
         const backupData = fs.readFileSync(PRODUCTS_BACKUP_PATH, 'utf-8');
         const parsedBackup = JSON.parse(backupData);
-        if (Array.isArray(parsedBackup) && parsedBackup.length > 0) {
+        if (Array.isArray(parsedBackup)) {
           console.log(`[Server] Restored ${parsedBackup.length} products from backup`);
           return parsedBackup;
         }

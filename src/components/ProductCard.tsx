@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { Product } from '../types';
 import { Star, MapPin, Calendar, CheckCircle2, ArrowRight, MessageCircle, Edit3, Trash2, Camera } from 'lucide-react';
 import { ExchangeRates, calculateVNDFromKRW, calculateKRWFromVND, calculateUSDFromKRW, formatUSD } from '../lib/exchangeRate';
@@ -28,6 +28,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   onQuickPhotoChange,
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [confirmDelete, setConfirmDelete] = useState(false);
   const displaySubtitle = product.subTitle || (product as any).subtitle || product.description || '';
   const subImages = product.additionalImages || (product as any).galleryImages || (product as any).images || [];
   const subImagesCount = subImages.filter(Boolean).length;
@@ -176,18 +177,29 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                 </button>
               )}
               {onQuickDelete && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (confirm(`'${product.title}' 상품을 정말 삭제하시겠습니까?`)) {
-                      onQuickDelete(product.id);
-                    }
-                  }}
-                  className="p-1.5 rounded-lg bg-slate-800 hover:bg-rose-600 text-white text-[11px] font-bold flex items-center justify-center shadow-xs transition-colors cursor-pointer"
-                  title="상품 삭제"
-                >
-                  <Trash2 className="w-3.5 h-3.5" />
-                </button>
+                confirmDelete ? (
+                  <button
+                    type="button"
+                    onClick={() => onQuickDelete(product.id)}
+                    className="px-2 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-[11px] font-black flex items-center gap-1 shadow-md animate-pulse cursor-pointer"
+                    title="클릭 시 즉시 삭제"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                    <span>정말 삭제?</span>
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setConfirmDelete(true);
+                      setTimeout(() => setConfirmDelete(false), 4000);
+                    }}
+                    className="p-1.5 rounded-lg bg-slate-800 hover:bg-rose-600 text-white text-[11px] font-bold flex items-center justify-center shadow-xs transition-colors cursor-pointer"
+                    title="상품 삭제"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
+                )
               )}
             </div>
           </div>

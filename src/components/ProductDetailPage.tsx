@@ -184,15 +184,14 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
             {onDeleteProduct && (
               <button
                 onClick={() => {
-                  if (confirm(`'${product.title}' 상품을 정말 삭제하시겠습니까?`)) {
-                    onDeleteProduct(product.id);
-                    onBackToList();
-                  }
+                  onDeleteProduct(product.id);
+                  onBackToList();
                 }}
-                className="p-2 rounded-xl bg-rose-50 hover:bg-rose-600 text-rose-600 hover:text-white font-bold text-xs flex items-center gap-1 transition-colors cursor-pointer border border-rose-200"
+                className="px-3 py-2 rounded-xl bg-rose-50 hover:bg-rose-600 text-rose-600 hover:text-white font-bold text-xs flex items-center gap-1 transition-colors cursor-pointer border border-rose-200"
                 title="상품 삭제"
               >
                 <Trash2 className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">삭제</span>
               </button>
             )}
 

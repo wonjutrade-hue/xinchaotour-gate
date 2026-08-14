@@ -167,32 +167,25 @@ export default function App() {
     try {
       // First load from fast local IndexedDB
       const localDbProducts = await loadProductsFromIndexedDB();
-      if (localDbProducts && localDbProducts.length > 0) {
+      if (localDbProducts && Array.isArray(localDbProducts) && localDbProducts.length > 0) {
         setProducts(localDbProducts);
       }
 
       const res = await fetch('/api/products');
       const data = await res.json();
-      if (data.success && Array.isArray(data.products) && data.products.length > 0) {
+      if (data.success && Array.isArray(data.products)) {
         setProducts(data.products);
         await saveProductsToIndexedDB(data.products);
         setStoredJson(PRODUCTS_CACHE_KEY, data.products);
-      } else if (localDbProducts && localDbProducts.length > 0) {
-        // If server had zero/reset data but client has saved products in IndexedDB, re-sync to server
-        await fetch('/api/products/import', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ items: localDbProducts, replaceExisting: true })
-        });
       }
     } catch (err) {
       console.warn('API fetch failed, falling back to IndexedDB/cached products');
       const localDbProducts = await loadProductsFromIndexedDB();
-      if (localDbProducts && localDbProducts.length > 0) {
+      if (localDbProducts && Array.isArray(localDbProducts)) {
         setProducts(localDbProducts);
       } else {
         const cached = getStoredJson<Product[]>(PRODUCTS_CACHE_KEY, []);
-        if (cached && Array.isArray(cached) && cached.length > 0) {
+        if (cached && Array.isArray(cached)) {
           setProducts(cached);
         }
       }
@@ -355,7 +348,6 @@ export default function App() {
   };
 
   const handleClearAllProducts = async () => {
-    if (!confirm('정말로 모든 상품을 삭제하시겠습니까? (삭제 후 새 상품을 자유롭게 등록하실 수 있습니다)')) return;
     try {
       await fetch('/api/products/import', {
         method: 'POST',
@@ -368,7 +360,6 @@ export default function App() {
     setProducts([]);
     await saveProductsToIndexedDB([]);
     setStoredJson(PRODUCTS_CACHE_KEY, []);
-    alert('🗑️ 모든 상품이 삭제되었습니다. 이제 [+ 10초 초간단 새 상품 올리기]로 상품을 등록해 보세요!');
   };
 
   const handleImportProducts = async (items: any[], replace: boolean) => {
@@ -855,6 +846,7 @@ export default function App() {
         onAddProduct={handleAddProduct}
         onUpdateProduct={handleUpdateProduct}
         onDeleteProduct={handleDeleteProduct}
+        onClearAllProducts={handleClearAllProducts}
         onResetProducts={handleResetProducts}
         onImportProducts={handleImportProducts}
         onUpdateInquiryStatus={handleUpdateInquiryStatus}
