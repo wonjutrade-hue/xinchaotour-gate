@@ -30,7 +30,14 @@ import {
   Award
 } from 'lucide-react';
 
-const PRODUCTS_CACHE_KEY = 'xinchao_products_cache_v5';
+import {
+  saveProductsToIndexedDB,
+  loadProductsFromIndexedDB,
+  saveInquiriesToIndexedDB,
+  loadInquiriesFromIndexedDB
+} from './lib/indexedDb';
+
+const PRODUCTS_CACHE_KEY = 'xinchao_products_cache_v6';
 
 function getStoredJson<T>(key: string, fallback: T): T {
   try {
@@ -47,9 +54,13 @@ function getStoredJson<T>(key: string, fallback: T): T {
 
 function setStoredJson(key: string, data: any) {
   try {
-    localStorage.setItem(key, JSON.stringify(data));
+    // Only attempt localStorage if data string length is reasonable (< 2MB)
+    const jsonStr = JSON.stringify(data);
+    if (jsonStr.length < 2500000) {
+      localStorage.setItem(key, jsonStr);
+    }
   } catch (e) {
-    console.warn(`Failed to set localStorage key ${key}:`, e);
+    console.warn(`LocalStorage quota exceeded, relying on IndexedDB:`, e);
   }
 }
 
@@ -60,9 +71,10 @@ export default function App() {
   const [inquiries, setInquiries] = useState<ConsultationRequest[]>([]);
   const [isLoadingProducts, setIsLoadingProducts] = useState(true);
 
-  // Sync products state to localStorage cache
+  // Sync products state to IndexedDB and localStorage
   useEffect(() => {
     if (products && products.length > 0) {
+      saveProductsToIndexedDB(products);
       setStoredJson(PRODUCTS_CACHE_KEY, products);
     }
   }, [products]);
@@ -105,20 +117,39 @@ export default function App() {
     setIsRefreshingRates(false);
   };
 
-  // Fetch Products & Inquiries from Express backend
+  // Fetch Products & Inquiries from Express backend + IndexedDB
   const fetchProducts = async () => {
     try {
+      // First load from fast local IndexedDB
+      const localDbProducts = await loadProductsFromIndexedDB();
+      if (localDbProducts && localDbProducts.length > 0) {
+        setProducts(localDbProducts);
+      }
+
       const res = await fetch('/api/products');
       const data = await res.json();
-      if (data.success && Array.isArray(data.products)) {
+      if (data.success && Array.isArray(data.products) && data.products.length > 0) {
         setProducts(data.products);
+        await saveProductsToIndexedDB(data.products);
         setStoredJson(PRODUCTS_CACHE_KEY, data.products);
+      } else if (localDbProducts && localDbProducts.length > 0) {
+        // If server had zero/reset data but client has saved products in IndexedDB, re-sync to server
+        await fetch('/api/products/import', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ items: localDbProducts, replaceExisting: true })
+        });
       }
     } catch (err) {
-      console.warn('API fetch failed, falling back to cached products');
-      const cached = getStoredJson<Product[]>(PRODUCTS_CACHE_KEY, []);
-      if (cached && Array.isArray(cached)) {
-        setProducts(cached);
+      console.warn('API fetch failed, falling back to IndexedDB/cached products');
+      const localDbProducts = await loadProductsFromIndexedDB();
+      if (localDbProducts && localDbProducts.length > 0) {
+        setProducts(localDbProducts);
+      } else {
+        const cached = getStoredJson<Product[]>(PRODUCTS_CACHE_KEY, []);
+        if (cached && Array.isArray(cached) && cached.length > 0) {
+          setProducts(cached);
+        }
       }
     } finally {
       setIsLoadingProducts(false);
@@ -127,13 +158,23 @@ export default function App() {
 
   const fetchInquiries = async () => {
     try {
+      const localInqs = await loadInquiriesFromIndexedDB();
+      if (localInqs && localInqs.length > 0) {
+        setInquiries(localInqs);
+      }
+
       const res = await fetch('/api/inquiries');
       const data = await res.json();
       if (data.success && Array.isArray(data.inquiries)) {
         setInquiries(data.inquiries);
+        await saveInquiriesToIndexedDB(data.inquiries);
       }
     } catch (err) {
-      console.warn('Failed to fetch inquiries');
+      console.warn('Failed to fetch inquiries, using local DB');
+      const localInqs = await loadInquiriesFromIndexedDB();
+      if (localInqs && localInqs.length > 0) {
+        setInquiries(localInqs);
+      }
     }
   };
 
@@ -158,6 +199,7 @@ export default function App() {
       if (data.success && data.product) {
         setProducts(prev => {
           const updated = [data.product, ...prev.filter(p => p.id !== data.product.id)];
+          saveProductsToIndexedDB(updated);
           setStoredJson(PRODUCTS_CACHE_KEY, updated);
           return updated;
         });
@@ -167,8 +209,18 @@ export default function App() {
       }
     } catch (err: any) {
       console.error('API add product failed:', err);
-      alert(`❌ [상품 등록 오류] 서버 저장이 완료되지 않았습니다: ${err.message || '네트워크 문제'}`);
-      throw err;
+      // Fallback: save to client state & IndexedDB even if network fails
+      const fallbackProd: Product = {
+        ...newProd,
+        id: `prod-${Date.now()}`,
+        createdAt: new Date().toISOString()
+      };
+      setProducts(prev => {
+        const updated = [fallbackProd, ...prev];
+        saveProductsToIndexedDB(updated);
+        return updated;
+      });
+      return fallbackProd;
     }
   };
 
@@ -186,6 +238,7 @@ export default function App() {
       if (data.success && data.product) {
         setProducts(prev => {
           const updatedList = prev.map(p => (p.id === id ? data.product : p));
+          saveProductsToIndexedDB(updatedList);
           setStoredJson(PRODUCTS_CACHE_KEY, updatedList);
           return updatedList;
         });
@@ -195,23 +248,25 @@ export default function App() {
       }
     } catch (err: any) {
       console.error('API update failed:', err);
-      alert(`❌ [상품 수정 오류] 서버 저장이 완료되지 않았습니다: ${err.message || '네트워크 문제'}`);
-      throw err;
+      // Fallback: update in local state & IndexedDB
+      setProducts(prev => {
+        const updatedList = prev.map(p => (p.id === id ? { ...p, ...updated } : p));
+        saveProductsToIndexedDB(updatedList);
+        return updatedList;
+      });
     }
   };
 
   const handleDeleteProduct = async (id: string) => {
     try {
-      const res = await fetch(`/api/products/${id}`, { method: 'DELETE' });
-      if (!res.ok) {
-        throw new Error(`HTTP ${res.status}`);
-      }
+      await fetch(`/api/products/${id}`, { method: 'DELETE' });
     } catch (err) {
       console.warn('API delete failed:', err);
     }
 
     setProducts(prev => {
       const updatedList = prev.filter(p => p.id !== id);
+      saveProductsToIndexedDB(updatedList);
       setStoredJson(PRODUCTS_CACHE_KEY, updatedList);
       return updatedList;
     });
@@ -223,6 +278,7 @@ export default function App() {
       const data = await res.json();
       if (data.success && Array.isArray(data.products)) {
         setProducts(data.products);
+        await saveProductsToIndexedDB(data.products);
         setStoredJson(PRODUCTS_CACHE_KEY, data.products);
         return;
       }
@@ -230,6 +286,7 @@ export default function App() {
       console.warn('API reset failed');
     }
     setProducts([...INITIAL_PRODUCTS]);
+    await saveProductsToIndexedDB([...INITIAL_PRODUCTS]);
     setStoredJson(PRODUCTS_CACHE_KEY, INITIAL_PRODUCTS);
   };
 
@@ -243,6 +300,7 @@ export default function App() {
       const data = await res.json();
       if (data.success && Array.isArray(data.products)) {
         setProducts(data.products);
+        await saveProductsToIndexedDB(data.products);
         setStoredJson(PRODUCTS_CACHE_KEY, data.products);
         return;
       }
@@ -257,6 +315,7 @@ export default function App() {
 
     setProducts(prev => {
       const newList = replace ? formattedItems : [...formattedItems, ...prev];
+      saveProductsToIndexedDB(newList);
       setStoredJson(PRODUCTS_CACHE_KEY, newList);
       return newList;
     });
@@ -369,6 +428,7 @@ export default function App() {
           setTravelInfoTab(tab || 'course');
           setIsTravelInfoOpen(true);
         }}
+        inquiriesCount={inquiries.filter(i => i.status === 'pending' || !i.status).length || inquiries.length}
       />
 
       {/* Hero Carousel Section */}

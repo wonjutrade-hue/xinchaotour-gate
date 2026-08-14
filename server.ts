@@ -8,19 +8,41 @@ import { Product, ConsultationRequest } from './src/types.js';
 
 // In-memory or persisted store for products and inquiries
 const PRODUCTS_FILE_PATH = path.join(process.cwd(), 'stored_products.json');
+const PRODUCTS_BACKUP_PATH = path.join(process.cwd(), 'stored_products.backup.json');
+const UPLOADS_DIR = path.join(process.cwd(), 'public', 'uploads');
+
+if (!fs.existsSync(UPLOADS_DIR)) {
+  try {
+    fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+  } catch (e) {
+    console.warn('Could not create uploads directory:', e);
+  }
+}
 
 function loadStoredProducts(): Product[] {
   try {
     if (fs.existsSync(PRODUCTS_FILE_PATH)) {
       const fileData = fs.readFileSync(PRODUCTS_FILE_PATH, 'utf-8');
       const parsed = JSON.parse(fileData);
-      if (Array.isArray(parsed)) {
+      if (Array.isArray(parsed) && parsed.length > 0) {
         console.log(`[Server] Loaded ${parsed.length} products from root stored_products.json`);
         return parsed;
       }
     }
   } catch (err) {
-    console.warn('[Server] Failed to read stored_products.json:', err);
+    console.warn('[Server] Failed to read stored_products.json, checking backup:', err);
+    try {
+      if (fs.existsSync(PRODUCTS_BACKUP_PATH)) {
+        const backupData = fs.readFileSync(PRODUCTS_BACKUP_PATH, 'utf-8');
+        const parsedBackup = JSON.parse(backupData);
+        if (Array.isArray(parsedBackup) && parsedBackup.length > 0) {
+          console.log(`[Server] Restored ${parsedBackup.length} products from backup`);
+          return parsedBackup;
+        }
+      }
+    } catch (bErr) {
+      console.warn('[Server] Backup read also failed:', bErr);
+    }
   }
   // Only initialize with INITIAL_PRODUCTS if stored_products.json does not exist at all
   saveStoredProducts(INITIAL_PRODUCTS);
@@ -31,9 +53,9 @@ function saveStoredProducts(prods: Product[]) {
   try {
     const dataStr = JSON.stringify(prods, null, 2);
     // Write ONLY to root stored_products.json (outside src/ directory)
-    // so Vite watcher is never triggered on product updates or deletions
     fs.writeFileSync(PRODUCTS_FILE_PATH, dataStr, 'utf-8');
-    console.log(`[Server] Persisted ${prods.length} products to stored_products.json`);
+    fs.writeFileSync(PRODUCTS_BACKUP_PATH, dataStr, 'utf-8');
+    console.log(`[Server] Persisted ${prods.length} products to stored_products.json & backup`);
   } catch (err) {
     console.error('[Server] Failed to save products to stored_products.json:', err);
   }
@@ -120,9 +142,60 @@ async function startServer() {
   app.use(express.json({ limit: '100mb' }));
   app.use(express.urlencoded({ limit: '100mb', extended: true }));
 
+  // Serve static uploaded images
+  app.use('/uploads', express.static(UPLOADS_DIR));
+
   // API Routes
 
-  // 0. Live Exchange Rates
+  // 0. Batch Upload Images (Saves Base64 images directly to disk as JPG files)
+  app.post('/api/upload-images', (req: Request, res: Response) => {
+    try {
+      const { images } = req.body; // array of { name?: string, dataUrl: string } or raw dataUrls
+      if (!Array.isArray(images) || images.length === 0) {
+        return res.status(400).json({ success: false, error: 'No images provided' });
+      }
+
+      const savedUrls: string[] = [];
+      const timestamp = Date.now();
+
+      images.forEach((item: any, idx: number) => {
+        const rawData = typeof item === 'string' ? item : item.dataUrl;
+        if (!rawData) return;
+
+        // If it's already an external URL or existing /uploads URL, keep as is
+        if (rawData.startsWith('http://') || rawData.startsWith('https://') || rawData.startsWith('/uploads/')) {
+          savedUrls.push(rawData);
+          return;
+        }
+
+        // Base64 format: data:image/jpeg;base64,...
+        const matches = rawData.match(/^data:image\/([a-zA-Z+]+);base64,(.+)$/);
+        if (!matches || matches.length !== 3) {
+          savedUrls.push(rawData);
+          return;
+        }
+
+        const ext = matches[1].replace('jpeg', 'jpg');
+        const buffer = Buffer.from(matches[2], 'base64');
+        const filename = `photo_${timestamp}_${idx}_${Math.random().toString(36).substring(2, 7)}.${ext}`;
+        const targetPath = path.join(UPLOADS_DIR, filename);
+
+        fs.writeFileSync(targetPath, buffer);
+        savedUrls.push(`/uploads/${filename}`);
+      });
+
+      res.json({
+        success: true,
+        count: savedUrls.length,
+        urls: savedUrls
+      });
+    } catch (err: any) {
+      console.error('[Server] Failed to upload images:', err);
+      res.status(500).json({ success: false, error: err.message });
+    }
+  });
+
+  // 0-B. Live Exchange Rates
   app.get('/api/exchange-rates', async (req: Request, res: Response) => {
     const rates = await fetchLiveExchangeRates();
     const nowStr = new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });

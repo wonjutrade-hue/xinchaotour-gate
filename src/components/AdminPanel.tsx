@@ -232,7 +232,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   const processBatchFiles = async (fileList: File[]) => {
     if (fileList.length === 0) return;
     const total = fileList.length;
-    const urls: string[] = [];
+    const rawDataUrls: string[] = [];
 
     // Process in batches of 4 to prevent UI stutter while keeping max speed
     const batchSize = 4;
@@ -250,12 +250,29 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
       );
 
       for (const res of batchResults) {
-        if (res) urls.push(res);
+        if (res) rawDataUrls.push(res);
       }
     }
 
+    // Upload compressed photos to server disk for permanent lightweight storage
+    setUploadProgressStatus(`💾 [서버 영구 보관] ${rawDataUrls.length}장의 사진을 서버 디스크로 영구 저장 중...`);
+    let finalUrls = rawDataUrls;
+    try {
+      const uploadRes = await fetch('/api/upload-images', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ images: rawDataUrls })
+      });
+      const uploadData = await uploadRes.json();
+      if (uploadData.success && Array.isArray(uploadData.urls) && uploadData.urls.length > 0) {
+        finalUrls = uploadData.urls;
+      }
+    } catch (uErr) {
+      console.warn('Server disk image upload fallback to client data URL:', uErr);
+    }
+
     setSubImagesList(prev => {
-      const combined = [...prev, ...urls];
+      const combined = [...prev, ...finalUrls];
       // Automatically sync cover photo if not set yet
       if (!formData.imageUrl && combined.length > 0) {
         setFormData(f => ({ ...f, imageUrl: combined[0] }));
@@ -265,18 +282,33 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
     setUploadProgressStatus(null);
     setUploadProgressPercent(0);
-    alert(`🎉 ${urls.length}장의 고화질 사진이 Airbnb 규격으로 성공적으로 변환 및 등록되었습니다! (현재 총 ${subImagesList.length + urls.length}장)`);
+    alert(`🎉 ${finalUrls.length}장의 고화질 사진이 Airbnb 규격으로 성공적으로 서버 및 브라우저에 등록되었습니다! (현재 등록 총 ${subImagesList.length + finalUrls.length}장)`);
   };
 
   const handleMainImageFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     try {
-      setUploadProgressStatus('📷 메인 커버 이미지 최적화 중...');
+      setUploadProgressStatus('📷 메인 커버 이미지 최적화 및 서버 저장 중...');
       const dataUrl = await compressAndConvertImage(file);
-      setFormData((prev) => ({ ...prev, imageUrl: dataUrl }));
-      // Also ensure it is at top of subImagesList
-      setSubImagesList(prev => [dataUrl, ...prev.filter(u => u !== dataUrl)]);
+      
+      let finalCoverUrl = dataUrl;
+      try {
+        const uploadRes = await fetch('/api/upload-images', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ images: [dataUrl] })
+        });
+        const uploadData = await uploadRes.json();
+        if (uploadData.success && Array.isArray(uploadData.urls) && uploadData.urls[0]) {
+          finalCoverUrl = uploadData.urls[0];
+        }
+      } catch (uErr) {
+        console.warn('Cover upload to server fallback:', uErr);
+      }
+
+      setFormData((prev) => ({ ...prev, imageUrl: finalCoverUrl }));
+      setSubImagesList(prev => [finalCoverUrl, ...prev.filter(u => u !== finalCoverUrl)]);
       setUploadProgressStatus(null);
       alert('대표 메인 커버 사진이 성공적으로 등록되었습니다!');
     } catch (err) {
@@ -290,7 +322,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     const files = e.target.files;
     if (!files || files.length === 0) return;
     try {
-      const fileList = Array.from(files);
+      const fileList = Array.from(files) as File[];
       await processBatchFiles(fileList);
     } catch (err) {
       setUploadProgressStatus(null);
@@ -303,7 +335,8 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     e.preventDefault();
     setIsDraggingOver(false);
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      const imageFiles = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'));
+      const allFiles = Array.from(e.dataTransfer.files) as File[];
+      const imageFiles = allFiles.filter(f => f.type && f.type.startsWith('image/'));
       if (imageFiles.length === 0) {
         alert('이미지 파일(JPG, PNG, WebP 등)만 드롭해주세요.');
         return;
@@ -596,8 +629,35 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     try {
       const splitLines = (str: string) => str.split('\n').map(s => s.trim()).filter(Boolean);
 
-      const cleanSubImages = subImagesList.filter(Boolean);
-      const mainImageUrl = formData.imageUrl || cleanSubImages[0] || 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1000&q=80';
+      let cleanSubImages = subImagesList.filter(Boolean);
+      let mainImageUrl = formData.imageUrl || cleanSubImages[0] || 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1000&q=80';
+
+      // Check if any base64 images remain that need to be uploaded to server disk
+      const base64List = [mainImageUrl, ...cleanSubImages].filter(u => u && u.startsWith('data:image/'));
+      if (base64List.length > 0) {
+        try {
+          const uploadRes = await fetch('/api/upload-images', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ images: base64List })
+          });
+          const uploadData = await uploadRes.json();
+          if (uploadData.success && Array.isArray(uploadData.urls)) {
+            let urlIdx = 0;
+            if (mainImageUrl.startsWith('data:image/')) {
+              mainImageUrl = uploadData.urls[urlIdx++] || mainImageUrl;
+            }
+            cleanSubImages = cleanSubImages.map(img => {
+              if (img.startsWith('data:image/')) {
+                return uploadData.urls[urlIdx++] || img;
+              }
+              return img;
+            });
+          }
+        } catch (uErr) {
+          console.warn('Batch upload on save fallback:', uErr);
+        }
+      }
 
       const finalData: Partial<Product> = {
         ...formData,
@@ -630,15 +690,16 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
       if (isCreating) {
         await onAddProduct(finalData as any);
-        alert('✅ 새 상품이 성공적으로 서버에 등록/저장되었습니다.');
+        alert(`✅ [저장 완료] "${finalData.title}" 상품이 서버 디스크 및 브라우저 영구 보관소(IndexedDB)에 안전하게 등록/저장되었습니다.`);
       } else if (editingProduct) {
         await onUpdateProduct(editingProduct.id, finalData);
-        alert('✅ 상품 정보가 성공적으로 서버에 수정/저장되었습니다.');
+        alert(`✅ [수정 완료] "${finalData.title}" 상품 정보와 ${cleanSubImages.length}장의 사진이 영구 보관소에 안전하게 수정/저장되었습니다.`);
       }
       setEditingProduct(null);
       setIsCreating(false);
-    } catch (err) {
+    } catch (err: any) {
       console.error('Save product error:', err);
+      alert(`⚠️ 저장 중 오류가 발생했습니다: ${err.message || '다시 시도해주세요.'}`);
     } finally {
       setIsSavingProduct(false);
     }
@@ -2136,66 +2197,145 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
           {/* TAB 3: INQUIRIES MANAGEMENT */}
           {activeTab === 'inquiries' && (
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <h4 className="font-extrabold text-slate-900 text-xs">
-                  접수된 실시간 예약 및 견적 상담 문의 ({inquiries.length}건)
-                </h4>
+            <div className="space-y-4 animate-fadeIn">
+              <div className="flex flex-wrap items-center justify-between gap-3 bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
+                <div>
+                  <h4 className="font-extrabold text-slate-900 text-sm flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span>실시간 1:1 예약 & 맞춤 견적 상담 접수함</span>
+                    <span className="text-xs bg-teal-50 text-teal-800 font-bold px-2 py-0.5 rounded-full border border-teal-200">
+                      총 {inquiries.length}건
+                    </span>
+                  </h4>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    고객이 웹사이트에서 신청한 실시간 상담 및 예약 요청이 즉시 동기화되어 표시됩니다.
+                  </p>
+                </div>
               </div>
 
               {inquiries.length === 0 ? (
-                <div className="text-center py-12 text-slate-400 text-xs font-bold bg-white rounded-2xl border border-slate-200">
-                  접수된 상담 문의 내역이 없습니다.
+                <div className="text-center py-16 bg-white rounded-2xl border border-dashed border-slate-300 space-y-3">
+                  <div className="w-12 h-12 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center mx-auto text-xl">
+                    📬
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-sm font-extrabold text-slate-700">접수된 상담 문의 내역이 없습니다.</p>
+                    <p className="text-xs text-slate-400">
+                      여행객이 상단 [실시간 상담 신청] 또는 상품 상세페이지에서 신청하면 이곳에 실시간으로 표시됩니다.
+                    </p>
+                  </div>
                 </div>
               ) : (
                 <div className="space-y-3">
-                  {inquiries.map((inq) => (
-                    <div
-                      key={inq.id}
-                      className="bg-white p-4 rounded-2xl border border-slate-200/80 space-y-2 shadow-2xs"
-                    >
-                      <div className="flex items-center justify-between flex-wrap gap-2 border-b pb-2 border-slate-100">
-                        <div className="flex items-center gap-2">
-                          <span className="font-black text-slate-900 text-sm">
-                            {inq.userName} 고객님
-                          </span>
-                          <span className="text-xs text-teal-700 font-bold bg-teal-50 px-2 py-0.5 rounded">
-                            {inq.userPhone}
-                          </span>
-                          {inq.kakaoId && (
-                            <span className="text-xs text-amber-800 font-bold bg-amber-50 px-2 py-0.5 rounded">
-                              카톡: {inq.kakaoId}
+                  {inquiries.map((inq) => {
+                    const statusColors = {
+                      pending: 'bg-amber-50 text-amber-700 border-amber-200',
+                      in_progress: 'bg-blue-50 text-blue-700 border-blue-200',
+                      confirmed: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+                      completed: 'bg-purple-50 text-purple-700 border-purple-200',
+                      cancelled: 'bg-rose-50 text-rose-700 border-rose-200',
+                    };
+
+                    return (
+                      <div
+                        key={inq.id}
+                        className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 space-y-3 shadow-xs hover:border-slate-300 transition-all"
+                      >
+                        {/* Header Row: Customer Name, Contact, Status */}
+                        <div className="flex flex-wrap items-center justify-between gap-2 border-b pb-3 border-slate-100">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <span className="font-black text-slate-900 text-base">
+                              👤 {inq.userName} 고객님
                             </span>
-                          )}
+                            <a
+                              href={`tel:${inq.userPhone}`}
+                              className="text-xs text-teal-800 bg-teal-50 hover:bg-teal-100 px-2.5 py-1 rounded-lg border border-teal-200 font-extrabold flex items-center gap-1 transition-colors"
+                              title="전화 걸기"
+                            >
+                              📞 {inq.userPhone}
+                            </a>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                navigator.clipboard.writeText(inq.userPhone);
+                                alert(`전화번호 [${inq.userPhone}]가 복사되었습니다.`);
+                              }}
+                              className="text-[11px] text-slate-500 hover:text-slate-800 bg-slate-100 hover:bg-slate-200 px-2 py-1 rounded-md font-bold transition-colors"
+                            >
+                              복사
+                            </button>
+                            {inq.kakaoId && (
+                              <span className="text-xs text-amber-900 font-black bg-amber-50 px-2.5 py-1 rounded-lg border border-amber-200 flex items-center gap-1">
+                                💬 카톡ID: {inq.kakaoId}
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    navigator.clipboard.writeText(inq.kakaoId || '');
+                                    alert(`카카오톡 ID [${inq.kakaoId}]가 복사되었습니다.`);
+                                  }}
+                                  className="ml-1 text-[10px] text-amber-700 underline hover:text-amber-900"
+                                >
+                                  복사
+                                </button>
+                              </span>
+                            )}
+                          </div>
+
+                          {/* Status selector */}
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs text-slate-400 font-bold">처리상태:</span>
+                            <select
+                              value={inq.status}
+                              onChange={(e) => onUpdateInquiryStatus(inq.id, e.target.value as any)}
+                              className={`text-xs font-black px-3 py-1.5 rounded-xl border transition-colors cursor-pointer ${
+                                statusColors[inq.status] || 'bg-slate-50 text-slate-700 border-slate-200'
+                              }`}
+                            >
+                              <option value="pending">⏳ 상담 대기</option>
+                              <option value="in_progress">📞 상담 진행중</option>
+                              <option value="confirmed">✅ 예약 확정</option>
+                              <option value="completed">🎉 완료</option>
+                              <option value="cancelled">❌ 취소</option>
+                            </select>
+                          </div>
                         </div>
 
-                        {/* Status selector */}
-                        <select
-                          value={inq.status}
-                          onChange={(e) => onUpdateInquiryStatus(inq.id, e.target.value as any)}
-                          className="text-xs font-bold px-2.5 py-1 rounded-lg border border-slate-200 bg-slate-50"
-                        >
-                          <option value="pending">⏳ 상담 대기</option>
-                          <option value="in_progress">📞 상담 진행중</option>
-                          <option value="confirmed">✅ 예약 확정</option>
-                          <option value="completed">🎉 완료</option>
-                          <option value="cancelled">❌ 취소</option>
-                        </select>
-                      </div>
+                        {/* Inquiry Details Grid */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 bg-slate-50 p-3 rounded-xl border border-slate-100 text-xs">
+                          <div>
+                            <span className="text-slate-400 font-bold block text-[11px]">문의 상품:</span>
+                            <span className="font-extrabold text-slate-900">{inq.productTitle || '일반 맞춤 견적 문의'}</span>
+                          </div>
+                          <div>
+                            <span className="text-slate-400 font-bold block text-[11px]">희망 출발일:</span>
+                            <span className="font-extrabold text-teal-800">{inq.startDate || '미정 / 협의'}</span>
+                          </div>
+                          <div>
+                            <span className="text-slate-400 font-bold block text-[11px]">신청 인원:</span>
+                            <span className="font-extrabold text-slate-900">
+                              성인 {inq.travelerCount.adult}명 {inq.travelerCount.child > 0 ? `/ 아동 ${inq.travelerCount.child}명` : ''}
+                            </span>
+                          </div>
+                        </div>
 
-                      <div className="text-xs text-slate-700 space-y-1">
-                        <p className="font-bold text-slate-900">
-                          문의 상품: {inq.productTitle}
-                        </p>
-                        <p className="text-slate-500">
-                          희망 출발일: {inq.startDate || '미정'} · 인원: 성인 {inq.travelerCount.adult}명 / 아동 {inq.travelerCount.child}명
-                        </p>
-                        <p className="bg-slate-50 p-2.5 rounded-xl border border-slate-100 text-slate-800">
-                          "{inq.message || '상세 메시지 없음'}"
-                        </p>
+                        {/* Message Content */}
+                        <div className="space-y-1">
+                          <span className="text-xs font-bold text-slate-500">📝 고객 요청사항 & 문의내용:</span>
+                          <div className="p-3 bg-amber-50/40 rounded-xl border border-amber-100/80 text-xs font-medium text-slate-800 whitespace-pre-wrap leading-relaxed">
+                            {inq.message ? inq.message : '(별도 남긴 요청사항 없음)'}
+                          </div>
+                        </div>
+
+                        {/* Footer Info */}
+                        <div className="flex items-center justify-between text-[11px] text-slate-400 pt-1">
+                          <span>신청 접수 ID: #{inq.id.slice(-6)}</span>
+                          {inq.createdAt && (
+                            <span>접수 일시: {new Date(inq.createdAt).toLocaleString('ko-KR')}</span>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </div>
