@@ -131,7 +131,11 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   };
 
   const handleRemoveSubImage = (index: number) => {
-    setSubImagesList(prev => prev.filter((_, i) => i !== index));
+    setSubImagesList(prev => {
+      const filtered = prev.filter((_, i) => i !== index);
+      setFormData(f => ({ ...f, imageUrl: filtered[0] || '' }));
+      return filtered;
+    });
     setSelectedPhotoIndexes(prev => prev.filter(i => i !== index).map(i => (i > index ? i - 1 : i)));
   };
 
@@ -184,7 +188,11 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     if (selectedPhotoIndexes.length === 0) return;
     if (!confirm(`선택한 ${selectedPhotoIndexes.length}장의 사진을 삭제하시겠습니까?`)) return;
     const indexSet = new Set(selectedPhotoIndexes);
-    setSubImagesList(prev => prev.filter((_, i) => !indexSet.has(i)));
+    setSubImagesList(prev => {
+      const filtered = prev.filter((_, i) => !indexSet.has(i));
+      setFormData(f => ({ ...f, imageUrl: filtered[0] || '' }));
+      return filtered;
+    });
     setSelectedPhotoIndexes([]);
   };
 
@@ -274,8 +282,8 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
     setSubImagesList(prev => {
       const combined = [...prev, ...finalUrls];
-      // Automatically sync cover photo if not set yet
-      if (!formData.imageUrl && combined.length > 0) {
+      // Automatically sync cover photo to the very first photo in the gallery
+      if (combined.length > 0) {
         setFormData(f => ({ ...f, imageUrl: combined[0] }));
       }
       return combined;
@@ -630,7 +638,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
       const splitLines = (str: string) => str.split('\n').map(s => s.trim()).filter(Boolean);
 
       let cleanSubImages = subImagesList.filter(Boolean);
-      let mainImageUrl = formData.imageUrl || cleanSubImages[0] || 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1000&q=80';
+      let mainImageUrl = cleanSubImages[0] || formData.imageUrl || 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1000&q=80';
 
       // Check if any base64 images remain that need to be uploaded to server disk
       const base64List = [mainImageUrl, ...cleanSubImages].filter(u => u && u.startsWith('data:image/'));
@@ -1165,10 +1173,10 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                           />
                           <label
                             htmlFor="airbnb-bulk-photos-input"
-                            className="px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-xs flex items-center gap-2 cursor-pointer shadow-md shadow-rose-600/20 transition-all hover:scale-105 active:scale-95"
+                            className="px-5 py-3 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-black text-sm flex items-center gap-2 cursor-pointer shadow-lg shadow-rose-600/25 transition-all hover:scale-105 active:scale-95"
                           >
-                            <Upload className="w-4 h-4" />
-                            <span>📁 컴퓨터에서 사진 일괄 업로드 (다중 선택)</span>
+                            <Upload className="w-5 h-5" />
+                            <span>📁 내 컴퓨터 사진 일괄 올리기 (여러 장 선택)</span>
                           </label>
 
                           <input
@@ -1180,10 +1188,25 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                           />
                           <label
                             htmlFor="single-cover-photo-input"
-                            className="px-3.5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs flex items-center gap-1.5 cursor-pointer transition-all"
+                            className="px-4 py-3 rounded-xl bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs flex items-center gap-1.5 cursor-pointer transition-all"
                           >
-                            <span>👑 대표 커버 사진만 교체</span>
+                            <span>👑 1번 대표 커버 사진만 교체</span>
                           </label>
+
+                          {subImagesList.length > 0 && (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (confirm('등록되어 있는 기존 사진을 모두 지우시겠습니까? (지운 후 내 사진을 올리시면 됩니다)')) {
+                                  setSubImagesList([]);
+                                  setFormData(prev => ({ ...prev, imageUrl: '' }));
+                                }
+                              }}
+                              className="px-4 py-3 rounded-xl bg-slate-100 hover:bg-rose-100 text-rose-600 hover:text-rose-700 font-bold text-xs flex items-center gap-1.5 transition-all border border-slate-200 hover:border-rose-300"
+                            >
+                              <span>🗑️ 기존 샘플 사진 전부 지우기</span>
+                            </button>
+                          )}
                         </div>
 
                         {/* Progress Bar Display */}
