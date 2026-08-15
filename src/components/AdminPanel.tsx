@@ -108,6 +108,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
   // Photo Hub & Upload States
   const [uploadStatus, setUploadStatus] = useState<string | null>(null);
+  const [directUrlInput, setDirectUrlInput] = useState('');
   const [allSitePhotos, setAllSitePhotos] = useState<string[]>([]);
   const [kakaoLinkInput, setKakaoLinkInput] = useState(getKakaoDirectLink());
   const [copiedUrl, setCopiedUrl] = useState<string | null>(null);
@@ -1066,82 +1067,138 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                 </div>
               </div>
 
-              {/* Section 2: Photo Gallery (Multi Upload & Drag-and-Drop) */}
+              {/* Section 2: Photo Gallery (Multi Upload & Drag-and-Drop + Direct URL) */}
               <div className="space-y-4 bg-slate-950 p-6 rounded-2xl border border-slate-800">
                 <div className="flex items-center justify-between border-b border-slate-800 pb-3">
                   <h4 className="text-sm font-black text-white flex items-center gap-2">
                     <Camera className="w-4 h-4 text-amber-400" />
-                    <span>2. 고화질 사진 갤러리 (대표 1번 사진이 썸네일로 지정됩니다)</span>
+                    <span>2. 고화질 사진 갤러리 (대표 1번 사진이 홈페이지 메인/카드에 즉시 노출됩니다)</span>
                   </h4>
-                  <span className="text-xs text-slate-400">총 {galleryImages.length}장 등록됨</span>
+                  <span className="text-xs text-amber-300 font-bold">총 {galleryImages.length}장 등록됨</span>
                 </div>
 
-                {/* Drag-drop or File Select Box */}
-                <div className="border-2 border-dashed border-slate-700 hover:border-amber-400 rounded-2xl p-6 text-center space-y-3 bg-slate-900/50 transition-colors">
-                  <Camera className="w-8 h-8 text-amber-400 mx-auto" />
-                  <div>
-                    <p className="text-xs font-bold text-white">
-                      컴퓨터의 사진 파일(JPG, PNG, WebP)을 여러 장 선택하거나 이곳에 드롭하세요.
-                    </p>
-                    <p className="text-[11px] text-slate-400 mt-0.5">
-                      에어비앤비 규격(1440px)으로 자동 최적화되어 서버 디스크에 영구 보관됩니다.
-                    </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Option A: Computer File Upload */}
+                  <div className="border-2 border-dashed border-slate-700 hover:border-amber-400 rounded-2xl p-5 text-center space-y-3 bg-slate-900/50 transition-colors flex flex-col justify-center items-center">
+                    <Camera className="w-7 h-7 text-amber-400" />
+                    <div>
+                      <p className="text-xs font-bold text-white">
+                        [방법 1] 내 컴퓨터에서 사진 파일 올리기
+                      </p>
+                      <p className="text-[11px] text-slate-400 mt-0.5">
+                        JPG, PNG, WebP 여러 장을 한 번에 선택 가능 (자동 고화질 압축)
+                      </p>
+                    </div>
+
+                    <label className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-400 text-slate-950 font-black text-xs cursor-pointer hover:bg-amber-300 shadow-md">
+                      <Upload className="w-3.5 h-3.5" />
+                      <span>내 컴퓨터에서 사진 선택하기</span>
+                      <input
+                        type="file"
+                        multiple
+                        accept="image/*"
+                        className="hidden"
+                        onChange={async (e) => {
+                          if (e.target.files && e.target.files.length > 0) {
+                            const urls = await uploadFilesToDisk(Array.from(e.target.files));
+                            setGalleryImages(prev => [...prev, ...urls]);
+                          }
+                          e.target.value = '';
+                        }}
+                      />
+                    </label>
                   </div>
 
-                  <label className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-400 text-slate-950 font-black text-xs cursor-pointer hover:bg-amber-300">
-                    <Upload className="w-3.5 h-3.5" />
-                    <span>내 컴퓨터에서 사진 선택하기</span>
-                    <input
-                      type="file"
-                      multiple
-                      accept="image/*"
-                      className="hidden"
-                      onChange={async (e) => {
-                        if (e.target.files && e.target.files.length > 0) {
-                          const urls = await uploadFilesToDisk(Array.from(e.target.files));
-                          setGalleryImages(prev => [...prev, ...urls]);
-                        }
-                        e.target.value = '';
-                      }}
-                    />
-                  </label>
-                  {uploadStatus && <p className="text-xs text-amber-300 font-bold">{uploadStatus}</p>}
+                  {/* Option B: Direct Image URL Input */}
+                  <div className="border border-slate-800 rounded-2xl p-5 bg-slate-900/50 flex flex-col justify-between space-y-3">
+                    <div>
+                      <p className="text-xs font-bold text-white flex items-center gap-1.5">
+                        <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                        <span>[방법 2] 인터넷 웹 사진 주소(URL) 직접 입력</span>
+                      </p>
+                      <p className="text-[11px] text-slate-400 mt-0.5">
+                        웹사이트나 클라우드의 이미지 주소(https://...)를 붙여넣어 바로 추가하세요.
+                      </p>
+                    </div>
+
+                    <div className="flex gap-2">
+                      <input
+                        type="url"
+                        placeholder="https://... 이미지 URL 붙여넣기"
+                        value={directUrlInput}
+                        onChange={(e) => setDirectUrlInput(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            e.preventDefault();
+                            if (directUrlInput.trim()) {
+                              setGalleryImages(prev => [...prev, directUrlInput.trim()]);
+                              setDirectUrlInput('');
+                            }
+                          }
+                        }}
+                        className="flex-1 bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white outline-none focus:ring-2 focus:ring-amber-400"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (directUrlInput.trim()) {
+                            setGalleryImages(prev => [...prev, directUrlInput.trim()]);
+                            setDirectUrlInput('');
+                          }
+                        }}
+                        className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-300 font-bold text-xs shrink-0 cursor-pointer"
+                      >
+                        + 사진 추가
+                      </button>
+                    </div>
+                  </div>
                 </div>
 
+                {uploadStatus && <p className="text-xs text-amber-300 font-bold animate-pulse">{uploadStatus}</p>}
+
                 {/* Thumbnails list */}
-                {galleryImages.length > 0 && (
-                  <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-3 pt-2">
-                    {galleryImages.map((img, idx) => (
-                      <div key={idx} className="relative group rounded-xl overflow-hidden border border-slate-700 aspect-square bg-slate-900">
-                        <img src={img} alt="" className="w-full h-full object-cover" />
-                        {idx === 0 && (
-                          <span className="absolute top-1.5 left-1.5 bg-amber-400 text-slate-950 font-black text-[9px] px-1.5 py-0.5 rounded">
-                            대표사진
-                          </span>
-                        )}
-                        <div className="absolute inset-0 bg-slate-950/80 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1 p-1">
-                          {idx !== 0 && (
+                {galleryImages.length > 0 ? (
+                  <div className="space-y-2 pt-2">
+                    <div className="text-xs font-bold text-slate-300">
+                      📸 등록된 사진 목록 (맨 앞 첫 번째 사진이 대표 썸네일입니다):
+                    </div>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-3">
+                      {galleryImages.map((img, idx) => (
+                        <div key={idx} className={`relative group rounded-xl overflow-hidden border ${idx === 0 ? 'border-amber-400 ring-2 ring-amber-400/40' : 'border-slate-700'} aspect-square bg-slate-900 shadow-md`}>
+                          <img src={img} alt="" className="w-full h-full object-cover" />
+                          {idx === 0 && (
+                            <span className="absolute top-1.5 left-1.5 bg-amber-400 text-slate-950 font-black text-[10px] px-2 py-0.5 rounded shadow">
+                              👑 대표 사진
+                            </span>
+                          )}
+                          <div className="absolute inset-0 bg-slate-950/85 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1.5 p-1">
+                            {idx !== 0 && (
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const newImages = [img, ...galleryImages.filter((_, i) => i !== idx)];
+                                  setGalleryImages(newImages);
+                                }}
+                                className="px-2.5 py-1 bg-amber-400 text-slate-950 rounded-lg text-[10px] font-black cursor-pointer shadow"
+                              >
+                                대표로 지정
+                              </button>
+                            )}
                             <button
                               type="button"
-                              onClick={() => {
-                                const newImages = [img, ...galleryImages.filter((_, i) => i !== idx)];
-                                setGalleryImages(newImages);
-                              }}
-                              className="px-2 py-0.5 bg-amber-400 text-slate-950 rounded text-[9px] font-black cursor-pointer"
+                              onClick={() => setGalleryImages(prev => prev.filter((_, i) => i !== idx))}
+                              className="px-2.5 py-1 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-[10px] font-bold cursor-pointer shadow"
                             >
-                              대표 지정
+                              삭제
                             </button>
-                          )}
-                          <button
-                            type="button"
-                            onClick={() => setGalleryImages(prev => prev.filter((_, i) => i !== idx))}
-                            className="px-2 py-0.5 bg-rose-600 text-white rounded text-[9px] font-bold cursor-pointer"
-                          >
-                            삭제
-                          </button>
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="p-3 rounded-xl bg-amber-400/10 border border-amber-400/20 text-xs text-amber-300 flex items-center gap-2">
+                    <span>💡 등록된 사진이 없으면 기본 추천 테마 사진이 임시 적용됩니다. 꼭 대표 사진을 1장 이상 등록해 주세요!</span>
                   </div>
                 )}
               </div>

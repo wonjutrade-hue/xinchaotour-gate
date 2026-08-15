@@ -500,6 +500,8 @@ export default function App() {
           <Hero
             onSelectCategory={setActiveCategory}
             onOpenQuiz={() => setIsQuizOpen(true)}
+            products={products}
+            onSelectProduct={handleSelectProduct}
           />
 
           {/* Category Nav & Regional Breakdown Filter */}
