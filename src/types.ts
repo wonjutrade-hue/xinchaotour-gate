@@ -18,7 +18,7 @@ export type City =
   | '달랏'
   | '붕따우';
 
-export type Category = '추천패키지' | '자유여행' | '골프투어' | '풀빌라';
+export type Category = '풀빌라' | '골프투어' | '추천패키지' | '자유여행';
 
 export interface ItineraryDay {
   day: number;
@@ -38,12 +38,25 @@ export interface GolfCourseDetail {
 }
 
 export interface VillaSpecs {
+  villaName?: string;
+  structureDescription?: string;
   bedrooms: number;
+  bathrooms?: number;
+  beds?: number | string;
+  maxOccupancy: number;
+  standardOccupancy?: number;
   privatePool: boolean;
   oceanView: boolean;
-  maxOccupancy: number;
-  features?: string[];
   areaSqm?: number;
+  floors?: number;
+  address?: string;
+  googleMapUrl?: string;
+  airbnbUrl?: string;
+  amenities?: string[];
+  features?: string[];
+  checkInTime?: string;
+  checkOutTime?: string;
+  houseRules?: string[];
 }
 
 export interface GolfSpecs {
@@ -52,6 +65,7 @@ export interface GolfSpecs {
   caddieFeeIncluded: boolean;
   golfCourseNames: string[];
   courseDetails?: GolfCourseDetail[];
+  cartIncluded?: boolean;
 }
 
 export interface Product {
@@ -80,6 +94,8 @@ export interface Product {
   villaSpecs?: VillaSpecs;
   golfSpecs?: GolfSpecs;
   address?: string;
+  googleMapUrl?: string;
+  airbnbUrl?: string;
   externalBookingUrl?: string;
   createdAt?: string;
 }
