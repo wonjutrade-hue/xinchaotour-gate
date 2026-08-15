@@ -163,32 +163,54 @@ export default function App() {
     setIsRefreshingRates(false);
   };
 
-  // Fetch Products & Inquiries from Express backend + IndexedDB
+  // Fetch Products & Inquiries with bulletproof two-way synchronization
   const fetchProducts = async () => {
+    let localList: Product[] = [];
+    try {
+      const fromIndexed = await loadProductsFromIndexedDB();
+      if (Array.isArray(fromIndexed) && fromIndexed.length > 0) {
+        localList = fromIndexed;
+        setProducts(fromIndexed);
+        setStoredJson(PRODUCTS_CACHE_KEY, fromIndexed);
+      }
+    } catch (e) {
+      console.warn('Local DB read error:', e);
+    }
+
     try {
       const res = await fetch('/api/products');
       if (res.ok) {
         const data = await res.json();
         if (data.success && Array.isArray(data.products)) {
-          setProducts(data.products);
-          saveProductsToIndexedDB(data.products);
-          setStoredJson(PRODUCTS_CACHE_KEY, data.products);
-          setIsLoadingProducts(false);
-          return;
+          const serverList: Product[] = data.products;
+
+          if (serverList.length > 0) {
+            // Merge local and server without losing items
+            const map = new Map<string, Product>();
+            localList.forEach(p => map.set(p.id, p));
+            serverList.forEach(p => map.set(p.id, p));
+            const merged = Array.from(map.values());
+
+            setProducts(merged);
+            await saveProductsToIndexedDB(merged);
+            setStoredJson(PRODUCTS_CACHE_KEY, merged);
+          } else if (localList.length > 0) {
+            // Server has 0 items but local has items: auto-sync local items to server!
+            console.log('[Sync] Restoring server storage from local IndexedDB data:', localList.length);
+            fetch('/api/products/sync', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ products: localList })
+            }).catch(e => console.warn('Server sync error:', e));
+          } else {
+            setProducts([]);
+            await saveProductsToIndexedDB([]);
+            setStoredJson(PRODUCTS_CACHE_KEY, []);
+          }
         }
       }
     } catch (err) {
       console.warn('API fetch fallback to local storage:', err);
-    }
-    
-    // Fallback to IndexedDB
-    try {
-      const localDbProducts = await loadProductsFromIndexedDB();
-      if (localDbProducts && Array.isArray(localDbProducts)) {
-        setProducts(localDbProducts);
-      }
-    } catch (e) {
-      console.warn('Local DB read fallback error:', e);
     } finally {
       setIsLoadingProducts(false);
     }

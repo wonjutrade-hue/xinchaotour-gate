@@ -24,28 +24,28 @@ function loadStoredProducts(): Product[] {
     if (fs.existsSync(PRODUCTS_FILE_PATH)) {
       const fileData = fs.readFileSync(PRODUCTS_FILE_PATH, 'utf-8');
       const parsed = JSON.parse(fileData);
-      if (Array.isArray(parsed)) {
+      if (Array.isArray(parsed) && parsed.length > 0) {
         console.log(`[Server] Loaded ${parsed.length} products from stored_products.json`);
         return parsed;
       }
     }
   } catch (err) {
     console.warn('[Server] Failed to read stored_products.json, checking backup:', err);
-    try {
-      if (fs.existsSync(PRODUCTS_BACKUP_PATH)) {
-        const backupData = fs.readFileSync(PRODUCTS_BACKUP_PATH, 'utf-8');
-        const parsedBackup = JSON.parse(backupData);
-        if (Array.isArray(parsedBackup)) {
-          console.log(`[Server] Restored ${parsedBackup.length} products from backup`);
-          return parsedBackup;
-        }
-      }
-    } catch (bErr) {
-      console.warn('[Server] Backup read also failed:', bErr);
-    }
   }
-  // If file doesn't exist, initialize empty array
-  saveStoredProducts([]);
+
+  try {
+    if (fs.existsSync(PRODUCTS_BACKUP_PATH)) {
+      const backupData = fs.readFileSync(PRODUCTS_BACKUP_PATH, 'utf-8');
+      const parsedBackup = JSON.parse(backupData);
+      if (Array.isArray(parsedBackup) && parsedBackup.length > 0) {
+        console.log(`[Server] Restored ${parsedBackup.length} products from backup`);
+        return parsedBackup;
+      }
+    }
+  } catch (bErr) {
+    console.warn('[Server] Backup read also failed:', bErr);
+  }
+
   return [];
 }
 
@@ -211,7 +211,13 @@ async function startServer() {
 
   // 1. Get Products
   app.get('/api/products', (req: Request, res: Response) => {
-    res.json({ success: true, products });
+    if (products.length === 0) {
+      const reloaded = loadStoredProducts();
+      if (reloaded.length > 0) {
+        products = reloaded;
+      }
+    }
+    res.json({ success: true, count: products.length, products });
   });
 
   // 2. Add Product
@@ -219,10 +225,11 @@ async function startServer() {
     try {
       const newProduct: Product = {
         ...req.body,
-        id: `prod-${Date.now()}`,
-        createdAt: new Date().toISOString()
+        id: req.body.id || `prod-${Date.now()}`,
+        createdAt: req.body.createdAt || new Date().toISOString()
       };
-      products.unshift(newProduct);
+      // Prevent duplicates by ID
+      products = [newProduct, ...products.filter(p => p.id !== newProduct.id)];
       saveStoredProducts(products);
       res.json({ success: true, product: newProduct });
     } catch (err: any) {
