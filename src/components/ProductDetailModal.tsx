@@ -258,6 +258,18 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                   <span>사진 {allImages.length}장 모두 보기</span>
                 </button>
               </div>
+            ) : allImages.length === 0 ? (
+              <div className="aspect-[16/10] sm:aspect-[16/9] rounded-2xl overflow-hidden bg-gradient-to-br from-slate-900 via-teal-950 to-slate-900 border border-slate-700/60 p-6 flex flex-col items-center justify-center text-center relative shadow-inner">
+                <div className="w-14 h-14 rounded-2xl bg-teal-500/20 text-teal-400 flex items-center justify-center mb-3 border border-teal-500/30">
+                  <Camera className="w-7 h-7" />
+                </div>
+                <h4 className="text-white font-black text-base sm:text-lg mb-1">{product.title}</h4>
+                <p className="text-teal-300 text-xs font-bold mb-3">{product.region} {product.city} · {product.category} 맞춤 여행</p>
+                <div className="inline-flex items-center gap-2 bg-slate-950/80 px-3.5 py-1.5 rounded-xl text-xs text-slate-300 border border-slate-700">
+                  <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                  <span>신짜오투어 1:1 맞춤 전담 상담 진행 중</span>
+                </div>
+              </div>
             ) : (
               /* Standard High-Impact Photo Frame (for 1~4 photos) */
               <div className="aspect-[16/10] sm:aspect-[16/9] rounded-2xl overflow-hidden bg-slate-950 border border-slate-200 relative group shadow-inner">

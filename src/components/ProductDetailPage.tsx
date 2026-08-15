@@ -283,87 +283,108 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
         </div>
 
         {/* 3. AIRBNB-STYLE 5-PHOTO GRID GALLERY */}
-        <section className="relative rounded-3xl overflow-hidden shadow-md bg-slate-100">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-2 aspect-video md:aspect-[2.2/1] max-h-[500px]">
-            {/* Big Main Image (Col 1-2) */}
-            <div
-              onClick={() => handleOpenPhotoTour(0, 'slide')}
-              className="md:col-span-2 relative group cursor-pointer overflow-hidden bg-slate-900"
+        {allImages.length > 0 ? (
+          <section className="relative rounded-3xl overflow-hidden shadow-md bg-slate-900">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-2 aspect-video md:aspect-[2.2/1] max-h-[500px]">
+              {/* Big Main Image (Col 1-2) */}
+              <div
+                onClick={() => handleOpenPhotoTour(0, 'slide')}
+                className="md:col-span-2 relative group cursor-pointer overflow-hidden bg-slate-900"
+              >
+                <img
+                  src={allImages[0]}
+                  alt={product.title}
+                  referrerPolicy="no-referrer"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-colors" />
+                <div className="absolute top-4 left-4 bg-slate-950/80 backdrop-blur-md text-white text-[11px] font-bold px-2.5 py-1 rounded-lg">
+                  👑 대표 사진
+                </div>
+              </div>
+
+              {/* Sub-Images 1 & 2 (Col 3) */}
+              <div className="hidden md:grid grid-rows-2 gap-2">
+                <div
+                  onClick={() => handleOpenPhotoTour(1 % allImages.length, 'slide')}
+                  className="relative group cursor-pointer overflow-hidden bg-slate-900"
+                >
+                  <img
+                    src={allImages[1] || allImages[0]}
+                    alt=""
+                    referrerPolicy="no-referrer"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
+                <div
+                  onClick={() => handleOpenPhotoTour(2 % allImages.length, 'slide')}
+                  className="relative group cursor-pointer overflow-hidden bg-slate-900"
+                >
+                  <img
+                    src={allImages[2] || allImages[1] || allImages[0]}
+                    alt=""
+                    referrerPolicy="no-referrer"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
+              </div>
+
+              {/* Sub-Images 3 & 4 (Col 4) */}
+              <div className="hidden md:grid grid-rows-2 gap-2">
+                <div
+                  onClick={() => handleOpenPhotoTour(3 % allImages.length, 'slide')}
+                  className="relative group cursor-pointer overflow-hidden bg-slate-900"
+                >
+                  <img
+                    src={allImages[3] || allImages[0]}
+                    alt=""
+                    referrerPolicy="no-referrer"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
+                <div
+                  onClick={() => handleOpenPhotoTour(4 % allImages.length, 'slide')}
+                  className="relative group cursor-pointer overflow-hidden bg-slate-900"
+                >
+                  <img
+                    src={allImages[4] || allImages[1] || allImages[0]}
+                    alt=""
+                    referrerPolicy="no-referrer"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* "사진 N장 모두 보기" Overlay Button */}
+            <button
+              onClick={() => handleOpenPhotoTour(0, 'grid')}
+              className="absolute bottom-4 right-4 bg-white/95 hover:bg-white text-slate-900 px-4 py-2.5 rounded-2xl font-black text-xs sm:text-sm shadow-xl flex items-center gap-2 backdrop-blur-md border border-slate-200 transition-all hover:scale-105 active:scale-95 cursor-pointer z-10"
             >
-              <img
-                src={allImages[0] || product.imageUrl}
-                alt={product.title}
-                referrerPolicy="no-referrer"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              />
-              <div className="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-colors" />
-              <div className="absolute top-4 left-4 bg-slate-950/80 backdrop-blur-md text-white text-[11px] font-bold px-2.5 py-1 rounded-lg">
-                👑 대표 사진
-              </div>
+              <Grid className="w-4 h-4 text-teal-700" />
+              <span>사진 {allImages.length}장 모두 보기</span>
+            </button>
+          </section>
+        ) : (
+          <section className="rounded-3xl overflow-hidden shadow-xs bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 p-10 text-center text-white space-y-3 border border-slate-800">
+            <div className="w-14 h-14 rounded-2xl bg-amber-400/10 text-amber-400 flex items-center justify-center mx-auto border border-amber-400/20 shadow-inner">
+              <Camera className="w-7 h-7" />
             </div>
-
-            {/* Sub-Images 1 & 2 (Col 3) */}
-            <div className="hidden md:grid grid-rows-2 gap-2">
-              <div
-                onClick={() => handleOpenPhotoTour(1, 'slide')}
-                className="relative group cursor-pointer overflow-hidden bg-slate-900"
+            <h3 className="text-lg font-black text-amber-300">신차오투어 {product.city} {product.category}</h3>
+            <p className="text-xs text-slate-300 max-w-md mx-auto">
+              현재 등록된 사진을 준비 중입니다. 1:1 카카오톡 및 맞춤 견적 신청을 통해 실시간 사진과 일정을 상담받으실 수 있습니다.
+            </p>
+            {onEditProduct && (
+              <button
+                onClick={() => onEditProduct(product)}
+                className="mt-2 px-4 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs inline-flex items-center gap-1.5 shadow-md cursor-pointer"
               >
-                <img
-                  src={allImages[1] || allImages[0] || product.imageUrl}
-                  alt=""
-                  referrerPolicy="no-referrer"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-              </div>
-              <div
-                onClick={() => handleOpenPhotoTour(2, 'slide')}
-                className="relative group cursor-pointer overflow-hidden bg-slate-900"
-              >
-                <img
-                  src={allImages[2] || allImages[0] || product.imageUrl}
-                  alt=""
-                  referrerPolicy="no-referrer"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-              </div>
-            </div>
-
-            {/* Sub-Images 3 & 4 (Col 4) */}
-            <div className="hidden md:grid grid-rows-2 gap-2">
-              <div
-                onClick={() => handleOpenPhotoTour(3, 'slide')}
-                className="relative group cursor-pointer overflow-hidden bg-slate-900"
-              >
-                <img
-                  src={allImages[3] || allImages[0] || product.imageUrl}
-                  alt=""
-                  referrerPolicy="no-referrer"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-              </div>
-              <div
-                onClick={() => handleOpenPhotoTour(4, 'slide')}
-                className="relative group cursor-pointer overflow-hidden bg-slate-900"
-              >
-                <img
-                  src={allImages[4] || allImages[0] || product.imageUrl}
-                  alt=""
-                  referrerPolicy="no-referrer"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* "사진 N장 모두 보기" Overlay Button */}
-          <button
-            onClick={() => handleOpenPhotoTour(0, 'grid')}
-            className="absolute bottom-4 right-4 bg-white/95 hover:bg-white text-slate-900 px-4 py-2.5 rounded-2xl font-black text-xs sm:text-sm shadow-xl flex items-center gap-2 backdrop-blur-md border border-slate-200 transition-all hover:scale-105 active:scale-95 cursor-pointer z-10"
-          >
-            <Grid className="w-4 h-4 text-teal-700" />
-            <span>사진 {allImages.length}장 모두 보기</span>
-          </button>
-        </section>
+                <Edit3 className="w-3.5 h-3.5" />
+                <span>관리자: 사진 등록하기</span>
+              </button>
+            )}
+          </section>
+        )}
 
         {/* 4. TWO-COLUMN CONTENT & STICKY BOOKING BAR */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">

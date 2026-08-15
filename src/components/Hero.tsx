@@ -63,14 +63,15 @@ export const Hero: React.FC<HeroProps> = ({
 }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
 
-  // Dynamic slides generated from real registered products if available
+  // Dynamic slides generated from real registered products if available with images
   const activeSlides = React.useMemo(() => {
-    if (products && products.length > 0) {
-      return products.slice(0, 5).map((prod) => ({
+    const productsWithImages = (products || []).filter(p => Boolean(p.imageUrl || (p.additionalImages && p.additionalImages.length > 0)));
+    if (productsWithImages.length > 0) {
+      return productsWithImages.slice(0, 5).map((prod) => ({
         title: prod.title,
         subtitle: prod.subTitle || prod.description || `${prod.duration} · ${prod.category} 명품 여행`,
         location: `${prod.region} ${prod.city}`,
-        imageUrl: prod.imageUrl || (prod.additionalImages && prod.additionalImages[0]) || 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1600&q=80',
+        imageUrl: prod.imageUrl || (prod.additionalImages && prod.additionalImages[0]) || goldenBridgeImg,
         tag: prod.isHotDeal ? '🔥 초특가 핫딜' : prod.isPopular ? '👑 인기 추천 베스트' : `✨ ${prod.category}`,
         priceKRW: prod.priceKRW,
         duration: prod.duration,
@@ -108,7 +109,7 @@ export const Hero: React.FC<HeroProps> = ({
           referrerPolicy="no-referrer"
           className="w-full h-full object-cover transition-all duration-1000 transform scale-105"
           onError={(e) => {
-            (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1600&q=80';
+            (e.target as HTMLImageElement).src = goldenBridgeImg;
           }}
         />
         <div className="absolute inset-0 bg-gradient-to-r from-slate-950/85 via-slate-950/50 to-transparent" />

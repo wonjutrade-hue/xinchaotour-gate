@@ -14,7 +14,7 @@ import { Footer } from './components/Footer';
 import { ExchangeRateModal } from './components/ExchangeRateModal';
 import { TravelInfoModal, TravelInfoTab } from './components/TravelInfoModal';
 import { KakaoModal } from './components/KakaoModal';
-import { INITIAL_PRODUCTS } from './data/seedProducts';
+import { INITIAL_PRODUCTS, SAMPLE_PRODUCTS } from './data/seedProducts';
 import { getLiveExchangeRates, ExchangeRates, DEFAULT_RATES } from './lib/exchangeRate';
 import { 
   Sparkles, 
@@ -37,14 +37,17 @@ import {
   loadInquiriesFromIndexedDB
 } from './lib/indexedDb';
 
-const PRODUCTS_CACHE_KEY = 'xinchao_products_cache_v6';
+const PRODUCTS_CACHE_KEY = 'xinchao_products_cache_v10';
+const DB_INITIALIZED_KEY = 'xinchao_db_initialized_v10';
 
 function getStoredJson<T>(key: string, fallback: T): T {
   try {
     const raw = localStorage.getItem(key);
     if (raw) {
       const parsed = JSON.parse(raw);
-      if (parsed !== null && parsed !== undefined && Array.isArray(parsed) && parsed.length > 0) return parsed as T;
+      if (parsed !== null && parsed !== undefined && Array.isArray(parsed)) {
+        return parsed as T;
+      }
     }
   } catch (e) {
     console.warn(`Failed to parse localStorage key ${key}:`, e);
@@ -54,30 +57,35 @@ function getStoredJson<T>(key: string, fallback: T): T {
 
 function setStoredJson(key: string, data: any) {
   try {
-    // Only attempt localStorage if data string length is reasonable (< 2MB)
     const jsonStr = JSON.stringify(data);
-    if (jsonStr.length < 2500000) {
+    if (jsonStr.length < 5000000) {
       localStorage.setItem(key, jsonStr);
     }
+    localStorage.setItem(DB_INITIALIZED_KEY, 'true');
   } catch (e) {
-    console.warn(`LocalStorage quota exceeded, relying on IndexedDB:`, e);
+    console.warn(`LocalStorage quota warning:`, e);
   }
 }
 
 export default function App() {
   const [products, setProducts] = useState<Product[]>(() => {
-    return getStoredJson<Product[]>(PRODUCTS_CACHE_KEY, INITIAL_PRODUCTS);
+    return getStoredJson<Product[]>(PRODUCTS_CACHE_KEY, []);
   });
   const [inquiries, setInquiries] = useState<ConsultationRequest[]>([]);
   const [isLoadingProducts, setIsLoadingProducts] = useState(true);
 
-  // Sync products state to IndexedDB and localStorage
-  useEffect(() => {
-    if (products && products.length > 0) {
-      saveProductsToIndexedDB(products);
-      setStoredJson(PRODUCTS_CACHE_KEY, products);
-    }
-  }, [products]);
+  // Sync products state to IndexedDB, localStorage, and server backend
+  const persistProducts = (updatedProducts: Product[]) => {
+    setProducts(updatedProducts);
+    saveProductsToIndexedDB(updatedProducts);
+    setStoredJson(PRODUCTS_CACHE_KEY, updatedProducts);
+    // Background sync to server
+    fetch('/api/products/sync', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ products: updatedProducts })
+    }).catch(e => console.warn('Background sync warning:', e));
+  };
 
   // Exchange Rates state
   const [exchangeRates, setExchangeRates] = useState<ExchangeRates>(DEFAULT_RATES);
@@ -158,30 +166,29 @@ export default function App() {
   // Fetch Products & Inquiries from Express backend + IndexedDB
   const fetchProducts = async () => {
     try {
-      // First load from fast local IndexedDB
-      const localDbProducts = await loadProductsFromIndexedDB();
-      if (localDbProducts && Array.isArray(localDbProducts) && localDbProducts.length > 0) {
-        setProducts(localDbProducts);
-      }
-
       const res = await fetch('/api/products');
-      const data = await res.json();
-      if (data.success && Array.isArray(data.products)) {
-        setProducts(data.products);
-        await saveProductsToIndexedDB(data.products);
-        setStoredJson(PRODUCTS_CACHE_KEY, data.products);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success && Array.isArray(data.products)) {
+          setProducts(data.products);
+          saveProductsToIndexedDB(data.products);
+          setStoredJson(PRODUCTS_CACHE_KEY, data.products);
+          setIsLoadingProducts(false);
+          return;
+        }
       }
     } catch (err) {
-      console.warn('API fetch failed, falling back to IndexedDB/cached products');
+      console.warn('API fetch fallback to local storage:', err);
+    }
+    
+    // Fallback to IndexedDB
+    try {
       const localDbProducts = await loadProductsFromIndexedDB();
       if (localDbProducts && Array.isArray(localDbProducts)) {
         setProducts(localDbProducts);
-      } else {
-        const cached = getStoredJson<Product[]>(PRODUCTS_CACHE_KEY, []);
-        if (cached && Array.isArray(cached)) {
-          setProducts(cached);
-        }
       }
+    } catch (e) {
+      console.warn('Local DB read fallback error:', e);
     } finally {
       setIsLoadingProducts(false);
     }
@@ -189,23 +196,19 @@ export default function App() {
 
   const fetchInquiries = async () => {
     try {
-      const localInqs = await loadInquiriesFromIndexedDB();
-      if (localInqs && localInqs.length > 0) {
-        setInquiries(localInqs);
-      }
-
       const res = await fetch('/api/inquiries');
       const data = await res.json();
       if (data.success && Array.isArray(data.inquiries)) {
         setInquiries(data.inquiries);
         await saveInquiriesToIndexedDB(data.inquiries);
+        return;
       }
     } catch (err) {
-      console.warn('Failed to fetch inquiries, using local DB');
-      const localInqs = await loadInquiriesFromIndexedDB();
-      if (localInqs && localInqs.length > 0) {
-        setInquiries(localInqs);
-      }
+      console.warn('Failed to fetch inquiries, checking local DB:', err);
+    }
+    const localInqs = await loadInquiriesFromIndexedDB();
+    if (localInqs && localInqs.length > 0) {
+      setInquiries(localInqs);
     }
   };
 
@@ -217,90 +220,93 @@ export default function App() {
 
   // API Actions
   const handleAddProduct = async (newProd: Omit<Product, 'id'>) => {
+    const createdId = `prod-${Date.now()}`;
+    const productWithId: Product = {
+      ...newProd,
+      id: createdId,
+      createdAt: new Date().toISOString()
+    };
+
+    // 1. Instantly update React state & local DB
+    setProducts(prev => {
+      const next = [productWithId, ...prev.filter(p => p.id !== createdId)];
+      saveProductsToIndexedDB(next);
+      setStoredJson(PRODUCTS_CACHE_KEY, next);
+      return next;
+    });
+
+    // 2. Persist to server
     try {
       const res = await fetch('/api/products', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newProd)
+        body: JSON.stringify(productWithId)
       });
-      if (!res.ok) {
-        throw new Error(`HTTP ${res.status}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success && data.product) {
+          const finalProduct = data.product;
+          setProducts(prev => {
+            const next = [finalProduct, ...prev.filter(p => p.id !== finalProduct.id && p.id !== createdId)];
+            saveProductsToIndexedDB(next);
+            setStoredJson(PRODUCTS_CACHE_KEY, next);
+            return next;
+          });
+          return finalProduct;
+        }
       }
-      const data = await res.json();
-      if (data.success && data.product) {
-        setProducts(prev => {
-          const updated = [data.product, ...prev.filter(p => p.id !== data.product.id)];
-          saveProductsToIndexedDB(updated);
-          setStoredJson(PRODUCTS_CACHE_KEY, updated);
-          return updated;
-        });
-        return data.product;
-      } else {
-        throw new Error(data.error || '상품 추가에 실패했습니다.');
-      }
-    } catch (err: any) {
-      console.error('API add product failed:', err);
-      // Fallback: save to client state & IndexedDB even if network fails
-      const fallbackProd: Product = {
-        ...newProd,
-        id: `prod-${Date.now()}`,
-        createdAt: new Date().toISOString()
-      };
-      setProducts(prev => {
-        const updated = [fallbackProd, ...prev];
-        saveProductsToIndexedDB(updated);
-        return updated;
-      });
-      return fallbackProd;
+    } catch (err) {
+      console.warn('Backend add warning, product stored locally:', err);
     }
+    return productWithId;
   };
 
   const handleUpdateProduct = async (id: string, updated: Partial<Product>) => {
+    setProducts(prev => {
+      const next = prev.map(p => (p.id === id ? { ...p, ...updated } : p));
+      saveProductsToIndexedDB(next);
+      setStoredJson(PRODUCTS_CACHE_KEY, next);
+      return next;
+    });
+
+    if (selectedProduct && selectedProduct.id === id) {
+      setSelectedProduct(prev => prev ? { ...prev, ...updated } : null);
+    }
+
     try {
       const res = await fetch(`/api/products/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updated)
       });
-      if (!res.ok) {
-        throw new Error(`HTTP ${res.status}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success && data.product) {
+          return data.product;
+        }
       }
-      const data = await res.json();
-      if (data.success && data.product) {
-        setProducts(prev => {
-          const updatedList = prev.map(p => (p.id === id ? data.product : p));
-          saveProductsToIndexedDB(updatedList);
-          setStoredJson(PRODUCTS_CACHE_KEY, updatedList);
-          return updatedList;
-        });
-        return data.product;
-      } else {
-        throw new Error(data.error || '상품 수정에 실패했습니다.');
-      }
-    } catch (err: any) {
-      console.error('API update failed:', err);
-      // Fallback: update in local state & IndexedDB
-      setProducts(prev => {
-        const updatedList = prev.map(p => (p.id === id ? { ...p, ...updated } : p));
-        saveProductsToIndexedDB(updatedList);
-        return updatedList;
-      });
+    } catch (err) {
+      console.warn('Backend update warning, product updated locally:', err);
     }
   };
 
   const handleDeleteProduct = async (id: string) => {
+    setProducts(prev => {
+      const next = prev.filter(p => p.id !== id);
+      saveProductsToIndexedDB(next);
+      setStoredJson(PRODUCTS_CACHE_KEY, next);
+      return next;
+    });
+
+    if (selectedProduct && selectedProduct.id === id) {
+      setSelectedProduct(null);
+    }
+
     try {
       await fetch(`/api/products/${id}`, { method: 'DELETE' });
     } catch (err) {
       console.warn('API delete failed:', err);
     }
-
-    setProducts(prev => {
-      const updatedList = prev.filter(p => p.id !== id);
-      saveProductsToIndexedDB(updatedList);
-      setStoredJson(PRODUCTS_CACHE_KEY, updatedList);
-      return updatedList;
-    });
   };
 
   const handleResetProducts = async () => {
@@ -308,63 +314,67 @@ export default function App() {
       const res = await fetch('/api/products/reset', { method: 'POST' });
       const data = await res.json();
       if (data.success && Array.isArray(data.products)) {
-        setProducts(data.products);
-        await saveProductsToIndexedDB(data.products);
-        setStoredJson(PRODUCTS_CACHE_KEY, data.products);
+        persistProducts(data.products);
         return;
       }
     } catch (err) {
       console.warn('API reset failed');
     }
-    setProducts([...INITIAL_PRODUCTS]);
-    await saveProductsToIndexedDB([...INITIAL_PRODUCTS]);
-    setStoredJson(PRODUCTS_CACHE_KEY, INITIAL_PRODUCTS);
+    persistProducts([...SAMPLE_PRODUCTS]);
   };
 
   const handleClearAllProducts = async () => {
+    setProducts([]);
+    saveProductsToIndexedDB([]);
+    setStoredJson(PRODUCTS_CACHE_KEY, []);
+    setSelectedProduct(null);
     try {
-      await fetch('/api/products/import', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ items: [], replaceExisting: true })
-      });
+      await fetch('/api/products/clear', { method: 'POST' });
     } catch (e) {
       console.warn('Clear all API error:', e);
     }
-    setProducts([]);
-    await saveProductsToIndexedDB([]);
-    setStoredJson(PRODUCTS_CACHE_KEY, []);
+  };
+
+  const handleClearAllPhotos = async () => {
+    setProducts(prev => {
+      const next = prev.map(p => ({
+        ...p,
+        imageUrl: '',
+        additionalImages: []
+      }));
+      saveProductsToIndexedDB(next);
+      setStoredJson(PRODUCTS_CACHE_KEY, next);
+      return next;
+    });
+
+    if (selectedProduct) {
+      setSelectedProduct(prev => prev ? { ...prev, imageUrl: '', additionalImages: [] } : null);
+    }
+    try {
+      await fetch('/api/products/clear-photos', { method: 'POST' });
+    } catch (e) {
+      console.warn('Clear photos API error:', e);
+    }
   };
 
   const handleImportProducts = async (items: any[], replace: boolean) => {
-    try {
-      const res = await fetch('/api/products/import', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ items, replaceExisting: replace })
-      });
-      const data = await res.json();
-      if (data.success && Array.isArray(data.products)) {
-        setProducts(data.products);
-        await saveProductsToIndexedDB(data.products);
-        setStoredJson(PRODUCTS_CACHE_KEY, data.products);
-        return;
-      }
-    } catch (err) {
-      console.warn('API import failed');
-    }
-
     const formattedItems: Product[] = items.map((it, idx) => ({
       ...it,
       id: it.id || `imp-${Date.now()}-${idx}`
     }));
 
-    setProducts(prev => {
-      const newList = replace ? formattedItems : [...formattedItems, ...prev];
-      saveProductsToIndexedDB(newList);
-      setStoredJson(PRODUCTS_CACHE_KEY, newList);
-      return newList;
-    });
+    const newList = replace ? formattedItems : [...formattedItems, ...products];
+    persistProducts(newList);
+
+    try {
+      await fetch('/api/products/import', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ items, replaceExisting: replace })
+      });
+    } catch (err) {
+      console.warn('API import warning:', err);
+    }
   };
 
   const handleSubmitInquiry = async (payload: any): Promise<boolean> => {
@@ -696,6 +706,7 @@ export default function App() {
         onUpdateProduct={handleUpdateProduct}
         onDeleteProduct={handleDeleteProduct}
         onClearAllProducts={handleClearAllProducts}
+        onClearAllPhotos={handleClearAllPhotos}
         onResetProducts={handleResetProducts}
         onImportProducts={handleImportProducts}
         onUpdateInquiryStatus={handleUpdateInquiryStatus}

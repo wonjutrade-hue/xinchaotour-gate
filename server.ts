@@ -3,7 +3,7 @@ import path from 'path';
 import fs from 'fs';
 import { createServer as createViteServer } from 'vite';
 import { GoogleGenAI } from '@google/genai';
-import { INITIAL_PRODUCTS } from './src/data/seedProducts.js';
+import { INITIAL_PRODUCTS, SAMPLE_PRODUCTS } from './src/data/seedProducts.js';
 import { Product, ConsultationRequest } from './src/types.js';
 
 // In-memory or persisted store for products and inquiries
@@ -25,7 +25,7 @@ function loadStoredProducts(): Product[] {
       const fileData = fs.readFileSync(PRODUCTS_FILE_PATH, 'utf-8');
       const parsed = JSON.parse(fileData);
       if (Array.isArray(parsed)) {
-        console.log(`[Server] Loaded ${parsed.length} products from root stored_products.json`);
+        console.log(`[Server] Loaded ${parsed.length} products from stored_products.json`);
         return parsed;
       }
     }
@@ -44,15 +44,14 @@ function loadStoredProducts(): Product[] {
       console.warn('[Server] Backup read also failed:', bErr);
     }
   }
-  // Only initialize with INITIAL_PRODUCTS if stored_products.json does not exist at all
-  saveStoredProducts(INITIAL_PRODUCTS);
-  return [...INITIAL_PRODUCTS];
+  // If file doesn't exist, initialize empty array
+  saveStoredProducts([]);
+  return [];
 }
 
 function saveStoredProducts(prods: Product[]) {
   try {
     const dataStr = JSON.stringify(prods, null, 2);
-    // Write ONLY to root stored_products.json (outside src/ directory)
     fs.writeFileSync(PRODUCTS_FILE_PATH, dataStr, 'utf-8');
     fs.writeFileSync(PRODUCTS_BACKUP_PATH, dataStr, 'utf-8');
     console.log(`[Server] Persisted ${prods.length} products to stored_products.json & backup`);
@@ -137,7 +136,7 @@ async function fetchLiveExchangeRates() {
 
 async function startServer() {
   const app = express();
-  const PORT = 3000;
+  const PORT = Number(process.env.PORT) || 3000;
 
   app.use(express.json({ limit: '100mb' }));
   app.use(express.urlencoded({ limit: '100mb', extended: true }));
@@ -168,16 +167,20 @@ async function startServer() {
           return;
         }
 
-        // Base64 format: data:image/jpeg;base64,...
-        const matches = rawData.match(/^data:image\/([a-zA-Z+]+);base64,(.+)$/);
-        if (!matches || matches.length !== 3) {
+        // Base64 format: data:image/jpeg;base64,... (case-insensitive)
+        const matches = rawData.match(/^data:image\/([a-zA-Z0-9\+\-\.]+);base64,(.+)$/is);
+        if (!matches || matches.length < 3) {
+          // If already a URL or unrecognized format
           savedUrls.push(rawData);
           return;
         }
 
-        const ext = matches[1].replace('jpeg', 'jpg');
-        const buffer = Buffer.from(matches[2], 'base64');
-        const filename = `photo_${timestamp}_${idx}_${Math.random().toString(36).substring(2, 7)}.${ext}`;
+        let ext = matches[1].toLowerCase().replace('jpeg', 'jpg');
+        if (ext === 'svg+xml') ext = 'svg';
+        if (!['jpg', 'png', 'webp', 'gif', 'svg'].includes(ext)) ext = 'jpg';
+
+        const buffer = Buffer.from(matches[2].trim(), 'base64');
+        const filename = `photo_${timestamp}_${idx}_${Math.random().toString(36).substring(2, 8)}.${ext}`;
         const targetPath = path.join(UPLOADS_DIR, filename);
 
         fs.writeFileSync(targetPath, buffer);
@@ -247,9 +250,43 @@ async function startServer() {
     res.json({ success: true, message: 'Product deleted' });
   });
 
+  // 4-B. Clear All Products
+  app.post('/api/products/clear', (req: Request, res: Response) => {
+    products = [];
+    saveStoredProducts([]);
+    res.json({ success: true, count: 0, products: [] });
+  });
+
+  // 4-C. Sync Products (Full Array Replacement/Save)
+  app.post('/api/products/sync', (req: Request, res: Response) => {
+    try {
+      const { products: newProducts } = req.body;
+      if (Array.isArray(newProducts)) {
+        products = newProducts;
+        saveStoredProducts(products);
+        res.json({ success: true, count: products.length, products });
+      } else {
+        res.status(400).json({ success: false, error: 'products must be an array' });
+      }
+    } catch (err: any) {
+      res.status(500).json({ success: false, error: err.message });
+    }
+  });
+
+  // 4-D. Clear All Photos (Retains product descriptions, zeroes images)
+  app.post('/api/products/clear-photos', (req: Request, res: Response) => {
+    products = products.map(p => ({
+      ...p,
+      imageUrl: '',
+      additionalImages: []
+    }));
+    saveStoredProducts(products);
+    res.json({ success: true, count: products.length, products });
+  });
+
   // 5. Bulk Reset to Initial Seed Data
   app.post('/api/products/reset', (req: Request, res: Response) => {
-    products = [...INITIAL_PRODUCTS];
+    products = [...SAMPLE_PRODUCTS];
     saveStoredProducts(products);
     res.json({ success: true, products });
   });

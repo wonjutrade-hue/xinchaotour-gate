@@ -47,6 +47,7 @@ interface AdminPanelProps {
   onUpdateProduct: (id: string, updated: Partial<Product>) => Promise<Product | undefined>;
   onDeleteProduct: (id: string) => Promise<void>;
   onClearAllProducts?: () => Promise<void>;
+  onClearAllPhotos?: () => Promise<void>;
   onResetProducts: () => Promise<void>;
   onImportProducts: (items: any[], replace: boolean) => Promise<void>;
   onUpdateInquiryStatus: (id: string, status: ConsultationRequest['status']) => Promise<void>;
@@ -62,6 +63,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   onUpdateProduct,
   onDeleteProduct,
   onClearAllProducts,
+  onClearAllPhotos,
   onResetProducts,
   onImportProducts,
   onUpdateInquiryStatus,
@@ -93,7 +95,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     priceKRW: 850000,
     priceVND: 16000000,
     duration: '1박 기준 (일정 조율 가능)',
-    imageUrl: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1000&q=80',
+    imageUrl: '',
     additionalImages: [],
     rating: 5.0,
     reviewCount: 15,
@@ -177,48 +179,76 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     }
   };
 
-  // Image Compressor & Disk Uploader
+  // Image Compressor & Disk Uploader (Supports JPG, PNG, WEBP, GIF, HEIC/HEIF)
   const compressImage = (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       const reader = new FileReader();
       reader.onload = (e) => {
+        const rawResult = e.target?.result as string;
+        if (!rawResult) {
+          resolve('');
+          return;
+        }
+
         const img = new Image();
         img.onload = () => {
-          const canvas = document.createElement('canvas');
-          let { width, height } = img;
-          const MAX_SIZE = 1440;
-          if (width > height && width > MAX_SIZE) {
-            height = Math.round((height * MAX_SIZE) / width);
-            width = MAX_SIZE;
-          } else if (height > MAX_SIZE) {
-            width = Math.round((width * MAX_SIZE) / height);
-            height = MAX_SIZE;
+          try {
+            const canvas = document.createElement('canvas');
+            let { width, height } = img;
+            const MAX_SIZE = 1600; // Optimal for sharp high-res display
+            if (width > height && width > MAX_SIZE) {
+              height = Math.round((height * MAX_SIZE) / width);
+              width = MAX_SIZE;
+            } else if (height > MAX_SIZE) {
+              width = Math.round((width * MAX_SIZE) / height);
+              height = MAX_SIZE;
+            }
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            if (ctx) {
+              ctx.drawImage(img, 0, 0, width, height);
+              const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+              resolve(dataUrl);
+              return;
+            }
+          } catch (err) {
+            console.warn('Canvas conversion failed, fallback to raw data URL:', err);
           }
-          canvas.width = width;
-          canvas.height = height;
-          const ctx = canvas.getContext('2d');
-          ctx?.drawImage(img, 0, 0, width, height);
-          resolve(canvas.toDataURL('image/jpeg', 0.85));
+          resolve(rawResult);
         };
-        img.onerror = () => reject(new Error('이미지 변환 실패'));
-        img.src = e.target?.result as string;
+        img.onerror = () => {
+          console.warn('Image parse failed, using raw data');
+          resolve(rawResult);
+        };
+        img.src = rawResult;
       };
-      reader.onerror = () => reject(new Error('파일 읽기 실패'));
+      reader.onerror = () => {
+        console.warn('FileReader failed');
+        resolve('');
+      };
       reader.readAsDataURL(file);
     });
   };
 
   const uploadFilesToDisk = async (files: File[]): Promise<string[]> => {
     if (files.length === 0) return [];
-    setUploadStatus(`고화질 사진 ${files.length}장 처리 중...`);
+    setUploadStatus(`고화질 사진 ${files.length}장 변환 및 서버 저장 중...`);
     const base64List: string[] = [];
     for (let i = 0; i < files.length; i++) {
       try {
         const compressed = await compressImage(files[i]);
-        base64List.push(compressed);
+        if (compressed) {
+          base64List.push(compressed);
+        }
       } catch (err) {
-        console.warn('Compress failed:', err);
+        console.warn('Compress error:', err);
       }
+    }
+
+    if (base64List.length === 0) {
+      setUploadStatus(null);
+      return [];
     }
 
     try {
@@ -233,7 +263,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
         return data.urls;
       }
     } catch (e) {
-      console.warn('Upload API fallback to client base64');
+      console.warn('Upload API fallback to client base64 storage:', e);
     }
     setUploadStatus(null);
     return base64List;
@@ -247,56 +277,112 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     setFormData({
       title: presetCategory === '풀빌라' 
         ? `[${presetCity}] 럭셔리 프라이빗 독채 풀빌라 3베드룸`
-        : `[${presetCity}/${presetCategory}] 베트남 최고급 단독 ${presetCategory}`,
+        : presetCategory === '골프투어'
+        ? `[${presetCity}/골프] 3박 5일 명문 CC 54홀 단독 골프투어`
+        : presetCategory === '자유여행'
+        ? `[${presetCity}/자유여행] 핵심 명소 & 단독 차량 1일 데이투어`
+        : `[${presetCity}/패키지] 3박 5일 명품 단독 프라이빗 힐링 패키지`,
       subTitle: presetCategory === '풀빌라'
         ? '전용 프라이빗 풀 & 오션뷰 테라스, 3개 킹베드 침실, 바베큐 완비'
-        : '전 일정 단독 전용차량 & 100% 한국인 전담 가이드 동행 힐링 여행',
+        : presetCategory === '골프투어'
+        ? '그린피+캐디피+카트비 전액 포함, 5성급 호텔 숙박 및 단독 리무진 전용차량'
+        : presetCategory === '자유여행'
+        ? '단독 전용차량 & 한국어 가이드 동행, 내가 원하는 코스로 자유롭게 힐링'
+        : '전 일정 단독 전용차량 & 100% 한국인 전담 가이드 동행 5성급 힐링 여행',
       category: presetCategory,
       region,
       city: presetCity,
-      priceKRW: presetCategory === '풀빌라' ? 850000 : presetCategory === '골프투어' ? 950000 : 650000,
-      priceVND: presetCategory === '풀빌라' ? 16000000 : presetCategory === '골프투어' ? 18000000 : 12000000,
-      duration: presetCategory === '풀빌라' ? '1박 기준 (일정 조율 가능)' : '3박 5일',
-      imageUrl: presetCategory === '풀빌라' 
-        ? 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1000&q=80'
-        : presetCategory === '골프투어'
-        ? 'https://images.unsplash.com/photo-1535131749006-b7f58c99034b?auto=format&fit=crop&w=1000&q=80'
-        : 'https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?auto=format&fit=crop&w=1000&q=80',
+      priceKRW: presetCategory === '풀빌라' ? 850000 : presetCategory === '골프투어' ? 950000 : presetCategory === '자유여행' ? 120000 : 690000,
+      priceVND: presetCategory === '풀빌라' ? 16000000 : presetCategory === '골프투어' ? 18000000 : presetCategory === '자유여행' ? 2200000 : 13000000,
+      duration: presetCategory === '풀빌라' ? '1박 기준 (일정 조율 가능)' : presetCategory === '자유여행' ? '1일 (데이투어)' : '3박 5일',
+      imageUrl: '',
       additionalImages: [],
       rating: 5.0,
       reviewCount: 15,
       isPopular: true,
       isHotDeal: false,
       discountPercent: 0,
-      departureCities: ['인천', '김해', '대구', '청주'],
+      departureCities: presetCategory === '자유여행' ? ['현지 출발 (호텔 픽업)'] : ['인천', '김해', '대구', '청주'],
       tags: presetCategory === '풀빌라'
         ? [`#${presetCity}풀빌라`, '#독채빌라', '#프라이빗수영장', '#가족휴양']
+        : presetCategory === '골프투어'
+        ? [`#${presetCity}골프`, '#그린피포함', '#54홀라운딩', '#단독차량']
+        : presetCategory === '자유여행'
+        ? [`#${presetCity}자유여행`, '#1일투어', '#단독차량', '#자유일정']
         : [`#${presetCity}여행`, `#${presetCategory}`, '#단독차량', '#노쇼핑'],
       description: presetCategory === '풀빌라'
         ? `${presetCity} 해변 인근의 최고급 독채 풀빌라로, 전용 프라이빗 인피니티 풀과 최고급 인테리어, 넓은 거실 및 풀옵션 주방을 갖추고 있어 가족 및 단체 여행에 최적의 럭셔리 힐링을 선사합니다.`
+        : presetCategory === '골프투어'
+        ? `${presetCity} 명문 골프 코스에서 즐기는 프리미엄 54홀 라운딩 투어로, 전 일정 그린피/캐디피/카트비와 5성급 호텔 숙박, 단독 전용 차량이 제공됩니다.`
+        : presetCategory === '자유여행'
+        ? `${presetCity}의 주요 관광지와 숨은 명소를 단독 차량과 전문 가이드와 함께 여유롭게 둘러보는 맞춤 1일 자유 데이투어입니다.`
         : '고객 맞춤형 1:1 단독 프라이빗 여행 상품입니다. 원하시는 일정과 호텔로 자유롭게 조정 가능합니다.',
       address: presetCategory === '풀빌라' ? `${presetCity} 해변로 리조트 단지 (Premier Village Area)` : '',
       googleMapUrl: '',
       airbnbUrl: '',
-      included: ['전 일정 단독 전용차량 & 기사', '한국어 전문 가이드 동행', '최고급 숙박 및 조식', '공항 단독 픽업/샌딩', '여행자 보험'],
-      excluded: ['왕복 항공권 (선택 발권 가능)', '가이드/기사 매너팁', '개인 경비'],
-      itinerary: [
+      included: presetCategory === '골프투어'
+        ? ['전 일정 그린피 (54홀)', '1인 1캐디피 & 2인 1전동카트비', '5성급 호텔 숙박 & 조식', '전 일정 단독 전용차량 & 기사', '한국어 전문 가이드 동행', '여행자 보험']
+        : presetCategory === '자유여행'
+        ? ['단독 전용차량 및 기사', '한국어 전문 가이드 동행', '주요 명소 입장권', '생수 및 물티슈']
+        : ['전 일정 단독 전용차량 & 기사', '한국어 전문 가이드 동행', '최고급 숙박 및 조식', '공항 단독 픽업/샌딩', '여행자 보험'],
+      excluded: presetCategory === '골프투어'
+        ? ['왕복 항공권', '캐디 매너팁 ($15~20 / 18홀)', '클럽하우스 중식 및 개인 경비']
+        : presetCategory === '자유여행'
+        ? ['가이드/기사 매너팁', '개인 식음료 및 쇼핑 경비']
+        : ['왕복 항공권 (선택 발권 가능)', '가이드/기사 매너팁', '개인 경비'],
+      itinerary: presetCategory === '골프투어' ? [
+        { day: 1, title: '공항 도착 및 가이드 미팅 후 호텔 체크인', description: '단독 차량으로 5성급 호텔 이동 후 휴식 및 자유시간', meal: '석식: 현지 특식', hotel: '5성급 호텔' },
+        { day: 2, title: '1차 18홀 명품 라운딩 & 힐링 스파', description: '클럽하우스 이동 후 18홀 라운딩, 마사지 90분 체험 및 특식 만찬', meal: '조: 호텔식 / 중: 클럽하우스 / 석: 해산물 특식', hotel: '5성급 호텔' },
+        { day: 3, title: '2차 18홀 라운딩 & 야경 투어', description: '2차 명문 코스 18홀 라운딩 후 시티 명소 및 야경 감상', meal: '조: 호텔식 / 중: 클럽하우스 / 석: 특식', hotel: '5성급 호텔' },
+        { day: 4, title: '3차 18홀 라운딩 후 공항 샌딩 & 귀국', description: '마지막 18홀 라운딩 후 체크아웃 및 공항 단독 배웅', meal: '조: 호텔식 / 중: 클럽하우스', hotel: '기내박' }
+      ] : presetCategory === '자유여행' ? [
+        { day: 1, title: '호텔 픽업 -> 주요 명소 관광 -> 로컬 맛집 -> 힐링 스파 -> 호텔 복귀', description: '09:00 전용차량 호텔 픽업 -> 핵심 랜드마크 관광 -> 현지 유명 맛집 점심 -> 카페 및 스파 체험 -> 18:00 호텔 안전 귀환', meal: '중식: 로컬 특식', hotel: '자유 숙박 (숙소 미포함)' }
+      ] : [
         { day: 1, title: '공항 도착 및 가이드 미팅 & 체크인', description: '단독 차량으로 숙소 이동 후 체크인 및 자유 휴식', meal: '석식: 현지 특식', hotel: '5성급 호텔/풀빌라' },
         { day: 2, title: '시티 주요 명소 투어 & 힐링 스파', description: '인기 관광지 관람 및 특식 다이닝, 90분 마사지', meal: '조: 호텔식 / 중: 특식 / 석: 씨푸드', hotel: '5성급 호텔/풀빌라' },
         { day: 3, title: '자유 일정 & 기념품 쇼핑 후 공항 배웅', description: '체크아웃 후 인기 카페 방문 및 공항 단독 샌딩', meal: '조: 호텔식 / 중: 자유식', hotel: '기내박' }
       ]
     });
 
-    setIncludedText('전 일정 단독 전용차량 & 기사\n한국어 전문 가이드 동행\n최고급 숙박 및 조식\n공항 단독 픽업/샌딩\n여행자 보험');
-    setExcludedText('왕복 항공권 (선택 발권 가능)\n가이드/기사 매너팁\n개인 경비');
-    setDepartureCitiesText('인천\n김해\n대구\n청주');
-    setTagsText(presetCategory === '풀빌라' ? `#${presetCity}풀빌라\n#독채빌라\n#프라이빗수영장\n#가족휴양` : `#${presetCity}여행\n#${presetCategory}\n#단독차량\n#노쇼핑`);
+    setIncludedText(
+      presetCategory === '골프투어'
+        ? '전 일정 그린피 (54홀)\n1인 1캐디피 & 2인 1전동카트비\n5성급 호텔 숙박 & 조식\n전 일정 단독 전용차량 & 기사\n한국어 전문 가이드 동행\n여행자 보험'
+        : presetCategory === '자유여행'
+        ? '단독 전용차량 및 기사\n한국어 전문 가이드 동행\n주요 명소 입장권\n생수 및 물티슈'
+        : '전 일정 단독 전용차량 & 기사\n한국어 전문 가이드 동행\n최고급 숙박 및 조식\n공항 단독 픽업/샌딩\n여행자 보험'
+    );
+    setExcludedText(
+      presetCategory === '골프투어'
+        ? '왕복 항공권\n캐디 매너팁 ($15~20 / 18홀)\n클럽하우스 중식 및 개인 경비'
+        : presetCategory === '자유여행'
+        ? '가이드/기사 매너팁\n개인 식음료 및 쇼핑 경비'
+        : '왕복 항공권 (선택 발권 가능)\n가이드/기사 매너팁\n개인 경비'
+    );
+    setDepartureCitiesText(presetCategory === '자유여행' ? '현지 출발 (호텔 픽업)' : '인천\n김해\n대구\n청주');
+    setTagsText(
+      presetCategory === '풀빌라'
+        ? `#${presetCity}풀빌라\n#독채빌라\n#프라이빗수영장\n#가족휴양`
+        : presetCategory === '골프투어'
+        ? `#${presetCity}골프\n#그린피포함\n#54홀라운딩\n#단독차량`
+        : presetCategory === '자유여행'
+        ? `#${presetCity}자유여행\n#1일투어\n#단독차량\n#자유일정`
+        : `#${presetCity}여행\n#${presetCategory}\n#단독차량\n#노쇼핑`
+    );
     setGalleryImages([]);
-    setItineraryList([
-      { day: 1, title: '공항 도착 및 가이드 미팅 & 체크인', description: '단독 차량으로 숙소 이동 후 체크인 및 자유 휴식', meal: '석식: 현지 특식', hotel: '5성급 호텔/풀빌라' },
-      { day: 2, title: '시티 주요 명소 투어 & 힐링 스파', description: '인기 관광지 관람 및 특식 다이닝, 90분 마사지', meal: '조: 호텔식 / 중: 특식 / 석: 씨푸드', hotel: '5성급 호텔/풀빌라' },
-      { day: 3, title: '자유 일정 & 기념품 쇼핑 후 공항 배웅', description: '체크아웃 후 인기 카페 방문 및 공항 단독 샌딩', meal: '조: 호텔식 / 중: 자유식', hotel: '기내박' }
-    ]);
+    setItineraryList(
+      presetCategory === '골프투어' ? [
+        { day: 1, title: '공항 도착 및 가이드 미팅 후 호텔 체크인', description: '단독 차량으로 5성급 호텔 이동 후 휴식 및 자유시간', meal: '석식: 현지 특식', hotel: '5성급 호텔' },
+        { day: 2, title: '1차 18홀 명품 라운딩 & 힐링 스파', description: '클럽하우스 이동 후 18홀 라운딩, 마사지 90분 체험 및 특식 만찬', meal: '조: 호텔식 / 중: 클럽하우스 / 석: 해산물 특식', hotel: '5성급 호텔' },
+        { day: 3, title: '2차 18홀 라운딩 & 야경 투어', description: '2차 명문 코스 18홀 라운딩 후 시티 명소 및 야경 감상', meal: '조: 호텔식 / 중: 클럽하우스 / 석: 특식', hotel: '5성급 호텔' },
+        { day: 4, title: '3차 18홀 라운딩 후 공항 샌딩 & 귀국', description: '마지막 18홀 라운딩 후 체크아웃 및 공항 단독 배웅', meal: '조: 호텔식 / 중: 클럽하우스', hotel: '기내박' }
+      ] : presetCategory === '자유여행' ? [
+        { day: 1, title: '호텔 픽업 -> 주요 명소 관광 -> 로컬 맛집 -> 힐링 스파 -> 호텔 복귀', description: '09:00 전용차량 호텔 픽업 -> 핵심 랜드마크 관광 -> 현지 유명 맛집 점심 -> 카페 및 스파 체험 -> 18:00 호텔 안전 귀환', meal: '중식: 로컬 특식', hotel: '자유 숙박 (숙소 미포함)' }
+      ] : [
+        { day: 1, title: '공항 도착 및 가이드 미팅 & 체크인', description: '단독 차량으로 숙소 이동 후 체크인 및 자유 휴식', meal: '석식: 현지 특식', hotel: '5성급 호텔/풀빌라' },
+        { day: 2, title: '시티 주요 명소 투어 & 힐링 스파', description: '인기 관광지 관람 및 특식 다이닝, 90분 마사지', meal: '조: 호텔식 / 중: 특식 / 석: 씨푸드', hotel: '5성급 호텔/풀빌라' },
+        { day: 3, title: '자유 일정 & 기념품 쇼핑 후 공항 배웅', description: '체크아웃 후 인기 카페 방문 및 공항 단독 샌딩', meal: '조: 호텔식 / 중: 자유식', hotel: '기내박' }
+      ]
+    );
 
     // Villa Defaults
     setVillaName(`[${presetCity}] 럭셔리 독채 풀빌라`);
@@ -319,11 +405,11 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     setVillaHouseRulesText('실내 절대 금연 (테라스/야외 흡연 구역 이용)\n반려동물 입실 불가\n22:00 이후 심야 정숙 (매너 타임)\n바베큐 시설 무료 이용 가능');
 
     // Golf Defaults
-    setGolfHoles(18);
+    setGolfHoles(presetCategory === '골프투어' ? 54 : 18);
     setGreenFeeIncluded(true);
     setCaddieFeeIncluded(true);
     setCartIncluded(true);
-    setGolfCourseNamesText(`${presetCity} CC\n몽고메리 링스`);
+    setGolfCourseNamesText(`${presetCity} CC\n몽고메리 링스\n바나힐스 GC`);
 
     setActiveTab('editor');
   };
@@ -408,14 +494,15 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     try {
       const splitText = (text: string) => text.split('\n').map(t => t.trim()).filter(Boolean);
 
-      const mainImage = galleryImages[0] || formData.imageUrl || 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1000&q=80';
+      const mainImage = galleryImages.length > 0 ? galleryImages[0] : '';
+      const additionalImages = galleryImages;
 
       const isVilla = formData.category === '풀빌라';
 
       const payload: Partial<Product> = {
         ...formData,
         imageUrl: mainImage,
-        additionalImages: galleryImages,
+        additionalImages: additionalImages,
         tags: splitText(tagsText),
         address: isVilla ? (villaAddress || formData.address) : formData.address,
         googleMapUrl: isVilla ? (villaGoogleMapUrl || formData.googleMapUrl) : formData.googleMapUrl,
@@ -471,10 +558,26 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
       if (editingId) {
         await onUpdateProduct(editingId, payload);
-        alert(`✅ "${payload.title}" 상품 정보가 성공적으로 수정되었습니다!`);
+        const goToCustomerView = window.confirm(
+          `✅ "${payload.title}" 상품이 성공적으로 수정 및 저장되었습니다!\n\n` +
+          `[확인]을 누르시면 손님용 홈페이지 화면으로 바로 이동하여 변경된 사진과 내용을 확인하실 수 있습니다.\n` +
+          `[취소]를 누르시면 관리자 화면에 남습니다.`
+        );
+        if (goToCustomerView) {
+          onClose();
+          return;
+        }
       } else {
         await onAddProduct(payload as any);
-        alert(`🎉 새 상품 "${payload.title}"이(가) 등록되었습니다!`);
+        const goToCustomerView = window.confirm(
+          `🎉 새 상품 "${payload.title}"이(가) 성공적으로 등록되었습니다!\n\n` +
+          `[확인]을 누르시면 손님용 홈페이지 화면으로 바로 이동하여 새로 등록된 사진과 상품을 확인하실 수 있습니다.\n` +
+          `[취소]를 누르시면 관리자 화면에 남습니다.`
+        );
+        if (goToCustomerView) {
+          onClose();
+          return;
+        }
       }
 
       setActiveTab('products');
@@ -614,30 +717,52 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   // 2. Authenticated Admin Studio
   return (
     <div className="fixed inset-0 z-50 bg-slate-950 text-slate-100 flex flex-col overflow-hidden animate-fadeIn">
-      {/* Top Main Navigation Bar */}
-      <header className="h-16 bg-slate-900 border-b border-slate-800 px-4 sm:px-6 flex items-center justify-between shrink-0">
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-amber-400 text-slate-950 flex items-center justify-center font-black text-base shadow-md">
-            PRO
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <h2 className="text-sm sm:text-base font-black text-white">신짜오투어 통합 마스터 관리자</h2>
-              <span className="text-[10px] bg-amber-400/20 text-amber-300 px-2 py-0.5 rounded font-black border border-amber-400/30">
-                MASTER STUDIO
-              </span>
+      {/* Top Main Navigation Bar - Fully Responsive for Mobile & Desktop */}
+      <header className="bg-slate-900 border-b border-slate-800 px-3 sm:px-6 py-2.5 shrink-0 sticky top-0 z-50">
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-amber-400 text-slate-950 flex items-center justify-center font-black text-sm sm:text-base shadow-md">
+              PRO
             </div>
-            <p className="text-[11px] text-slate-400 hidden sm:block">
-              풀빌라 맞춤 등록 · 투어 상품 · 사진 갤러리 · 고객 상담 통합 관리
-            </p>
+            <div>
+              <div className="flex items-center gap-1.5 sm:gap-2">
+                <h2 className="text-xs sm:text-base font-black text-white">신짜오투어 관리자</h2>
+                <span className="text-[9px] sm:text-[10px] bg-amber-400/20 text-amber-300 px-1.5 py-0.5 rounded font-black border border-amber-400/30">
+                  MASTER
+                </span>
+              </div>
+              <p className="text-[10px] text-slate-400 hidden sm:block">
+                풀빌라 맞춤 등록 · 투어 상품 · 사진 갤러리 · 고객 상담 통합 관리
+              </p>
+            </div>
+          </div>
+
+          {/* Exit & Close Buttons - Highlighted on top right */}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={onClose}
+              className="px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-400 hover:to-teal-500 text-white font-black text-xs sm:text-sm flex items-center gap-1.5 shadow-lg shadow-teal-500/30 cursor-pointer transition-all active:scale-95 border border-teal-300/40"
+              title="손님 화면으로 나가기"
+            >
+              <Eye className="w-4 h-4" />
+              <span>손님용 화면 보기 (나가기)</span>
+            </button>
+
+            <button
+              onClick={onClose}
+              className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center cursor-pointer transition-colors border border-slate-700"
+              title="닫기"
+            >
+              <X className="w-4 h-4 sm:w-5 sm:h-5" />
+            </button>
           </div>
         </div>
 
-        {/* Tab Navigation */}
-        <div className="flex items-center gap-1.5 bg-slate-950 p-1 rounded-2xl border border-slate-800">
+        {/* Tab Navigation - Scrollable on mobile */}
+        <div className="w-full flex items-center gap-1 bg-slate-950 p-1 rounded-xl border border-slate-800 overflow-x-auto mt-2">
           <button
             onClick={() => setActiveTab('products')}
-            className={`px-3 sm:px-4 py-2 rounded-xl text-xs font-black transition-all flex items-center gap-1.5 cursor-pointer ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-black transition-all flex items-center gap-1.5 whitespace-nowrap cursor-pointer ${
               activeTab === 'products'
                 ? 'bg-amber-400 text-slate-950 shadow-md'
                 : 'text-slate-400 hover:text-white'
@@ -649,7 +774,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
           <button
             onClick={() => handleOpenCreator('풀빌라')}
-            className={`px-3 sm:px-4 py-2 rounded-xl text-xs font-black transition-all flex items-center gap-1.5 cursor-pointer ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-black transition-all flex items-center gap-1.5 whitespace-nowrap cursor-pointer ${
               activeTab === 'editor'
                 ? 'bg-amber-400 text-slate-950 shadow-md'
                 : 'text-slate-400 hover:text-white'
@@ -661,59 +786,38 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
           <button
             onClick={() => setActiveTab('photos')}
-            className={`px-3 sm:px-4 py-2 rounded-xl text-xs font-black transition-all flex items-center gap-1.5 cursor-pointer ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-black transition-all flex items-center gap-1.5 whitespace-nowrap cursor-pointer ${
               activeTab === 'photos'
                 ? 'bg-amber-400 text-slate-950 shadow-md'
                 : 'text-slate-400 hover:text-white'
             }`}
           >
             <Camera className="w-3.5 h-3.5" />
-            <span>사진 자산 허브 ({allSitePhotos.length})</span>
+            <span>사진 자산 ({allSitePhotos.length})</span>
           </button>
 
           <button
             onClick={() => setActiveTab('inquiries')}
-            className={`px-3 sm:px-4 py-2 rounded-xl text-xs font-black transition-all flex items-center gap-1.5 cursor-pointer ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-black transition-all flex items-center gap-1.5 whitespace-nowrap cursor-pointer ${
               activeTab === 'inquiries'
                 ? 'bg-amber-400 text-slate-950 shadow-md'
                 : 'text-slate-400 hover:text-white'
             }`}
           >
             <Inbox className="w-3.5 h-3.5" />
-            <span>상담 접수함 ({inquiries.length})</span>
+            <span>상담 ({inquiries.length})</span>
           </button>
 
           <button
             onClick={() => setActiveTab('settings')}
-            className={`px-3 sm:px-4 py-2 rounded-xl text-xs font-black transition-all flex items-center gap-1.5 cursor-pointer ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-black transition-all flex items-center gap-1.5 whitespace-nowrap cursor-pointer ${
               activeTab === 'settings'
                 ? 'bg-amber-400 text-slate-950 shadow-md'
                 : 'text-slate-400 hover:text-white'
             }`}
           >
             <Settings className="w-3.5 h-3.5" />
-            <span>환경설정</span>
-          </button>
-        </div>
-
-        {/* Exit & Close */}
-        <div className="flex items-center gap-2">
-          <button
-            onClick={onClose}
-            className="px-3.5 py-2 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-extrabold text-xs flex items-center gap-1.5 shadow-md cursor-pointer transition-all hover:scale-105"
-            title="손님 화면으로 이동"
-          >
-            <Eye className="w-3.5 h-3.5" />
-            <span className="hidden md:inline">손님용 홈페이지로 이동</span>
-            <span className="md:hidden">홈페이지</span>
-          </button>
-
-          <button
-            onClick={onClose}
-            className="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center cursor-pointer transition-colors"
-            title="닫기"
-          >
-            <X className="w-5 h-5" />
+            <span>설정</span>
           </button>
         </div>
       </header>
@@ -725,6 +829,23 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
           <div className="max-w-7xl mx-auto space-y-6 animate-fadeIn">
             {/* Top Toolbar: Search & Action Buttons */}
             <div className="bg-slate-900 border border-slate-800 rounded-3xl p-5 space-y-4 shadow-xl">
+              {/* Success & Status Bar */}
+              <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-2xl p-3.5 flex flex-wrap items-center justify-between gap-3 text-xs">
+                <div className="flex items-center gap-2.5 text-emerald-300 font-bold">
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" />
+                  <span className="text-emerald-400 font-black">✅ 실시간 자동 저장 완료</span>
+                  <span className="text-slate-300 hidden sm:inline">| 등록 및 수정한 상품은 즉시 안전하게 저장되어 있습니다.</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="px-3.5 py-1.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-black text-xs flex items-center gap-1.5 shadow-md cursor-pointer transition-all active:scale-95"
+                >
+                  <Eye className="w-3.5 h-3.5" />
+                  <span>손님용 홈페이지에서 확인하기 &gt;</span>
+                </button>
+              </div>
+
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 {/* Search Bar */}
                 <div className="relative flex-1 max-w-md">
@@ -750,39 +871,62 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                 <div className="flex flex-wrap items-center gap-2">
                   <button
                     onClick={() => handleOpenCreator('풀빌라')}
-                    className="px-4 py-2.5 rounded-2xl bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-400 hover:to-teal-500 text-white font-black text-xs flex items-center gap-1.5 shadow-lg shadow-teal-500/20 cursor-pointer transition-all hover:scale-105"
+                    className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-400 hover:to-teal-500 text-white font-black text-xs flex items-center gap-1.5 shadow-md shadow-teal-500/20 cursor-pointer transition-all hover:scale-105"
                   >
-                    <Home className="w-4 h-4 text-white" />
-                    <span>🏊 풀빌라 숙소 등록 (Airbnb형)</span>
+                    <Home className="w-3.5 h-3.5 text-white" />
+                    <span>+ 🏊 풀빌라 등록 (에어비앤비형)</span>
                   </button>
 
                   <button
                     onClick={() => handleOpenCreator('골프투어')}
-                    className="px-3.5 py-2.5 rounded-2xl bg-slate-800 hover:bg-slate-700 text-emerald-400 font-bold text-xs flex items-center gap-1.5 border border-slate-700 cursor-pointer"
+                    className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-500 hover:to-emerald-600 text-white font-black text-xs flex items-center gap-1.5 shadow-md shadow-emerald-600/20 cursor-pointer transition-all hover:scale-105"
                   >
-                    <span>⛳ 골프투어 등록</span>
+                    <span>+ ⛳ 골프투어 등록 (54홀/그린피)</span>
+                  </button>
+
+                  <button
+                    onClick={() => handleOpenCreator('자유여행')}
+                    className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-cyan-600 to-cyan-700 hover:from-cyan-500 hover:to-cyan-600 text-white font-black text-xs flex items-center gap-1.5 shadow-md shadow-cyan-600/20 cursor-pointer transition-all hover:scale-105"
+                  >
+                    <span>+ 🌴 자유여행 등록 (1일/코스)</span>
                   </button>
 
                   <button
                     onClick={() => handleOpenCreator('추천패키지')}
-                    className="px-3.5 py-2.5 rounded-2xl bg-slate-800 hover:bg-slate-700 text-amber-300 font-bold text-xs flex items-center gap-1.5 border border-slate-700 cursor-pointer"
+                    className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-xs flex items-center gap-1.5 shadow-md shadow-amber-500/20 cursor-pointer transition-all hover:scale-105"
                   >
-                    <span>🌴 패키지/자유여행 등록</span>
+                    <span>+ ✨ 추천패키지 등록</span>
                   </button>
+
+                  {onClearAllPhotos && (
+                    <button
+                      onClick={async () => {
+                        if (window.confirm('사이트 내 모든 상품의 기존 샘플 사진을 0장으로 깨끗하게 비우시겠습니까?\n\n비운 후 사장님께서 홈페이지 순서대로 준비하신 사진을 등록하실 수 있습니다.')) {
+                          await onClearAllPhotos();
+                          alert('✨ 모든 상품의 사진이 0장으로 깨끗하게 비워졌습니다.\n이제 각 상품 번호(#1, #2, #3...)에 맞게 준비하신 사진을 등록해보세요!');
+                        }
+                      }}
+                      className="px-3 py-2 rounded-xl bg-amber-400/20 hover:bg-amber-400 text-amber-300 hover:text-slate-950 border border-amber-400/40 font-black text-xs flex items-center gap-1.5 cursor-pointer transition-all shadow-md active:scale-95"
+                      title="모든 상품의 기존 샘플 사진을 0장으로 비웁니다"
+                    >
+                      <Camera className="w-3.5 h-3.5" />
+                      <span>🧹 사진 전체 비우기</span>
+                    </button>
+                  )}
 
                   {onClearAllProducts && (
                     <button
                       onClick={async () => {
                         if (window.confirm('정말로 모든 상품을 삭제하고 빈 상태(0개)로 만드시겠습니까?')) {
                           await onClearAllProducts();
-                          alert('모든 상품이 삭제되었습니다. 이제 사장님의 풀빌라 상품을 등록해보세요!');
+                          alert('모든 상품이 삭제되었습니다. 이제 사장님의 진짜 상품을 등록해보세요!');
                         }
                       }}
-                      className="px-3 py-2.5 rounded-2xl bg-rose-500/10 hover:bg-rose-600 text-rose-400 hover:text-white border border-rose-500/30 font-bold text-xs flex items-center gap-1 cursor-pointer transition-all"
+                      className="px-3 py-2 rounded-xl bg-rose-500/10 hover:bg-rose-600 text-rose-400 hover:text-white border border-rose-500/30 font-bold text-xs flex items-center gap-1 cursor-pointer transition-all"
                       title="모든 상품을 비우고 0개 상태로 만듭니다"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
-                      <span>전체 비우기</span>
+                      <span>상품 전체 비우기</span>
                     </button>
                   )}
 
@@ -793,7 +937,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                         alert('기본 샘플 데이터로 복원되었습니다.');
                       }
                     }}
-                    className="px-3 py-2.5 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs flex items-center gap-1 border border-slate-700 cursor-pointer"
+                    className="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs flex items-center gap-1 border border-slate-700 cursor-pointer"
                     title="초기 샘플로 복원"
                   >
                     <RotateCcw className="w-3.5 h-3.5" />
@@ -802,14 +946,14 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
                   <button
                     onClick={handleExportJSON}
-                    className="px-3 py-2.5 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs flex items-center gap-1 border border-slate-700 cursor-pointer"
+                    className="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs flex items-center gap-1 border border-slate-700 cursor-pointer"
                     title="JSON 백업 파일 다운로드"
                   >
                     <Download className="w-3.5 h-3.5" />
                     <span>백업 저장</span>
                   </button>
 
-                  <label className="px-3 py-2.5 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs flex items-center gap-1 border border-slate-700 cursor-pointer">
+                  <label className="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs flex items-center gap-1 border border-slate-700 cursor-pointer">
                     <Upload className="w-3.5 h-3.5" />
                     <span>백업 불러오기</span>
                     <input
@@ -907,62 +1051,219 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
             {/* Products Empty State */}
             {filteredProducts.length === 0 ? (
-              <div className="bg-slate-900 border border-slate-800 rounded-3xl p-16 text-center space-y-4">
-                <div className="w-16 h-16 bg-slate-800 text-slate-400 rounded-2xl flex items-center justify-center mx-auto">
-                  <Inbox className="w-8 h-8" />
+              <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8 sm:p-14 text-center space-y-6">
+                <div className="w-16 h-16 bg-amber-400/10 text-amber-400 rounded-2xl flex items-center justify-center mx-auto border border-amber-400/30">
+                  <Sparkles className="w-8 h-8 text-amber-400" />
                 </div>
-                <div className="space-y-1">
-                  <h3 className="text-base font-black text-white">등록된 상품이 없습니다</h3>
-                  <p className="text-xs text-slate-400">
-                    상단의 [풀빌라 숙소 등록 (Airbnb형)] 또는 [새 상품 등록] 버튼을 눌러 첫 상품을 올려보세요!
+                <div className="space-y-2 max-w-xl mx-auto">
+                  <h3 className="text-xl font-black text-white">모든 상품이 깨끗하게 비워진 상태입니다 (0개)</h3>
+                  <p className="text-xs text-slate-300 leading-relaxed">
+                    임시 샘플 상품이 완전히 삭제되었으며, 이제 사장님의 <strong>진짜 상품을 특성에 맞는 양식</strong>으로 바로 등록하실 수 있습니다.<br />
+                    등록하시려는 상품의 유형을 선택해주세요:
                   </p>
                 </div>
-                <div className="pt-2 flex items-center justify-center gap-3">
+                
+                {/* 4 Category Quick Launch Cards */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 max-w-4xl mx-auto text-left">
                   <button
                     onClick={() => handleOpenCreator('풀빌라')}
-                    className="px-5 py-2.5 rounded-xl bg-teal-500 hover:bg-teal-400 text-white font-black text-xs shadow-md cursor-pointer"
+                    className="p-4 rounded-2xl bg-slate-950 border border-teal-500/40 hover:border-teal-400 hover:bg-teal-950/30 transition-all cursor-pointer group flex flex-col justify-between space-y-3"
                   >
-                    🏊 풀빌라 숙소 등록하기
+                    <div>
+                      <div className="flex items-center gap-2 text-teal-400 font-black text-sm">
+                        <span>🏊 풀빌라 렌트</span>
+                        <span className="text-[10px] bg-teal-500/20 px-2 py-0.5 rounded text-teal-300">에어비앤비형</span>
+                      </div>
+                      <p className="text-[11px] text-slate-400 mt-1">
+                        침실, 욕실, 침대, 기준/최대인원, 전용수영장, 편의시설, 숙소 이용규칙 등록
+                      </p>
+                    </div>
+                    <span className="text-xs font-bold text-teal-300 group-hover:translate-x-1 transition-transform">
+                      등록 시작하기 &rarr;
+                    </span>
                   </button>
+
                   <button
-                    onClick={onResetProducts}
-                    className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs cursor-pointer"
+                    onClick={() => handleOpenCreator('골프투어')}
+                    className="p-4 rounded-2xl bg-slate-950 border border-emerald-500/40 hover:border-emerald-400 hover:bg-emerald-950/30 transition-all cursor-pointer group flex flex-col justify-between space-y-3"
                   >
-                    기본 샘플 복원하기
+                    <div>
+                      <div className="flex items-center gap-2 text-emerald-400 font-black text-sm">
+                        <span>⛳ 골프투어</span>
+                        <span className="text-[10px] bg-emerald-500/20 px-2 py-0.5 rounded text-emerald-300">54홀/그린피</span>
+                      </div>
+                      <p className="text-[11px] text-slate-400 mt-1">
+                        홀 수, 그린피/캐디피/카트비 포함, 연계 골프장 목록 및 라운딩 일정표 등록
+                      </p>
+                    </div>
+                    <span className="text-xs font-bold text-emerald-300 group-hover:translate-x-1 transition-transform">
+                      등록 시작하기 &rarr;
+                    </span>
+                  </button>
+
+                  <button
+                    onClick={() => handleOpenCreator('자유여행')}
+                    className="p-4 rounded-2xl bg-slate-950 border border-cyan-500/40 hover:border-cyan-400 hover:bg-cyan-950/30 transition-all cursor-pointer group flex flex-col justify-between space-y-3"
+                  >
+                    <div>
+                      <div className="flex items-center gap-2 text-cyan-400 font-black text-sm">
+                        <span>🌴 자유여행</span>
+                        <span className="text-[10px] bg-cyan-500/20 px-2 py-0.5 rounded text-cyan-300">1일/코스</span>
+                      </div>
+                      <p className="text-[11px] text-slate-400 mt-1">
+                        단독 전용차량/가이드, 맞춤 1일 자유 코스 및 핫플 투어 일정표 등록
+                      </p>
+                    </div>
+                    <span className="text-xs font-bold text-cyan-300 group-hover:translate-x-1 transition-transform">
+                      등록 시작하기 &rarr;
+                    </span>
+                  </button>
+
+                  <button
+                    onClick={() => handleOpenCreator('추천패키지')}
+                    className="p-4 rounded-2xl bg-slate-950 border border-amber-500/40 hover:border-amber-400 hover:bg-amber-950/30 transition-all cursor-pointer group flex flex-col justify-between space-y-3"
+                  >
+                    <div>
+                      <div className="flex items-center gap-2 text-amber-400 font-black text-sm">
+                        <span>✨ 추천 패키지</span>
+                        <span className="text-[10px] bg-amber-500/20 px-2 py-0.5 rounded text-amber-300">단독패키지</span>
+                      </div>
+                      <p className="text-[11px] text-slate-400 mt-1">
+                        전 일정 단독 차량, 5성급 호텔, 일자별 상세 투어 코스 및 식사 일정 등록
+                      </p>
+                    </div>
+                    <span className="text-xs font-bold text-amber-300 group-hover:translate-x-1 transition-transform">
+                      등록 시작하기 &rarr;
+                    </span>
+                  </button>
+                </div>
+
+                <div className="pt-2">
+                  <button
+                    onClick={onClose}
+                    className="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs cursor-pointer border border-slate-700 inline-flex items-center gap-1.5"
+                  >
+                    <Eye className="w-3.5 h-3.5" />
+                    <span>손님용 화면 확인하러 나가기</span>
                   </button>
                 </div>
               </div>
             ) : viewMode === 'grid' ? (
               /* Grid View */
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                {filteredProducts.map((prod) => (
+                {filteredProducts.map((prod, idx) => {
+                  const totalImages = [prod.imageUrl, ...(prod.additionalImages || [])].filter(Boolean);
+                  return (
                   <div
                     key={prod.id}
                     className="bg-slate-900 border border-slate-800 hover:border-slate-700 rounded-2xl overflow-hidden shadow-lg flex flex-col justify-between transition-all group"
                   >
                     <div>
-                      {/* Image Preview & Badges */}
-                      <div className="relative aspect-[16/10] bg-slate-950 overflow-hidden">
-                        <img
-                          src={prod.imageUrl}
-                          alt={prod.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                        />
-                        <div className="absolute top-3 left-3 flex items-center gap-1.5 bg-slate-950/80 backdrop-blur-md px-2.5 py-1 rounded-lg text-xs font-bold text-white border border-white/10">
-                          <MapPin className="w-3 h-3 text-amber-400" />
-                          <span>{prod.region} · {prod.city}</span>
-                        </div>
-                        <div className="absolute top-3 right-3 flex items-center gap-1">
-                          <span className={`px-2 py-0.5 rounded text-[10px] font-black ${
-                            prod.category === '풀빌라' ? 'bg-teal-500 text-white' :
-                            prod.category === '골프투어' ? 'bg-emerald-500 text-slate-950' : 'bg-amber-400 text-slate-950'
-                          }`}>
-                            {prod.category}
-                          </span>
-                        </div>
-                        <div className="absolute bottom-3 left-3 bg-slate-950/80 backdrop-blur-md text-slate-300 text-[10px] px-2 py-0.5 rounded">
-                          📷 사진 {(prod.additionalImages?.length || 0) + 1}장
-                        </div>
+                      {/* Image Preview & Direct Quick-Action Slot */}
+                      <div className="relative aspect-[16/10] bg-slate-950 overflow-hidden flex items-center justify-center border-b border-slate-800">
+                        {prod.imageUrl ? (
+                          <>
+                            <img
+                              src={prod.imageUrl}
+                              alt={prod.title}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                            />
+                            {/* Order Number Badge */}
+                            <div className="absolute top-3 left-3 flex items-center gap-1.5 bg-slate-950/90 backdrop-blur-md px-2.5 py-1 rounded-lg text-xs font-black text-amber-300 border border-amber-400/40 shadow-md">
+                              <span>#{idx + 1}</span>
+                              <span className="text-white text-[11px] font-normal">| {prod.region} {prod.city}</span>
+                            </div>
+
+                            {/* Category Badge */}
+                            <div className="absolute top-3 right-3 flex items-center gap-1">
+                              <span className={`px-2 py-0.5 rounded text-[10px] font-black ${
+                                prod.category === '풀빌라' ? 'bg-teal-500 text-white' :
+                                prod.category === '골프투어' ? 'bg-emerald-500 text-slate-950' : 'bg-amber-400 text-slate-950'
+                              }`}>
+                                {prod.category}
+                              </span>
+                            </div>
+
+                            {/* Quick Photo Actions */}
+                            <div className="absolute bottom-2.5 left-2.5 right-2.5 flex items-center justify-between gap-1.5">
+                              <div className="bg-slate-950/90 backdrop-blur-md text-slate-200 text-[10px] px-2 py-1 rounded-lg font-bold border border-white/10">
+                                📷 사진 {totalImages.length}장
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <label className="bg-teal-600/90 hover:bg-teal-500 text-white text-[11px] font-bold px-2 py-1 rounded-lg cursor-pointer transition-colors shadow-md backdrop-blur-xs flex items-center gap-1">
+                                  <span>📸 추가</span>
+                                  <input
+                                    type="file"
+                                    multiple
+                                    accept="image/*"
+                                    className="hidden"
+                                    onChange={async (e) => {
+                                      const files = e.target.files ? (Array.from(e.target.files) as File[]) : [];
+                                      if (files.length === 0) return;
+                                      const uploaded = await uploadFilesToDisk(files);
+                                      if (uploaded.length > 0) {
+                                        const newImages = [...totalImages, ...uploaded];
+                                        await onUpdateProduct(prod.id, {
+                                          imageUrl: newImages[0] || '',
+                                          additionalImages: newImages
+                                        });
+                                      }
+                                      e.target.value = '';
+                                    }}
+                                  />
+                                </label>
+                                <button
+                                  type="button"
+                                  onClick={async (e) => {
+                                    e.stopPropagation();
+                                    if (window.confirm(`"${prod.title}"의 등록된 사진을 모두 지우시겠습니까?`)) {
+                                      await onUpdateProduct(prod.id, { imageUrl: '', additionalImages: [] });
+                                    }
+                                  }}
+                                  className="bg-rose-600/90 hover:bg-rose-500 text-white text-[11px] font-bold px-2 py-1 rounded-lg cursor-pointer transition-colors shadow-md backdrop-blur-xs"
+                                  title="이 상품의 사진만 지우기"
+                                >
+                                  🗑️ 지우기
+                                </button>
+                              </div>
+                            </div>
+                          </>
+                        ) : (
+                          /* Empty Photo Slot with Instant Direct File Uploader */
+                          <div className="w-full h-full p-4 flex flex-col items-center justify-center text-center bg-slate-950/80 border-2 border-dashed border-slate-700 hover:border-amber-400 transition-colors">
+                            <div className="absolute top-3 left-3 flex items-center gap-1.5 bg-slate-900 px-2.5 py-1 rounded-lg text-xs font-black text-amber-300 border border-amber-400/40">
+                              <span>#{idx + 1}</span>
+                              <span className="text-white text-[11px] font-normal">| {prod.region} {prod.city}</span>
+                            </div>
+                            <div className="w-10 h-10 rounded-full bg-amber-400/20 text-amber-400 flex items-center justify-center mb-2">
+                              <Camera className="w-5 h-5" />
+                            </div>
+                            <p className="text-xs font-bold text-white mb-1">등록된 사진 없음 (0장)</p>
+                            <p className="text-[11px] text-slate-400 mb-2.5">준비하신 사진을 등록해주세요</p>
+                            <label className="px-3 py-1.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs flex items-center gap-1.5 cursor-pointer shadow-lg shadow-amber-400/20 transition-all hover:scale-105 active:scale-95">
+                              <Plus className="w-3.5 h-3.5" />
+                              <span>내 사진 선택하기 (즉시 등록)</span>
+                              <input
+                                type="file"
+                                multiple
+                                accept="image/*"
+                                className="hidden"
+                                onChange={async (e) => {
+                                  const files = e.target.files ? (Array.from(e.target.files) as File[]) : [];
+                                  if (files.length === 0) return;
+                                  const uploaded = await uploadFilesToDisk(files);
+                                  if (uploaded.length > 0) {
+                                    await onUpdateProduct(prod.id, {
+                                      imageUrl: uploaded[0] || '',
+                                      additionalImages: uploaded
+                                    });
+                                  }
+                                  e.target.value = '';
+                                }}
+                              />
+                            </label>
+                          </div>
+                        )}
                       </div>
 
                       {/* Content Body */}
@@ -1000,7 +1301,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                           className="px-3 py-1.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs flex items-center gap-1 cursor-pointer transition-colors shadow-xs"
                         >
                           <Edit3 className="w-3.5 h-3.5" />
-                          <span>수정</span>
+                          <span>상세 수정</span>
                         </button>
                         <button
                           onClick={() => handleDuplicateProduct(prod)}
@@ -1025,7 +1326,8 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                       </button>
                     </div>
                   </div>
-                ))}
+                  );
+                })}
               </div>
             ) : (
               /* Table View */
@@ -1131,14 +1433,27 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                 </p>
               </div>
 
-              <button
-                type="button"
-                onClick={() => setActiveTab('products')}
-                className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs cursor-pointer flex items-center gap-1"
-              >
-                <ArrowLeft className="w-3.5 h-3.5" />
-                <span>목록으로</span>
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('products')}
+                  className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs cursor-pointer flex items-center gap-1"
+                >
+                  <ArrowLeft className="w-3.5 h-3.5" />
+                  <span>목록으로</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    const form = document.querySelector('form');
+                    if (form) form.requestSubmit();
+                  }}
+                  disabled={isSaving}
+                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black text-xs shadow-md cursor-pointer flex items-center gap-1.5 active:scale-95"
+                >
+                  <span>💾 {isSaving ? '저장 중...' : '저장하기'}</span>
+                </button>
+              </div>
             </div>
 
             <form onSubmit={handleSaveProduct} className="space-y-6">
@@ -1294,24 +1609,71 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
               {/* Section 2: Photos (Airbnb Multi-Photo Gallery & Direct URL) */}
               <div className="space-y-4 bg-slate-950 p-6 rounded-2xl border border-slate-800">
-                <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-                  <h4 className="text-sm font-black text-white flex items-center gap-2">
-                    <Camera className="w-4 h-4 text-amber-400" />
-                    <span>2. 고화질 사진 등록 (1번 사진이 홈페이지 썸네일로 즉시 노출됩니다)</span>
-                  </h4>
-                  <span className="text-xs text-amber-300 font-bold">총 {galleryImages.length}장 등록됨</span>
+                <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-3">
+                  <div>
+                    <h4 className="text-sm font-black text-white flex items-center gap-2">
+                      <Camera className="w-4 h-4 text-amber-400" />
+                      <span>2. 고화질 사진 등록 (1번 사진이 홈페이지 대표 썸네일로 노출됩니다)</span>
+                    </h4>
+                    <p className="text-[11px] text-slate-400 mt-0.5">
+                      사진을 등록하지 않으시면 깔끔한 맞춤 플레이스홀더가 표시되며, 언제든 원하는 고화질 사진을 추가/교체하실 수 있습니다.
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className={`text-xs font-bold px-2.5 py-1 rounded-lg border ${galleryImages.length > 0 ? 'text-emerald-300 bg-emerald-500/10 border-emerald-500/30' : 'text-slate-400 bg-slate-900 border-slate-800'}`}>
+                      {galleryImages.length > 0 ? `총 ${galleryImages.length}장 등록됨` : '사진 없음 (0장)'}
+                    </span>
+                    {galleryImages.length > 0 && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (window.confirm(`현재 등록된 사진 ${galleryImages.length}장을 모두 지우시겠습니까?\n모두 지우시면 샘플 사진 없이 깨끗하게 비워집니다.`)) {
+                            setGalleryImages([]);
+                            setFormData(prev => ({ ...prev, imageUrl: '', additionalImages: [] }));
+                          }
+                        }}
+                        className="px-3 py-1.5 rounded-xl bg-rose-600/20 hover:bg-rose-600 text-rose-300 hover:text-white border border-rose-500/40 text-xs font-black flex items-center gap-1.5 transition-all cursor-pointer shadow-xs active:scale-95"
+                        title="등록된 모든 사진을 한 번에 삭제합니다"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                        <span>🗑️ 등록된 사진 전체 삭제 (한 번에 비우기)</span>
+                      </button>
+                    )}
+                  </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {/* Method A: File Upload */}
-                  <div className="border-2 border-dashed border-slate-700 hover:border-amber-400 rounded-2xl p-5 text-center space-y-3 bg-slate-900/50 transition-colors flex flex-col justify-center items-center">
-                    <Camera className="w-7 h-7 text-amber-400" />
+                  {/* Method A: File Upload with Drag & Drop */}
+                  <div
+                    onDragOver={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                    }}
+                    onDrop={async (e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                        const urls = await uploadFilesToDisk(Array.from(e.dataTransfer.files));
+                        if (urls.length > 0) {
+                          setGalleryImages(prev => {
+                            const updated = [...prev, ...urls];
+                            setFormData(f => ({ ...f, imageUrl: updated[0] || '', additionalImages: updated }));
+                            return updated;
+                          });
+                        }
+                      }
+                    }}
+                    className="border-2 border-dashed border-slate-700 hover:border-amber-400 rounded-2xl p-5 text-center space-y-3 bg-slate-900/50 transition-colors flex flex-col justify-center items-center cursor-pointer"
+                  >
+                    <div className="w-12 h-12 rounded-2xl bg-amber-400/10 text-amber-400 flex items-center justify-center">
+                      <Camera className="w-6 h-6" />
+                    </div>
                     <div>
-                      <p className="text-xs font-bold text-white">[방법 1] 내 컴퓨터에서 사진 파일 올리기</p>
-                      <p className="text-[11px] text-slate-400 mt-0.5">JPG, PNG, WebP 다중 선택 가능 (에어비앤비급 고화질 자동 압축)</p>
+                      <p className="text-xs font-bold text-white">[방법 1] 내 컴퓨터에서 사진 파일 올리기 / 드래그 & 드롭</p>
+                      <p className="text-[11px] text-slate-400 mt-0.5">JPG, PNG, WebP 등 여러 장 동시 선택 가능 (스마트 자동 압축 & 서버 보관)</p>
                     </div>
 
-                    <label className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-400 text-slate-950 font-black text-xs cursor-pointer hover:bg-amber-300 shadow-md">
+                    <label className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black text-xs cursor-pointer shadow-md transition-all active:scale-95">
                       <Upload className="w-3.5 h-3.5" />
                       <span>내 컴퓨터에서 사진 선택하기</span>
                       <input
@@ -1322,7 +1684,13 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                         onChange={async (e) => {
                           if (e.target.files && e.target.files.length > 0) {
                             const urls = await uploadFilesToDisk(Array.from(e.target.files));
-                            setGalleryImages(prev => [...prev, ...urls]);
+                            if (urls.length > 0) {
+                              setGalleryImages(prev => {
+                                const updated = [...prev, ...urls];
+                                setFormData(f => ({ ...f, imageUrl: updated[0] || '', additionalImages: updated }));
+                                return updated;
+                              });
+                            }
                           }
                           e.target.value = '';
                         }}
@@ -1337,7 +1705,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                         <Sparkles className="w-3.5 h-3.5 text-amber-400" />
                         <span>[방법 2] 인터넷 웹 사진 주소(URL) 직접 붙여넣기</span>
                       </p>
-                      <p className="text-[11px] text-slate-400 mt-0.5">웹 링크(https://...)를 붙여넣고 사진 추가 버튼을 누르세요.</p>
+                      <p className="text-[11px] text-slate-400 mt-0.5">웹 링크(https://...)를 붙여넣고 [사진 추가] 버튼을 누르세요.</p>
                     </div>
 
                     <div className="flex gap-2">
@@ -1350,7 +1718,12 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                           if (e.key === 'Enter') {
                             e.preventDefault();
                             if (directUrlInput.trim()) {
-                              setGalleryImages(prev => [...prev, directUrlInput.trim()]);
+                              const url = directUrlInput.trim();
+                              setGalleryImages(prev => {
+                                const updated = [...prev, url];
+                                setFormData(f => ({ ...f, imageUrl: updated[0] || '', additionalImages: updated }));
+                                return updated;
+                              });
                               setDirectUrlInput('');
                             }
                           }
@@ -1361,7 +1734,12 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                         type="button"
                         onClick={() => {
                           if (directUrlInput.trim()) {
-                            setGalleryImages(prev => [...prev, directUrlInput.trim()]);
+                            const url = directUrlInput.trim();
+                            setGalleryImages(prev => {
+                              const updated = [...prev, url];
+                              setFormData(f => ({ ...f, imageUrl: updated[0] || '', additionalImages: updated }));
+                              return updated;
+                            });
                             setDirectUrlInput('');
                           }
                         }}
@@ -1377,14 +1755,34 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
                 {/* Thumbnails Gallery */}
                 {galleryImages.length > 0 ? (
-                  <div className="space-y-2 pt-2">
-                    <div className="text-xs font-bold text-slate-300">
-                      📸 등록된 사진 목록 (맨 앞 1번 사진이 대표 썸네일입니다):
+                  <div className="space-y-3 pt-2">
+                    <div className="flex flex-wrap items-center justify-between gap-2 bg-slate-900/80 p-2.5 rounded-xl border border-slate-800">
+                      <div className="text-xs font-bold text-slate-300 flex items-center gap-2">
+                        <span>📸 등록된 사진 목록 (맨 앞 1번 사진이 대표 썸네일):</span>
+                        <span className="text-amber-400 font-black">총 {galleryImages.length}장</span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (window.confirm(`현재 등록된 사진 ${galleryImages.length}장을 모두 삭제하시겠습니까?`)) {
+                            setGalleryImages([]);
+                            setFormData(prev => ({ ...prev, imageUrl: '', additionalImages: [] }));
+                          }
+                        }}
+                        className="px-2.5 py-1 bg-rose-600/30 hover:bg-rose-600 text-rose-300 hover:text-white border border-rose-500/40 rounded-lg text-xs font-bold flex items-center gap-1 cursor-pointer transition-all"
+                      >
+                        <Trash2 className="w-3 h-3" />
+                        <span>전체 사진 모두 비우기</span>
+                      </button>
                     </div>
+
                     <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-3">
                       {galleryImages.map((img, idx) => (
                         <div key={idx} className={`relative group rounded-xl overflow-hidden border ${idx === 0 ? 'border-amber-400 ring-2 ring-amber-400/40' : 'border-slate-700'} aspect-square bg-slate-900 shadow-md`}>
                           <img src={img} alt="" className="w-full h-full object-cover" />
+                          <div className="absolute top-1.5 right-1.5 bg-slate-950/80 text-white text-[9px] font-bold px-1.5 py-0.5 rounded backdrop-blur-xs">
+                            #{idx + 1}
+                          </div>
                           {idx === 0 && (
                             <span className="absolute top-1.5 left-1.5 bg-amber-400 text-slate-950 font-black text-[10px] px-2 py-0.5 rounded shadow">
                               👑 대표 사진
@@ -1397,6 +1795,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                                 onClick={() => {
                                   const newImages = [img, ...galleryImages.filter((_, i) => i !== idx)];
                                   setGalleryImages(newImages);
+                                  setFormData(f => ({ ...f, imageUrl: newImages[0] || '', additionalImages: newImages }));
                                 }}
                                 className="px-2.5 py-1 bg-amber-400 text-slate-950 rounded-lg text-[10px] font-black cursor-pointer shadow"
                               >
@@ -1405,10 +1804,15 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                             )}
                             <button
                               type="button"
-                              onClick={() => setGalleryImages(prev => prev.filter((_, i) => i !== idx))}
-                              className="px-2.5 py-1 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-[10px] font-bold cursor-pointer shadow"
+                              onClick={() => {
+                                const newImages = galleryImages.filter((_, i) => i !== idx);
+                                setGalleryImages(newImages);
+                                setFormData(f => ({ ...f, imageUrl: newImages[0] || '', additionalImages: newImages }));
+                              }}
+                              className="px-2.5 py-1 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-[10px] font-bold cursor-pointer shadow flex items-center gap-1"
                             >
-                              삭제
+                              <Trash2 className="w-2.5 h-2.5" />
+                              <span>개별 삭제</span>
                             </button>
                           </div>
                         </div>
@@ -1416,8 +1820,8 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                     </div>
                   </div>
                 ) : (
-                  <div className="p-3 rounded-xl bg-amber-400/10 border border-amber-400/20 text-xs text-amber-300 flex items-center gap-2">
-                    <span>💡 등록된 사진이 없으면 기본 추천 사진이 적용됩니다. 꼭 대표 사진을 1장 이상 등록해 주세요!</span>
+                  <div className="p-4 rounded-xl bg-slate-900 border border-dashed border-slate-700 text-xs text-slate-400 flex items-center gap-2">
+                    <span>💡 현재 등록된 사진이 비워져 있습니다. 위 [내 컴퓨터에서 사진 선택하기] 또는 [웹 사진 주소 붙여넣기]로 새 사진을 올려주세요.</span>
                   </div>
                 )}
               </div>
@@ -1715,9 +2119,9 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                     <span>⛳ 골프투어 전용 스펙 (골프장 및 라운딩 옵션)</span>
                   </h4>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                     <div className="space-y-1.5">
-                      <label className="text-xs font-black text-slate-300">기본 홀 수</label>
+                      <label className="text-xs font-black text-slate-300">총 라운딩 홀 수</label>
                       <input
                         type="number"
                         value={golfHoles}
@@ -1734,7 +2138,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                           onChange={(e) => setGreenFeeIncluded(e.target.checked)}
                           className="w-4 h-4 rounded text-emerald-500"
                         />
-                        <span>그린피 포함</span>
+                        <span>그린피 전액 포함</span>
                       </label>
                     </div>
 
@@ -1764,14 +2168,58 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="text-xs font-black text-slate-300">연계 골프장 목록 (줄바꿈 구분)</label>
+                    <label className="text-xs font-black text-slate-300">연계 명문 골프장 목록 (CC명 줄바꿈 구분)</label>
                     <textarea
                       rows={2}
                       value={golfCourseNamesText}
                       onChange={(e) => setGolfCourseNamesText(e.target.value)}
                       placeholder="다낭 CC&#10;몽고메리 링스&#10;바나힐스 GC"
-                      className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-white"
+                      className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-white focus:ring-2 focus:ring-emerald-400 outline-none"
                     />
+                  </div>
+                </div>
+              )}
+
+              {/* ================= DYNAMIC FORM: FREE TRAVEL / DAY TOUR ================= */}
+              {formData.category === '자유여행' && (
+                <div className="space-y-4 bg-slate-950 p-6 rounded-2xl border border-cyan-500/30">
+                  <h4 className="text-sm font-black text-cyan-400 flex items-center gap-2 border-b border-slate-800 pb-3">
+                    <span>🌴 자유여행 / 데이투어 전용 옵션 & 서비스 구성</span>
+                  </h4>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-black text-slate-300">투어 소요 형태</label>
+                      <input
+                        type="text"
+                        value={formData.duration || '1일 (데이투어)'}
+                        onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
+                        placeholder="예: 1일 (8시간), 반일 (4시간), 12시간 단독 렌터카"
+                        className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs font-bold text-white"
+                      />
+                    </div>
+
+                    <div className="flex items-center gap-2 pt-6">
+                      <label className="flex items-center gap-2 cursor-pointer text-xs font-bold text-cyan-300">
+                        <input
+                          type="checkbox"
+                          defaultChecked={true}
+                          className="w-4 h-4 rounded text-cyan-500"
+                        />
+                        <span>🚗 단독 전용 차량 및 기사 포함</span>
+                      </label>
+                    </div>
+
+                    <div className="flex items-center gap-2 pt-6">
+                      <label className="flex items-center gap-2 cursor-pointer text-xs font-bold text-cyan-300">
+                        <input
+                          type="checkbox"
+                          defaultChecked={true}
+                          className="w-4 h-4 rounded text-cyan-500"
+                        />
+                        <span>🗣️ 한국어 전문 가이드 동행</span>
+                      </label>
+                    </div>
                   </div>
                 </div>
               )}
@@ -1812,7 +2260,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="space-y-1.5">
-                        <label className="text-xs font-black text-slate-300">출발 가능 도시 (줄바꿈 구분)</label>
+                        <label className="text-xs font-black text-slate-300">출발 가능 도시 / 픽업 장소 (줄바꿈 구분)</label>
                         <textarea
                           rows={2}
                           value={departureCitiesText}
@@ -1835,12 +2283,18 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                     </div>
                   </div>
 
-                  {/* Day-by-Day Tour Itinerary */}
+                  {/* Day-by-Day Tour / Free Travel Itinerary */}
                   <div className="space-y-4 bg-slate-950 p-6 rounded-2xl border border-slate-800">
                     <div className="flex items-center justify-between border-b border-slate-800 pb-3">
                       <h4 className="text-sm font-black text-white flex items-center gap-2">
                         <Layers className="w-4 h-4 text-amber-400" />
-                        <span>4. 일차별 상세 투어 일정표 ({itineraryList.length}일차)</span>
+                        <span>
+                          {formData.category === '자유여행' 
+                            ? `4. 자유여행 코스 & 시간대별 일정표 (${itineraryList.length}개 코스)`
+                            : formData.category === '골프투어'
+                            ? `4. 일차별 골프 라운딩 일정표 (${itineraryList.length}일차)`
+                            : `4. 일차별 상세 패키지 일정표 (${itineraryList.length}일차)`}
+                        </span>
                       </h4>
                       <button
                         type="button"
@@ -1848,12 +2302,18 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                           const nextDay = itineraryList.length + 1;
                           setItineraryList([
                             ...itineraryList,
-                            { day: nextDay, title: `${nextDay}일차 일정`, description: '일정 상세 내용', meal: '조: 호텔식 / 중: 현지식 / 석: 특식', hotel: '5성급 호텔' }
+                            { 
+                              day: nextDay, 
+                              title: formData.category === '자유여행' ? `${nextDay}차 방문 코스 (예: 힐링 스파 & 맛집)` : `${nextDay}일차 일정`, 
+                              description: '일정 및 코스 상세 내용', 
+                              meal: formData.category === '자유여행' ? '중식: 로컬 특식' : '조: 호텔식 / 중: 현지식 / 석: 특식', 
+                              hotel: formData.category === '자유여행' ? '숙소 미포함 (자유)' : '5성급 호텔' 
+                            }
                           ]);
                         }}
                         className="px-3 py-1.5 rounded-xl bg-amber-400/20 text-amber-300 hover:bg-amber-400/30 border border-amber-400/30 font-bold text-xs cursor-pointer"
                       >
-                        + 일차 추가
+                        {formData.category === '자유여행' ? '+ 코스 추가' : '+ 일차 추가'}
                       </button>
                     </div>
 
@@ -1861,7 +2321,9 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                       {itineraryList.map((dayItem, idx) => (
                         <div key={idx} className="bg-slate-900 border border-slate-800 p-4 rounded-xl space-y-3">
                           <div className="flex items-center justify-between">
-                            <span className="font-black text-xs text-amber-400">{dayItem.day}일차</span>
+                            <span className="font-black text-xs text-amber-400">
+                              {formData.category === '자유여행' ? `코스 #${idx + 1}` : `${dayItem.day}일차`}
+                            </span>
                             <button
                               type="button"
                               onClick={() => setItineraryList(prev => prev.filter((_, i) => i !== idx))}
@@ -1878,7 +2340,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                                 const val = e.target.value;
                                 setItineraryList(prev => prev.map((d, i) => i === idx ? { ...d, title: val } : d));
                               }}
-                              placeholder="일정 제목"
+                              placeholder={formData.category === '자유여행' ? "코스 제목 (예: 09:00 호텔 픽업 -> 바나힐 투어)" : "일정 제목"}
                               className="bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white"
                             />
                             <input
@@ -1899,7 +2361,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                               const val = e.target.value;
                               setItineraryList(prev => prev.map((d, i) => i === idx ? { ...d, description: val } : d));
                             }}
-                            placeholder="상세 일정 내용"
+                            placeholder="상세 일정 및 추천 체험/관광지 내용"
                             className="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-xs text-white"
                           />
                         </div>
@@ -1910,21 +2372,34 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
               )}
 
               {/* Bottom Submit Actions */}
-              <div className="flex items-center justify-end gap-3 border-t border-slate-800 pt-6">
+              <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-800 pt-6">
                 <button
                   type="button"
-                  onClick={() => setActiveTab('products')}
-                  className="px-6 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs cursor-pointer"
+                  onClick={onClose}
+                  className="px-5 py-3 rounded-xl bg-teal-900/60 hover:bg-teal-800 text-teal-200 border border-teal-500/40 font-bold text-xs flex items-center gap-1.5 cursor-pointer transition-all"
+                  title="관리자 모드를 닫고 손님용 화면으로 나갑니다"
                 >
-                  취소하고 목록으로
+                  <Eye className="w-4 h-4 text-teal-400" />
+                  <span>손님용 화면으로 나가기</span>
                 </button>
-                <button
-                  type="submit"
-                  disabled={isSaving}
-                  className="px-8 py-3 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black text-sm shadow-xl shadow-amber-400/20 cursor-pointer"
-                >
-                  {isSaving ? '저장 처리 중...' : '💾 최종 저장하기 (홈페이지 즉시 반영)'}
-                </button>
+
+                <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab('products')}
+                    className="px-6 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs cursor-pointer"
+                  >
+                    취소하고 상품목록으로
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isSaving}
+                    className="px-8 py-3 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black text-sm shadow-xl shadow-amber-400/20 cursor-pointer transition-transform active:scale-95 flex items-center gap-2"
+                  >
+                    <Save className="w-4 h-4" />
+                    <span>{isSaving ? '저장 처리 중...' : '💾 최종 저장하기 (홈페이지 즉시 반영)'}</span>
+                  </button>
+                </div>
               </div>
             </form>
           </div>
@@ -1936,30 +2411,54 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
             <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 space-y-4">
               <div className="flex flex-wrap items-center justify-between gap-4">
                 <div>
-                  <h3 className="text-base font-black text-white">📸 고화질 사진 자산 허브</h3>
+                  <h3 className="text-base font-black text-white flex items-center gap-2">
+                    <Camera className="w-5 h-5 text-amber-400" />
+                    <span>📸 고화질 사진 자산 허브</span>
+                  </h3>
                   <p className="text-xs text-slate-400 mt-0.5">
-                    신짜오투어 사이트에서 사용되는 모든 고화질 사진을 일괄 관리하고 즉시 복사하여 사용할 수 있습니다.
+                    신차오투어 사이트에서 사용되는 모든 고화질 사진을 일괄 관리하고 즉시 복사하여 사용할 수 있습니다.
                   </p>
                 </div>
 
-                <label className="px-4 py-2.5 rounded-xl bg-amber-400 text-slate-950 font-black text-xs flex items-center gap-2 cursor-pointer hover:bg-amber-300">
-                  <Upload className="w-4 h-4" />
-                  <span>사진 일괄 업로드</span>
-                  <input
-                    type="file"
-                    multiple
-                    accept="image/*"
-                    className="hidden"
-                    onChange={async (e) => {
-                      if (e.target.files && e.target.files.length > 0) {
-                        const urls = await uploadFilesToDisk(Array.from(e.target.files));
-                        setAllSitePhotos(prev => [...urls, ...prev]);
-                        alert(`${urls.length}장의 사진이 업로드되었습니다!`);
+                <div className="flex flex-wrap items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={onClose}
+                    className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-400 hover:to-teal-500 text-white font-black text-xs flex items-center gap-1.5 shadow-md shadow-teal-500/20 cursor-pointer"
+                  >
+                    <Eye className="w-4 h-4" />
+                    <span>손님용 화면 보기 (나가기)</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (window.confirm('사진 자산 목록의 모든 사진을 비우시겠습니까?')) {
+                        setAllSitePhotos([]);
                       }
-                      e.target.value = '';
                     }}
-                  />
-                </label>
+                    className="px-3 py-2.5 rounded-xl bg-rose-600/20 hover:bg-rose-600 text-rose-300 hover:text-white border border-rose-500/30 text-xs font-bold transition-colors cursor-pointer"
+                  >
+                    🗑️ 사진 전체 비우기
+                  </button>
+                  <label className="px-4 py-2.5 rounded-xl bg-amber-400 text-slate-950 font-black text-xs flex items-center gap-2 cursor-pointer hover:bg-amber-300">
+                    <Upload className="w-4 h-4" />
+                    <span>사진 일괄 업로드</span>
+                    <input
+                      type="file"
+                      multiple
+                      accept="image/*"
+                      className="hidden"
+                      onChange={async (e) => {
+                        if (e.target.files && e.target.files.length > 0) {
+                          const urls = await uploadFilesToDisk(Array.from(e.target.files));
+                          setAllSitePhotos(prev => [...urls, ...prev]);
+                          alert(`${urls.length}장의 사진이 업로드되었습니다!`);
+                        }
+                        e.target.value = '';
+                      }}
+                    />
+                  </label>
+                </div>
               </div>
 
               {uploadStatus && <p className="text-xs text-amber-300 font-bold">{uploadStatus}</p>}
@@ -1982,7 +2481,14 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                     >
                       {copiedUrl === url ? '복사완료!' : 'URL 복사'}
                     </button>
-                    <span className="text-[9px] text-slate-500">#{idx + 1}</span>
+                    <button
+                      type="button"
+                      onClick={() => setAllSitePhotos(prev => prev.filter((_, i) => i !== idx))}
+                      className="text-[10px] text-rose-400 hover:text-rose-300 cursor-pointer"
+                      title="사진 삭제"
+                    >
+                      삭제
+                    </button>
                   </div>
                 </div>
               ))}
@@ -2098,6 +2604,21 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
           </div>
         )}
       </div>
+
+      {/* Floating Bottom Navigation Bar for Easy Exit on Mobile */}
+      <footer className="bg-slate-900/95 backdrop-blur-md border-t border-slate-800 px-4 py-3 shrink-0 flex items-center justify-between gap-3 shadow-2xl z-40">
+        <div className="text-xs text-slate-300 flex items-center gap-2">
+          <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span className="font-bold">변경사항 실시간 자동 저장됨</span>
+        </div>
+        <button
+          onClick={onClose}
+          className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-400 hover:to-teal-500 text-white font-black text-xs sm:text-sm flex items-center gap-2 shadow-lg shadow-teal-500/25 cursor-pointer transition-all active:scale-95 border border-teal-400/40"
+        >
+          <Eye className="w-4 h-4" />
+          <span>손님용 화면 보기 (나가기)</span>
+        </button>
+      </footer>
     </div>
   );
 };

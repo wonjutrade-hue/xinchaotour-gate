@@ -1,6 +1,6 @@
 import { Product } from "../types";
 
-export const INITIAL_PRODUCTS: Product[] = [
+export const SAMPLE_PRODUCTS: Product[] = [
   {
     "id": "free-dn-01",
     "title": "[자유여행/중부] 다낭 바나힐 국립공원 & 골든브릿지 VIP 1일 투어",
@@ -847,9 +847,8 @@ export const INITIAL_PRODUCTS: Product[] = [
     "priceKRW": 580000,
     "priceVND": 10900000,
     "duration": "1박 기준",
-    "imageUrl": "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=85",
+    "imageUrl": "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=1200&q=85",
     "additionalImages": [
-      "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=1200&q=85",
       "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=85",
       "https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=1200&q=85",
       "https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=1200&q=85",
@@ -1488,3 +1487,5 @@ export const INITIAL_PRODUCTS: Product[] = [
     ]
   }
 ];
+
+export const INITIAL_PRODUCTS: Product[] = [];

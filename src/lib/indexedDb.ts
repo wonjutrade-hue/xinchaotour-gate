@@ -65,12 +65,36 @@ export async function saveProductsToIndexedDB(products: Product[]): Promise<void
         timestamp: Date.now(),
         count: products.length
       });
+      metaStore.put({
+        key: 'db_initialized',
+        value: true
+      });
 
       tx.oncomplete = () => resolve();
       tx.onerror = (e) => reject((e.target as any).error);
     });
   } catch (err) {
     console.warn('[IndexedDB] Failed to save products:', err);
+  }
+}
+
+/**
+ * Check if IndexedDB has ever been initialized with user data
+ */
+export async function isIndexedDBInitialized(): Promise<boolean> {
+  try {
+    const db = await openDatabase();
+    return new Promise((resolve) => {
+      const tx = db.transaction([STORE_META], 'readonly');
+      const metaStore = tx.objectStore(STORE_META);
+      const req = metaStore.get('db_initialized');
+      req.onsuccess = () => {
+        resolve(Boolean(req.result && req.result.value));
+      };
+      req.onerror = () => resolve(false);
+    });
+  } catch (err) {
+    return false;
   }
 }
 
