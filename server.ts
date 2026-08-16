@@ -21,36 +21,22 @@ if (!fs.existsSync(UPLOADS_DIR)) {
   }
 }
 
-const CLEAN_VILLA_PHOTOS = [
-  'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1200&q=80',
-  'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80',
-  'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80',
-  'https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=1200&q=80',
-  'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80'
-];
-
 function isSamplePhotoUrl(url: string | undefined): boolean {
   if (!url) return false;
   return url.includes('images.unsplash.com') || url === 'VILLA_PHOTO_DATA' || url === 'TEST_IMG';
 }
 
-function sanitizeProduct(p: Product, idx: number): Product {
+function sanitizeProduct(p: Product): Product {
   if (!p) return p;
-  let img = p.imageUrl || '';
+  const img = p.imageUrl || '';
   const cleanSubs = (p.additionalImages || []).filter(sub => Boolean(sub) && sub !== 'VILLA_PHOTO_DATA' && sub !== 'TEST_IMG');
   
-  // If main image is empty or invalid, try to use first gallery image before falling back to sample photo
-  if (!img || img === 'VILLA_PHOTO_DATA' || img === 'TEST_IMG') {
-    if (cleanSubs.length > 0) {
-      img = cleanSubs[0];
-    } else {
-      img = CLEAN_VILLA_PHOTOS[idx % CLEAN_VILLA_PHOTOS.length];
-    }
-  }
+  // Clean corrupt placeholder markers without forcing external sample photos
+  const cleanMain = (img === 'VILLA_PHOTO_DATA' || img === 'TEST_IMG') ? '' : img;
 
   return {
     ...p,
-    imageUrl: img,
+    imageUrl: cleanMain,
     additionalImages: cleanSubs
   };
 }
@@ -63,7 +49,7 @@ function loadStoredProducts(): Product[] {
       const parsed = JSON.parse(fileData);
       if (Array.isArray(parsed) && parsed.length > 0) {
         console.log(`[Server] Loaded ${parsed.length} products from stored_products.json`);
-        return parsed.map((p, i) => sanitizeProduct(p, i));
+        return parsed.map((p) => sanitizeProduct(p));
       }
     }
   } catch (err) {
@@ -77,7 +63,7 @@ function loadStoredProducts(): Product[] {
       const parsed = JSON.parse(fileData);
       if (Array.isArray(parsed) && parsed.length > 0) {
         console.log(`[Server] Loaded ${parsed.length} products from src/data/stored_products.json`);
-        return parsed.map((p, i) => sanitizeProduct(p, i));
+        return parsed.map((p) => sanitizeProduct(p));
       }
     }
   } catch (err) {
@@ -91,7 +77,7 @@ function loadStoredProducts(): Product[] {
       const parsedBackup = JSON.parse(backupData);
       if (Array.isArray(parsedBackup) && parsedBackup.length > 0) {
         console.log(`[Server] Restored ${parsedBackup.length} products from backup`);
-        return parsedBackup.map((p, i) => sanitizeProduct(p, i));
+        return parsedBackup.map((p) => sanitizeProduct(p));
       }
     }
   } catch (bErr) {
@@ -99,7 +85,7 @@ function loadStoredProducts(): Product[] {
   }
 
   // 4. Initial seed products if no saved data
-  const initial = [...SAMPLE_PRODUCTS];
+  const initial = [...SAMPLE_PRODUCTS].map(p => sanitizeProduct(p));
   saveStoredProducts(initial);
   return initial;
 }
@@ -435,6 +421,28 @@ async function startServer() {
       imageUrl: '',
       additionalImages: []
     }));
+    saveStoredProducts(products);
+    lastDataSyncTimestamp = Date.now();
+    res.json({ success: true, count: products.length, products });
+  });
+
+  // 4-E. Clean Sample Photos Only (Removes Unsplash/sample demo images, keeps user photos)
+  app.post('/api/products/clean-sample-photos', (req: Request, res: Response) => {
+    products = products.map(p => {
+      const isMainSample = isSamplePhotoUrl(p.imageUrl);
+      const cleanSubs = (p.additionalImages || []).filter(u => Boolean(u) && !isSamplePhotoUrl(u));
+      
+      let newMain = p.imageUrl || '';
+      if (isMainSample) {
+        newMain = cleanSubs.length > 0 ? cleanSubs[0] : '';
+      }
+
+      return {
+        ...p,
+        imageUrl: newMain,
+        additionalImages: isMainSample && cleanSubs.length > 0 ? cleanSubs.slice(1) : cleanSubs
+      };
+    });
     saveStoredProducts(products);
     lastDataSyncTimestamp = Date.now();
     res.json({ success: true, count: products.length, products });

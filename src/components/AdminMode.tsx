@@ -516,6 +516,41 @@ export const AdminMode: React.FC<AdminModeProps> = ({
     e.target.value = '';
   };
 
+  // Clean all sample/demo photos across all products
+  const handleCleanAllSamplePhotos = async () => {
+    if (window.confirm('모든 상품에서 외부 데모 샘플 사진을 일괄 삭제하시겠습니까?\n\n직접 업로드하거나 등록하신 사진과 상품 정보(가격, 일정, 스펙)는 100% 안전하게 유지됩니다.')) {
+      try {
+        const res = await fetch('/api/products/clean-sample-photos', { method: 'POST' });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.products) {
+            await onSaveProducts(data.products);
+            showNotification('🧹 전체 상품의 데모 샘플 사진이 일괄 삭제되었습니다! (내 사진만 유지)');
+            return;
+          }
+        }
+      } catch (err) {
+        console.warn('API clean failed, falling back to local:', err);
+      }
+      
+      const cleaned = products.map(p => {
+        const isMainSample = isSampleUrl(p.imageUrl);
+        const cleanSubs = (p.additionalImages || []).filter(u => Boolean(u) && !isSampleUrl(u));
+        let newMain = p.imageUrl || '';
+        if (isMainSample) {
+          newMain = cleanSubs.length > 0 ? cleanSubs[0] : '';
+        }
+        return {
+          ...p,
+          imageUrl: newMain,
+          additionalImages: isMainSample && cleanSubs.length > 0 ? cleanSubs.slice(1) : cleanSubs
+        };
+      });
+      await onSaveProducts(cleaned);
+      showNotification('🧹 전체 상품의 데모 샘플 사진이 일괄 삭제되었습니다! (내 사진만 유지)');
+    }
+  };
+
   // Reset to Factory Default Seed Products
   const handleResetToFactory = () => {
     if (window.confirm('정말로 모든 상품을 초기 공장 출고 샘플 데이터로 복구하시겠습니까?\n현재 작업 중인 내용은 덮어씌워집니다.')) {
@@ -685,6 +720,15 @@ export const AdminMode: React.FC<AdminModeProps> = ({
                   >
                     <Plus className="w-4 h-4 stroke-[3]" />
                     <span>+ 새 여행상품 등록</span>
+                  </button>
+
+                  <button
+                    onClick={handleCleanAllSamplePhotos}
+                    className="px-3.5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 active:scale-95 text-slate-200 hover:text-white font-bold text-xs border border-slate-700 flex items-center gap-1.5 transition-all cursor-pointer shrink-0 shadow-sm"
+                    title="모든 상품에서 외부 Unsplash 샘플(데모) 사진을 일괄 삭제하고 내 사진만 유지합니다."
+                  >
+                    <Trash2 className="w-3.5 h-3.5 text-rose-400" />
+                    <span>🧹 샘플 사진 일괄 삭제</span>
                   </button>
 
                   <div className="flex items-center gap-1 bg-slate-900 border border-slate-700 p-1 rounded-xl">
@@ -1256,12 +1300,19 @@ export const AdminMode: React.FC<AdminModeProps> = ({
                       >
                         {/* Left: Thumbnail & Info */}
                         <div className="flex items-start gap-4 min-w-0 flex-1">
-                          <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-slate-900 overflow-hidden shrink-0 border border-slate-700 relative group">
-                            <img
-                              src={prod.imageUrl || 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=400&q=80'}
-                              alt={prod.title}
-                              className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                            />
+                          <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-slate-900 overflow-hidden shrink-0 border border-slate-700 relative group flex items-center justify-center">
+                            {prod.imageUrl ? (
+                              <img
+                                src={prod.imageUrl}
+                                alt={prod.title}
+                                className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                              />
+                            ) : (
+                              <div className="w-full h-full bg-slate-850 flex flex-col items-center justify-center text-slate-500 gap-1 p-2 text-center">
+                                <ImageIcon className="w-5 h-5 text-slate-600" />
+                                <span className="text-[10px] font-bold">사진 없음</span>
+                              </div>
+                            )}
                             <span className="absolute bottom-1 right-1 bg-slate-950/80 text-[10px] text-white font-bold px-1.5 py-0.2 rounded-md backdrop-blur-xs">
                               📸 {subPhotosCount}
                             </span>
@@ -1287,6 +1338,20 @@ export const AdminMode: React.FC<AdminModeProps> = ({
                               <span className="bg-slate-700/60 text-slate-300 px-2 py-0.5 rounded-md font-bold text-[11px]">
                                 ⏱️ {prod.duration}
                               </span>
+
+                              {isSampleUrl(prod.imageUrl) ? (
+                                <span className="bg-amber-500/20 text-amber-300 border border-amber-500/30 px-1.5 py-0.2 rounded font-bold text-[10px]">
+                                  ⚠️ 데모 샘플 사진
+                                </span>
+                              ) : prod.imageUrl ? (
+                                <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-1.5 py-0.2 rounded font-bold text-[10px]">
+                                  ✅ 등록 사진 ({subPhotosCount}장)
+                                </span>
+                              ) : (
+                                <span className="bg-slate-700 text-slate-400 px-1.5 py-0.2 rounded font-medium text-[10px]">
+                                  📷 사진 미등록
+                                </span>
+                              )}
 
                               {prod.isPopular && (
                                 <span className="bg-amber-400 text-slate-950 px-1.5 py-0.2 rounded font-black text-[10px]">

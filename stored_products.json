@@ -9,12 +9,8 @@
     "priceKRW": 790000,
     "priceVND": 14600000,
     "duration": "3박 5일",
-    "imageUrl": "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=1200&q=80",
-    "additionalImages": [
-      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80"
-    ],
+    "imageUrl": "",
+    "additionalImages": [],
     "rating": 4.9,
     "reviewCount": 128,
     "isPopular": true,
@@ -85,12 +81,8 @@
     "priceKRW": 980000,
     "priceVND": 18200000,
     "duration": "3박 5일",
-    "imageUrl": "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=1200&q=80",
-    "additionalImages": [
-      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80"
-    ],
+    "imageUrl": "",
+    "additionalImages": [],
     "rating": 5,
     "reviewCount": 94,
     "isPopular": true,
@@ -191,12 +183,8 @@
     "priceKRW": 1190000,
     "priceVND": 22000000,
     "duration": "3박 5일",
-    "imageUrl": "https://images.unsplash.com/photo-1535131749006-b7f58c99034b?auto=format&fit=crop&w=1200&q=80",
-    "additionalImages": [
-      "https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1592919505780-303950717480?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1593111774240-d529f12cf4bb?auto=format&fit=crop&w=1200&q=80"
-    ],
+    "imageUrl": "",
+    "additionalImages": [],
     "rating": 4.9,
     "reviewCount": 76,
     "isPopular": true,
@@ -299,11 +287,8 @@
     "priceKRW": 95000,
     "priceVND": 1750000,
     "duration": "1일 (데이투어)",
-    "imageUrl": "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&w=1200&q=80",
-    "additionalImages": [
-      "https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=1200&q=80"
-    ],
+    "imageUrl": "",
+    "additionalImages": [],
     "rating": 4.8,
     "reviewCount": 210,
     "isPopular": true,
@@ -349,11 +334,8 @@
     "priceKRW": 850000,
     "priceVND": 15700000,
     "duration": "3박 5일",
-    "imageUrl": "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80",
-    "additionalImages": [
-      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1200&q=80"
-    ],
+    "imageUrl": "",
+    "additionalImages": [],
     "rating": 4.9,
     "reviewCount": 62,
     "isPopular": false,
@@ -423,11 +405,8 @@
     "priceKRW": 690000,
     "priceVND": 12800000,
     "duration": "3박 4일",
-    "imageUrl": "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=1200&q=80",
-    "additionalImages": [
-      "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=1200&q=80"
-    ],
+    "imageUrl": "",
+    "additionalImages": [],
     "rating": 4.8,
     "reviewCount": 45,
     "isPopular": false,
