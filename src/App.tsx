@@ -11,7 +11,7 @@ import { TravelQuiz } from './components/TravelQuiz';
 import { FloatingChatWidget } from './components/FloatingChatWidget';
 import { Footer } from './components/Footer';
 import { ExchangeRateModal } from './components/ExchangeRateModal';
-import { TravelInfoModal, TravelInfoTab } from './components/TravelInfoModal';
+import { TravelInfoPage, TravelInfoTab } from './components/TravelInfoPage';
 import { KakaoModal } from './components/KakaoModal';
 import { INITIAL_PRODUCTS, SAMPLE_PRODUCTS } from './data/seedProducts';
 import { getLiveExchangeRates, ExchangeRates, DEFAULT_RATES } from './lib/exchangeRate';
@@ -105,33 +105,55 @@ export default function App() {
   const [consultationTargetProduct, setConsultationTargetProduct] = useState<Product | null>(null);
   const [isAiAssistantOpen, setIsAiAssistantOpen] = useState(false);
   const [isQuizOpen, setIsQuizOpen] = useState(false);
+  const [isTravelInfoPageOpen, setIsTravelInfoPageOpen] = useState(false);
   const [isTravelInfoOpen, setIsTravelInfoOpen] = useState(false);
   const [travelInfoTab, setTravelInfoTab] = useState<TravelInfoTab>('course');
   const [isKakaoModalOpen, setIsKakaoModalOpen] = useState(false);
 
-  // Synchronize Browser History with Product Selection (Enables native top back arrow & in-app back buttons)
+  // Synchronize Browser History with Product Selection & Travel Guide View
   const handleSelectProduct = (prod: Product) => {
     setSelectedProduct(prod);
+    setIsTravelInfoPageOpen(false);
     try {
       window.history.pushState({ productId: prod.id }, '', `#product-${prod.id}`);
     } catch (e) {
       console.warn('History pushState error:', e);
     }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleOpenTravelInfoPage = (tab?: TravelInfoTab) => {
+    setSelectedProduct(null);
+    setTravelInfoTab(tab || 'course');
+    setIsTravelInfoPageOpen(true);
+    setIsTravelInfoOpen(false);
+    try {
+      window.history.pushState({ view: 'travel-info', tab: tab || 'course' }, '', `#guide-${tab || 'course'}`);
+    } catch (e) {
+      console.warn('History pushState error:', e);
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleBackToList = () => {
     setSelectedProduct(null);
+    setIsTravelInfoPageOpen(false);
     try {
-      if (window.location.hash.startsWith('#product-')) {
+      if (window.location.hash.startsWith('#product-') || window.location.hash.startsWith('#guide')) {
         window.history.back();
+      } else {
+        window.history.pushState(null, '', window.location.pathname);
       }
     } catch (e) {
       console.warn('History back error:', e);
     }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleGoHome = () => {
     setSelectedProduct(null);
+    setIsTravelInfoPageOpen(false);
+    setIsTravelInfoOpen(false);
     setActiveCategory('전체');
     setActiveRegion('전체');
     setActiveCity('전체');
@@ -140,7 +162,6 @@ export default function App() {
     setIsConsultationOpen(false);
     setIsAiAssistantOpen(false);
     setIsQuizOpen(false);
-    setIsTravelInfoOpen(false);
     setIsRateModalOpen(false);
     setIsKakaoModalOpen(false);
     try {
@@ -155,15 +176,46 @@ export default function App() {
 
   useEffect(() => {
     const handlePopState = (e: PopStateEvent) => {
-      if (!e.state || !e.state.productId) {
+      if (!e.state) {
+        // If hash exists on load/back
+        if (window.location.hash.startsWith('#guide')) {
+          const tabPart = window.location.hash.replace('#guide-', '') as TravelInfoTab;
+          setSelectedProduct(null);
+          setIsTravelInfoPageOpen(true);
+          if (['course', 'weather', 'exchange', 'visa', 'food', 'tips'].includes(tabPart)) {
+            setTravelInfoTab(tabPart);
+          }
+        } else if (window.location.hash.startsWith('#product-')) {
+          const pid = window.location.hash.replace('#product-', '');
+          const found = products.find(p => p.id === pid);
+          if (found) {
+            setSelectedProduct(found);
+            setIsTravelInfoPageOpen(false);
+          } else {
+            setSelectedProduct(null);
+            setIsTravelInfoPageOpen(false);
+          }
+        } else {
+          setSelectedProduct(null);
+          setIsTravelInfoPageOpen(false);
+        }
+      } else if (e.state.view === 'travel-info') {
         setSelectedProduct(null);
-      } else if (e.state && e.state.productId) {
+        setIsTravelInfoPageOpen(true);
+        if (e.state.tab) {
+          setTravelInfoTab(e.state.tab);
+        }
+      } else if (e.state.productId) {
+        setIsTravelInfoPageOpen(false);
         const found = products.find(p => p.id === e.state.productId);
         if (found) {
           setSelectedProduct(found);
         } else {
           setSelectedProduct(null);
         }
+      } else {
+        setSelectedProduct(null);
+        setIsTravelInfoPageOpen(false);
       }
     };
     window.addEventListener('popstate', handlePopState);
@@ -500,14 +552,11 @@ export default function App() {
         onSearchChange={setSearchTerm}
         exchangeRates={exchangeRates}
         onOpenRateCalculator={() => setIsRateModalOpen(true)}
-        onOpenTravelInfo={(tab) => {
-          setTravelInfoTab(tab || 'course');
-          setIsTravelInfoOpen(true);
-        }}
+        onOpenTravelInfo={handleOpenTravelInfoPage}
         inquiriesCount={inquiries.filter(i => i.status === 'pending' || !i.status).length || inquiries.length}
       />
 
-      {/* Conditional: Full Page Product Detail View OR Main Marketplace */}
+      {/* Conditional: Full Page Product Detail View OR Full Page Travel Info Guide OR Main Marketplace */}
       {selectedProduct ? (
         <ProductDetailPage
           product={selectedProduct}
@@ -521,6 +570,16 @@ export default function App() {
             p => p.id !== selectedProduct.id && (p.city === selectedProduct.city || p.category === selectedProduct.category)
           )}
           onSelectProduct={handleSelectProduct}
+        />
+      ) : isTravelInfoPageOpen ? (
+        <TravelInfoPage
+          initialTab={travelInfoTab}
+          rates={exchangeRates}
+          onBackToList={handleBackToList}
+          onOpenConsultation={() => {
+            setConsultationTargetProduct(null);
+            setIsConsultationOpen(true);
+          }}
         />
       ) : (
         <>
@@ -677,6 +736,7 @@ export default function App() {
         onSelectCategory={setActiveCategory}
         onSelectRegion={setActiveRegion}
         onGoHome={handleGoHome}
+        onOpenTravelInfo={handleOpenTravelInfoPage}
         onOpenConsultation={() => {
           setConsultationTargetProduct(null);
           setIsConsultationOpen(true);
@@ -719,18 +779,6 @@ export default function App() {
           setActiveCategory(cat);
           setActiveRegion(reg);
           setActiveCity('전체');
-        }}
-      />
-
-      {/* Vietnam Travel Information Modal */}
-      <TravelInfoModal
-        isOpen={isTravelInfoOpen}
-        onClose={() => setIsTravelInfoOpen(false)}
-        initialTab={travelInfoTab}
-        rates={exchangeRates}
-        onOpenConsultation={() => {
-          setConsultationTargetProduct(null);
-          setIsConsultationOpen(true);
         }}
       />
 

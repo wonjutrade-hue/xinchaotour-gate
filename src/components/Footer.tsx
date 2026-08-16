@@ -8,6 +8,7 @@ interface FooterProps {
   onSelectRegion: (reg: Region) => void;
   onOpenConsultation: () => void;
   onGoHome?: () => void;
+  onOpenTravelInfo?: (tab?: any) => void;
 }
 
 export const Footer: React.FC<FooterProps> = ({
@@ -15,6 +16,7 @@ export const Footer: React.FC<FooterProps> = ({
   onSelectRegion,
   onOpenConsultation,
   onGoHome,
+  onOpenTravelInfo,
 }) => {
   return (
     <footer className="bg-slate-950 text-slate-400 pt-16 pb-12 border-t border-slate-800">
@@ -86,6 +88,16 @@ export const Footer: React.FC<FooterProps> = ({
                   🏰 오션뷰 프라이빗 풀빌라
                 </button>
               </li>
+              {onOpenTravelInfo && (
+                <li className="pt-1">
+                  <button 
+                    onClick={() => onOpenTravelInfo('course')}
+                    className="text-amber-300 font-bold hover:text-amber-200 transition-colors flex items-center gap-1.5"
+                  >
+                    <span>🧭</span> 베트남 실전 여행정보 백과
+                  </button>
+                </li>
+              )}
             </ul>
           </div>
 
