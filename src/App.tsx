@@ -130,6 +130,29 @@ export default function App() {
     }
   };
 
+  const handleGoHome = () => {
+    setSelectedProduct(null);
+    setActiveCategory('전체');
+    setActiveRegion('전체');
+    setActiveCity('전체');
+    setSubFilter('전체');
+    setSearchTerm('');
+    setIsConsultationOpen(false);
+    setIsAiAssistantOpen(false);
+    setIsQuizOpen(false);
+    setIsTravelInfoOpen(false);
+    setIsRateModalOpen(false);
+    setIsKakaoModalOpen(false);
+    try {
+      if (window.location.hash) {
+        window.history.pushState(null, '', window.location.pathname);
+      }
+    } catch (e) {
+      console.warn('History clear error:', e);
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   useEffect(() => {
     const handlePopState = (e: PopStateEvent) => {
       if (!e.state || !e.state.productId) {
@@ -468,6 +491,7 @@ export default function App() {
         onSelectCategory={setActiveCategory}
         onSelectRegion={setActiveRegion}
         onSelectCity={setActiveCity}
+        onGoHome={handleGoHome}
         onOpenConsultation={() => {
           setConsultationTargetProduct(null);
           setIsConsultationOpen(true);
@@ -652,6 +676,7 @@ export default function App() {
       <Footer
         onSelectCategory={setActiveCategory}
         onSelectRegion={setActiveRegion}
+        onGoHome={handleGoHome}
         onOpenConsultation={() => {
           setConsultationTargetProduct(null);
           setIsConsultationOpen(true);

@@ -7,12 +7,14 @@ interface FooterProps {
   onSelectCategory: (cat: Category | '전체') => void;
   onSelectRegion: (reg: Region) => void;
   onOpenConsultation: () => void;
+  onGoHome?: () => void;
 }
 
 export const Footer: React.FC<FooterProps> = ({
   onSelectCategory,
   onSelectRegion,
   onOpenConsultation,
+  onGoHome,
 }) => {
   return (
     <footer className="bg-slate-950 text-slate-400 pt-16 pb-12 border-t border-slate-800">
@@ -21,13 +23,25 @@ export const Footer: React.FC<FooterProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
           {/* Brand Info */}
           <div className="lg:col-span-2 space-y-4">
-            <div className="bg-white/10 p-2 rounded-2xl inline-block border border-white/10">
+            <button
+              onClick={() => {
+                if (onGoHome) {
+                  onGoHome();
+                } else {
+                  onSelectCategory('전체');
+                  onSelectRegion('전체');
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+              }}
+              className="bg-white/10 p-2 rounded-2xl inline-block border border-white/10 hover:bg-white/20 transition-colors cursor-pointer text-left focus:outline-hidden"
+              title="홈 (메인 화면)으로 이동"
+            >
               <img 
                 src="/logo.svg" 
                 alt="Tours XIN CHÀO" 
-                className="h-16 w-auto object-contain" 
+                className="h-16 w-auto object-contain hover:scale-105 transition-transform" 
               />
-            </div>
+            </button>
 
             <p className="text-xs leading-relaxed text-slate-400 max-w-sm">
               한국인 여행객을 위한 100% 맞춤형 베트남 대표 전문 여행사. 현지 직영 시스템으로 거품 없는 최저가와 24시간 한국어 가이드 및 카카오톡 케어를 보장합니다.

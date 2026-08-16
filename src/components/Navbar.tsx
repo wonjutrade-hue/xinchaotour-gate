@@ -35,6 +35,7 @@ interface NavbarProps {
   onSelectRegion: (reg: Region) => void;
   onSelectCity: (city: City) => void;
   onOpenConsultation: () => void;
+  onGoHome?: () => void;
   searchTerm: string;
   onSearchChange: (val: string) => void;
   exchangeRates: ExchangeRates;
@@ -51,6 +52,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onSelectRegion,
   onSelectCity,
   onOpenConsultation,
+  onGoHome,
   searchTerm,
   onSearchChange,
   exchangeRates,
@@ -131,11 +133,16 @@ export const Navbar: React.FC<NavbarProps> = ({
           <div className="flex items-center gap-2.5 shrink-0">
             <button 
               onClick={() => {
-                onSelectCategory('전체');
-                onSelectRegion('전체');
-                onSelectCity('전체');
+                if (onGoHome) {
+                  onGoHome();
+                } else {
+                  onSelectCategory('전체');
+                  onSelectRegion('전체');
+                  onSelectCity('전체');
+                }
               }}
-              className="flex items-center gap-2.5 text-left group py-1"
+              className="flex items-center gap-2.5 text-left group py-1 cursor-pointer focus:outline-hidden"
+              title="홈 (메인 화면)으로 이동"
             >
               <img 
                 src="/logo.svg" 
