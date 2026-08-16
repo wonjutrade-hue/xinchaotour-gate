@@ -163,54 +163,31 @@ export default function App() {
 
   // Fetch Products & Inquiries with bulletproof two-way synchronization
   const fetchProducts = async () => {
-    let localList: Product[] = [];
-    try {
-      const fromIndexed = await loadProductsFromIndexedDB();
-      if (Array.isArray(fromIndexed) && fromIndexed.length > 0) {
-        localList = fromIndexed;
-        setProducts(fromIndexed);
-        setStoredJson(PRODUCTS_CACHE_KEY, fromIndexed);
-      }
-    } catch (e) {
-      console.warn('Local DB read error:', e);
-    }
-
     try {
       const res = await fetch('/api/products');
       if (res.ok) {
         const data = await res.json();
         if (data.success && Array.isArray(data.products)) {
-          const serverList: Product[] = data.products;
-
-          if (serverList.length > 0) {
-            // Merge local and server without losing items
-            const map = new Map<string, Product>();
-            localList.forEach(p => map.set(p.id, p));
-            serverList.forEach(p => map.set(p.id, p));
-            const merged = Array.from(map.values());
-
-            setProducts(merged);
-            await saveProductsToIndexedDB(merged);
-            setStoredJson(PRODUCTS_CACHE_KEY, merged);
-          } else if (localList.length > 0) {
-            // Server has 0 items but local has items: auto-sync local items to server!
-            console.log('[Sync] Restoring server storage from local IndexedDB data:', localList.length);
-            fetch('/api/products/sync', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ products: localList })
-            }).catch(e => console.warn('Server sync error:', e));
-          } else {
-            setProducts([]);
-            await saveProductsToIndexedDB([]);
-            setStoredJson(PRODUCTS_CACHE_KEY, []);
-          }
+          setProducts(data.products);
+          await saveProductsToIndexedDB(data.products);
+          setStoredJson(PRODUCTS_CACHE_KEY, data.products);
+          return;
         }
       }
     } catch (err) {
       console.warn('API fetch fallback to local storage:', err);
     } finally {
       setIsLoadingProducts(false);
+    }
+
+    try {
+      const fromIndexed = await loadProductsFromIndexedDB();
+      if (Array.isArray(fromIndexed)) {
+        setProducts(fromIndexed);
+        setStoredJson(PRODUCTS_CACHE_KEY, fromIndexed);
+      }
+    } catch (e) {
+      console.warn('Local DB read error:', e);
     }
   };
 
@@ -587,17 +564,20 @@ export default function App() {
               <div className="py-20 text-center bg-slate-50 rounded-3xl border border-dashed border-slate-200 space-y-4">
                 <SearchX className="w-12 h-12 text-slate-400 mx-auto" />
                 <h3 className="text-base font-extrabold text-slate-800">
-                  해당 조건의 여행 상품이 없습니다.
+                  현재 등록된 여행 상품이 없습니다.
                 </h3>
                 <p className="text-xs text-slate-500 max-w-sm mx-auto">
-                  다른 카테고리나 지역을 선택해보시거나 검색어를 변경해보세요.
+                  새로운 여행 상품 준비 중입니다. 1:1 카카오톡 상담 또는 맞춤 견적 신청을 이용해주세요.
                 </p>
                 <div className="flex items-center justify-center gap-3">
                   <button
-                    onClick={handleResetProducts}
+                    onClick={() => {
+                      setConsultationTargetProduct(null);
+                      setIsConsultationOpen(true);
+                    }}
                     className="px-5 py-2.5 bg-teal-700 hover:bg-teal-800 text-white rounded-2xl font-bold text-xs cursor-pointer shadow-sm"
                   >
-                    🔄 전체 상품 목록 보기
+                    💬 1:1 맞춤 여행 견적 문의하기
                   </button>
                 </div>
               </div>
