@@ -135,6 +135,7 @@ export const AdminMode: React.FC<AdminModeProps> = ({
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCategory, setFilterCategory] = useState<string>('전체');
   const [filterRegion, setFilterRegion] = useState<string>('전체');
+  const [viewMode, setViewMode] = useState<'category' | 'region' | 'all'>('category');
   const [isManualSyncing, setIsManualSyncing] = useState(false);
   
   // Product Editor Modal State
@@ -171,9 +172,9 @@ export const AdminMode: React.FC<AdminModeProps> = ({
       if (onForceSync) {
         await onForceSync();
       }
-      showNotification('⚡ PC 및 모바일 최신 데이터가 성공적으로 동기화되었습니다!');
+      showNotification('⚡ 최신 데이터가 성공적으로 새로고침되었습니다!');
     } catch (err) {
-      showNotification('⚠️ 동기화 중 오류가 발생했습니다.');
+      showNotification('⚠️ 새로고침 중 오류가 발생했습니다.');
     } finally {
       setIsManualSyncing(false);
     }
@@ -568,21 +569,15 @@ export const AdminMode: React.FC<AdminModeProps> = ({
           </div>
 
           <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
-            {/* Live Sync Status Pill */}
-            <div className="hidden md:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[11px] font-bold">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
-              <span>PC ↔ 모바일 실시간 연동 중</span>
-            </div>
-
-            {/* Force Sync button */}
+            {/* Refresh Data button */}
             <button
               onClick={handleManualSync}
               disabled={isManualSyncing || isSyncing}
               className="inline-flex items-center gap-1 sm:gap-1.5 px-2.5 py-1.5 sm:px-3 sm:py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 active:scale-95 text-amber-300 font-bold text-xs sm:text-xs border border-amber-400/30 transition-all cursor-pointer disabled:opacity-50"
-              title="PC 및 모바일 기기 간의 최신 상품/사진 즉시 동기화"
+              title="최신 상품 데이터 즉시 새로고침"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${isManualSyncing || isSyncing ? 'animate-spin text-amber-400' : ''}`} />
-              <span>{isManualSyncing || isSyncing ? '동기화 중...' : '기기 동기화'}</span>
+              <span>{isManualSyncing || isSyncing ? '새로고침 중...' : '데이터 새로고침'}</span>
             </button>
 
             {/* View live store button */}
@@ -607,7 +602,7 @@ export const AdminMode: React.FC<AdminModeProps> = ({
             }`}
           >
             <Layers className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-            <span>여행 상품 ({products.length})</span>
+            <span>여행 상품 관리 ({products.length})</span>
           </button>
 
           <button
@@ -636,162 +631,598 @@ export const AdminMode: React.FC<AdminModeProps> = ({
         {/* TAB 1: TRAVEL PRODUCTS MANAGEMENT                                   */}
         {/* =================================================================== */}
         {adminTab === 'products' && (
-          <div className="space-y-4 sm:space-y-6">
-            {/* Quick Action Top Bar */}
-            <div className="bg-slate-800/90 border border-slate-700 p-3 sm:p-5 rounded-2xl sm:rounded-3xl shadow-xl flex flex-col gap-3">
+          <div className="space-y-5 sm:space-y-6">
+            
+            {/* Top Control Panel: Search, Category & Region Filter Tabs, View Modes */}
+            <div className="bg-slate-800/90 border border-slate-700 p-4 sm:p-5 rounded-3xl shadow-xl space-y-4">
               
-              {/* Category, Region Filters & Search */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                <div className="relative col-span-1 sm:col-span-1">
-                  <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+              {/* Row 1: Search & Quick Add & Backup Tools */}
+              <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+                <div className="relative flex-1">
+                  <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                   <input
                     type="text"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    placeholder="상품명, 도시, 태그 검색..."
-                    className="w-full bg-slate-900 border border-slate-700 focus:border-amber-400 rounded-xl pl-9 pr-3 py-2 text-xs font-bold text-white placeholder-slate-500 focus:outline-hidden"
+                    placeholder="상품명, 도시, 태그로 검색..."
+                    className="w-full bg-slate-900 border border-slate-700 focus:border-amber-400 rounded-xl pl-9 pr-3 py-2.5 text-xs font-bold text-white placeholder-slate-500 focus:outline-hidden"
                   />
+                  {searchTerm && (
+                    <button
+                      onClick={() => setSearchTerm('')}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white text-xs font-bold"
+                    >
+                      ✕
+                    </button>
+                  )}
                 </div>
 
-                <select
-                  value={filterCategory}
-                  onChange={(e) => setFilterCategory(e.target.value)}
-                  className="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs font-bold text-slate-200 focus:outline-hidden"
-                >
-                  <option value="전체">전체 카테고리</option>
-                  <option value="풀빌라">🏰 풀빌라</option>
-                  <option value="골프투어">⛳ 골프투어</option>
-                  <option value="추천패키지">🎒 추천패키지</option>
-                  <option value="자유여행">🏝️ 자유여행</option>
-                </select>
-
-                <select
-                  value={filterRegion}
-                  onChange={(e) => setFilterRegion(e.target.value)}
-                  className="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs font-bold text-slate-200 focus:outline-hidden"
-                >
-                  <option value="전체">전체 지역</option>
-                  <option value="중부">중부 (다낭/호이안/나트랑)</option>
-                  <option value="북부">북부 (하노이/하롱베이/사파)</option>
-                  <option value="남부">남부 (푸꾸옥/달랏/호치민)</option>
-                </select>
-              </div>
-
-              {/* Action Buttons: Add Product & Backup Tools */}
-              <div className="flex flex-wrap items-center justify-between gap-2 pt-1 border-t border-slate-700/60">
-                <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
-                  {/* Add New Product Primary Button */}
+                <div className="flex flex-wrap items-center gap-2">
                   <button
                     onClick={() => handleCreateNewProduct('추천패키지')}
-                    className="px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 active:scale-95 text-slate-950 font-black text-xs sm:text-sm flex items-center gap-1.5 shadow-lg transition-all cursor-pointer shrink-0"
+                    className="px-4 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 active:scale-95 text-slate-950 font-black text-xs sm:text-sm flex items-center gap-1.5 shadow-lg transition-all cursor-pointer shrink-0"
                   >
                     <Plus className="w-4 h-4 stroke-[3]" />
                     <span>+ 새 여행상품 등록</span>
                   </button>
 
-                  {/* Specific Category Shortcut Add */}
-                  <button
-                    onClick={() => handleCreateNewProduct('풀빌라')}
-                    className="px-2.5 py-2 sm:px-3 sm:py-2 rounded-xl bg-slate-900 hover:bg-slate-700 text-slate-200 font-bold text-xs border border-slate-700 transition-colors shrink-0"
-                    title="풀빌라 전용 스펙 상품 등록"
-                  >
-                    + 🏰 풀빌라
-                  </button>
-
-                  <button
-                    onClick={() => handleCreateNewProduct('골프투어')}
-                    className="px-2.5 py-2 sm:px-3 sm:py-2 rounded-xl bg-slate-900 hover:bg-slate-700 text-slate-200 font-bold text-xs border border-slate-700 transition-colors shrink-0"
-                    title="골프투어 전용 스펙 상품 등록"
-                  >
-                    + ⛳ 골프
-                  </button>
-                </div>
-
-                {/* Backup & Tools Menu */}
-                <div className="flex items-center gap-1.5 ml-auto">
-                  <button
-                    onClick={handleExportJSON}
-                    className="p-2 rounded-xl bg-slate-900 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 transition-colors"
-                    title="전체 상품 JSON 백업 다운로드"
-                  >
-                    <Download className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                  </button>
-
-                  <label 
-                    className="p-2 rounded-xl bg-slate-900 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 transition-colors cursor-pointer"
-                    title="JSON 백업 파일 복원"
-                  >
-                    <Upload className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                    <input type="file" accept=".json" onChange={handleImportJSON} className="hidden" />
-                  </label>
-
-                  <button
-                    onClick={handleResetToFactory}
-                    className="p-2 rounded-xl bg-slate-900 hover:bg-rose-900/60 text-slate-400 hover:text-rose-200 border border-slate-700 transition-colors"
-                    title="초기 샘플 데이터로 리셋"
-                  >
-                    <RotateCcw className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* Statistics Banner Cards */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
-              <div className="bg-slate-800/60 border border-slate-700/80 p-4 rounded-2xl">
-                <span className="text-xs text-slate-400 font-bold block">전체 등록 상품</span>
-                <span className="text-xl sm:text-2xl font-black text-white mt-1 block">
-                  {products.length} <span className="text-xs font-normal text-slate-400">개</span>
-                </span>
-              </div>
-              <div className="bg-slate-800/60 border border-slate-700/80 p-4 rounded-2xl">
-                <span className="text-xs text-teal-400 font-bold block">🏰 독채 풀빌라</span>
-                <span className="text-xl sm:text-2xl font-black text-teal-300 mt-1 block">
-                  {products.filter(p => p.category === '풀빌라').length} <span className="text-xs font-normal text-slate-400">개</span>
-                </span>
-              </div>
-              <div className="bg-slate-800/60 border border-slate-700/80 p-4 rounded-2xl">
-                <span className="text-xs text-emerald-400 font-bold block">⛳ 골프투어</span>
-                <span className="text-xl sm:text-2xl font-black text-emerald-300 mt-1 block">
-                  {products.filter(p => p.category === '골프투어').length} <span className="text-xs font-normal text-slate-400">개</span>
-                </span>
-              </div>
-              <div className="bg-slate-800/60 border border-slate-700/80 p-4 rounded-2xl">
-                <span className="text-xs text-amber-400 font-bold block">🎒 패키지 & 자유여행</span>
-                <span className="text-xl sm:text-2xl font-black text-amber-300 mt-1 block">
-                  {products.filter(p => p.category === '추천패키지' || p.category === '자유여행').length} <span className="text-xs font-normal text-slate-400">개</span>
-                </span>
-              </div>
-            </div>
-
-            {/* Products Table / Cards Grid */}
-            <div className="bg-slate-800/80 border border-slate-700 rounded-3xl overflow-hidden shadow-2xl">
-              <div className="px-5 py-4 border-b border-slate-700 flex items-center justify-between">
-                <h3 className="font-black text-white text-base flex items-center gap-2">
-                  <span>상품 목록 관리</span>
-                  <span className="text-xs font-bold text-amber-400 bg-amber-400/10 px-2.5 py-0.5 rounded-full border border-amber-400/20">
-                    {filteredProducts.length}개 표시 중
-                  </span>
-                </h3>
-                <span className="text-xs text-slate-400">
-                  수정, 복제, 삭제 또는 미리보기를 선택하세요
-                </span>
-              </div>
-
-              {filteredProducts.length === 0 ? (
-                <div className="p-12 text-center space-y-4">
-                  <div className="w-14 h-14 rounded-2xl bg-slate-700 text-slate-400 mx-auto flex items-center justify-center">
-                    <Search className="w-7 h-7" />
+                  <div className="flex items-center gap-1 bg-slate-900 border border-slate-700 p-1 rounded-xl">
+                    <button
+                      onClick={handleExportJSON}
+                      className="p-1.5 rounded-lg hover:bg-slate-700 text-slate-300 hover:text-white transition-colors"
+                      title="전체 상품 JSON 백업 다운로드"
+                    >
+                      <Download className="w-4 h-4" />
+                    </button>
+                    <label 
+                      className="p-1.5 rounded-lg hover:bg-slate-700 text-slate-300 hover:text-white transition-colors cursor-pointer"
+                      title="JSON 백업 파일 복원"
+                    >
+                      <Upload className="w-4 h-4" />
+                      <input type="file" accept=".json" onChange={handleImportJSON} className="hidden" />
+                    </label>
+                    <button
+                      onClick={handleResetToFactory}
+                      className="p-1.5 rounded-lg hover:bg-rose-900/60 text-slate-400 hover:text-rose-200 transition-colors"
+                      title="초기 샘플 데이터로 리셋"
+                    >
+                      <RotateCcw className="w-4 h-4" />
+                    </button>
                   </div>
-                  <p className="text-slate-300 font-bold text-base">검색된 여행 상품이 없습니다.</p>
+                </div>
+              </div>
+
+              {/* Row 2: Category Filter Tabs (종류별 필터) */}
+              <div className="space-y-1.5 pt-1 border-t border-slate-700/60">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-black text-amber-300 flex items-center gap-1">
+                    <span>🏷️ 종류(카테고리)별 구분:</span>
+                  </span>
+                  <span className="text-[10px] text-slate-400">클릭하여 특정 종류만 필터링</span>
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {[
+                    { id: '전체', label: '전체 종류', count: products.length, icon: '🌟' },
+                    { id: '자유여행', label: '자유여행', count: products.filter(p => p.category === '자유여행').length, icon: '🏝️' },
+                    { id: '풀빌라', label: '독채 풀빌라', count: products.filter(p => p.category === '풀빌라').length, icon: '🏰' },
+                    { id: '골프투어', label: '골프투어', count: products.filter(p => p.category === '골프투어').length, icon: '⛳' },
+                    { id: '추천패키지', label: '추천패키지', count: products.filter(p => p.category === '추천패키지').length, icon: '🎒' },
+                  ].map(cat => {
+                    const isSelected = filterCategory === cat.id;
+                    return (
+                      <button
+                        key={cat.id}
+                        onClick={() => setFilterCategory(cat.id)}
+                        className={`px-3 py-1.5 rounded-xl text-xs font-black flex items-center gap-1.5 transition-all cursor-pointer ${
+                          isSelected
+                            ? 'bg-amber-400 text-slate-950 shadow-md scale-102'
+                            : 'bg-slate-900 hover:bg-slate-750 text-slate-300 border border-slate-700/80'
+                        }`}
+                      >
+                        <span>{cat.icon} {cat.label}</span>
+                        <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${
+                          isSelected ? 'bg-slate-950/20 text-slate-950' : 'bg-slate-800 text-amber-300'
+                        }`}>
+                          {cat.count}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Row 3: Region Filter Tabs (지역별 필터) */}
+              <div className="space-y-1.5 pt-1 border-t border-slate-700/60">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-black text-teal-300 flex items-center gap-1">
+                    <span>🗺️ 지역(권역)별 구분:</span>
+                  </span>
+                  <span className="text-[10px] text-slate-400">클릭하여 특정 지역만 필터링</span>
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {[
+                    { id: '전체', label: '전체 지역', count: products.length, desc: '베트남 전역' },
+                    { id: '북부', label: '🏔️ 북부', count: products.filter(p => p.region === '북부').length, desc: '하노이·사파·하롱베이·하장' },
+                    { id: '중부', label: '🌊 중부', count: products.filter(p => p.region === '중부').length, desc: '다낭·호이안·나트랑·후에' },
+                    { id: '남부', label: '🌴 남부', count: products.filter(p => p.region === '남부').length, desc: '푸꾸옥·달랏·호치민·붕따우' },
+                  ].map(reg => {
+                    const isSelected = filterRegion === reg.id;
+                    return (
+                      <button
+                        key={reg.id}
+                        onClick={() => setFilterRegion(reg.id)}
+                        className={`px-3 py-1.5 rounded-xl text-xs font-black flex items-center gap-1.5 transition-all cursor-pointer ${
+                          isSelected
+                            ? 'bg-teal-500 text-white shadow-md scale-102'
+                            : 'bg-slate-900 hover:bg-slate-750 text-slate-300 border border-slate-700/80'
+                        }`}
+                        title={reg.desc}
+                      >
+                        <span>{reg.label}</span>
+                        <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${
+                          isSelected ? 'bg-black/25 text-white' : 'bg-slate-800 text-teal-300'
+                        }`}>
+                          {reg.count}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Row 4: View Mode Switcher */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-2 border-t border-slate-700/60">
+                <div className="flex items-center gap-1.5 text-xs text-slate-300 font-bold">
+                  <span>보기 방식 선택:</span>
+                </div>
+                <div className="flex items-center gap-1 bg-slate-900 p-1 rounded-xl border border-slate-700 self-start sm:self-auto">
                   <button
-                    onClick={() => handleCreateNewProduct()}
-                    className="px-4 py-2 rounded-xl bg-amber-400 text-slate-950 font-black text-xs"
+                    onClick={() => setViewMode('category')}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-black flex items-center gap-1.5 transition-all cursor-pointer ${
+                      viewMode === 'category'
+                        ? 'bg-amber-400 text-slate-950 shadow-xs'
+                        : 'text-slate-400 hover:text-white'
+                    }`}
                   >
-                    + 새 상품 바로 등록하기
+                    <span>🗂️ 종류별 묶어보기</span>
+                  </button>
+                  <button
+                    onClick={() => setViewMode('region')}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-black flex items-center gap-1.5 transition-all cursor-pointer ${
+                      viewMode === 'region'
+                        ? 'bg-teal-500 text-white shadow-xs'
+                        : 'text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    <span>🗺️ 지역별 묶어보기</span>
+                  </button>
+                  <button
+                    onClick={() => setViewMode('all')}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-black flex items-center gap-1.5 transition-all cursor-pointer ${
+                      viewMode === 'all'
+                        ? 'bg-slate-700 text-white shadow-xs'
+                        : 'text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    <span>📋 전체 목록</span>
                   </button>
                 </div>
-              ) : (
+              </div>
+            </div>
+
+            {/* Render Products based on View Mode */}
+            {filteredProducts.length === 0 ? (
+              <div className="bg-slate-800/80 border border-slate-700 rounded-3xl p-12 text-center space-y-4">
+                <div className="w-14 h-14 rounded-2xl bg-slate-700 text-slate-400 mx-auto flex items-center justify-center">
+                  <Search className="w-7 h-7" />
+                </div>
+                <p className="text-slate-300 font-bold text-base">선택한 조건에 맞는 여행 상품이 없습니다.</p>
+                <div className="flex justify-center gap-2">
+                  <button
+                    onClick={() => {
+                      setFilterCategory('전체');
+                      setFilterRegion('전체');
+                      setSearchTerm('');
+                    }}
+                    className="px-4 py-2 rounded-xl bg-slate-700 hover:bg-slate-600 text-white font-bold text-xs cursor-pointer"
+                  >
+                    필터 전체 초기화
+                  </button>
+                  <button
+                    onClick={() => handleCreateNewProduct(filterCategory !== '전체' ? filterCategory as Category : '추천패키지')}
+                    className="px-4 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs cursor-pointer"
+                  >
+                    + 이 카테고리로 새 상품 등록
+                  </button>
+                </div>
+              </div>
+            ) : viewMode === 'category' ? (
+              /* ============================================================= */
+              /* VIEW MODE 1: CATEGORY GROUPED                                */
+              /* ============================================================= */
+              <div className="space-y-6">
+                {(['자유여행', '풀빌라', '골프투어', '추천패키지'] as Category[]).map((cat) => {
+                  const catProducts = filteredProducts.filter(p => p.category === cat);
+                  if (filterCategory !== '전체' && filterCategory !== cat) return null;
+                  if (catProducts.length === 0 && filterCategory === '전체' && !searchTerm) return null;
+
+                  const catIcons: Record<Category, string> = {
+                    '자유여행': '🏝️',
+                    '풀빌라': '🏰',
+                    '골프투어': '⛳',
+                    '추천패키지': '🎒'
+                  };
+
+                  const catSubtitles: Record<Category, string> = {
+                    '자유여행': '개별 맞춤 자유일정, 단독차량 & 프라이빗 데이투어',
+                    '풀빌라': '독채 프라이빗 풀빌라, 가족 & 단체 단독 휴양',
+                    '골프투어': '명문 54홀/36홀 골프장, VIP 전용 골프패키지',
+                    '추천패키지': '전담 가이드 & 단독 차량 포함 프리미엄 맞춤 패키지'
+                  };
+
+                  return (
+                    <div key={cat} className="bg-slate-800/80 border border-slate-700 rounded-3xl overflow-hidden shadow-xl">
+                      {/* Category Group Header */}
+                      <div className="px-5 py-4 bg-slate-850 border-b border-slate-700 flex flex-wrap items-center justify-between gap-3">
+                        <div className="flex items-center gap-3">
+                          <span className="text-2xl">{catIcons[cat]}</span>
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <h3 className="text-base sm:text-lg font-black text-white">
+                                {cat} 상품
+                              </h3>
+                              <span className="text-xs font-bold bg-amber-400/20 text-amber-300 border border-amber-400/30 px-2 py-0.5 rounded-full">
+                                {catProducts.length}개 상품
+                              </span>
+                            </div>
+                            <p className="text-xs text-slate-400">
+                              {catSubtitles[cat]}
+                            </p>
+                          </div>
+                        </div>
+
+                        <button
+                          onClick={() => handleCreateNewProduct(cat)}
+                          className="px-3.5 py-1.5 rounded-xl bg-amber-400 hover:bg-amber-300 active:scale-95 text-slate-950 font-black text-xs flex items-center gap-1.5 shadow-md transition-all cursor-pointer shrink-0"
+                        >
+                          <Plus className="w-3.5 h-3.5 stroke-[3]" />
+                          <span>+ {cat} 상품 추가</span>
+                        </button>
+                      </div>
+
+                      {/* Products inside this category */}
+                      {catProducts.length === 0 ? (
+                        <div className="p-6 text-center text-slate-400 text-xs font-medium">
+                          해당 조건에 맞는 {cat} 상품이 없습니다.
+                        </div>
+                      ) : (
+                        <div className="divide-y divide-slate-700/60">
+                          {catProducts.map((prod) => {
+                            const subPhotosCount = (prod.additionalImages?.length || 0) + (prod.imageUrl ? 1 : 0);
+                            const liveVND = calculateVNDFromKRW(prod.priceKRW || 0, rates);
+
+                            return (
+                              <div
+                                key={prod.id}
+                                className="p-4 sm:p-5 hover:bg-slate-750/70 transition-colors flex flex-col md:flex-row md:items-center justify-between gap-4"
+                              >
+                                {/* Left: Thumbnail & Info */}
+                                <div className="flex items-start gap-4 min-w-0 flex-1">
+                                  <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-slate-900 overflow-hidden shrink-0 border border-slate-700 relative group">
+                                    <img
+                                      src={prod.imageUrl || 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=400&q=80'}
+                                      alt={prod.title}
+                                      className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                                    />
+                                    <span className="absolute bottom-1 right-1 bg-slate-950/80 text-[10px] text-white font-bold px-1.5 py-0.2 rounded-md backdrop-blur-xs">
+                                      📸 {subPhotosCount}
+                                    </span>
+                                  </div>
+
+                                  <div className="space-y-1.5 min-w-0 flex-1">
+                                    {/* Badges */}
+                                    <div className="flex flex-wrap items-center gap-1.5 text-xs">
+                                      <span className="bg-teal-500/20 text-teal-300 border border-teal-500/30 px-2 py-0.5 rounded-md font-bold text-[11px]">
+                                        📍 {prod.region} · {prod.city}
+                                      </span>
+
+                                      <span className="bg-slate-700/60 text-slate-300 px-2 py-0.5 rounded-md font-bold text-[11px]">
+                                        ⏱️ {prod.duration}
+                                      </span>
+
+                                      {prod.isPopular && (
+                                        <span className="bg-amber-400 text-slate-950 px-1.5 py-0.2 rounded font-black text-[10px]">
+                                          👑 인기
+                                        </span>
+                                      )}
+                                      {prod.isHotDeal && (
+                                        <span className="bg-rose-500 text-white px-1.5 py-0.2 rounded font-black text-[10px]">
+                                          🔥 특가
+                                        </span>
+                                      )}
+                                    </div>
+
+                                    {/* Title */}
+                                    <h4 className="font-black text-white text-sm sm:text-base truncate leading-snug">
+                                      {prod.title}
+                                    </h4>
+
+                                    {/* Subtitle */}
+                                    <p className="text-xs text-slate-400 truncate">
+                                      {prod.subTitle || prod.description}
+                                    </p>
+
+                                    {/* Price & Specs */}
+                                    <div className="flex flex-wrap items-center gap-3 pt-1 text-xs">
+                                      <span className="font-black text-amber-400 font-mono text-sm">
+                                        ₩{(prod.priceKRW || 0).toLocaleString()}원
+                                      </span>
+                                      <span className="text-slate-400 text-[11px]">
+                                        (약 {formatVND(liveVND)})
+                                      </span>
+                                      <span className="text-amber-400 flex items-center gap-0.5 text-[11px]">
+                                        ★ {prod.rating || 4.9} ({prod.reviewCount || 0})
+                                      </span>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                {/* Right: Quick Action Buttons */}
+                                <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 shrink-0 border-t md:border-t-0 border-slate-700/60 pt-3 md:pt-0 justify-end">
+                                  <button
+                                    onClick={() => onPreviewProduct(prod)}
+                                    className="px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl bg-slate-700 hover:bg-slate-600 active:scale-95 text-slate-200 font-bold text-xs flex items-center gap-1 sm:gap-1.5 transition-colors cursor-pointer"
+                                    title="손님 화면에서 미리보기"
+                                  >
+                                    <Eye className="w-3.5 h-3.5 text-teal-400" />
+                                    <span>미리보기</span>
+                                  </button>
+
+                                  <button
+                                    onClick={() => handleDuplicateProduct(prod)}
+                                    className="px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl bg-slate-700 hover:bg-slate-600 active:scale-95 text-slate-200 font-bold text-xs flex items-center gap-1 sm:gap-1.5 transition-colors cursor-pointer"
+                                    title="상품 즉시 복제"
+                                  >
+                                    <Copy className="w-3.5 h-3.5 text-amber-400" />
+                                    <span>복제</span>
+                                  </button>
+
+                                  <button
+                                    onClick={() => handleEditProduct(prod)}
+                                    className="px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-amber-400 hover:bg-amber-300 active:scale-95 text-slate-950 font-black text-xs flex items-center gap-1 sm:gap-1.5 shadow-md transition-colors cursor-pointer"
+                                  >
+                                    <Edit3 className="w-3.5 h-3.5" />
+                                    <span>수정</span>
+                                  </button>
+
+                                  <button
+                                    onClick={() => handleDeleteProduct(prod.id, prod.title)}
+                                    className="p-1.5 sm:p-2 rounded-xl bg-slate-700/50 hover:bg-rose-600 active:scale-95 text-slate-400 hover:text-white transition-colors cursor-pointer"
+                                    title="상품 삭제"
+                                  >
+                                    <Trash2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                                  </button>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            ) : viewMode === 'region' ? (
+              /* ============================================================= */
+              /* VIEW MODE 2: REGION GROUPED                                  */
+              /* ============================================================= */
+              <div className="space-y-6">
+                {(['북부', '중부', '남부'] as Region[]).map((reg) => {
+                  const regProducts = filteredProducts.filter(p => p.region === reg);
+                  if (filterRegion !== '전체' && filterRegion !== reg) return null;
+                  if (regProducts.length === 0 && filterRegion === '전체' && !searchTerm) return null;
+
+                  const regIcons: Record<string, string> = {
+                    '전체': '🌟',
+                    '북부': '🏔️',
+                    '중부': '🌊',
+                    '남부': '🌴'
+                  };
+
+                  const regCities: Record<string, string[]> = {
+                    '전체': ['다낭', '하노이', '푸꾸옥', '나트랑'],
+                    '북부': ['하노이', '사파', '하롱베이', '하장', '닌빈'],
+                    '중부': ['다낭', '호이안', '나트랑', '후에'],
+                    '남부': ['푸꾸옥', '달랏', '호치민', '붕따우']
+                  };
+
+                  return (
+                    <div key={reg} className="bg-slate-800/80 border border-slate-700 rounded-3xl overflow-hidden shadow-xl">
+                      {/* Region Group Header */}
+                      <div className="px-5 py-4 bg-slate-850 border-b border-slate-700 flex flex-wrap items-center justify-between gap-3">
+                        <div className="flex items-center gap-3">
+                          <span className="text-2xl">{regIcons[reg]}</span>
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <h3 className="text-base sm:text-lg font-black text-white">
+                                {reg} 권역 상품
+                              </h3>
+                              <span className="text-xs font-bold bg-teal-500/20 text-teal-300 border border-teal-500/30 px-2 py-0.5 rounded-full">
+                                {regProducts.length}개 상품
+                              </span>
+                            </div>
+                            <div className="flex flex-wrap gap-1 mt-1">
+                              {regCities[reg].map(city => (
+                                <span key={city} className="text-[10px] bg-slate-800 text-slate-300 px-1.5 py-0.2 rounded">
+                                  {city}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+
+                        <button
+                          onClick={() => {
+                            const newProd = handleCreateNewProduct('추천패키지');
+                            // Region defaults to this region
+                            setEditingProduct(prev => prev ? { ...prev, region: reg, city: regCities[reg][0] as City } : prev);
+                          }}
+                          className="px-3.5 py-1.5 rounded-xl bg-teal-500 hover:bg-teal-400 active:scale-95 text-white font-black text-xs flex items-center gap-1.5 shadow-md transition-all cursor-pointer shrink-0"
+                        >
+                          <Plus className="w-3.5 h-3.5 stroke-[3]" />
+                          <span>+ {reg} 상품 추가</span>
+                        </button>
+                      </div>
+
+                      {/* Products inside this region */}
+                      {regProducts.length === 0 ? (
+                        <div className="p-6 text-center text-slate-400 text-xs font-medium">
+                          해당 조건에 맞는 {reg} 상품이 없습니다.
+                        </div>
+                      ) : (
+                        <div className="divide-y divide-slate-700/60">
+                          {regProducts.map((prod) => {
+                            const subPhotosCount = (prod.additionalImages?.length || 0) + (prod.imageUrl ? 1 : 0);
+                            const liveVND = calculateVNDFromKRW(prod.priceKRW || 0, rates);
+
+                            return (
+                              <div
+                                key={prod.id}
+                                className="p-4 sm:p-5 hover:bg-slate-750/70 transition-colors flex flex-col md:flex-row md:items-center justify-between gap-4"
+                              >
+                                {/* Left: Thumbnail & Info */}
+                                <div className="flex items-start gap-4 min-w-0 flex-1">
+                                  <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-slate-900 overflow-hidden shrink-0 border border-slate-700 relative group">
+                                    <img
+                                      src={prod.imageUrl || 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=400&q=80'}
+                                      alt={prod.title}
+                                      className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                                    />
+                                    <span className="absolute bottom-1 right-1 bg-slate-950/80 text-[10px] text-white font-bold px-1.5 py-0.2 rounded-md backdrop-blur-xs">
+                                      📸 {subPhotosCount}
+                                    </span>
+                                  </div>
+
+                                  <div className="space-y-1.5 min-w-0 flex-1">
+                                    {/* Badges */}
+                                    <div className="flex flex-wrap items-center gap-1.5 text-xs">
+                                      <span className={`px-2 py-0.5 rounded-md font-black text-[11px] ${
+                                        prod.category === '풀빌라' 
+                                          ? 'bg-teal-500/20 text-teal-300 border border-teal-500/30'
+                                          : prod.category === '골프투어'
+                                          ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                                          : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                                      }`}>
+                                        {prod.category}
+                                      </span>
+
+                                      <span className="bg-slate-700 text-slate-300 px-2 py-0.5 rounded-md font-bold text-[11px]">
+                                        🏙️ {prod.city}
+                                      </span>
+
+                                      <span className="bg-slate-700/60 text-slate-300 px-2 py-0.5 rounded-md font-bold text-[11px]">
+                                        ⏱️ {prod.duration}
+                                      </span>
+
+                                      {prod.isPopular && (
+                                        <span className="bg-amber-400 text-slate-950 px-1.5 py-0.2 rounded font-black text-[10px]">
+                                          👑 인기
+                                        </span>
+                                      )}
+                                      {prod.isHotDeal && (
+                                        <span className="bg-rose-500 text-white px-1.5 py-0.2 rounded font-black text-[10px]">
+                                          🔥 특가
+                                        </span>
+                                      )}
+                                    </div>
+
+                                    {/* Title */}
+                                    <h4 className="font-black text-white text-sm sm:text-base truncate leading-snug">
+                                      {prod.title}
+                                    </h4>
+
+                                    {/* Subtitle */}
+                                    <p className="text-xs text-slate-400 truncate">
+                                      {prod.subTitle || prod.description}
+                                    </p>
+
+                                    {/* Price & Specs */}
+                                    <div className="flex flex-wrap items-center gap-3 pt-1 text-xs">
+                                      <span className="font-black text-amber-400 font-mono text-sm">
+                                        ₩{(prod.priceKRW || 0).toLocaleString()}원
+                                      </span>
+                                      <span className="text-slate-400 text-[11px]">
+                                        (약 {formatVND(liveVND)})
+                                      </span>
+                                      <span className="text-amber-400 flex items-center gap-0.5 text-[11px]">
+                                        ★ {prod.rating || 4.9} ({prod.reviewCount || 0})
+                                      </span>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                {/* Right: Quick Action Buttons */}
+                                <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 shrink-0 border-t md:border-t-0 border-slate-700/60 pt-3 md:pt-0 justify-end">
+                                  <button
+                                    onClick={() => onPreviewProduct(prod)}
+                                    className="px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl bg-slate-700 hover:bg-slate-600 active:scale-95 text-slate-200 font-bold text-xs flex items-center gap-1 sm:gap-1.5 transition-colors cursor-pointer"
+                                    title="손님 화면에서 미리보기"
+                                  >
+                                    <Eye className="w-3.5 h-3.5 text-teal-400" />
+                                    <span>미리보기</span>
+                                  </button>
+
+                                  <button
+                                    onClick={() => handleDuplicateProduct(prod)}
+                                    className="px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl bg-slate-700 hover:bg-slate-600 active:scale-95 text-slate-200 font-bold text-xs flex items-center gap-1 sm:gap-1.5 transition-colors cursor-pointer"
+                                    title="상품 즉시 복제"
+                                  >
+                                    <Copy className="w-3.5 h-3.5 text-amber-400" />
+                                    <span>복제</span>
+                                  </button>
+
+                                  <button
+                                    onClick={() => handleEditProduct(prod)}
+                                    className="px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-amber-400 hover:bg-amber-300 active:scale-95 text-slate-950 font-black text-xs flex items-center gap-1 sm:gap-1.5 shadow-md transition-colors cursor-pointer"
+                                  >
+                                    <Edit3 className="w-3.5 h-3.5" />
+                                    <span>수정</span>
+                                  </button>
+
+                                  <button
+                                    onClick={() => handleDeleteProduct(prod.id, prod.title)}
+                                    className="p-1.5 sm:p-2 rounded-xl bg-slate-700/50 hover:bg-rose-600 active:scale-95 text-slate-400 hover:text-white transition-colors cursor-pointer"
+                                    title="상품 삭제"
+                                  >
+                                    <Trash2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                                  </button>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              /* ============================================================= */
+              /* VIEW MODE 3: ALL PRODUCTS FLAT LIST                          */
+              /* ============================================================= */
+              <div className="bg-slate-800/80 border border-slate-700 rounded-3xl overflow-hidden shadow-2xl">
+                <div className="px-5 py-4 border-b border-slate-700 flex items-center justify-between">
+                  <h3 className="font-black text-white text-base flex items-center gap-2">
+                    <span>전체 상품 목록</span>
+                    <span className="text-xs font-bold text-amber-400 bg-amber-400/10 px-2.5 py-0.5 rounded-full border border-amber-400/20">
+                      {filteredProducts.length}개 표시 중
+                    </span>
+                  </h3>
+                  <span className="text-xs text-slate-400">
+                    수정, 복제, 삭제 또는 미리보기를 선택하세요
+                  </span>
+                </div>
+
                 <div className="divide-y divide-slate-700/60">
                   {filteredProducts.map((prod) => {
                     const subPhotosCount = (prod.additionalImages?.length || 0) + (prod.imageUrl ? 1 : 0);
@@ -875,27 +1306,24 @@ export const AdminMode: React.FC<AdminModeProps> = ({
 
                         {/* Right: Quick Action Buttons */}
                         <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 shrink-0 border-t md:border-t-0 border-slate-700/60 pt-3 md:pt-0 justify-end">
-                          {/* Preview Product */}
                           <button
                             onClick={() => onPreviewProduct(prod)}
                             className="px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl bg-slate-700 hover:bg-slate-600 active:scale-95 text-slate-200 font-bold text-xs flex items-center gap-1 sm:gap-1.5 transition-colors cursor-pointer"
-                            title="손님 화면에서 어떻게 보일지 미리보기"
+                            title="손님 화면에서 미리보기"
                           >
                             <Eye className="w-3.5 h-3.5 text-teal-400" />
                             <span>미리보기</span>
                           </button>
 
-                          {/* 1-Click Duplicate */}
                           <button
                             onClick={() => handleDuplicateProduct(prod)}
                             className="px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl bg-slate-700 hover:bg-slate-600 active:scale-95 text-slate-200 font-bold text-xs flex items-center gap-1 sm:gap-1.5 transition-colors cursor-pointer"
-                            title="동일한 스펙으로 상품 즉시 복제"
+                            title="상품 즉시 복제"
                           >
                             <Copy className="w-3.5 h-3.5 text-amber-400" />
                             <span>복제</span>
                           </button>
 
-                          {/* Edit Product */}
                           <button
                             onClick={() => handleEditProduct(prod)}
                             className="px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-amber-400 hover:bg-amber-300 active:scale-95 text-slate-950 font-black text-xs flex items-center gap-1 sm:gap-1.5 shadow-md transition-colors cursor-pointer"
@@ -904,7 +1332,6 @@ export const AdminMode: React.FC<AdminModeProps> = ({
                             <span>수정</span>
                           </button>
 
-                          {/* Delete Product */}
                           <button
                             onClick={() => handleDeleteProduct(prod.id, prod.title)}
                             className="p-1.5 sm:p-2 rounded-xl bg-slate-700/50 hover:bg-rose-600 active:scale-95 text-slate-400 hover:text-white transition-colors cursor-pointer"
@@ -917,8 +1344,8 @@ export const AdminMode: React.FC<AdminModeProps> = ({
                     );
                   })}
                 </div>
-              )}
-            </div>
+              </div>
+            )}
           </div>
         )}
 
@@ -1142,106 +1569,139 @@ export const AdminMode: React.FC<AdminModeProps> = ({
               {/* ============================================================= */}
               {editorTab === 'basic' && (
                 <div className="space-y-6 animate-fadeIn">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {/* Category */}
-                    <div className="space-y-1.5">
-                      <label className="font-bold text-slate-300 block">상품 카테고리 *</label>
-                      <select
-                        value={editingProduct.category}
-                        onChange={(e) => {
-                          const newCat = e.target.value as Category;
-                          setEditingProduct(prev => {
-                            if (!prev) return prev;
-                            const updated = { ...prev, category: newCat };
-                            if (newCat === '풀빌라' && !updated.villaSpecs) {
-                              updated.villaSpecs = {
-                                bedrooms: 3,
-                                bathrooms: 3,
-                                maxOccupancy: 8,
-                                standardOccupancy: 6,
-                                privatePool: true,
-                                oceanView: true,
-                                areaSqm: 280,
-                                amenities: ['프라이빗 전용 수영장', '오션뷰 / 비치프론트', '풀 키친']
-                              };
-                            } else if (newCat === '골프투어' && !updated.golfSpecs) {
-                              updated.golfSpecs = {
-                                holes: 54,
-                                greenFeeIncluded: true,
-                                caddieFeeIncluded: true,
-                                cartIncluded: true,
-                                golfCourseNames: ['다낭 BRG 골프클럽']
-                              };
-                            }
-                            return updated;
-                          });
-                        }}
-                        className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 font-bold text-white focus:outline-hidden focus:border-amber-400"
-                      >
-                        <option value="추천패키지">🎒 추천패키지</option>
-                        <option value="풀빌라">🏰 풀빌라</option>
-                        <option value="골프투어">⛳ 골프투어</option>
-                        <option value="자유여행">🏝️ 자유여행</option>
-                      </select>
+                  {/* Visual Category Selector */}
+                  <div className="space-y-2">
+                    <label className="font-bold text-slate-200 block text-xs sm:text-sm">
+                      🏷️ 1. 상품 종류 (카테고리) 선택 *
+                    </label>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                      {[
+                        { id: '자유여행', label: '자유여행', icon: '🏝️', desc: '단독차량 & 자유일정' },
+                        { id: '풀빌라', label: '독채 풀빌라', icon: '🏰', desc: '프라이빗 풀 & 휴양' },
+                        { id: '골프투어', label: '골프투어', icon: '⛳', desc: '54홀 명문 코스 & 라운딩' },
+                        { id: '추천패키지', label: '추천패키지', icon: '🎒', desc: '전담가이드 풀케어' },
+                      ].map(cat => {
+                        const isSelected = editingProduct.category === cat.id;
+                        return (
+                          <button
+                            key={cat.id}
+                            type="button"
+                            onClick={() => {
+                              const newCat = cat.id as Category;
+                              setEditingProduct(prev => {
+                                if (!prev) return prev;
+                                const updated = { ...prev, category: newCat };
+                                if (newCat === '풀빌라' && !updated.villaSpecs) {
+                                  updated.villaSpecs = {
+                                    bedrooms: 3,
+                                    bathrooms: 3,
+                                    maxOccupancy: 8,
+                                    standardOccupancy: 6,
+                                    privatePool: true,
+                                    oceanView: true,
+                                    areaSqm: 280,
+                                    amenities: ['프라이빗 전용 수영장', '오션뷰 / 비치프론트', '풀 키친']
+                                  };
+                                } else if (newCat === '골프투어' && !updated.golfSpecs) {
+                                  updated.golfSpecs = {
+                                    holes: 54,
+                                    greenFeeIncluded: true,
+                                    caddieFeeIncluded: true,
+                                    cartIncluded: true,
+                                    golfCourseNames: ['다낭 BRG 골프클럽']
+                                  };
+                                }
+                                return updated;
+                              });
+                            }}
+                            className={`p-3 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
+                              isSelected
+                                ? 'bg-amber-400/20 border-amber-400 text-amber-200 ring-2 ring-amber-400/40'
+                                : 'bg-slate-950/80 border-slate-800 text-slate-300 hover:border-slate-600'
+                            }`}
+                          >
+                            <div className="flex items-center justify-between mb-1">
+                              <span className="text-xl">{cat.icon}</span>
+                              {isSelected && <span className="text-xs bg-amber-400 text-slate-950 font-black px-1.5 py-0.2 rounded-md">선택됨</span>}
+                            </div>
+                            <div>
+                              <span className="font-black block text-xs sm:text-sm text-white">{cat.label}</span>
+                              <span className="text-[11px] text-slate-400 line-clamp-1">{cat.desc}</span>
+                            </div>
+                          </button>
+                        );
+                      })}
                     </div>
+                  </div>
 
+                  {/* Visual Region & City Selector */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-950/60 p-4 rounded-2xl border border-slate-800">
                     {/* Region */}
-                    <div className="space-y-1.5">
-                      <label className="font-bold text-slate-300 block">권역 (지역) *</label>
-                      <select
-                        value={editingProduct.region}
-                        onChange={(e) => {
-                          const newReg = e.target.value as Region;
-                          setEditingProduct(prev => {
-                            if (!prev) return prev;
-                            let defCity: City = '다낭';
-                            if (newReg === '북부') defCity = '하노이';
-                            if (newReg === '남부') defCity = '푸꾸옥';
-                            return { ...prev, region: newReg, city: defCity };
-                          });
-                        }}
-                        className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 font-bold text-white focus:outline-hidden focus:border-amber-400"
-                      >
-                        <option value="중부">중부 (다낭 · 호이안 · 나트랑 · 후에)</option>
-                        <option value="북부">북부 (하노이 · 하롱베이 · 사파 · 닌빈)</option>
-                        <option value="남부">남부 (푸꾸옥 · 달랏 · 호치민 · 붕따우)</option>
-                      </select>
+                    <div className="space-y-2">
+                      <label className="font-bold text-teal-300 block text-xs">
+                        🗺️ 2. 여행 권역 (지역) 선택 *
+                      </label>
+                      <div className="grid grid-cols-3 gap-1.5">
+                        {[
+                          { id: '북부', label: '🏔️ 북부', desc: '하노이/사파' },
+                          { id: '중부', label: '🌊 중부', desc: '다낭/호이안' },
+                          { id: '남부', label: '🌴 남부', desc: '푸꾸옥/달랏' },
+                        ].map(reg => {
+                          const isSelected = editingProduct.region === reg.id;
+                          return (
+                            <button
+                              key={reg.id}
+                              type="button"
+                              onClick={() => {
+                                const newReg = reg.id as Region;
+                                let defCity: City = '다낭';
+                                if (newReg === '북부') defCity = '하노이';
+                                if (newReg === '남부') defCity = '푸꾸옥';
+                                setEditingProduct(prev => prev ? { ...prev, region: newReg, city: defCity } : prev);
+                              }}
+                              className={`p-2.5 rounded-xl border text-center transition-all cursor-pointer ${
+                                isSelected
+                                  ? 'bg-teal-500/20 border-teal-400 text-teal-200 ring-1 ring-teal-400'
+                                  : 'bg-slate-900 border-slate-750 text-slate-400 hover:text-slate-200'
+                              }`}
+                            >
+                              <span className="font-black block text-xs text-white">{reg.label}</span>
+                              <span className="text-[10px] text-slate-400 block">{reg.desc}</span>
+                            </button>
+                          );
+                        })}
+                      </div>
                     </div>
 
                     {/* City */}
-                    <div className="space-y-1.5">
-                      <label className="font-bold text-slate-300 block">대표 도시 *</label>
-                      <select
-                        value={editingProduct.city}
-                        onChange={(e) => setEditingProduct(prev => prev ? { ...prev, city: e.target.value as City } : prev)}
-                        className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 font-bold text-white focus:outline-hidden focus:border-amber-400"
-                      >
-                        {editingProduct.region === '중부' && (
-                          <>
-                            <option value="다낭">다낭</option>
-                            <option value="호이안">호이안</option>
-                            <option value="나트랑">나트랑</option>
-                            <option value="후에">후에</option>
-                          </>
-                        )}
-                        {editingProduct.region === '북부' && (
-                          <>
-                            <option value="하노이">하노이</option>
-                            <option value="하롱베이">하롱베이</option>
-                            <option value="사파">사파</option>
-                            <option value="닌빈">닌빈</option>
-                          </>
-                        )}
-                        {editingProduct.region === '남부' && (
-                          <>
-                            <option value="푸꾸옥">푸꾸옥</option>
-                            <option value="달랏">달랏</option>
-                            <option value="호치민">호치민</option>
-                            <option value="붕따우">붕따우</option>
-                          </>
-                        )}
-                      </select>
+                    <div className="space-y-2">
+                      <label className="font-bold text-teal-300 block text-xs">
+                        🏙️ 3. 대표 도시 선택 *
+                      </label>
+                      <div className="flex flex-wrap gap-1.5">
+                        {(editingProduct.region === '중부' ? ['다낭', '호이안', '나트랑', '후에'] :
+                          editingProduct.region === '북부' ? ['하노이', '하롱베이', '사파', '닌빈'] :
+                          ['푸꾸옥', '달랏', '호치민', '붕따우']
+                        ).map((cityName) => {
+                          const isSelected = editingProduct.city === cityName;
+                          return (
+                            <button
+                              key={cityName}
+                              type="button"
+                              onClick={() => setEditingProduct(prev => prev ? { ...prev, city: cityName as City } : prev)}
+                              className={`px-3 py-2 rounded-xl text-xs font-black transition-all cursor-pointer ${
+                                isSelected
+                                  ? 'bg-amber-400 text-slate-950 shadow-md font-bold'
+                                  : 'bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-750'
+                              }`}
+                            >
+                              {cityName}
+                            </button>
+                          );
+                        })}
+                      </div>
                     </div>
+                  </div>
 
                     {/* Duration */}
                     <div className="space-y-1.5">
@@ -1268,7 +1728,6 @@ export const AdminMode: React.FC<AdminModeProps> = ({
                         ))}
                       </div>
                     </div>
-                  </div>
 
                   {/* Product Title */}
                   <div className="space-y-1.5">

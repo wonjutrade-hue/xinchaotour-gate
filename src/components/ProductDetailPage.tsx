@@ -38,8 +38,7 @@ import {
   Wifi,
   Shield,
   Sun,
-  Award,
-  Smartphone
+  Award
 } from 'lucide-react';
 import { ExchangeRates, calculateVNDFromKRW, calculateKRWFromVND, calculateUSDFromKRW, formatVND, formatUSD } from '../lib/exchangeRate';
 import { handleOpenKakaoTalkDirect } from '../constants';
@@ -51,7 +50,6 @@ interface ProductDetailPageProps {
   exchangeRates?: ExchangeRates;
   relatedProducts?: Product[];
   onSelectProduct?: (prod: Product) => void;
-  onOpenDeviceSync?: () => void;
 }
 
 export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
@@ -60,8 +58,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   onOpenConsultation,
   exchangeRates,
   relatedProducts = [],
-  onSelectProduct,
-  onOpenDeviceSync
+  onSelectProduct
 }) => {
   const [activeTab, setActiveTab] = useState<'itinerary' | 'inclusion' | 'specs'>('itinerary');
   const [currentImgIndex, setCurrentImgIndex] = useState<number>(0);
@@ -185,18 +182,6 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
 
           {/* Right: Quick Action Buttons */}
           <div className="flex items-center gap-2">
-            {onOpenDeviceSync && (
-              <button
-                onClick={onOpenDeviceSync}
-                className="p-2 sm:px-3 sm:py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-200 font-extrabold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
-                title="스마트폰 카메라로 QR 스캔하여 핸드폰에서 열기"
-              >
-                <Smartphone className="w-4 h-4 text-emerald-600" />
-                <span className="hidden sm:inline">📱 핸드폰 연동</span>
-                <span className="sm:hidden">연동</span>
-              </button>
-            )}
-
             <button
               onClick={handleShare}
               className="p-2 sm:px-3 sm:py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"

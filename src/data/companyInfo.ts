@@ -11,8 +11,6 @@ export interface CompanyInfo {
   kakaoId: string;
   kakaoLink: string;
   kakaoChannel: string;
-  whatsAppNumber: string;
-  whatsAppLink: string;
   address: string;
   vietnamOffice: string;
   businessNumber: string;
@@ -38,8 +36,6 @@ export const COMPANY_INFO: CompanyInfo = {
   kakaoId: 'wonjutrade',
   kakaoLink: 'https://open.kakao.com/o/sxeekUBi',
   kakaoChannel: 'https://pf.kakao.com/_xincaotour',
-  whatsAppNumber: '+82 10-5365-6019',
-  whatsAppLink: 'https://wa.me/821053656019',
   address: '강원도 원주시 / 베트남 다낭시 손짜구 현지 직영 라운지',
   vietnamOffice: 'Da Nang, Son Tra / Hanoi, Hoan Kiem Local Branch',
   businessNumber: '224-81-00000 (사업자등록 완료)',

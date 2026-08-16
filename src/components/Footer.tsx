@@ -166,15 +166,6 @@ export const Footer: React.FC<FooterProps> = ({
                 카카오톡 실시간 상담
               </button>
 
-              <a
-                href={COMPANY_INFO.whatsAppLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full bg-emerald-700 hover:bg-emerald-600 text-white font-bold py-2 px-3 rounded-xl transition flex items-center justify-center gap-1.5 text-xs"
-              >
-                WhatsApp 바로 상담
-              </a>
-
               <p className="text-[11px] text-slate-400 pt-1">
                 {COMPANY_INFO.workingHours}
               </p>

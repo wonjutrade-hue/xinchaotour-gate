@@ -7,14 +7,12 @@ import {
   Lock, 
   Sparkles, 
   Menu, 
-  X,
-  Palmtree,
-  DollarSign,
-  CalendarCheck,
-  BookOpen,
-  Bot,
-  Smartphone,
-  QrCode
+  X, 
+  Palmtree, 
+  DollarSign, 
+  CalendarCheck, 
+  BookOpen, 
+  Bot 
 } from 'lucide-react';
 import { COMPANY_PHONE, COMPANY_PHONE_TEL, handleOpenKakaoTalkDirect } from '../constants';
 import { COMPANY_INFO } from '../data/companyInfo';
@@ -33,7 +31,6 @@ interface NavbarProps {
   onSearchChange: (val: string) => void;
   exchangeRates: ExchangeRates;
   onOpenRateCalculator?: () => void;
-  onOpenDeviceSync?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -46,8 +43,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   searchTerm,
   onSearchChange,
   exchangeRates,
-  onOpenRateCalculator,
-  onOpenDeviceSync
+  onOpenRateCalculator
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -91,18 +87,6 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
 
           <div className="flex items-center gap-3 text-xs ml-auto">
-            {/* PC <-> Mobile Sync button */}
-            {onOpenDeviceSync && (
-              <button
-                onClick={onOpenDeviceSync}
-                className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30 hover:text-emerald-200 border border-emerald-400/40 transition cursor-pointer font-bold text-[11px] shadow-xs"
-                title="스마트폰 카메라로 QR 스캔 또는 6자리 코드로 연동"
-              >
-                <Smartphone className="w-3 h-3 text-emerald-400 animate-pulse" />
-                <span>PC ⇄ 핸드폰 연동</span>
-              </button>
-            )}
-
             {/* Travel info guide trigger */}
             <button
               onClick={() => handleItemClick('travel_info')}
@@ -140,16 +124,6 @@ export const Navbar: React.FC<NavbarProps> = ({
               <MessageCircle className="w-3 h-3 fill-amber-400 text-amber-400" />
               <span>카카오톡 상담</span>
             </button>
-
-            {/* WhatsApp */}
-            <a
-              href={COMPANY_INFO.whatsAppLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hidden lg:inline-flex items-center gap-1 text-emerald-400 hover:text-emerald-300 font-bold transition"
-            >
-              <span>WhatsApp</span>
-            </a>
 
             {/* Admin trigger button */}
             {onOpenAdmin && (
@@ -300,36 +274,24 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
 
           {/* Quick Tools */}
-          <div className="pt-2 grid grid-cols-3 gap-2">
+          <div className="pt-2 grid grid-cols-2 gap-2">
             <button
               onClick={() => handleItemClick('travel_info')}
-              className="p-2.5 rounded-xl bg-amber-50 text-amber-900 border border-amber-200 text-xs font-bold flex flex-col items-center justify-center gap-1 cursor-pointer"
+              className="p-2.5 rounded-xl bg-amber-50 text-amber-900 border border-amber-200 text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer"
             >
               <BookOpen className="w-3.5 h-3.5 text-amber-600" />
-              <span>여행정보</span>
+              <span>여행필수정보</span>
             </button>
-            {onOpenDeviceSync && (
-              <button
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  onOpenDeviceSync();
-                }}
-                className="p-2.5 rounded-xl bg-emerald-50 text-emerald-900 border border-emerald-200 text-xs font-bold flex flex-col items-center justify-center gap-1 cursor-pointer"
-              >
-                <Smartphone className="w-3.5 h-3.5 text-emerald-600" />
-                <span>기기연동</span>
-              </button>
-            )}
             {onOpenAiAssistant && (
               <button
                 onClick={() => {
                   setMobileMenuOpen(false);
                   onOpenAiAssistant();
                 }}
-                className="p-2.5 rounded-xl bg-slate-900 text-white text-xs font-bold flex flex-col items-center justify-center gap-1 cursor-pointer"
+                className="p-2.5 rounded-xl bg-slate-900 text-white text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer"
               >
                 <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-                <span>AI 상담</span>
+                <span>AI 맞춤 상담</span>
               </button>
             )}
           </div>

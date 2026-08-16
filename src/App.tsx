@@ -13,7 +13,6 @@ import { Footer } from './components/Footer';
 import { ExchangeRateModal } from './components/ExchangeRateModal';
 import { TravelInfoModal, TravelInfoTab } from './components/TravelInfoModal';
 import { KakaoModal } from './components/KakaoModal';
-import { DeviceSyncModal } from './components/DeviceSyncModal';
 import { AdminMode } from './components/AdminMode';
 import { AdminLoginModal } from './components/AdminLoginModal';
 import { ReservationPage } from './components/ReservationPage';
@@ -149,28 +148,8 @@ export default function App() {
   const [isTravelInfoModalOpen, setIsTravelInfoModalOpen] = useState(false);
   const [travelInfoTab, setTravelInfoTab] = useState<TravelInfoTab>('course');
   const [isKakaoModalOpen, setIsKakaoModalOpen] = useState(false);
-  const [isDeviceSyncOpen, setIsDeviceSyncOpen] = useState(false);
   const [isAdminMode, setIsAdminMode] = useState(false);
   const [isAdminLoginOpen, setIsAdminLoginOpen] = useState(false);
-
-  useEffect(() => {
-    const handleOpenSync = () => setIsDeviceSyncOpen(true);
-    window.addEventListener('open-device-sync', handleOpenSync);
-    return () => window.removeEventListener('open-device-sync', handleOpenSync);
-  }, []);
-
-  const handleApplySyncData = (data: any) => {
-    if (!data) return;
-    if (data.page) {
-      handleNavigate(data.page);
-    }
-    if (data.productId) {
-      const target = products.find(p => p.id === data.productId);
-      if (target) {
-        setSelectedProduct(target);
-      }
-    }
-  };
 
   const handleOpenAdmin = () => {
     try {
@@ -441,7 +420,6 @@ export default function App() {
         <ReservationPage
           products={products}
           onSubmitInquiry={handleSubmitInquiry}
-          onOpenDeviceSync={() => setIsDeviceSyncOpen(true)}
         />
       );
     }
@@ -658,7 +636,6 @@ export default function App() {
         onSearchChange={setSearchTerm}
         exchangeRates={exchangeRates}
         onOpenRateCalculator={() => setIsRateModalOpen(true)}
-        onOpenDeviceSync={() => setIsDeviceSyncOpen(true)}
       />
 
       {/* Dynamic Content */}
@@ -681,7 +658,6 @@ export default function App() {
           setConsultationTargetProduct(null);
           setIsConsultationOpen(true);
         }}
-        onOpenDeviceSync={() => setIsDeviceSyncOpen(true)}
       />
 
       {/* Product Detail Modal */}
@@ -693,7 +669,6 @@ export default function App() {
           setIsConsultationOpen(true);
         }}
         exchangeRates={exchangeRates}
-        onOpenDeviceSync={() => setIsDeviceSyncOpen(true)}
       />
 
       {/* Travel Info Modal */}
@@ -769,15 +744,6 @@ export default function App() {
       <KakaoModal
         isOpen={isKakaoModalOpen}
         onClose={() => setIsKakaoModalOpen(false)}
-      />
-
-      {/* PC <-> Mobile Real-time Device Sync Modal */}
-      <DeviceSyncModal
-        isOpen={isDeviceSyncOpen}
-        onClose={() => setIsDeviceSyncOpen(false)}
-        currentPage={currentPage}
-        currentProduct={selectedProduct}
-        onApplySyncData={handleApplySyncData}
       />
     </div>
   );

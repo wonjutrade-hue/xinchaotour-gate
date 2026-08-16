@@ -13,8 +13,7 @@ import {
   Sparkles,
   ShieldCheck,
   Clock,
-  Compass,
-  Smartphone
+  Compass
 } from 'lucide-react';
 import { COMPANY_INFO } from '../data/companyInfo';
 import { handleOpenKakaoTalkDirect } from '../constants';
@@ -34,13 +33,11 @@ interface ReservationPageProps {
     travelerCount: { adult: number; child: number };
     message: string;
   }) => Promise<boolean>;
-  onOpenDeviceSync?: () => void;
 }
 
 export const ReservationPage: React.FC<ReservationPageProps> = ({
   products,
-  onSubmitInquiry,
-  onOpenDeviceSync
+  onSubmitInquiry
 }) => {
   const [userName, setUserName] = useState('');
   const [userPhone, setUserPhone] = useState('');
@@ -113,8 +110,8 @@ export const ReservationPage: React.FC<ReservationPageProps> = ({
           </p>
         </div>
 
-        {/* 4 Contact Channels */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* 3 Contact Channels */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {/* Phone */}
           <a
             href={COMPANY_INFO.phoneTel}
@@ -141,21 +138,6 @@ export const ReservationPage: React.FC<ReservationPageProps> = ({
             <span className="text-[11px] text-amber-800">ID: {COMPANY_INFO.kakaoId}</span>
           </button>
 
-          {/* WhatsApp */}
-          <a
-            href={COMPANY_INFO.whatsAppLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="bg-green-50 border border-green-200 p-5 rounded-2xl shadow-xs hover:border-green-400 hover:shadow-md transition flex flex-col items-center text-center group"
-          >
-            <div className="w-12 h-12 rounded-2xl bg-green-500 text-white flex items-center justify-center mb-3 group-hover:scale-110 transition">
-              <MessageCircle className="w-6 h-6" />
-            </div>
-            <h3 className="font-bold text-slate-900 text-sm mb-1">WhatsApp 상담</h3>
-            <p className="text-green-700 font-extrabold text-base mb-1">{COMPANY_INFO.whatsAppNumber}</p>
-            <span className="text-[11px] text-slate-400">현지 및 외국인 고객 지원</span>
-          </a>
-
           {/* Email */}
           <a
             href={`mailto:${COMPANY_INFO.email}`}
@@ -169,36 +151,6 @@ export const ReservationPage: React.FC<ReservationPageProps> = ({
             <span className="text-[11px] text-slate-400">상세 견적서 발송 요청</span>
           </a>
         </div>
-
-        {/* PC <-> Mobile Sync Action Banner */}
-        {onOpenDeviceSync && (
-          <div className="bg-gradient-to-r from-emerald-900 via-slate-900 to-teal-900 text-white rounded-3xl p-5 sm:p-6 shadow-md border border-emerald-500/30 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-3.5 text-center sm:text-left">
-              <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0 border border-emerald-400/40">
-                <Smartphone className="w-6 h-6 animate-pulse" />
-              </div>
-              <div>
-                <div className="flex items-center justify-center sm:justify-start gap-2">
-                  <h3 className="text-base sm:text-lg font-black text-white">
-                    📱 PC ⇄ 스마트폰 실시간 연동 지원
-                  </h3>
-                  <span className="bg-emerald-500 text-slate-950 text-[10px] font-black px-2 py-0.5 rounded-full">
-                    QR 지원
-                  </span>
-                </div>
-                <p className="text-xs sm:text-sm text-slate-300">
-                  PC 화면을 핸드폰 카메라로 비추면 스마트폰에서 바로 견적을 작성하고 실시간 카톡 알림을 받으실 수 있습니다.
-                </p>
-              </div>
-            </div>
-            <button
-              onClick={onOpenDeviceSync}
-              className="w-full sm:w-auto px-5 py-3 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs sm:text-sm transition shadow-lg shrink-0 cursor-pointer flex items-center justify-center gap-2"
-            >
-              <span>스마트폰으로 연동하기 (QR)</span>
-            </button>
-          </div>
-        )}
 
         {/* Inquiry Form Card */}
         <div className="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200 shadow-lg">
