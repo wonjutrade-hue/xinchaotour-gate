@@ -96,27 +96,79 @@ const POPULAR_TAGS = [
   '#공항픽업샌딩', '#스파마사지포함', '#바나힐입장권포함', '#하롱베이크루즈'
 ];
 
-const PRESET_INCLUDED = [
-  '전 일정 단독 전용 차량 및 유류비/톨게이트비 일체',
-  '한국어 능통 현지 베테랑 전문 가이드 동행',
-  '전 일정 엄선된 5성급 호텔/풀빌라 숙박',
-  '일정표 내 명시된 관광지 입장료 및 케이블카 탑승권',
+// 여행사 스타일 자유여행/패키지 포함 & 불포함 프리셋
+const FREE_TOUR_INCLUDED = [
+  '전 일정 단독 전용 차량 (유류비, 기사, 톨게이트비 일체 포함)',
+  '한국어 능통 베테랑 전담 가이드 풀케어 동행',
+  '전 일정 엄선된 5성급 호텔/리조트 숙박 (조식 포함)',
+  '일정표 내 명시된 핵심 관광지 입장료 및 케이블카 탑승권',
   '현지 대표 특식 및 전 일정 식사 포함',
-  '1억원 상당 해외 여행자 보험'
+  '1억원 상당 해외 여행자 보험',
+  '신짜오투어 24시간 실시간 한국어 안심 케어 서비스'
 ];
 
-const PRESET_EXCLUDED = [
+const FREE_TOUR_EXCLUDED = [
   '왕복 국제선 항공권 (항공권 별도 발권 또는 대행 가능)',
-  '가이드 및 전담 기사 매너팁',
+  '가이드 및 전담 기사 매너팁 (자율 지불)',
   '개인 쇼핑 경비 및 음료/주류 비용',
-  '일정표 외 선택 관광 및 개인 일정 경비'
+  '일정표 외 선택 관광 및 개인 자유 일정 경비'
 ];
 
+// 골프투어 Stay & Play 전용 포함 & 불포함 프리셋
+const GOLF_INCLUDED = [
+  '3박 전 일정 5성급 특급 호텔/골프 리조트 숙박 (2인 1실, 조식 포함)',
+  '명문 골프장 3회 54홀 그린피 100% 전액 포함',
+  '전 일정 전동 카트비 (2인 1카트 기준)',
+  '전 일정 1인 1캐디피 포함',
+  '공항 ↔ 호텔 ↔ 골프장 전 일정 단독 전용 차량 & 전담 기사',
+  '1억원 상당 해외 여행자 보험',
+  '매일 라운딩용 시원한 생수 & 쿨타월 제공'
+];
+
+const GOLF_EXCLUDED = [
+  '왕복 국제선 항공권 (대행 발권 가능)',
+  '캐디 팁 (18홀 1인 기준 약 $15~$20 / 30~40만동 현장 지불)',
+  '클럽하우스 중식 및 개인 음료/주류 비용',
+  '클럽 렌탈 및 골프화 대여비 (사전 요청 시 대여 가능)',
+  '기타 개인 경비 및 매너팁'
+];
+
+// 에어비앤비 스타일 풀빌라 임대 전용 포함 & 불포함 프리셋
+const VILLA_INCLUDED = [
+  '럭셔리 프라이빗 독채 풀빌라 전박 숙박',
+  '전용 프라이빗 인피니티 풀 무제한 단독 이용',
+  '매일 호텔식 하우스키핑 & 룸 클리닝 서비스',
+  '풀 키친 (주방 인덕션, 대형냉장고, 전자레인지, 조리도구 일체)',
+  '초고속 무료 Wi-Fi 및 스마트 TV (넷플릭스/유튜브)',
+  '웰컴 생수 & 열대과일 바구니 제공',
+  '24시간 리조트 전문 보안 및 방범 관리'
+];
+
+const VILLA_EXCLUDED = [
+  '개인 식자재 및 장보기 비용',
+  '야외 바비큐(BBQ) 숯/그릴 세팅비 (사전 요청 시 세팅 제공)',
+  '공항 픽업/샌딩 전용 차량 (옵션 추가 가능)',
+  '개인 기호식품 및 룸서비스 추가 비용',
+  '체크인 보증금 (체크아웃 시 파손 없을 시 100% 전액 반환)'
+];
+
+const PRESET_INCLUDED = FREE_TOUR_INCLUDED;
+const PRESET_EXCLUDED = FREE_TOUR_EXCLUDED;
+
+// 에어비앤비 스타일 풀빌라 편의시설 (Amenities)
 const VILLA_AMENITIES = [
   '프라이빗 전용 수영장', '오션뷰 / 비치프론트', '풀 키친 (주방 조리시설)',
   '대형 냉장고 & 전자레인지', '야외 바비큐(BBQ) 시설', '세탁기 & 건조기',
-  '초고속 무료 Wi-Fi', '스마트 TV (넷플릭스)', '무료 조식 룸서비스',
-  '전용 버틀러 서비스', '24시간 리조트 보안', '욕조 & 자쿠지'
+  '초고속 무료 Wi-Fi', '스마트 TV (넷플릭스)', '최신 가라오케/노래방',
+  '전용 사우나 / 자쿠지 욕조', '무료 조식 룸서비스', '전용 버틀러 서비스',
+  '24시간 리조트 보안', '프라이빗 정원 & 테라스'
+];
+
+// 골프장 부대시설 프리셋
+const GOLF_FACILITIES_PRESETS = [
+  '18홀 챔피언십 코스', '36홀 코스', '54홀 코스', '드라이빙 레인지 (연습장)',
+  '클럽하우스 락커룸 & 샤워실', '프로샵 (용품점)', '클럽하우스 VIP 레스토랑',
+  'VIP 사우나 & 자쿠지', '카트 페어웨이 진입 가능', '그늘집 스낵바'
 ];
 
 export const AdminMode: React.FC<AdminModeProps> = ({
@@ -201,6 +253,276 @@ export const AdminMode: React.FC<AdminModeProps> = ({
   // Open Editor for Creating New Product
   const handleCreateNewProduct = (category: Category = '추천패키지') => {
     const newId = `prod-${Date.now()}`;
+    
+    // Default values by category
+    let defaultPriceKRW = 690000;
+    let defaultDuration = '3박 5일';
+    let defaultTags = ['#단독차량', '#한국어가이드'];
+    let defaultIncluded = [...FREE_TOUR_INCLUDED];
+    let defaultExcluded = [...FREE_TOUR_EXCLUDED];
+    let defaultItinerary: ItineraryDay[] = [];
+    let defaultVillaSpecs: VillaSpecs | undefined = undefined;
+    let defaultGolfSpecs: GolfSpecs | undefined = undefined;
+    let defaultHighlights: string[] = [];
+    let defaultVehicleInfo = '16인승 최신형 리무진 단독 배차 (전 일정 유류비, 기사비, 톨비 일체 포함)';
+    let defaultGuideInfo = '베트남 관광청 공인 라이선스 보유 한국어 전담 베테랑 가이드 풀케어';
+    let defaultTheme = '가족 힐링 여행';
+
+    if (category === '자유여행') {
+      defaultPriceKRW = 490000;
+      defaultDuration = '3박 4일';
+      defaultTags = ['#자유여행', '#단독차량렌트', '#한국어기사', '#맞춤일정', '#가족자유여행'];
+      defaultIncluded = [...FREE_TOUR_INCLUDED];
+      defaultExcluded = [...FREE_TOUR_EXCLUDED];
+      defaultHighlights = ['다낭 미케비치', '호이안 올드타운 야경', '바나힐 골든브릿지', '링응사 영응사'];
+      defaultVehicleInfo = '16인승 최신형 리무진 단독 배차 (1일 10시간 전담 기사 & 유류비 일체 포함)';
+      defaultGuideInfo = '베트남 관광청 라이선스 보유 한국어 전담 가이드 동행 (자유 일정 맞춤 안내)';
+      defaultTheme = '가족 힐링 자유여행';
+      defaultItinerary = [
+        {
+          day: 1,
+          title: '다낭 공항 도착 ➔ 전용차량 미팅 ➔ 호텔 체크인 & 미케비치 산책',
+          description: '공항 도착 후 전담 기사 미팅. 전용 차량으로 숙소 이동 및 자유 휴식 후 미케비치 카페거리 탐방.',
+          meal: '조식: 기내식 | 중식: 현지 쌀국수 | 석식: 자유식',
+          hotel: '5성급 쉐라톤 다낭 또는 동급',
+          vehicle: '16인승 단독 전용 차량',
+          attractions: ['다낭 공항', '미케비치', '호텔 체크인']
+        },
+        {
+          day: 2,
+          title: '바나힐 국립공원 케이블카 & 골든브릿지 손동상 ➔ 야시장',
+          description: '세계 최장 케이블카 탑승 후 테마파크 자유 관광 및 프랑스 마을 산책, 저녁 선짜 야시장 미식 탐방.',
+          meal: '조식: 호텔식 | 중식: 바나힐 뷔페 | 석식: 칠리크랩 씨푸드',
+          hotel: '5성급 쉐라톤 다낭',
+          vehicle: '16인승 단독 전용 차량',
+          attractions: ['바나힐', '골든브릿지', '선짜 야시장']
+        },
+        {
+          day: 3,
+          title: '호이안 유네스코 올드타운 ➔ 투본강 소원배 유등 띄우기',
+          description: '유서 깊은 고도 호이안 탐방. 풍등이 가득한 전통 거리 산책 및 야간 소원배 탑승, 야시장 쇼핑.',
+          meal: '조식: 호텔식 | 중식: 호이안 전통 반미/화이트로즈 | 석식: 특식 모닝글로리',
+          hotel: '5성급 쉐라톤 다낭',
+          vehicle: '16인승 단독 전용 차량',
+          attractions: ['호이안 올드타운', '투본강 소원배', '풍등 거리']
+        },
+        {
+          day: 4,
+          title: '오행산 마블마운틴 ➔ 롯데마트 쇼핑 & 힐링 스파 ➔ 공항 샌딩',
+          description: '체크아웃 후 오행산 동굴 탐방, 롯데마트 기념품 쇼핑 및 90분 VIP 아로마 스파 마사지 후 공항 샌딩.',
+          meal: '조식: 호텔식 | 중식: 현지 미식 | 석식: 공항식',
+          hotel: '기내박 또는 귀국',
+          vehicle: '16인승 단독 전용 차량',
+          attractions: ['오행산', '롯데마트', '프리미엄 스파']
+        }
+      ];
+    } else if (category === '골프투어') {
+      defaultPriceKRW = 890000;
+      defaultDuration = '3박 4일';
+      defaultTags = ['#골프투어', '#54홀라운딩', '#StayAndPlay', '#다낭명문골프', '#그린피포함', '#1인1캐디'];
+      defaultIncluded = [...GOLF_INCLUDED];
+      defaultExcluded = [...GOLF_EXCLUDED];
+      defaultVehicleInfo = '공항 ↔ 호텔 ↔ 골프장 전 일정 VIP 단독 전용 리무진 & 전담 기사';
+      defaultGuideInfo = '골프 전문 한국어 가이드 (티오프 체크인 및 라운딩 스케줄 전담 케어)';
+      defaultTheme = '3박 4일 54홀 VIP Stay & Play';
+      defaultGolfSpecs = {
+        holes: 54,
+        totalRounds: 3,
+        stayAndPlayHotel: '5성급 쉐라톤 그랜드 다낭 리조트 (또는 빈펄 골프 리조트)',
+        hotelRoomType: '디럭스 골프/오션뷰 룸 (2인 1실, 조식 포함)',
+        distanceInfo: '호텔 ↔ 골프장 간 단독 전용차량 15~25분 소요',
+        greenFeeIncluded: true,
+        caddieFeeIncluded: true,
+        cartIncluded: true,
+        caddieTipInfo: '18홀 1인 기준 약 $15~$20 (30만~40만동 현장 지불)',
+        golfCourseNames: ['다낭 BRG 골프 리조트 (18홀)', '몽고메리 링크스 CC (18홀)', '바나힐스 골프클럽 (18홀)'],
+        courseDetails: [
+          {
+            name: '다낭 BRG 골프 리조트 (BRG Da Nang Golf)',
+            designer: '그렉 노먼 (Greg Norman)',
+            holes: 18,
+            difficulty: '상급',
+            grassType: '버뮤다 그래스 (Bermuda Grass)',
+            facilities: ['18홀 챔피언십 코스', '드라이빙 레인지 (연습장)', '클럽하우스 락커룸 & 샤워실', '프로샵 (용품점)', '클럽하우스 VIP 레스토랑', 'VIP 사우나 & 자쿠지'],
+            description: '세계적인 골퍼 그렉 노먼이 설계한 해변 링크스 코스로, 바닷바람과 듄스 모래언덕이 어우러진 베트남 최고 명문 골프장입니다.'
+          },
+          {
+            name: '몽고메리 링크스 CC (Montgomerie Links)',
+            designer: '콜린 몽고메리 (Colin Montgomerie)',
+            holes: 18,
+            difficulty: '중상급',
+            grassType: '패스팰럼 잔디 (Paspalum)',
+            facilities: ['18홀 챔피언십 코스', '드라이빙 레인지 (연습장)', '클럽하우스 락커룸 & 샤워실', '클럽하우스 VIP 레스토랑'],
+            description: '유러피언 투어의 전설 콜린 몽고메리가 설계한 스코틀랜드 정통 링크스 스타일 코스로 마블 마운틴을 배경으로 환상적인 뷰를 선사합니다.'
+          },
+          {
+            name: '바나힐스 골프클럽 (Ba Na Hills Golf Club)',
+            designer: '루크 도널드 (Luke Donald)',
+            holes: 18,
+            difficulty: '상급',
+            grassType: '벤트그래스 & 버뮤다',
+            facilities: ['18홀 챔피언십 코스', '야간 라이트 조명 시설', '드라이빙 레인지 (연습장)', 'VIP 사우나 & 자쿠지'],
+            description: '바나산 기슭에 위치하여 시원한 산바람과 전 홀 나이트 라이트 시설을 갖춘 아시아 최고급 산악형 명문 챔피언십 코스입니다.'
+          }
+        ]
+      };
+      defaultItinerary = [
+        {
+          day: 1,
+          title: '다낭 공항 도착 ➔ VIP 전용차량 미팅 ➔ 5성 골프 리조트 체크인 & 휴식',
+          description: '공항 도착 후 전담 기사 미팅. 전용 VIP 차량 탑승 후 골프 리조트 이동, 웰컴 드링크 및 체크인 후 클럽하우스 만찬.',
+          meal: '조식: 기내식 | 중식: 현지식 | 석식: 리조트 특식 만찬',
+          hotel: '5성급 쉐라톤 그랜드 다낭 리조트',
+          vehicle: 'VIP 단독 전용 리무진',
+          attractions: ['다낭 공항', '리조트 체크인', '환영 만찬']
+        },
+        {
+          day: 2,
+          title: '1차전: 다낭 BRG 골프클럽 18홀 라운딩 ➔ VIP 전신 마사지',
+          description: '리조트 조식 후 골프장 이동. 오전 18홀 티오프 라운딩. 클럽하우스 중식 후 90분 피로회복 VIP 전신 마사지 및 해산물 디너.',
+          meal: '조식: 호텔식 | 중식: 클럽하우스 | 석식: 특식 해산물 BBQ',
+          hotel: '5성급 쉐라톤 그랜드 다낭 리조트',
+          vehicle: 'VIP 단독 전용 리무진',
+          attractions: ['BRG 골프클럽 (18홀)', 'VIP 전신 스파', '미케비치 씨푸드']
+        },
+        {
+          day: 3,
+          title: '2차전: 몽고메리 링크스 CC 18홀 라운딩 ➔ 호이안 야간 투어',
+          description: '조식 후 몽고메리 링크스 18홀 라운딩. 라운딩 후 유네스코 고도 호이안 올드타운 이동하여 야경 감상 및 디너.',
+          meal: '조식: 호텔식 | 중식: 클럽하우스 | 석식: 호이안 고급 베트남식',
+          hotel: '5성급 쉐라톤 그랜드 다낭 리조트',
+          vehicle: 'VIP 단독 전용 리무진',
+          attractions: ['몽고메리 링크스 (18홀)', '호이안 올드타운', '소원배 유등']
+        },
+        {
+          day: 4,
+          title: '3차전: 바나힐스 GC 18홀 파이널 라운딩 ➔ 체크아웃 & 공항 샌딩',
+          description: '체크아웃 후 바나힐스 18홀 마무리 라운딩. 샤워 및 환복 후 롯데마트 쇼핑 후 공항 샌딩.',
+          meal: '조식: 호텔식 | 중식: 클럽하우스 | 석식: 한식 특식',
+          hotel: '귀국 (기내박)',
+          vehicle: 'VIP 단독 전용 리무진',
+          attractions: ['바나힐스 GC (18홀)', '롯데마트 쇼핑', '공항 샌딩']
+        }
+      ];
+    } else if (category === '풀빌라') {
+      defaultPriceKRW = 590000;
+      defaultDuration = '1박 기준 (2박부터 연박 가능)';
+      defaultTags = ['#독채풀빌라', '#에어비앤비스타일', '#프라이빗인피니티풀', '#오션뷰', '#가족풀빌라', '#바비큐시설'];
+      defaultIncluded = [...VILLA_INCLUDED];
+      defaultExcluded = [...VILLA_EXCLUDED];
+      defaultTheme = '럭셔리 프라이빗 풀빌라 힐링 휴양';
+      defaultVillaSpecs = {
+        villaName: '다낭 미케비치 4베드룸 럭셔리 프라이빗 비치프론트 풀빌라',
+        structureDescription: '지상 2층 독채 전체 + 전용 인피니티풀 + 넓은 거실 & 풀키친 다이닝룸',
+        bedrooms: 4,
+        bathrooms: 4,
+        beds: '킹베드 3개 + 퀸베드 1개 + 싱글베드 2개',
+        maxOccupancy: 12,
+        standardOccupancy: 8,
+        privatePool: true,
+        oceanView: true,
+        areaSqm: 380,
+        areaPyeong: 115,
+        floors: 2,
+        address: '베트남 다낭시 응우한선구 보응우옌잡 해안도로 프라이빗 리조트 단지',
+        googleMapUrl: 'https://maps.google.com/?q=My+Khe+Beach+Da+Nang',
+        airbnbUrl: '',
+        amenities: [
+          '프라이빗 전용 수영장', '오션뷰 / 비치프론트', '풀 키친 (주방 조리시설)',
+          '대형 냉장고 & 전자레인지', '야외 바비큐(BBQ) 시설', '세탁기 & 건조기',
+          '초고속 무료 Wi-Fi', '스마트 TV (넷플릭스)', '최신 가라오케/노래방',
+          '전용 사우나 / 자쿠지 욕조', '무료 조식 룸서비스', '24시간 리조트 보안', '프라이빗 정원 & 테라스'
+        ],
+        checkInTime: '15:00',
+        checkOutTime: '11:00',
+        houseRules: [
+          '실내 절대 금연 (야외 테라스 및 정원에서 흡연 가능)',
+          '심야 정숙 시간 (매너타임 22:00 ~ 08:00 준수)',
+          '파티 및 대규모 모임 시 사전 협의 필요',
+          '반려동물 동반 불가'
+        ],
+        securityDeposit: '체크인 시 2,000,000₫ (약 10만원) 또는 $100 예치 (체크아웃 시 시설 확인 후 전액 반환)',
+        cleaningFeeIncluded: true,
+        breakfastIncluded: true,
+        hostLanguage: '한국어, 영어, 베트남어 지원 (24시간 카카오톡 실시간 상담)'
+      };
+      defaultItinerary = [
+        {
+          day: 1,
+          title: '풀빌라 프라이빗 체크인 ➔ 웰컴 티 & 프라이빗 풀 수영 ➔ 야외 바비큐 파티',
+          description: '체크인 후 전용 인피니티 풀에서 여유로운 수영 및 힐링. 저녁에는 야외 가든 테라스에서 가족/지인들과 프라이빗 BBQ 파티.',
+          meal: '조식: - | 중식: 웰컴 과일 | 석식: 풀사이드 BBQ',
+          hotel: '독채 프라이빗 풀빌라',
+          vehicle: '전용 이동 차량',
+          attractions: ['풀빌라 체크인', '인피니티 풀', '프라이빗 BBQ']
+        },
+        {
+          day: 2,
+          title: '플로팅 조식 ➔ 미케비치 해변 산책 ➔ 노래방 & 자쿠지 스파 힐링',
+          description: '물 위에서 즐기는 인스타 감성 플로팅 조식. 해변 산책 후 빌라 내 노래방 음향 시설 및 자쿠지 사우나 힐링.',
+          meal: '조식: 플로팅 조식 룸서비스 | 중식: 자유식 | 석식: 해산물 만찬',
+          hotel: '독채 프라이빗 풀빌라',
+          vehicle: '전용 이동 차량',
+          attractions: ['플로팅 조식', '미케비치 해변', '전용 노래방 & 자쿠지']
+        },
+        {
+          day: 3,
+          title: '여유로운 모닝 커피 ➔ 체크아웃 ➔ 전용 차량 이동',
+          description: '모닝 수영 및 커피 타임 후 11:00 체크아웃. 공항 또는 다음 여행지로 편안하게 이동.',
+          meal: '조식: 빌라 조식 | 중식: 현지 미식 | 석식: -',
+          hotel: '체크아웃',
+          vehicle: '전용 이동 차량',
+          attractions: ['모닝 수영', '체크아웃', '공항 이동']
+        }
+      ];
+    } else {
+      // 추천패키지
+      defaultPriceKRW = 690000;
+      defaultDuration = '3박 5일';
+      defaultTags = ['#추천패키지', '#가족여행', '#효도여행', '#노쇼핑', '#단독차량', '#한국어가이드'];
+      defaultIncluded = [...FREE_TOUR_INCLUDED];
+      defaultExcluded = [...FREE_TOUR_EXCLUDED];
+      defaultHighlights = ['다낭 바나힐 골든브릿지', '호이안 올드타운 유등', '미케비치', '5성급 호텔'];
+      defaultItinerary = [
+        {
+          day: 1,
+          title: '출발 및 현지 도착 ➔ 전담 가이드 미팅 ➔ 5성급 호텔 체크인',
+          description: '공항 출국 수속 후 베트남 현지 공항 도착. 신짜오투어 전담 한국어 가이드 미팅 후 단독 전용 차량 탑승하여 호텔 이동 및 체크인.',
+          meal: '조식: 기내식 | 중식: 현지식 | 석식: 웰컴 시푸드 만찬',
+          hotel: '5성급 특급 호텔',
+          vehicle: '16인승 단독 전용 리무진',
+          attractions: ['공항 미팅', '호텔 체크인']
+        },
+        {
+          day: 2,
+          title: '바나힐 테마파크 & 골든브릿지 손동상 ➔ 마사지 힐링',
+          description: '호텔 조식 후 바나힐 케이블카 탑승. 골든브릿지 관람 및 테마파크 자유 관광 후 90분 피로회복 스파 마사지.',
+          meal: '조식: 호텔식 | 중식: 바나힐 뷔페 | 석식: 고급 분짜 & 스테이크',
+          hotel: '5성급 특급 호텔',
+          vehicle: '16인승 단독 전용 리무진',
+          attractions: ['바나힐', '골든브릿지', '힐링 마사지']
+        },
+        {
+          day: 3,
+          title: '유네스코 고도 호이안 올드타운 ➔ 투본강 소원배 유등 체험',
+          description: '호이안 고도 탐방, 전통 가옥 및 내원교 관람, 야간 투본강 소원배 탑승 및 야시장 자유 쇼핑.',
+          meal: '조식: 호텔식 | 중식: 호이안 전통식 | 석식: 특식 모닝글로리',
+          hotel: '5성급 특급 호텔',
+          vehicle: '16인승 단독 전용 리무진',
+          attractions: ['호이안 올드타운', '내원교', '소원배 유등']
+        },
+        {
+          day: 4,
+          title: '다낭 시내 관광 (대성당/영응사) ➔ 롯데마트 쇼핑 ➔ 공항 샌딩',
+          description: '체크아웃 후 핑크 대성당, 영응사 해수관음상 관람 및 롯데마트 쇼핑 후 공항 샌딩.',
+          meal: '조식: 호텔식 | 중식: 현지 쌀국수 | 석식: 해산물 BBQ',
+          hotel: '귀국 (기내박)',
+          vehicle: '16인승 단독 전용 리무진',
+          attractions: ['다낭 대성당', '영응사', '롯데마트']
+        }
+      ];
+    }
+
     const initialProd: Product = {
       id: newId,
       title: '',
@@ -208,9 +530,9 @@ export const AdminMode: React.FC<AdminModeProps> = ({
       category: category,
       region: '중부',
       city: '다낭',
-      priceKRW: 690000,
-      priceVND: Math.round(690000 * (rates.VND / rates.KRW)),
-      duration: '3박 5일',
+      priceKRW: defaultPriceKRW,
+      priceVND: Math.round(defaultPriceKRW * (rates.VND / rates.KRW)),
+      duration: defaultDuration,
       imageUrl: '',
       additionalImages: [],
       rating: 5.0,
@@ -219,69 +541,17 @@ export const AdminMode: React.FC<AdminModeProps> = ({
       isHotDeal: false,
       discountPercent: 0,
       departureCities: ['인천', '부산', '대구', '청주'],
-      tags: ['#가족여행', '#단독차량', '#한국어가이드'],
+      tags: defaultTags,
       description: '신짜오투어가 직접 기획하고 현지 직영 가이드가 전담 케어하는 베스트 맞춤 여행 상품입니다.',
-      included: [...PRESET_INCLUDED],
-      excluded: [...PRESET_EXCLUDED],
-      itinerary: [
-        {
-          day: 1,
-          title: '출발 및 현지 도착 ➔ 전담 가이드 미팅 ➔ 호텔 체크인',
-          description: '공항 출국 수속 후 베트남 현지 공항 도착. 신짜오투어 전담 한국어 가이드 미팅 후 단독 전용 차량 탑승하여 호텔/풀빌라 이동 및 체크인.',
-          meal: '조식: 기내식 | 중식: 현지식 | 석식: 웰컴 시푸드 만찬',
-          hotel: '5성급 특급 호텔 또는 독채 풀빌라'
-        },
-        {
-          day: 2,
-          title: '핵심 랜드마크 관광 및 힐링 코스 투어',
-          description: '호텔 조식 후 전용 차량으로 핵심 명소 탐방. 여유로운 단독 투어와 현지 최고급 레스토랑 미식 체험.',
-          meal: '조식: 호텔식 | 중식: 현지 정통식 | 석식: 고급 분짜 & 스테이크',
-          hotel: '5성급 특급 호텔 또는 독채 풀빌라'
-        },
-        {
-          day: 3,
-          title: '자유 힐링 휴양 또는 스파 마사지 ➔ 공항 샌딩',
-          description: '체크아웃 후 90분 전통 프리미엄 스파 마사지 체험. 롯데마트 쇼핑 및 디너 후 공항 전용 차량 샌딩.',
-          meal: '조식: 호텔식 | 중식: 자유식 | 석식: BBQ 만찬',
-          hotel: '기내박 또는 귀국'
-        }
-      ],
-      villaSpecs: category === '풀빌라' ? {
-        villaName: '',
-        structureDescription: '3베드룸 단독 독채 풀빌라 (거실 + 주방 + 전용 수영장)',
-        bedrooms: 3,
-        bathrooms: 3,
-        beds: '킹베드 3개',
-        maxOccupancy: 8,
-        standardOccupancy: 6,
-        privatePool: true,
-        oceanView: true,
-        areaSqm: 280,
-        floors: 2,
-        address: '베트남 다낭 미케비치 해안가 리조트 단지',
-        googleMapUrl: '',
-        airbnbUrl: '',
-        amenities: ['프라이빗 전용 수영장', '오션뷰 / 비치프론트', '풀 키친 (주방 조리시설)', '초고속 무료 Wi-Fi', '24시간 리조트 보안'],
-        checkInTime: '15:00',
-        checkOutTime: '11:00',
-        houseRules: ['실내 절대 금연 (발코니 흡연 가능)', '22시 이후 심야 정숙', '바비큐 이용 시 사전 문의']
-      } : undefined,
-      golfSpecs: category === '골프투어' ? {
-        holes: 54,
-        greenFeeIncluded: true,
-        caddieFeeIncluded: true,
-        cartIncluded: true,
-        golfCourseNames: ['다낭 BRG 골프 리조트 (18홀)', '몽고메리 링크스 CC (18홀)', '바나힐스 골프클럽 (18홀)'],
-        courseDetails: [
-          {
-            name: '다낭 BRG 골프 리조트',
-            designer: '그렉 노먼 (Greg Norman)',
-            holes: 18,
-            description: '바닷바람을 맞으며 라운딩할 수 있는 해안 링크스 스타일의 베트남 1위 명문 코스',
-            difficulty: '중상급'
-          }
-        ]
-      } : undefined
+      included: defaultIncluded,
+      excluded: defaultExcluded,
+      itinerary: defaultItinerary,
+      villaSpecs: defaultVillaSpecs,
+      golfSpecs: defaultGolfSpecs,
+      highlights: defaultHighlights,
+      vehicleInfo: defaultVehicleInfo,
+      guideInfo: defaultGuideInfo,
+      travelTheme: defaultTheme
     };
 
     setEditingProduct(initialProd);
@@ -1625,7 +1895,15 @@ export const AdminMode: React.FC<AdminModeProps> = ({
                 { id: 'basic', label: '1. 기본정보', icon: <Info className="w-3.5 h-3.5" /> },
                 { id: 'pricing', label: '2. 가격&환율', icon: <DollarSign className="w-3.5 h-3.5" /> },
                 { id: 'photos', label: '3. 사진&갤러리', icon: <ImageIcon className="w-3.5 h-3.5" /> },
-                { id: 'specs', label: `4. ${editingProduct.category === '풀빌라' ? '🏰 풀빌라스펙' : editingProduct.category === '골프투어' ? '⛳ 골프스펙' : '⭐ 상세스펙'}`, icon: <Home className="w-3.5 h-3.5" /> },
+                { 
+                  id: 'specs', 
+                  label: editingProduct.category === '풀빌라' 
+                    ? '4. 🏰 에어비앤비 풀빌라스펙' 
+                    : editingProduct.category === '골프투어' 
+                    ? '4. ⛳ Stay&Play 골프스펙' 
+                    : '4. 🧭 여행사 맞춤구성 (관광/차량/가이드)', 
+                  icon: <Home className="w-3.5 h-3.5" /> 
+                },
                 { id: 'itinerary', label: '5. 여행일정표', icon: <Calendar className="w-3.5 h-3.5" /> },
                 { id: 'terms', label: '6. 포함/불포함', icon: <FileText className="w-3.5 h-3.5" /> },
               ].map((tab) => {
@@ -2442,54 +2720,160 @@ export const AdminMode: React.FC<AdminModeProps> = ({
               {/* ============================================================= */}
               {editorTab === 'specs' && (
                 <div className="space-y-6 animate-fadeIn">
-                  {/* IF VILLA CATEGORY */}
+                  
+                  {/* ========================================================= */}
+                  {/* 4-A: IF VILLA CATEGORY (AIRBNB STYLE)                     */}
+                  {/* ========================================================= */}
                   {editingProduct.category === '풀빌라' && (
                     <div className="space-y-6">
-                      <div className="bg-teal-950/40 border border-teal-700/60 p-5 rounded-3xl space-y-4">
-                        <h4 className="font-black text-teal-300 text-base flex items-center gap-2">
-                          <Home className="w-5 h-5" />
-                          <span>독채 풀빌라 전용 상세 스펙 입력</span>
-                        </h4>
-
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                      <div className="bg-gradient-to-br from-teal-950/60 to-slate-950 border-2 border-teal-500/50 p-5 sm:p-6 rounded-3xl space-y-6 shadow-xl">
+                        
+                        {/* Header Banner */}
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-teal-800/60 pb-4">
                           <div>
-                            <label className="font-bold text-slate-300 block mb-1">침실 수 (베드룸) *</label>
+                            <div className="flex items-center gap-2">
+                              <span className="text-2xl">🏰</span>
+                              <h4 className="font-black text-teal-300 text-lg">
+                                에어비앤비(Airbnb) 스타일 프리미엄 풀빌라 스펙
+                              </h4>
+                            </div>
+                            <p className="text-xs text-slate-300 mt-1">
+                              객실 구조, 침실/욕실/침대 구성, 전용 면적 및 에어비앤비 하우스 룰을 상세히 기재하세요.
+                            </p>
+                          </div>
+
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setEditingProduct(prev => prev ? {
+                                ...prev,
+                                duration: '1박 기준 (2박부터 연박 가능)',
+                                villaSpecs: {
+                                  villaName: prev.title || '다낭 미케비치 4베드룸 럭셔리 프라이빗 비치프론트 풀빌라',
+                                  structureDescription: '지상 2층 독채 전체 + 전용 인피니티풀 + 넓은 거실 & 풀키친 다이닝룸',
+                                  bedrooms: 4,
+                                  bathrooms: 4,
+                                  beds: '킹베드 3개 + 퀸베드 1개 + 싱글베드 2개',
+                                  maxOccupancy: 12,
+                                  standardOccupancy: 8,
+                                  privatePool: true,
+                                  oceanView: true,
+                                  areaSqm: 380,
+                                  areaPyeong: 115,
+                                  floors: 2,
+                                  address: '베트남 다낭시 응우한선구 보응우옌잡 해안도로 프라이빗 리조트 단지',
+                                  googleMapUrl: 'https://maps.google.com/?q=My+Khe+Beach+Da+Nang',
+                                  airbnbUrl: '',
+                                  amenities: [
+                                    '프라이빗 전용 수영장', '오션뷰 / 비치프론트', '풀 키친 (주방 조리시설)',
+                                    '대형 냉장고 & 전자레인지', '야외 바비큐(BBQ) 시설', '세탁기 & 건조기',
+                                    '초고속 무료 Wi-Fi', '스마트 TV (넷플릭스)', '최신 가라오케/노래방',
+                                    '전용 사우나 / 자쿠지 욕조', '무료 조식 룸서비스', '24시간 리조트 보안', '프라이빗 정원 & 테라스'
+                                  ],
+                                  checkInTime: '15:00',
+                                  checkOutTime: '11:00',
+                                  houseRules: [
+                                    '실내 절대 금연 (야외 테라스 및 정원에서 흡연 가능)',
+                                    '심야 정숙 시간 (매너타임 22:00 ~ 08:00 준수)',
+                                    '파티 및 대규모 모임 시 사전 협의 필요',
+                                    '반려동물 동반 불가'
+                                  ],
+                                  securityDeposit: '체크인 시 2,000,000₫ (약 10만원) 또는 $100 예치 (체크아웃 시 시설 확인 후 전액 반환)',
+                                  cleaningFeeIncluded: true,
+                                  breakfastIncluded: true,
+                                  hostLanguage: '한국어, 영어, 베트남어 지원 (24시간 카카오톡 실시간 상담)'
+                                }
+                              } : prev);
+                              showNotification('✨ 에어비앤비 풀빌라 표준 스펙이 자동 입력되었습니다.');
+                            }}
+                            className="px-3.5 py-1.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-black text-xs flex items-center gap-1.5 cursor-pointer shadow-md self-start sm:self-auto"
+                          >
+                            <Sparkles className="w-3.5 h-3.5" />
+                            <span>풀빌라 표준양식 자동완성</span>
+                          </button>
+                        </div>
+
+                        {/* Villa Name & Structure */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          <div>
+                            <label className="font-bold text-slate-200 block mb-1">
+                              빌라 정식 명칭 (Villa Name)
+                            </label>
+                            <input
+                              type="text"
+                              value={editingProduct.villaSpecs?.villaName || ''}
+                              onChange={(e) => {
+                                const v = e.target.value;
+                                setEditingProduct(prev => prev ? {
+                                  ...prev,
+                                  villaSpecs: { ...(prev.villaSpecs || { bedrooms: 3, maxOccupancy: 8, privatePool: true }), villaName: v }
+                                } : prev);
+                              }}
+                              placeholder="예: 다낭 미케비치 4베드룸 비치프론트 독채 풀빌라"
+                              className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white font-bold"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="font-bold text-slate-200 block mb-1">
+                              빌라 독채 구조 요약
+                            </label>
+                            <input
+                              type="text"
+                              value={editingProduct.villaSpecs?.structureDescription || ''}
+                              onChange={(e) => {
+                                const v = e.target.value;
+                                setEditingProduct(prev => prev ? {
+                                  ...prev,
+                                  villaSpecs: { ...(prev.villaSpecs || { bedrooms: 3, maxOccupancy: 8, privatePool: true }), structureDescription: v }
+                                } : prev);
+                              }}
+                              placeholder="예: 2층 단독 독채 + 인피니티풀 + 거실 + 풀키친 다이닝"
+                              className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white"
+                            />
+                          </div>
+                        </div>
+
+                        {/* Rooms & Occupancy Grid */}
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                          <div className="bg-slate-900/80 p-3 rounded-2xl border border-slate-800">
+                            <label className="text-xs font-bold text-teal-300 block mb-1">침실 수 (Bedrooms)</label>
                             <input
                               type="number"
                               min="1"
-                              max="10"
+                              max="15"
                               value={editingProduct.villaSpecs?.bedrooms || 3}
                               onChange={(e) => {
                                 const v = Number(e.target.value);
                                 setEditingProduct(prev => prev ? {
                                   ...prev,
-                                  villaSpecs: { ...(prev.villaSpecs || { maxOccupancy: 8, privatePool: true, oceanView: true }), bedrooms: v }
+                                  villaSpecs: { ...(prev.villaSpecs || { maxOccupancy: 8, privatePool: true }), bedrooms: v }
                                 } : prev);
                               }}
-                              className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white font-bold"
+                              className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-1.5 text-white font-black text-center"
                             />
                           </div>
 
-                          <div>
-                            <label className="font-bold text-slate-300 block mb-1">전용 욕실 수</label>
+                          <div className="bg-slate-900/80 p-3 rounded-2xl border border-slate-800">
+                            <label className="text-xs font-bold text-teal-300 block mb-1">전용 욕실 수 (Baths)</label>
                             <input
                               type="number"
                               min="1"
-                              max="10"
+                              max="15"
                               value={editingProduct.villaSpecs?.bathrooms || 3}
                               onChange={(e) => {
                                 const v = Number(e.target.value);
                                 setEditingProduct(prev => prev ? {
                                   ...prev,
-                                  villaSpecs: { ...(prev.villaSpecs || { bedrooms: 3, maxOccupancy: 8, privatePool: true, oceanView: true }), bathrooms: v }
+                                  villaSpecs: { ...(prev.villaSpecs || { bedrooms: 3, privatePool: true }), bathrooms: v }
                                 } : prev);
                               }}
-                              className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white font-bold"
+                              className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-1.5 text-white font-black text-center"
                             />
                           </div>
 
-                          <div>
-                            <label className="font-bold text-slate-300 block mb-1">최대 투숙 인원</label>
+                          <div className="bg-slate-900/80 p-3 rounded-2xl border border-slate-800">
+                            <label className="text-xs font-bold text-teal-300 block mb-1">최대 투숙 인원</label>
                             <input
                               type="number"
                               min="1"
@@ -2499,52 +2883,101 @@ export const AdminMode: React.FC<AdminModeProps> = ({
                                 const v = Number(e.target.value);
                                 setEditingProduct(prev => prev ? {
                                   ...prev,
-                                  villaSpecs: { ...(prev.villaSpecs || { bedrooms: 3, privatePool: true, oceanView: true }), maxOccupancy: v }
+                                  villaSpecs: { ...(prev.villaSpecs || { bedrooms: 3, privatePool: true }), maxOccupancy: v }
                                 } : prev);
                               }}
-                              className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white font-bold"
+                              className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-1.5 text-white font-black text-center"
                             />
                           </div>
-                        </div>
 
-                        {/* Villa Area & Structure */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                          <div>
-                            <label className="font-bold text-slate-300 block mb-1">빌라 면적 (㎡)</label>
+                          <div className="bg-slate-900/80 p-3 rounded-2xl border border-slate-800">
+                            <label className="text-xs font-bold text-teal-300 block mb-1">기준 투숙 인원</label>
                             <input
                               type="number"
-                              value={editingProduct.villaSpecs?.areaSqm || 280}
+                              min="1"
+                              max="30"
+                              value={editingProduct.villaSpecs?.standardOccupancy || 6}
                               onChange={(e) => {
                                 const v = Number(e.target.value);
                                 setEditingProduct(prev => prev ? {
                                   ...prev,
-                                  villaSpecs: { ...(prev.villaSpecs || { bedrooms: 3, maxOccupancy: 8, privatePool: true, oceanView: true }), areaSqm: v }
+                                  villaSpecs: { ...(prev.villaSpecs || { bedrooms: 3, privatePool: true }), standardOccupancy: v }
                                 } : prev);
                               }}
-                              className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white font-bold"
-                            />
-                          </div>
-
-                          <div>
-                            <label className="font-bold text-slate-300 block mb-1">침대 구성 (예: 킹 3개)</label>
-                            <input
-                              type="text"
-                              value={editingProduct.villaSpecs?.beds || '킹베드 3개'}
-                              onChange={(e) => {
-                                const v = e.target.value;
-                                setEditingProduct(prev => prev ? {
-                                  ...prev,
-                                  villaSpecs: { ...(prev.villaSpecs || { bedrooms: 3, maxOccupancy: 8, privatePool: true, oceanView: true }), beds: v }
-                                } : prev);
-                              }}
-                              className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white font-bold"
+                              className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-1.5 text-white font-black text-center"
                             />
                           </div>
                         </div>
 
-                        {/* Pool & Oceanview Toggles */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-                          <label className="flex items-center gap-2.5 bg-slate-900 p-3.5 rounded-xl border border-slate-800 cursor-pointer">
+                        {/* Area, Floors, Bed details */}
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                          <div>
+                            <label className="font-bold text-slate-300 block mb-1">
+                              빌라 전용 면적 (㎡) ➔ 평수 자동환산
+                            </label>
+                            <div className="relative">
+                              <input
+                                type="number"
+                                value={editingProduct.villaSpecs?.areaSqm || 280}
+                                onChange={(e) => {
+                                  const sqm = Number(e.target.value);
+                                  const pyeong = Math.round(sqm * 0.3025);
+                                  setEditingProduct(prev => prev ? {
+                                    ...prev,
+                                    villaSpecs: { 
+                                      ...(prev.villaSpecs || { bedrooms: 3, maxOccupancy: 8, privatePool: true }), 
+                                      areaSqm: sqm,
+                                      areaPyeong: pyeong 
+                                    }
+                                  } : prev);
+                                }}
+                                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-white font-bold pr-16"
+                              />
+                              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-teal-400">
+                                ≒ {editingProduct.villaSpecs?.areaPyeong || Math.round((editingProduct.villaSpecs?.areaSqm || 280) * 0.3025)}평
+                              </span>
+                            </div>
+                          </div>
+
+                          <div>
+                            <label className="font-bold text-slate-300 block mb-1">건물 층수 (Floors)</label>
+                            <input
+                              type="number"
+                              min="1"
+                              max="5"
+                              value={editingProduct.villaSpecs?.floors || 2}
+                              onChange={(e) => {
+                                const v = Number(e.target.value);
+                                setEditingProduct(prev => prev ? {
+                                  ...prev,
+                                  villaSpecs: { ...(prev.villaSpecs || { bedrooms: 3, maxOccupancy: 8, privatePool: true }), floors: v }
+                                } : prev);
+                              }}
+                              className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-white font-bold"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="font-bold text-slate-300 block mb-1">침대 상세 구성</label>
+                            <input
+                              type="text"
+                              value={editingProduct.villaSpecs?.beds || '킹베드 3개 + 퀸베드 1개'}
+                              onChange={(e) => {
+                                const v = e.target.value;
+                                setEditingProduct(prev => prev ? {
+                                  ...prev,
+                                  villaSpecs: { ...(prev.villaSpecs || { bedrooms: 3, maxOccupancy: 8, privatePool: true }), beds: v }
+                                } : prev);
+                              }}
+                              placeholder="예: 킹 3개 + 퀸 1개 + 싱글 2개"
+                              className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-white font-bold"
+                            />
+                          </div>
+                        </div>
+
+                        {/* Pool & Oceanview & Breakfast Toggles */}
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                          <label className="flex items-center gap-2.5 bg-slate-900 p-3 rounded-xl border border-slate-800 cursor-pointer">
                             <input
                               type="checkbox"
                               checked={Boolean(editingProduct.villaSpecs?.privatePool ?? true)}
@@ -2552,15 +2985,15 @@ export const AdminMode: React.FC<AdminModeProps> = ({
                                 const checked = e.target.checked;
                                 setEditingProduct(prev => prev ? {
                                   ...prev,
-                                  villaSpecs: { ...(prev.villaSpecs || { bedrooms: 3, maxOccupancy: 8, oceanView: true }), privatePool: checked }
+                                  villaSpecs: { ...(prev.villaSpecs || { bedrooms: 3, maxOccupancy: 8 }), privatePool: checked }
                                 } : prev);
                               }}
                               className="w-4 h-4 rounded text-teal-500"
                             />
-                            <span className="font-bold text-white">🏊 프라이빗 전용 수영장 보유</span>
+                            <span className="font-bold text-white text-xs">🏊 프라이빗 전용 수영장</span>
                           </label>
 
-                          <label className="flex items-center gap-2.5 bg-slate-900 p-3.5 rounded-xl border border-slate-800 cursor-pointer">
+                          <label className="flex items-center gap-2.5 bg-slate-900 p-3 rounded-xl border border-slate-800 cursor-pointer">
                             <input
                               type="checkbox"
                               checked={Boolean(editingProduct.villaSpecs?.oceanView ?? true)}
@@ -2568,19 +3001,37 @@ export const AdminMode: React.FC<AdminModeProps> = ({
                                 const checked = e.target.checked;
                                 setEditingProduct(prev => prev ? {
                                   ...prev,
-                                  villaSpecs: { ...(prev.villaSpecs || { bedrooms: 3, maxOccupancy: 8, privatePool: true }), oceanView: checked }
+                                  villaSpecs: { ...(prev.villaSpecs || { bedrooms: 3, maxOccupancy: 8 }), oceanView: checked }
                                 } : prev);
                               }}
                               className="w-4 h-4 rounded text-teal-500"
                             />
-                            <span className="font-bold text-white">🌊 오션뷰 / 해변 인접 (Beachfront)</span>
+                            <span className="font-bold text-white text-xs">🌊 오션뷰 / 해변 인접</span>
+                          </label>
+
+                          <label className="flex items-center gap-2.5 bg-slate-900 p-3 rounded-xl border border-slate-800 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={Boolean(editingProduct.villaSpecs?.breakfastIncluded ?? true)}
+                              onChange={(e) => {
+                                const checked = e.target.checked;
+                                setEditingProduct(prev => prev ? {
+                                  ...prev,
+                                  villaSpecs: { ...(prev.villaSpecs || { bedrooms: 3, maxOccupancy: 8 }), breakfastIncluded: checked }
+                                } : prev);
+                              }}
+                              className="w-4 h-4 rounded text-teal-500"
+                            />
+                            <span className="font-bold text-white text-xs">🍳 무료 조식 룸서비스</span>
                           </label>
                         </div>
 
-                        {/* Address & Google Maps */}
-                        <div className="space-y-3 pt-2">
+                        {/* Location & External Links */}
+                        <div className="space-y-3 bg-slate-900/50 p-4 rounded-2xl border border-slate-800">
+                          <h5 className="font-black text-slate-200 text-xs">📍 풀빌라 현지 위치 및 지도 링크</h5>
+                          
                           <div>
-                            <label className="font-bold text-slate-300 block mb-1">상세 현지 주소</label>
+                            <label className="text-[11px] font-bold text-slate-400 block mb-1">상세 현지 주소</label>
                             <input
                               type="text"
                               value={editingProduct.villaSpecs?.address || editingProduct.address || ''}
@@ -2589,17 +3040,17 @@ export const AdminMode: React.FC<AdminModeProps> = ({
                                 setEditingProduct(prev => prev ? {
                                   ...prev,
                                   address: v,
-                                  villaSpecs: { ...(prev.villaSpecs || { bedrooms: 3, maxOccupancy: 8, privatePool: true, oceanView: true }), address: v }
+                                  villaSpecs: { ...(prev.villaSpecs || { bedrooms: 3, maxOccupancy: 8 }), address: v }
                                 } : prev);
                               }}
-                              placeholder="예: 베트남 다낭 미케비치 푸라마 리조트 단지"
-                              className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white"
+                              placeholder="예: 베트남 다낭시 응우한선구 보응우옌잡 해안도로 프라이빗 리조트 단지"
+                              className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white text-xs"
                             />
                           </div>
 
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <div>
-                              <label className="font-bold text-slate-300 block mb-1">구글 지도 링크 URL</label>
+                              <label className="text-[11px] font-bold text-slate-400 block mb-1">구글 지도 (Google Maps) URL</label>
                               <input
                                 type="text"
                                 value={editingProduct.villaSpecs?.googleMapUrl || editingProduct.googleMapUrl || ''}
@@ -2608,16 +3059,16 @@ export const AdminMode: React.FC<AdminModeProps> = ({
                                   setEditingProduct(prev => prev ? {
                                     ...prev,
                                     googleMapUrl: v,
-                                    villaSpecs: { ...(prev.villaSpecs || { bedrooms: 3, maxOccupancy: 8, privatePool: true, oceanView: true }), googleMapUrl: v }
+                                    villaSpecs: { ...(prev.villaSpecs || { bedrooms: 3, maxOccupancy: 8 }), googleMapUrl: v }
                                   } : prev);
                                 }}
                                 placeholder="https://maps.google.com/..."
-                                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white"
+                                className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white text-xs"
                               />
                             </div>
 
                             <div>
-                              <label className="font-bold text-slate-300 block mb-1">에어비앤비 / 외부 예약 링크 (선택)</label>
+                              <label className="text-[11px] font-bold text-slate-400 block mb-1">에어비앤비 (Airbnb) 참고 링크</label>
                               <input
                                 type="text"
                                 value={editingProduct.villaSpecs?.airbnbUrl || editingProduct.airbnbUrl || ''}
@@ -2626,24 +3077,28 @@ export const AdminMode: React.FC<AdminModeProps> = ({
                                   setEditingProduct(prev => prev ? {
                                     ...prev,
                                     airbnbUrl: v,
-                                    villaSpecs: { ...(prev.villaSpecs || { bedrooms: 3, maxOccupancy: 8, privatePool: true, oceanView: true }), airbnbUrl: v }
+                                    villaSpecs: { ...(prev.villaSpecs || { bedrooms: 3, maxOccupancy: 8 }), airbnbUrl: v }
                                   } : prev);
                                 }}
                                 placeholder="https://airbnb.co.kr/rooms/..."
-                                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white"
+                                className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white text-xs"
                               />
                             </div>
                           </div>
                         </div>
 
-                        {/* Villa Amenities Selection */}
-                        <div className="space-y-2 pt-2">
-                          <span className="font-bold text-slate-300 block">풀빌라 주요 편의시설 (어메니티) 체크</span>
-                          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                        {/* Airbnb Amenities Selection */}
+                        <div className="space-y-2.5">
+                          <span className="font-bold text-slate-200 block text-xs">
+                            🛋️ 에어비앤비 시그니처 편의시설 (Amenities) 체크
+                          </span>
+                          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
                             {VILLA_AMENITIES.map((am) => {
                               const isChecked = (editingProduct.villaSpecs?.amenities || []).includes(am);
                               return (
-                                <label key={am} className="flex items-center gap-2 bg-slate-900/80 p-2.5 rounded-xl border border-slate-800 cursor-pointer">
+                                <label key={am} className={`flex items-center gap-2 p-2.5 rounded-xl border cursor-pointer transition-colors ${
+                                  isChecked ? 'bg-teal-950/60 border-teal-500 text-white' : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-slate-200'
+                                }`}>
                                   <input
                                     type="checkbox"
                                     checked={isChecked}
@@ -2652,47 +3107,277 @@ export const AdminMode: React.FC<AdminModeProps> = ({
                                       const next = e.target.checked ? [...cur, am] : cur.filter(x => x !== am);
                                       setEditingProduct(prev => prev ? {
                                         ...prev,
-                                        villaSpecs: { ...(prev.villaSpecs || { bedrooms: 3, maxOccupancy: 8, privatePool: true, oceanView: true }), amenities: next }
+                                        villaSpecs: { ...(prev.villaSpecs || { bedrooms: 3, maxOccupancy: 8 }), amenities: next }
                                       } : prev);
                                     }}
                                     className="w-3.5 h-3.5 rounded text-teal-500"
                                   />
-                                  <span className="text-xs text-slate-200">{am}</span>
+                                  <span className="text-[11px] font-bold">{am}</span>
                                 </label>
                               );
                             })}
                           </div>
                         </div>
+
+                        {/* Airbnb House Rules & Check-in Details */}
+                        <div className="space-y-3 bg-slate-900/50 p-4 rounded-2xl border border-slate-800">
+                          <h5 className="font-black text-slate-200 text-xs">📋 에어비앤비 하우스 룰 & 숙박 규정</h5>
+
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                              <label className="text-[11px] font-bold text-slate-400 block mb-1">체크인 / 체크아웃 시간</label>
+                              <div className="flex items-center gap-2">
+                                <input
+                                  type="text"
+                                  value={editingProduct.villaSpecs?.checkInTime || '15:00'}
+                                  onChange={(e) => {
+                                    const v = e.target.value;
+                                    setEditingProduct(prev => prev ? {
+                                      ...prev,
+                                      villaSpecs: { ...(prev.villaSpecs || { bedrooms: 3, maxOccupancy: 8 }), checkInTime: v }
+                                    } : prev);
+                                  }}
+                                  placeholder="체크인: 15:00"
+                                  className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white text-xs font-bold text-center"
+                                />
+                                <span className="text-slate-500 font-bold">~</span>
+                                <input
+                                  type="text"
+                                  value={editingProduct.villaSpecs?.checkOutTime || '11:00'}
+                                  onChange={(e) => {
+                                    const v = e.target.value;
+                                    setEditingProduct(prev => prev ? {
+                                      ...prev,
+                                      villaSpecs: { ...(prev.villaSpecs || { bedrooms: 3, maxOccupancy: 8 }), checkOutTime: v }
+                                    } : prev);
+                                  }}
+                                  placeholder="체크아웃: 11:00"
+                                  className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white text-xs font-bold text-center"
+                                />
+                              </div>
+                            </div>
+
+                            <div>
+                              <label className="text-[11px] font-bold text-slate-400 block mb-1">보증금 (Deposit) 규정</label>
+                              <input
+                                type="text"
+                                value={editingProduct.villaSpecs?.securityDeposit || '체크인 시 2,000,000₫ 또는 $100 예치 (퇴실 시 반환)'}
+                                onChange={(e) => {
+                                  const v = e.target.value;
+                                  setEditingProduct(prev => prev ? {
+                                    ...prev,
+                                    villaSpecs: { ...(prev.villaSpecs || { bedrooms: 3, maxOccupancy: 8 }), securityDeposit: v }
+                                  } : prev);
+                                }}
+                                className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white text-xs"
+                              />
+                            </div>
+                          </div>
+
+                          <div>
+                            <label className="text-[11px] font-bold text-slate-400 block mb-1">호스트 지원 언어 & 실시간 케어</label>
+                            <input
+                              type="text"
+                              value={editingProduct.villaSpecs?.hostLanguage || '한국어, 영어, 베트남어 지원 (24시간 카카오톡 실시간 응대)'}
+                              onChange={(e) => {
+                                const v = e.target.value;
+                                setEditingProduct(prev => prev ? {
+                                  ...prev,
+                                  villaSpecs: { ...(prev.villaSpecs || { bedrooms: 3, maxOccupancy: 8 }), hostLanguage: v }
+                                } : prev);
+                              }}
+                              className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white text-xs"
+                            />
+                          </div>
+                        </div>
+
                       </div>
                     </div>
                   )}
 
-                  {/* IF GOLF CATEGORY */}
+                  {/* ========================================================= */}
+                  {/* 4-B: IF GOLF CATEGORY (STAY & PLAY + COURSE CARDS)        */}
+                  {/* ========================================================= */}
                   {editingProduct.category === '골프투어' && (
                     <div className="space-y-6">
-                      <div className="bg-emerald-950/40 border border-emerald-700/60 p-5 rounded-3xl space-y-4">
-                        <h4 className="font-black text-emerald-300 text-base flex items-center gap-2">
-                          <span>⛳ 골프투어 전용 상세 스펙 입력</span>
-                        </h4>
-
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                      <div className="bg-gradient-to-br from-emerald-950/60 to-slate-950 border-2 border-emerald-500/50 p-5 sm:p-6 rounded-3xl space-y-6 shadow-xl">
+                        
+                        {/* Header Banner */}
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-emerald-800/60 pb-4">
                           <div>
-                            <label className="font-bold text-slate-300 block mb-1">총 라운딩 홀 수 (예: 54홀) *</label>
+                            <div className="flex items-center gap-2">
+                              <span className="text-2xl">⛳</span>
+                              <h4 className="font-black text-emerald-300 text-lg">
+                                3박 4일 Stay & Play 골프투어 스펙 및 명문 코스 정보
+                              </h4>
+                            </div>
+                            <p className="text-xs text-slate-300 mt-1">
+                              Stay & Play 연계 호텔, 총 라운딩 홀 수, 그린피/캐디/카트 포함 여부 및 도시별 골프장 상세 카드를 설정하세요.
+                            </p>
+                          </div>
+
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setEditingProduct(prev => prev ? {
+                                ...prev,
+                                duration: '3박 4일',
+                                golfSpecs: {
+                                  holes: 54,
+                                  totalRounds: 3,
+                                  stayAndPlayHotel: '5성급 쉐라톤 그랜드 다낭 리조트 (또는 빈펄 골프 리조트)',
+                                  hotelRoomType: '디럭스 골프/오션뷰 룸 (2인 1실, 조식 포함)',
+                                  distanceInfo: '호텔 ↔ 골프장 간 단독 전용차량 15~25분 소요',
+                                  greenFeeIncluded: true,
+                                  caddieFeeIncluded: true,
+                                  cartIncluded: true,
+                                  caddieTipInfo: '18홀 1인 기준 약 $15~$20 (30만~40만동 현장 지불)',
+                                  golfCourseNames: ['다낭 BRG 골프 리조트 (18홀)', '몽고메리 링크스 CC (18홀)', '바나힐스 골프클럽 (18홀)'],
+                                  courseDetails: [
+                                    {
+                                      name: '다낭 BRG 골프 리조트 (BRG Da Nang Golf)',
+                                      designer: '그렉 노먼 (Greg Norman)',
+                                      holes: 18,
+                                      difficulty: '상급',
+                                      grassType: '버뮤다 그래스 (Bermuda Grass)',
+                                      facilities: ['18홀 챔피언십 코스', '드라이빙 레인지 (연습장)', '클럽하우스 락커룸 & 샤워실', '프로샵 (용품점)', '클럽하우스 VIP 레스토랑', 'VIP 사우나 & 자쿠지'],
+                                      description: '세계적인 골퍼 그렉 노먼이 설계한 해변 링크스 코스로, 바닷바람과 듄스 모래언덕이 어우러진 베트남 최고 명문 골프장입니다.'
+                                    },
+                                    {
+                                      name: '몽고메리 링크스 CC (Montgomerie Links)',
+                                      designer: '콜린 몽고메리 (Colin Montgomerie)',
+                                      holes: 18,
+                                      difficulty: '중상급',
+                                      grassType: '패스팰럼 잔디 (Paspalum)',
+                                      facilities: ['18홀 챔피언십 코스', '드라이빙 레인지 (연습장)', '클럽하우스 락커룸 & 샤워실', '클럽하우스 VIP 레스토랑'],
+                                      description: '유러피언 투어의 전설 콜린 몽고메리가 설계한 스코틀랜드 정통 링크스 스타일 코스로 마블 마운틴을 배경으로 환상적인 뷰를 선사합니다.'
+                                    },
+                                    {
+                                      name: '바나힐스 골프클럽 (Ba Na Hills Golf Club)',
+                                      designer: '루크 도널드 (Luke Donald)',
+                                      holes: 18,
+                                      difficulty: '상급',
+                                      grassType: '벤트그래스 & 버뮤다',
+                                      facilities: ['18홀 챔피언십 코스', '야간 라이트 조명 시설', '드라이빙 레인지 (연습장)', 'VIP 사우나 & 자쿠지'],
+                                      description: '바나산 기슭에 위치하여 시원한 산바람과 전 홀 나이트 라이트 시설을 갖춘 아시아 최고급 산악형 명문 챔피언십 코스입니다.'
+                                    }
+                                  ]
+                                }
+                              } : prev);
+                              showNotification('⛳ 3박 4일 54홀 Stay & Play 표준 스펙이 자동 입력되었습니다.');
+                            }}
+                            className="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs flex items-center gap-1.5 cursor-pointer shadow-md self-start sm:self-auto"
+                          >
+                            <Sparkles className="w-3.5 h-3.5" />
+                            <span>Stay & Play 표준양식 자동완성</span>
+                          </button>
+                        </div>
+
+                        {/* Stay & Play Hotel Details */}
+                        <div className="bg-slate-900/60 p-4 rounded-2xl border border-slate-800 space-y-4">
+                          <h5 className="font-black text-emerald-300 text-xs flex items-center gap-1.5">
+                            <Home className="w-4 h-4" />
+                            <span>Stay & Play 연계 호텔 / 골프 리조트 정보</span>
+                          </h5>
+
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                              <label className="text-[11px] font-bold text-slate-300 block mb-1">
+                                숙박 호텔 / 리조트 명 *
+                              </label>
+                              <input
+                                type="text"
+                                value={editingProduct.golfSpecs?.stayAndPlayHotel || ''}
+                                onChange={(e) => {
+                                  const v = e.target.value;
+                                  setEditingProduct(prev => prev ? {
+                                    ...prev,
+                                    golfSpecs: { ...(prev.golfSpecs || { holes: 54, greenFeeIncluded: true }), stayAndPlayHotel: v }
+                                  } : prev);
+                                }}
+                                placeholder="예: 5성급 쉐라톤 그랜드 다낭 리조트 (또는 빈펄 골프 리조트)"
+                                className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white text-xs font-bold"
+                              />
+                            </div>
+
+                            <div>
+                              <label className="text-[11px] font-bold text-slate-300 block mb-1">
+                                객실 타입 및 조식 포함 여부
+                              </label>
+                              <input
+                                type="text"
+                                value={editingProduct.golfSpecs?.hotelRoomType || ''}
+                                onChange={(e) => {
+                                  const v = e.target.value;
+                                  setEditingProduct(prev => prev ? {
+                                    ...prev,
+                                    golfSpecs: { ...(prev.golfSpecs || { holes: 54, greenFeeIncluded: true }), hotelRoomType: v }
+                                  } : prev);
+                                }}
+                                placeholder="예: 디럭스 골프/오션뷰 룸 (2인 1실, 조식 뷔페 포함)"
+                                className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white text-xs"
+                              />
+                            </div>
+                          </div>
+
+                          <div>
+                            <label className="text-[11px] font-bold text-slate-300 block mb-1">
+                              호텔 ↔ 골프장 간 이동 거리 및 소요 시간
+                            </label>
+                            <input
+                              type="text"
+                              value={editingProduct.golfSpecs?.distanceInfo || ''}
+                              onChange={(e) => {
+                                const v = e.target.value;
+                                setEditingProduct(prev => prev ? {
+                                  ...prev,
+                                  golfSpecs: { ...(prev.golfSpecs || { holes: 54, greenFeeIncluded: true }), distanceInfo: v }
+                                } : prev);
+                              }}
+                              placeholder="예: 호텔에서 골프장까지 단독 전용 차량으로 15~20분 소요 (전 일정 전담 기사 대기)"
+                              className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white text-xs"
+                            />
+                          </div>
+                        </div>
+
+                        {/* Rounding & Fees Specs */}
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                          <div className="bg-slate-900/80 p-3 rounded-2xl border border-slate-800">
+                            <label className="text-xs font-bold text-emerald-300 block mb-1">총 라운딩 홀 수</label>
                             <input
                               type="number"
+                              step="18"
                               value={editingProduct.golfSpecs?.holes || 54}
                               onChange={(e) => {
                                 const v = Number(e.target.value);
                                 setEditingProduct(prev => prev ? {
                                   ...prev,
-                                  golfSpecs: { ...(prev.golfSpecs || { greenFeeIncluded: true, caddieFeeIncluded: true, golfCourseNames: [] }), holes: v }
+                                  golfSpecs: { ...(prev.golfSpecs || { greenFeeIncluded: true }), holes: v }
                                 } : prev);
                               }}
-                              className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white font-bold"
+                              className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-1.5 text-white font-black text-center"
                             />
                           </div>
 
-                          <label className="flex items-center gap-2 bg-slate-900 p-3 rounded-xl border border-slate-800 cursor-pointer self-end">
+                          <div className="bg-slate-900/80 p-3 rounded-2xl border border-slate-800">
+                            <label className="text-xs font-bold text-emerald-300 block mb-1">총 라운딩 일수 (회)</label>
+                            <input
+                              type="number"
+                              min="1"
+                              max="10"
+                              value={editingProduct.golfSpecs?.totalRounds || 3}
+                              onChange={(e) => {
+                                const v = Number(e.target.value);
+                                setEditingProduct(prev => prev ? {
+                                  ...prev,
+                                  golfSpecs: { ...(prev.golfSpecs || { holes: 54, greenFeeIncluded: true }), totalRounds: v }
+                                } : prev);
+                              }}
+                              className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-1.5 text-white font-black text-center"
+                            />
+                          </div>
+
+                          <label className="flex items-center gap-2 bg-slate-900/80 p-3 rounded-2xl border border-slate-800 cursor-pointer">
                             <input
                               type="checkbox"
                               checked={Boolean(editingProduct.golfSpecs?.greenFeeIncluded ?? true)}
@@ -2700,15 +3385,15 @@ export const AdminMode: React.FC<AdminModeProps> = ({
                                 const checked = e.target.checked;
                                 setEditingProduct(prev => prev ? {
                                   ...prev,
-                                  golfSpecs: { ...(prev.golfSpecs || { holes: 54, caddieFeeIncluded: true, golfCourseNames: [] }), greenFeeIncluded: checked }
+                                  golfSpecs: { ...(prev.golfSpecs || { holes: 54 }), greenFeeIncluded: checked }
                                 } : prev);
                               }}
                               className="w-4 h-4 rounded text-emerald-500"
                             />
-                            <span className="font-bold text-white">⛳ 그린피 100% 포함</span>
+                            <span className="font-bold text-white text-xs">⛳ 그린피 100% 포함</span>
                           </label>
 
-                          <label className="flex items-center gap-2 bg-slate-900 p-3 rounded-xl border border-slate-800 cursor-pointer self-end">
+                          <label className="flex items-center gap-2 bg-slate-900/80 p-3 rounded-2xl border border-slate-800 cursor-pointer">
                             <input
                               type="checkbox"
                               checked={Boolean(editingProduct.golfSpecs?.caddieFeeIncluded ?? true)}
@@ -2716,28 +3401,418 @@ export const AdminMode: React.FC<AdminModeProps> = ({
                                 const checked = e.target.checked;
                                 setEditingProduct(prev => prev ? {
                                   ...prev,
-                                  golfSpecs: { ...(prev.golfSpecs || { holes: 54, greenFeeIncluded: true, golfCourseNames: [] }), caddieFeeIncluded: checked }
+                                  golfSpecs: { ...(prev.golfSpecs || { holes: 54 }), caddieFeeIncluded: checked }
                                 } : prev);
                               }}
                               className="w-4 h-4 rounded text-emerald-500"
                             />
-                            <span className="font-bold text-white">🏌️ 캐디피 100% 포함</span>
+                            <span className="font-bold text-white text-xs">🏌️ 1인 1캐디피 포함</span>
                           </label>
                         </div>
+
+                        {/* Caddie Tip & Cart info */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          <label className="flex items-center gap-2 bg-slate-900 p-3 rounded-xl border border-slate-800 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={Boolean(editingProduct.golfSpecs?.cartIncluded ?? true)}
+                              onChange={(e) => {
+                                const checked = e.target.checked;
+                                setEditingProduct(prev => prev ? {
+                                  ...prev,
+                                  golfSpecs: { ...(prev.golfSpecs || { holes: 54 }), cartIncluded: checked }
+                                } : prev);
+                              }}
+                              className="w-4 h-4 rounded text-emerald-500"
+                            />
+                            <span className="font-bold text-white text-xs">🚗 전동 카트비 (2인 1카트) 포함</span>
+                          </label>
+
+                          <div>
+                            <input
+                              type="text"
+                              value={editingProduct.golfSpecs?.caddieTipInfo || '18홀 1인 기준 약 $15~$20 (30만~40만동 현장 지불)'}
+                              onChange={(e) => {
+                                const v = e.target.value;
+                                setEditingProduct(prev => prev ? {
+                                  ...prev,
+                                  golfSpecs: { ...(prev.golfSpecs || { holes: 54 }), caddieTipInfo: v }
+                                } : prev);
+                              }}
+                              placeholder="캐디팁 안내: 18홀 $15~$20"
+                              className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white text-xs"
+                            />
+                          </div>
+                        </div>
+
+                        {/* Golf Courses Details List (Cards) */}
+                        <div className="space-y-4 bg-slate-900/50 p-4 sm:p-5 rounded-2xl border border-slate-800">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <h5 className="font-black text-emerald-300 text-sm">
+                                🏌️‍♂️ 방문 명문 골프장 상세 코스 정보 등록 ({editingProduct.golfSpecs?.courseDetails?.length || 0}개)
+                              </h5>
+                              <p className="text-xs text-slate-400">
+                                각 골프장의 디자이너, 코스 난이도, 잔디 종류 및 상세 설명을 기재하세요.
+                              </p>
+                            </div>
+
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const cur = editingProduct.golfSpecs?.courseDetails || [];
+                                const newCourse: GolfCourseDetail = {
+                                  name: `${editingProduct.city} 신규 명문 골프클럽`,
+                                  designer: '유명 코스 디자이너',
+                                  holes: 18,
+                                  difficulty: '중상급',
+                                  grassType: '버뮤다 그래스',
+                                  facilities: ['18홀 챔피언십 코스', '드라이빙 레인지 (연습장)', '클럽하우스 락커룸 & 샤워실', '프로샵 (용품점)'],
+                                  description: '국제 규격의 프리미엄 챔피언십 골프 코스입니다.'
+                                };
+                                setEditingProduct(prev => prev ? {
+                                  ...prev,
+                                  golfSpecs: {
+                                    ...(prev.golfSpecs || { holes: 54, greenFeeIncluded: true }),
+                                    courseDetails: [...cur, newCourse],
+                                    golfCourseNames: [...(prev.golfSpecs?.golfCourseNames || []), newCourse.name]
+                                  }
+                                } : prev);
+                              }}
+                              className="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center gap-1 cursor-pointer"
+                            >
+                              <Plus className="w-3.5 h-3.5" />
+                              <span>+ 골프장 추가</span>
+                            </button>
+                          </div>
+
+                          {/* Courses Cards */}
+                          <div className="space-y-4">
+                            {(editingProduct.golfSpecs?.courseDetails || []).map((course, cIdx) => (
+                              <div key={cIdx} className="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-3">
+                                <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+                                  <span className="font-black text-emerald-400 text-xs">
+                                    ⛳ 골프장 #{cIdx + 1}
+                                  </span>
+
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      const filtered = (editingProduct.golfSpecs?.courseDetails || []).filter((_, i) => i !== cIdx);
+                                      setEditingProduct(prev => prev ? {
+                                        ...prev,
+                                        golfSpecs: {
+                                          ...(prev.golfSpecs || { holes: 54 }),
+                                          courseDetails: filtered,
+                                          golfCourseNames: filtered.map(c => c.name)
+                                        }
+                                      } : prev);
+                                    }}
+                                    className="text-rose-400 hover:text-rose-300 text-xs font-bold"
+                                  >
+                                    골프장 삭제
+                                  </button>
+                                </div>
+
+                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                  <div className="sm:col-span-2">
+                                    <label className="text-[10px] font-bold text-slate-400 block mb-0.5">골프장 명칭</label>
+                                    <input
+                                      type="text"
+                                      value={course.name}
+                                      onChange={(e) => {
+                                        const v = e.target.value;
+                                        setEditingProduct(prev => {
+                                          if (!prev) return prev;
+                                          const list = [...(prev.golfSpecs?.courseDetails || [])];
+                                          list[cIdx] = { ...list[cIdx], name: v };
+                                          return {
+                                            ...prev,
+                                            golfSpecs: {
+                                              ...(prev.golfSpecs || { holes: 54 }),
+                                              courseDetails: list,
+                                              golfCourseNames: list.map(c => c.name)
+                                            }
+                                          };
+                                        });
+                                      }}
+                                      className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 text-white font-bold text-xs"
+                                    />
+                                  </div>
+
+                                  <div>
+                                    <label className="text-[10px] font-bold text-slate-400 block mb-0.5">코스 설계자 (Designer)</label>
+                                    <input
+                                      type="text"
+                                      value={course.designer || ''}
+                                      onChange={(e) => {
+                                        const v = e.target.value;
+                                        setEditingProduct(prev => {
+                                          if (!prev) return prev;
+                                          const list = [...(prev.golfSpecs?.courseDetails || [])];
+                                          list[cIdx] = { ...list[cIdx], designer: v };
+                                          return { ...prev, golfSpecs: { ...(prev.golfSpecs || { holes: 54 }), courseDetails: list } };
+                                        });
+                                      }}
+                                      placeholder="예: 그렉 노먼"
+                                      className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 text-white text-xs"
+                                    />
+                                  </div>
+                                </div>
+
+                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                  <div>
+                                    <label className="text-[10px] font-bold text-slate-400 block mb-0.5">홀 수 (Holes)</label>
+                                    <input
+                                      type="number"
+                                      value={course.holes || 18}
+                                      onChange={(e) => {
+                                        const v = Number(e.target.value);
+                                        setEditingProduct(prev => {
+                                          if (!prev) return prev;
+                                          const list = [...(prev.golfSpecs?.courseDetails || [])];
+                                          list[cIdx] = { ...list[cIdx], holes: v };
+                                          return { ...prev, golfSpecs: { ...(prev.golfSpecs || { holes: 54 }), courseDetails: list } };
+                                        });
+                                      }}
+                                      className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 text-white text-xs"
+                                    />
+                                  </div>
+
+                                  <div>
+                                    <label className="text-[10px] font-bold text-slate-400 block mb-0.5">코스 난이도</label>
+                                    <select
+                                      value={course.difficulty || '중상급'}
+                                      onChange={(e) => {
+                                        const v = e.target.value;
+                                        setEditingProduct(prev => {
+                                          if (!prev) return prev;
+                                          const list = [...(prev.golfSpecs?.courseDetails || [])];
+                                          list[cIdx] = { ...list[cIdx], difficulty: v };
+                                          return { ...prev, golfSpecs: { ...(prev.golfSpecs || { holes: 54 }), courseDetails: list } };
+                                        });
+                                      }}
+                                      className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 text-white text-xs"
+                                    >
+                                      <option value="최상급">최상급 (토너먼트 코스)</option>
+                                      <option value="상급">상급</option>
+                                      <option value="중상급">중상급</option>
+                                      <option value="중급">중급</option>
+                                      <option value="초중급">초중급</option>
+                                    </select>
+                                  </div>
+
+                                  <div>
+                                    <label className="text-[10px] font-bold text-slate-400 block mb-0.5">잔디 종류</label>
+                                    <input
+                                      type="text"
+                                      value={course.grassType || ''}
+                                      onChange={(e) => {
+                                        const v = e.target.value;
+                                        setEditingProduct(prev => {
+                                          if (!prev) return prev;
+                                          const list = [...(prev.golfSpecs?.courseDetails || [])];
+                                          list[cIdx] = { ...list[cIdx], grassType: v };
+                                          return { ...prev, golfSpecs: { ...(prev.golfSpecs || { holes: 54 }), courseDetails: list } };
+                                        });
+                                      }}
+                                      placeholder="버뮤다 / 패스팰럼"
+                                      className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 text-white text-xs"
+                                    />
+                                  </div>
+                                </div>
+
+                                <div>
+                                  <label className="text-[10px] font-bold text-slate-400 block mb-0.5">골프장 특징 및 코스 소개</label>
+                                  <textarea
+                                    rows={2}
+                                    value={course.description || ''}
+                                    onChange={(e) => {
+                                      const v = e.target.value;
+                                      setEditingProduct(prev => {
+                                        if (!prev) return prev;
+                                        const list = [...(prev.golfSpecs?.courseDetails || [])];
+                                        list[cIdx] = { ...list[cIdx], description: v };
+                                        return { ...prev, golfSpecs: { ...(prev.golfSpecs || { holes: 54 }), courseDetails: list } };
+                                      });
+                                    }}
+                                    placeholder="해안가 링크스 코스로 듄스 모래언덕과 바닷바람이 어우러진 코스..."
+                                    className="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white text-xs"
+                                  />
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
                       </div>
                     </div>
                   )}
 
-                  {/* COMMON SPECS INFO */}
+                  {/* ========================================================= */}
+                  {/* 4-C: IF FREE TRAVEL / PACKAGE (AGENCY TAILORED SPECS)     */}
+                  {/* ========================================================= */}
                   {editingProduct.category !== '풀빌라' && editingProduct.category !== '골프투어' && (
-                    <div className="bg-slate-950 p-6 rounded-3xl border border-slate-800 text-center space-y-2">
-                      <Compass className="w-8 h-8 text-amber-400 mx-auto" />
-                      <h4 className="font-black text-white text-base">패키지 & 자유여행 맞춤 구성</h4>
-                      <p className="text-xs text-slate-400 max-w-md mx-auto">
-                        패키지 및 자유여행 상품은 다음 탭인 <strong>'5. 일자별 여행 일정표'</strong>와 <strong>'6. 포함/불포함 & 소개글'</strong>에서 손님들에게 필요한 상세 내용을 편리하게 입력하실 수 있습니다.
-                      </p>
+                    <div className="space-y-6">
+                      <div className="bg-gradient-to-br from-amber-950/40 via-slate-900 to-slate-950 border-2 border-amber-500/40 p-5 sm:p-6 rounded-3xl space-y-6 shadow-xl">
+                        
+                        {/* Header Banner */}
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-amber-800/40 pb-4">
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <span className="text-2xl">🧭</span>
+                              <h4 className="font-black text-amber-300 text-lg">
+                                {editingProduct.category} 여행사 맞춤 기획 스펙
+                              </h4>
+                            </div>
+                            <p className="text-xs text-slate-300 mt-1">
+                              여행 테마, 단독 전용 차량 스펙, 한국어 전담 가이드 및 핵심 관광지 하이라이트를 기재하세요.
+                            </p>
+                          </div>
+
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setEditingProduct(prev => prev ? {
+                                ...prev,
+                                travelTheme: '가족 힐링 & 노쇼핑 단독 투어',
+                                vehicleInfo: '16인승 최신형 리무진 단독 배차 (전 일정 유류비, 기사비, 톨비 일체 포함)',
+                                guideInfo: '베트남 관광청 라이선스 보유 한국어 전담 베테랑 가이드 풀케어',
+                                highlights: ['다낭 바나힐 골든브릿지 손동상', '호이안 올드타운 유등 소원배', '미케비치 해안가 카페거리', '5성급 특급 호텔 숙박']
+                              } : prev);
+                              showNotification('✨ 여행사 맞춤 표준 스펙이 자동 입력되었습니다.');
+                            }}
+                            className="px-3.5 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs flex items-center gap-1.5 cursor-pointer shadow-md self-start sm:self-auto"
+                          >
+                            <Sparkles className="w-3.5 h-3.5" />
+                            <span>여행사 표준양식 자동완성</span>
+                          </button>
+                        </div>
+
+                        {/* Theme & Vehicle Details */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          <div>
+                            <label className="font-bold text-slate-200 block mb-1">
+                              🎯 여행 테마 (Theme)
+                            </label>
+                            <input
+                              type="text"
+                              value={editingProduct.travelTheme || ''}
+                              onChange={(e) => setEditingProduct(prev => prev ? { ...prev, travelTheme: e.target.value } : prev)}
+                              placeholder="예: 3대 가족 힐링 여행 / 노쇼핑·노옵션 / 럭셔리 효도 관광"
+                              className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white font-bold"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="font-bold text-slate-200 block mb-1">
+                              🚐 단독 전용 차량 스펙
+                            </label>
+                            <input
+                              type="text"
+                              value={editingProduct.vehicleInfo || ''}
+                              onChange={(e) => setEditingProduct(prev => prev ? { ...prev, vehicleInfo: e.target.value } : prev)}
+                              placeholder="예: 16인승 최신형 리무진 단독 배차 (유류비, 기사비 일체 포함)"
+                              className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white"
+                            />
+                          </div>
+                        </div>
+
+                        {/* Guide & Departure */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          <div>
+                            <label className="font-bold text-slate-200 block mb-1">
+                              🎙️ 한국어 전문 가이드 안내
+                            </label>
+                            <input
+                              type="text"
+                              value={editingProduct.guideInfo || ''}
+                              onChange={(e) => setEditingProduct(prev => prev ? { ...prev, guideInfo: e.target.value } : prev)}
+                              placeholder="예: 베트남 관광청 라이선스 한국어 전담 가이드 전 일정 풀케어"
+                              className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="font-bold text-slate-200 block mb-1">
+                              ✈️ 출발 가능 공항
+                            </label>
+                            <div className="flex flex-wrap gap-1.5 pt-1">
+                              {['인천', '부산', '대구', '청주', '무안'].map(city => {
+                                const hasCity = (editingProduct.departureCities || []).includes(city);
+                                return (
+                                  <button
+                                    key={city}
+                                    type="button"
+                                    onClick={() => {
+                                      const cur = editingProduct.departureCities || [];
+                                      const next = hasCity ? cur.filter(c => c !== city) : [...cur, city];
+                                      setEditingProduct(prev => prev ? { ...prev, departureCities: next } : prev);
+                                    }}
+                                    className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-colors cursor-pointer ${
+                                      hasCity ? 'bg-amber-400 text-slate-950 border-amber-400 font-black' : 'bg-slate-900 text-slate-400 border-slate-750'
+                                    }`}
+                                  >
+                                    {city} 출발 {hasCity && '✓'}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Highlights List */}
+                        <div className="space-y-2 bg-slate-950 p-4 rounded-2xl border border-slate-800">
+                          <label className="font-bold text-amber-300 block text-xs">
+                            🌟 핵심 랜드마크 & 관광지 하이라이트
+                          </label>
+                          <div className="flex flex-wrap gap-1.5">
+                            {(editingProduct.highlights || []).map((hl, hIdx) => (
+                              <span key={hIdx} className="bg-slate-900 border border-slate-750 text-slate-200 px-3 py-1 rounded-xl text-xs font-bold flex items-center gap-1.5">
+                                <span>📍 {hl}</span>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setEditingProduct(prev => prev ? {
+                                      ...prev,
+                                      highlights: (prev.highlights || []).filter((_, i) => i !== hIdx)
+                                    } : prev);
+                                  }}
+                                  className="text-slate-500 hover:text-rose-400 cursor-pointer"
+                                >
+                                  ×
+                                </button>
+                              </span>
+                            ))}
+                          </div>
+
+                          <div className="flex gap-2 pt-2">
+                            <input
+                              type="text"
+                              id="custom-highlight-input"
+                              placeholder="관광지 이름 입력 (예: 바나힐 골든브릿지, 호이안 올드타운)..."
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                  e.preventDefault();
+                                  const target = e.currentTarget;
+                                  if (target.value.trim()) {
+                                    setEditingProduct(prev => prev ? {
+                                      ...prev,
+                                      highlights: [...(prev.highlights || []), target.value.trim()]
+                                    } : prev);
+                                    target.value = '';
+                                  }
+                                }
+                              }}
+                              className="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white"
+                            />
+                          </div>
+                        </div>
+
+                      </div>
                     </div>
                   )}
+
                 </div>
               )}
 
@@ -2746,31 +3821,190 @@ export const AdminMode: React.FC<AdminModeProps> = ({
               {/* ============================================================= */}
               {editorTab === 'itinerary' && (
                 <div className="space-y-6 animate-fadeIn">
-                  <div className="flex items-center justify-between">
+                  
+                  {/* Top Bar with Category Fast Presets */}
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-950 p-4 rounded-2xl border border-slate-800">
                     <div>
                       <h4 className="font-black text-white text-base">일자별 상세 여행 일정표</h4>
                       <p className="text-xs text-slate-400">1일차부터 마지막 날까지 손님들이 경험할 일정과 식사, 호텔을 입력하세요.</p>
                     </div>
 
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const cur = editingProduct.itinerary || [];
-                        const nextDay = cur.length + 1;
-                        const newDay: ItineraryDay = {
-                          day: nextDay,
-                          title: `${nextDay}일차 대표 일정 타이틀`,
-                          description: '상세 관광 일정 및 활동 내용을 입력하세요.',
-                          meal: '조식: 호텔식 | 중식: 현지식 | 석식: 특식',
-                          hotel: '5성급 특급 호텔'
-                        };
-                        setEditingProduct(prev => prev ? { ...prev, itinerary: [...cur, newDay] } : prev);
-                      }}
-                      className="px-3.5 py-2 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-bold text-xs flex items-center gap-1.5"
-                    >
-                      <Plus className="w-3.5 h-3.5" />
-                      <span>+ 다음 일차 추가</span>
-                    </button>
+                    <div className="flex flex-wrap items-center gap-2">
+                      {editingProduct.category === '골프투어' && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setEditingProduct(prev => prev ? {
+                              ...prev,
+                              duration: '3박 4일',
+                              itinerary: [
+                                {
+                                  day: 1,
+                                  title: '다낭 공항 도착 ➔ VIP 전용차량 미팅 ➔ 5성 골프 리조트 체크인 & 휴식',
+                                  description: '공항 도착 후 전담 기사 미팅. 전용 VIP 차량 탑승 후 골프 리조트 이동, 웰컴 드링크 및 체크인 후 클럽하우스 만찬.',
+                                  meal: '조식: 기내식 | 중식: 현지식 | 석식: 리조트 특식 만찬',
+                                  hotel: '5성급 쉐라톤 그랜드 다낭 리조트',
+                                  vehicle: 'VIP 단독 전용 리무진',
+                                  attractions: ['다낭 공항', '리조트 체크인', '환영 만찬']
+                                },
+                                {
+                                  day: 2,
+                                  title: '1차전: 다낭 BRG 골프클럽 18홀 라운딩 ➔ VIP 전신 마사지',
+                                  description: '리조트 조식 후 골프장 이동. 오전 18홀 티오프 라운딩. 클럽하우스 중식 후 90분 피로회복 VIP 전신 마사지 및 해산물 디너.',
+                                  meal: '조식: 호텔식 | 중식: 클럽하우스 | 석식: 특식 해산물 BBQ',
+                                  hotel: '5성급 쉐라톤 그랜드 다낭 리조트',
+                                  vehicle: 'VIP 단독 전용 리무진',
+                                  attractions: ['BRG 골프클럽 (18홀)', 'VIP 전신 스파', '미케비치 씨푸드']
+                                },
+                                {
+                                  day: 3,
+                                  title: '2차전: 몽고메리 링크스 CC 18홀 라운딩 ➔ 호이안 야간 투어',
+                                  description: '조식 후 몽고메리 링크스 18홀 라운딩. 라운딩 후 유네스코 고도 호이안 올드타운 이동하여 야경 감상 및 디너.',
+                                  meal: '조식: 호텔식 | 중식: 클럽하우스 | 석식: 호이안 고급 베트남식',
+                                  hotel: '5성급 쉐라톤 그랜드 다낭 리조트',
+                                  vehicle: 'VIP 단독 전용 리무진',
+                                  attractions: ['몽고메리 링크스 (18홀)', '호이안 올드타운', '소원배 유등']
+                                },
+                                {
+                                  day: 4,
+                                  title: '3차전: 바나힐스 GC 18홀 파이널 라운딩 ➔ 체크아웃 & 공항 샌딩',
+                                  description: '체크아웃 후 바나힐스 18홀 마무리 라운딩. 샤워 및 환복 후 롯데마트 쇼핑 후 공항 샌딩.',
+                                  meal: '조식: 호텔식 | 중식: 클럽하우스 | 석식: 한식 특식',
+                                  hotel: '귀국 (기내박)',
+                                  vehicle: 'VIP 단독 전용 리무진',
+                                  attractions: ['바나힐스 GC (18홀)', '롯데마트 쇼핑', '공항 샌딩']
+                                }
+                              ]
+                            } : prev);
+                            showNotification('⛳ 골프 Stay & Play 3박 4일 54홀 일정이 불러와졌습니다.');
+                          }}
+                          className="px-3 py-1.5 rounded-xl bg-emerald-700/80 hover:bg-emerald-600 text-white font-bold text-xs flex items-center gap-1 cursor-pointer"
+                        >
+                          <Sparkles className="w-3.5 h-3.5" />
+                          <span>3박 4일 54홀 골프일정 채우기</span>
+                        </button>
+                      )}
+
+                      {editingProduct.category === '풀빌라' && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setEditingProduct(prev => prev ? {
+                              ...prev,
+                              itinerary: [
+                                {
+                                  day: 1,
+                                  title: '풀빌라 프라이빗 체크인 ➔ 웰컴 티 & 프라이빗 풀 수영 ➔ 야외 바비큐 파티',
+                                  description: '체크인 후 전용 인피니티 풀에서 여유로운 수영 및 힐링. 저녁에는 야외 가든 테라스에서 가족/지인들과 프라이빗 BBQ 파티.',
+                                  meal: '조식: - | 중식: 웰컴 과일 | 석식: 풀사이드 BBQ',
+                                  hotel: '독채 프라이빗 풀빌라',
+                                  vehicle: '전용 이동 차량',
+                                  attractions: ['풀빌라 체크인', '인피니티 풀', '프라이빗 BBQ']
+                                },
+                                {
+                                  day: 2,
+                                  title: '플로팅 조식 ➔ 미케비치 해변 산책 ➔ 노래방 & 자쿠지 스파 힐링',
+                                  description: '물 위에서 즐기는 인스타 감성 플로팅 조식. 해변 산책 후 빌라 내 노래방 음향 시설 및 자쿠지 사우나 힐링.',
+                                  meal: '조식: 플로팅 조식 룸서비스 | 중식: 자유식 | 석식: 해산물 만찬',
+                                  hotel: '독채 프라이빗 풀빌라',
+                                  vehicle: '전용 이동 차량',
+                                  attractions: ['플로팅 조식', '미케비치 해변', '전용 노래방 & 자쿠지']
+                                },
+                                {
+                                  day: 3,
+                                  title: '여유로운 모닝 커피 ➔ 체크아웃 ➔ 전용 차량 이동',
+                                  description: '모닝 수영 및 커피 타임 후 11:00 체크아웃. 공항 또는 다음 여행지로 편안하게 이동.',
+                                  meal: '조식: 빌라 조식 | 중식: 현지 미식 | 석식: -',
+                                  hotel: '체크아웃',
+                                  vehicle: '전용 이동 차량',
+                                  attractions: ['모닝 수영', '체크아웃', '공항 이동']
+                                }
+                              ]
+                            } : prev);
+                            showNotification('🏰 풀빌라 힐링 휴양 일정이 불러와졌습니다.');
+                          }}
+                          className="px-3 py-1.5 rounded-xl bg-teal-700/80 hover:bg-teal-600 text-white font-bold text-xs flex items-center gap-1 cursor-pointer"
+                        >
+                          <Sparkles className="w-3.5 h-3.5" />
+                          <span>풀빌라 힐링일정 채우기</span>
+                        </button>
+                      )}
+
+                      {editingProduct.category !== '풀빌라' && editingProduct.category !== '골프투어' && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setEditingProduct(prev => prev ? {
+                              ...prev,
+                              itinerary: [
+                                {
+                                  day: 1,
+                                  title: '다낭 공항 도착 ➔ 전용차량 미팅 ➔ 호텔 체크인 & 미케비치 산책',
+                                  description: '공항 도착 후 전담 기사 미팅. 전용 차량으로 숙소 이동 및 자유 휴식 후 미케비치 카페거리 탐방.',
+                                  meal: '조식: 기내식 | 중식: 현지 쌀국수 | 석식: 자유식',
+                                  hotel: '5성급 쉐라톤 다낭 또는 동급',
+                                  vehicle: '16인승 단독 전용 차량',
+                                  attractions: ['다낭 공항', '미케비치', '호텔 체크인']
+                                },
+                                {
+                                  day: 2,
+                                  title: '바나힐 국립공원 케이블카 & 골든브릿지 손동상 ➔ 야시장',
+                                  description: '세계 최장 케이블카 탑승 후 테마파크 자유 관광 및 프랑스 마을 산책, 저녁 선짜 야시장 미식 탐방.',
+                                  meal: '조식: 호텔식 | 중식: 바나힐 뷔페 | 석식: 칠리크랩 씨푸드',
+                                  hotel: '5성급 쉐라톤 다낭',
+                                  vehicle: '16인승 단독 전용 차량',
+                                  attractions: ['바나힐', '골든브릿지', '선짜 야시장']
+                                },
+                                {
+                                  day: 3,
+                                  title: '호이안 유네스코 올드타운 ➔ 투본강 소원배 유등 띄우기',
+                                  description: '유서 깊은 고도 호이안 탐방. 풍등이 가득한 전통 거리 산책 및 야간 소원배 탑승, 야시장 쇼핑.',
+                                  meal: '조식: 호텔식 | 중식: 호이안 전통 반미/화이트로즈 | 석식: 특식 모닝글로리',
+                                  hotel: '5성급 쉐라톤 다낭',
+                                  vehicle: '16인승 단독 전용 차량',
+                                  attractions: ['호이안 올드타운', '투본강 소원배', '풍등 거리']
+                                },
+                                {
+                                  day: 4,
+                                  title: '오행산 마블마운틴 ➔ 롯데마트 쇼핑 & 힐링 스파 ➔ 공항 샌딩',
+                                  description: '체크아웃 후 오행산 동굴 탐방, 롯데마트 기념품 쇼핑 및 90분 VIP 아로마 스파 마사지 후 공항 샌딩.',
+                                  meal: '조식: 호텔식 | 중식: 현지 미식 | 석식: 공항식',
+                                  hotel: '기내박 또는 귀국',
+                                  vehicle: '16인승 단독 전용 차량',
+                                  attractions: ['오행산', '롯데마트', '프리미엄 스파']
+                                }
+                              ]
+                            } : prev);
+                            showNotification('🏝️ 자유여행 대표 일정이 불러와졌습니다.');
+                          }}
+                          className="px-3 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-slate-950 font-black text-xs flex items-center gap-1 cursor-pointer"
+                        >
+                          <Sparkles className="w-3.5 h-3.5" />
+                          <span>추천 대표일정 채우기</span>
+                        </button>
+                      )}
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const cur = editingProduct.itinerary || [];
+                          const nextDay = cur.length + 1;
+                          const newDay: ItineraryDay = {
+                            day: nextDay,
+                            title: `${nextDay}일차 대표 일정 타이틀`,
+                            description: '상세 관광 일정 및 활동 내용을 입력하세요.',
+                            meal: '조식: 호텔식 | 중식: 현지식 | 석식: 특식',
+                            hotel: '5성급 특급 호텔',
+                            vehicle: '단독 전용 차량'
+                          };
+                          setEditingProduct(prev => prev ? { ...prev, itinerary: [...cur, newDay] } : prev);
+                        }}
+                        className="px-3.5 py-2 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-bold text-xs flex items-center gap-1.5 cursor-pointer"
+                      >
+                        <Plus className="w-3.5 h-3.5" />
+                        <span>+ 다음 일차 추가</span>
+                      </button>
+                    </div>
                   </div>
 
                   <div className="space-y-4">
@@ -2785,11 +4019,10 @@ export const AdminMode: React.FC<AdminModeProps> = ({
                             type="button"
                             onClick={() => {
                               const filtered = (editingProduct.itinerary || []).filter((_, i) => i !== dIdx);
-                              // Re-index days
                               const reIndexed = filtered.map((item, i) => ({ ...item, day: i + 1 }));
                               setEditingProduct(prev => prev ? { ...prev, itinerary: reIndexed } : prev);
                             }}
-                            className="text-rose-400 hover:text-rose-300 text-xs font-bold"
+                            className="text-rose-400 hover:text-rose-300 text-xs font-bold cursor-pointer"
                           >
                             일정 삭제
                           </button>
@@ -2797,7 +4030,7 @@ export const AdminMode: React.FC<AdminModeProps> = ({
 
                         {/* Title */}
                         <div className="space-y-1">
-                          <label className="text-[11px] font-bold text-slate-400">일정 제목</label>
+                          <label className="text-[11px] font-bold text-slate-400">일정 제목 (동선 요약)</label>
                           <input
                             type="text"
                             value={dayItem.title}
@@ -2829,12 +4062,12 @@ export const AdminMode: React.FC<AdminModeProps> = ({
                                 return { ...prev, itinerary: updated };
                               });
                             }}
-                            className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white text-xs"
+                            className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white text-xs leading-relaxed"
                           />
                         </div>
 
-                        {/* Meal & Hotel */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                        {/* Meal, Hotel & Vehicle */}
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
                           <div>
                             <label className="text-[11px] font-bold text-slate-400">식사 정보 (조/중/석식)</label>
                             <input
@@ -2855,7 +4088,7 @@ export const AdminMode: React.FC<AdminModeProps> = ({
                           </div>
 
                           <div>
-                            <label className="text-[11px] font-bold text-slate-400">숙소 정보</label>
+                            <label className="text-[11px] font-bold text-slate-400">숙소 호텔/풀빌라 명</label>
                             <input
                               type="text"
                               value={dayItem.hotel || ''}
@@ -2868,7 +4101,26 @@ export const AdminMode: React.FC<AdminModeProps> = ({
                                   return { ...prev, itinerary: updated };
                                 });
                               }}
-                              placeholder="5성급 빈펄 럭셔리 리조트"
+                              placeholder="5성급 쉐라톤 다낭 리조트"
+                              className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white text-xs"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="text-[11px] font-bold text-slate-400">이동 차량 수단</label>
+                            <input
+                              type="text"
+                              value={dayItem.vehicle || ''}
+                              onChange={(e) => {
+                                const v = e.target.value;
+                                setEditingProduct(prev => {
+                                  if (!prev) return prev;
+                                  const updated = [...(prev.itinerary || [])];
+                                  updated[dIdx] = { ...updated[dIdx], vehicle: v };
+                                  return { ...prev, itinerary: updated };
+                                });
+                              }}
+                              placeholder="16인승 단독 전용 리무진"
                               className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white text-xs"
                             />
                           </div>
@@ -2884,6 +4136,62 @@ export const AdminMode: React.FC<AdminModeProps> = ({
               {/* ============================================================= */}
               {editorTab === 'terms' && (
                 <div className="space-y-6 animate-fadeIn">
+                  
+                  {/* Category-Specific Included / Excluded Fast Loader */}
+                  <div className="bg-slate-950 p-4 rounded-2xl border border-slate-800 flex flex-wrap items-center justify-between gap-2">
+                    <div>
+                      <h4 className="font-black text-white text-xs">✨ 표준 포함 / 불포함 1클릭 불러오기</h4>
+                      <p className="text-[11px] text-slate-400">현재 상품 종류에 최적화된 포함/불포함 항목을 자동으로 채웁니다.</p>
+                    </div>
+
+                    <div className="flex flex-wrap gap-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setEditingProduct(prev => prev ? {
+                            ...prev,
+                            included: [...FREE_TOUR_INCLUDED],
+                            excluded: [...FREE_TOUR_EXCLUDED]
+                          } : prev);
+                          showNotification('🏝️ 자유여행/패키지 표준 포함·불포함 항목이 적용되었습니다.');
+                        }}
+                        className="px-3 py-1.5 rounded-xl bg-amber-500/20 text-amber-300 border border-amber-500/40 text-xs font-black hover:bg-amber-500 hover:text-slate-950 cursor-pointer"
+                      >
+                        🏝️ 자유여행 표준 불러오기
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setEditingProduct(prev => prev ? {
+                            ...prev,
+                            included: [...GOLF_INCLUDED],
+                            excluded: [...GOLF_EXCLUDED]
+                          } : prev);
+                          showNotification('⛳ 골프투어 Stay & Play 표준 포함·불포함 항목이 적용되었습니다.');
+                        }}
+                        className="px-3 py-1.5 rounded-xl bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-xs font-black hover:bg-emerald-500 hover:text-white cursor-pointer"
+                      >
+                        ⛳ 골프투어 표준 불러오기
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setEditingProduct(prev => prev ? {
+                            ...prev,
+                            included: [...VILLA_INCLUDED],
+                            excluded: [...VILLA_EXCLUDED]
+                          } : prev);
+                          showNotification('🏰 풀빌라 에어비앤비 표준 포함·불포함 항목이 적용되었습니다.');
+                        }}
+                        className="px-3 py-1.5 rounded-xl bg-teal-500/20 text-teal-300 border border-teal-500/40 text-xs font-black hover:bg-teal-500 hover:text-white cursor-pointer"
+                      >
+                        🏰 풀빌라 표준 불러오기
+                      </button>
+                    </div>
+                  </div>
+
                   {/* Included Items */}
                   <div className="bg-slate-950 p-5 rounded-3xl border border-slate-800 space-y-3">
                     <div className="flex items-center justify-between">
@@ -2919,7 +4227,7 @@ export const AdminMode: React.FC<AdminModeProps> = ({
                                 included: (prev.included || []).filter((_, i) => i !== iIdx)
                               } : prev);
                             }}
-                            className="text-slate-500 hover:text-rose-400 p-1"
+                            className="text-slate-500 hover:text-rose-400 p-1 cursor-pointer"
                           >
                             ×
                           </button>
@@ -2946,7 +4254,7 @@ export const AdminMode: React.FC<AdminModeProps> = ({
                             setCustomIncludedInput('');
                           }
                         }}
-                        className="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs"
+                        className="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs cursor-pointer"
                       >
                         추가
                       </button>
@@ -2988,7 +4296,7 @@ export const AdminMode: React.FC<AdminModeProps> = ({
                                 excluded: (prev.excluded || []).filter((_, i) => i !== eIdx)
                               } : prev);
                             }}
-                            className="text-slate-500 hover:text-rose-400 p-1"
+                            className="text-slate-500 hover:text-rose-400 p-1 cursor-pointer"
                           >
                             ×
                           </button>
@@ -3015,7 +4323,7 @@ export const AdminMode: React.FC<AdminModeProps> = ({
                             setCustomExcludedInput('');
                           }
                         }}
-                        className="px-3.5 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs"
+                        className="px-3.5 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs cursor-pointer"
                       >
                         추가
                       </button>

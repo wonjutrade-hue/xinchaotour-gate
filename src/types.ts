@@ -28,6 +28,8 @@ export interface ItineraryDay {
   description: string;
   meal?: string;
   hotel?: string;
+  vehicle?: string;
+  attractions?: string[];
 }
 
 export interface GolfCourseDetail {
@@ -37,6 +39,8 @@ export interface GolfCourseDetail {
   description: string;
   difficulty?: string;
   location?: string;
+  grassType?: string;
+  facilities?: string[];
 }
 
 export interface VillaSpecs {
@@ -50,6 +54,7 @@ export interface VillaSpecs {
   privatePool: boolean;
   oceanView: boolean;
   areaSqm?: number;
+  areaPyeong?: number;
   floors?: number;
   address?: string;
   googleMapUrl?: string;
@@ -59,15 +64,24 @@ export interface VillaSpecs {
   checkInTime?: string;
   checkOutTime?: string;
   houseRules?: string[];
+  securityDeposit?: string;
+  cleaningFeeIncluded?: boolean;
+  breakfastIncluded?: boolean;
+  hostLanguage?: string;
 }
 
 export interface GolfSpecs {
   holes: number;
+  totalRounds?: number;
+  stayAndPlayHotel?: string;
+  hotelRoomType?: string;
+  distanceInfo?: string;
   greenFeeIncluded: boolean;
   caddieFeeIncluded: boolean;
+  cartIncluded?: boolean;
+  caddieTipInfo?: string;
   golfCourseNames: string[];
   courseDetails?: GolfCourseDetail[];
-  cartIncluded?: boolean;
 }
 
 export interface Product {
@@ -95,6 +109,10 @@ export interface Product {
   itinerary: ItineraryDay[];
   villaSpecs?: VillaSpecs;
   golfSpecs?: GolfSpecs;
+  highlights?: string[];
+  vehicleInfo?: string;
+  guideInfo?: string;
+  travelTheme?: string;
   address?: string;
   googleMapUrl?: string;
   airbnbUrl?: string;

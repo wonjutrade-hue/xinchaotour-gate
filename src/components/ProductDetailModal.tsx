@@ -433,39 +433,186 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* LEFT: Main Content Details (8 Columns) */}
           <div className="lg:col-span-8 space-y-8">
-            {/* Special Villa Specs */}
+            
+            {/* 1. Special Villa Specs (Airbnb Style) */}
             {product.villaSpecs && (
-              <div className="bg-sky-50/80 border border-sky-200 p-6 rounded-3xl space-y-4">
-                <h3 className="font-extrabold text-sky-950 text-base flex items-center gap-2">
-                  🏰 독채 풀빌라 옵션 스펙
-                </h3>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs text-sky-900">
-                  <div className="bg-white p-3.5 rounded-2xl border border-sky-100 shadow-xs">
-                    <span className="block text-[11px] text-slate-500 mb-0.5">침실 구성</span>
-                    <span className="font-black text-slate-900 text-sm">{product.villaSpecs.bedrooms} 베드룸</span>
+              <div className="bg-gradient-to-br from-teal-50 to-emerald-50/50 border-2 border-teal-200/80 p-6 sm:p-7 rounded-3xl space-y-5 shadow-xs">
+                <div className="flex items-center justify-between border-b border-teal-200/60 pb-3">
+                  <h3 className="font-black text-teal-950 text-base sm:text-lg flex items-center gap-2">
+                    <span className="text-xl">🏰</span>
+                    <span>에어비앤비 스타일 독채 풀빌라 상세 스펙</span>
+                  </h3>
+                  {product.villaSpecs.areaSqm && (
+                    <span className="bg-teal-700 text-white font-black text-xs px-3 py-1 rounded-xl shadow-xs">
+                      {product.villaSpecs.areaSqm}㎡ {product.villaSpecs.areaPyeong ? `(약 ${product.villaSpecs.areaPyeong}평)` : ''}
+                    </span>
+                  )}
+                </div>
+
+                {product.villaSpecs.structureDescription && (
+                  <p className="text-xs sm:text-sm font-bold text-teal-900 bg-white/80 p-3.5 rounded-2xl border border-teal-100">
+                    🏛️ <strong>구조:</strong> {product.villaSpecs.structureDescription}
+                  </p>
+                )}
+
+                {/* Key Villa Badges Grid */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs text-teal-900">
+                  <div className="bg-white p-3.5 rounded-2xl border border-teal-100 shadow-xs">
+                    <span className="block text-[11px] text-slate-500 mb-0.5">침실 / 욕실</span>
+                    <span className="font-black text-slate-900 text-sm">
+                      {product.villaSpecs.bedrooms}룸 · {product.villaSpecs.bathrooms || product.villaSpecs.bedrooms}욕실
+                    </span>
                   </div>
-                  <div className="bg-white p-3.5 rounded-2xl border border-sky-100 shadow-xs">
+                  <div className="bg-white p-3.5 rounded-2xl border border-teal-100 shadow-xs">
                     <span className="block text-[11px] text-slate-500 mb-0.5">수영장 타입</span>
-                    <span className="font-black text-slate-900 text-sm">{product.villaSpecs.privatePool ? '전용 프라이빗 풀' : '공용 풀'}</span>
+                    <span className="font-black text-slate-900 text-sm">{product.villaSpecs.privatePool ? '전용 단독 풀' : '공용 풀'}</span>
                   </div>
-                  <div className="bg-white p-3.5 rounded-2xl border border-sky-100 shadow-xs">
+                  <div className="bg-white p-3.5 rounded-2xl border border-teal-100 shadow-xs">
                     <span className="block text-[11px] text-slate-500 mb-0.5">조망 (뷰)</span>
                     <span className="font-black text-slate-900 text-sm">{product.villaSpecs.oceanView ? '파노라마 오션뷰' : '가든뷰'}</span>
                   </div>
-                  <div className="bg-white p-3.5 rounded-2xl border border-sky-100 shadow-xs">
-                    <span className="block text-[11px] text-slate-500 mb-0.5">최대 투숙인원</span>
-                    <span className="font-black text-slate-900 text-sm">최대 {product.villaSpecs.maxOccupancy}인</span>
+                  <div className="bg-white p-3.5 rounded-2xl border border-teal-100 shadow-xs">
+                    <span className="block text-[11px] text-slate-500 mb-0.5">투숙 인원</span>
+                    <span className="font-black text-slate-900 text-sm">
+                      기준 {product.villaSpecs.standardOccupancy || product.villaSpecs.bedrooms * 2}인 / 최대 {product.villaSpecs.maxOccupancy}인
+                    </span>
                   </div>
                 </div>
 
+                {/* Beds & Check-in / Check-out Times */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                  {product.villaSpecs.beds && (
+                    <div className="bg-white p-3.5 rounded-2xl border border-teal-100">
+                      <span className="text-[11px] font-bold text-slate-500 block mb-0.5">🛏️ 침대 구성</span>
+                      <span className="font-bold text-slate-900">{product.villaSpecs.beds}</span>
+                    </div>
+                  )}
+
+                  {(product.villaSpecs.checkInTime || product.villaSpecs.checkOutTime) && (
+                    <div className="bg-white p-3.5 rounded-2xl border border-teal-100">
+                      <span className="text-[11px] font-bold text-slate-500 block mb-0.5">⏰ 체크인 / 체크아웃</span>
+                      <span className="font-bold text-slate-900">
+                        입실 {product.villaSpecs.checkInTime || '15:00'} ~ 퇴실 {product.villaSpecs.checkOutTime || '11:00'}
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Villa Amenities */}
                 {product.villaSpecs.amenities && product.villaSpecs.amenities.length > 0 && (
                   <div className="pt-2">
-                    <span className="text-[11px] font-bold text-sky-950 block mb-1.5">빌라 부대시설:</span>
+                    <span className="text-xs font-black text-teal-950 block mb-2">🛋️ 에어비앤비 시그니처 편의시설:</span>
                     <div className="flex flex-wrap gap-1.5">
                       {product.villaSpecs.amenities.map((amenity, idx) => (
-                        <span key={idx} className="bg-white text-sky-800 text-xs font-bold px-3 py-1 rounded-xl border border-sky-200">
+                        <span key={idx} className="bg-white text-teal-800 text-xs font-bold px-3 py-1.5 rounded-xl border border-teal-200 shadow-2xs">
                           ✓ {amenity}
                         </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* House Rules & Host Language */}
+                {(product.villaSpecs.houseRules || product.villaSpecs.securityDeposit || product.villaSpecs.hostLanguage) && (
+                  <div className="bg-white/90 p-4 rounded-2xl border border-teal-100 space-y-2 text-xs text-slate-700">
+                    {product.villaSpecs.securityDeposit && (
+                      <p><strong>💵 보증금(Deposit):</strong> {product.villaSpecs.securityDeposit}</p>
+                    )}
+                    {product.villaSpecs.hostLanguage && (
+                      <p><strong>🌐 호스트 지원:</strong> {product.villaSpecs.hostLanguage}</p>
+                    )}
+                    {product.villaSpecs.houseRules && product.villaSpecs.houseRules.length > 0 && (
+                      <div className="pt-1">
+                        <span className="font-bold text-slate-900 block mb-1">📋 숙박 하우스 룰:</span>
+                        <ul className="list-disc list-inside space-y-0.5 text-slate-600 pl-1">
+                          {product.villaSpecs.houseRules.map((rule, rIdx) => (
+                            <li key={rIdx}>{rule}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* 2. Special Golf Specs (Stay & Play) */}
+            {product.golfSpecs && (
+              <div className="bg-gradient-to-br from-emerald-50 to-teal-50/50 border-2 border-emerald-200/80 p-6 sm:p-7 rounded-3xl space-y-5 shadow-xs">
+                <div className="flex items-center justify-between border-b border-emerald-200/60 pb-3">
+                  <h3 className="font-black text-emerald-950 text-base sm:text-lg flex items-center gap-2">
+                    <span className="text-xl">⛳</span>
+                    <span>3박 4일 Stay & Play 골프 패키지 구성 ({product.golfSpecs.holes}홀)</span>
+                  </h3>
+                  <span className="bg-emerald-700 text-white font-black text-xs px-3 py-1 rounded-xl shadow-xs">
+                    총 {product.golfSpecs.totalRounds || Math.round(product.golfSpecs.holes / 18)}회 라운딩
+                  </span>
+                </div>
+
+                {/* Stay & Play Hotel Info */}
+                {product.golfSpecs.stayAndPlayHotel && (
+                  <div className="bg-white p-4 rounded-2xl border border-emerald-100 space-y-1.5 text-xs text-emerald-950 shadow-xs">
+                    <div className="flex items-center gap-2 font-black text-sm text-slate-900">
+                      <Hotel className="w-4 h-4 text-emerald-600" />
+                      <span>연계 골프 리조트 / 호텔: {product.golfSpecs.stayAndPlayHotel}</span>
+                    </div>
+                    {product.golfSpecs.hotelRoomType && (
+                      <p className="text-slate-600 font-medium pl-6">• 객실: {product.golfSpecs.hotelRoomType}</p>
+                    )}
+                    {product.golfSpecs.distanceInfo && (
+                      <p className="text-slate-600 font-medium pl-6">• 이동: {product.golfSpecs.distanceInfo}</p>
+                    )}
+                  </div>
+                )}
+
+                {/* Inclusion Features Badges */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs">
+                  <div className="bg-white p-3 rounded-2xl border border-emerald-100 text-center font-bold text-emerald-900">
+                    ⛳ 그린피 {product.golfSpecs.greenFeeIncluded ? '100% 전액 포함' : '별도'}
+                  </div>
+                  <div className="bg-white p-3 rounded-2xl border border-emerald-100 text-center font-bold text-emerald-900">
+                    🏌️ 1인 1캐디피 {product.golfSpecs.caddieFeeIncluded ? '전액 포함' : '별도'}
+                  </div>
+                  <div className="bg-white p-3 rounded-2xl border border-emerald-100 text-center font-bold text-emerald-900">
+                    🚗 전동 카트 {product.golfSpecs.cartIncluded ? '2인 1카트 포함' : '별도'}
+                  </div>
+                </div>
+
+                {product.golfSpecs.caddieTipInfo && (
+                  <p className="text-xs text-slate-600 bg-white/80 p-3 rounded-xl border border-emerald-100">
+                    💡 <strong>캐디 팁 안내:</strong> {product.golfSpecs.caddieTipInfo}
+                  </p>
+                )}
+
+                {/* Course Details Cards */}
+                {product.golfSpecs.courseDetails && product.golfSpecs.courseDetails.length > 0 && (
+                  <div className="space-y-3 pt-2">
+                    <span className="text-xs font-black text-emerald-950 block">🏌️‍♂️ 방문 명문 골프장 상세 코스 소개:</span>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                      {product.golfSpecs.courseDetails.map((course, idx) => (
+                        <div key={idx} className="bg-white p-4 rounded-2xl border border-emerald-100 text-xs space-y-2 shadow-xs">
+                          <div className="flex items-center justify-between font-bold text-slate-900">
+                            <span className="font-black text-sm text-emerald-950">{course.name}</span>
+                            <span className="text-[11px] bg-emerald-100 text-emerald-800 font-black px-2 py-0.5 rounded-lg">{course.holes}홀</span>
+                          </div>
+                          <div className="flex flex-wrap gap-2 text-[11px] text-slate-600">
+                            {course.designer && <span className="bg-slate-100 px-2 py-0.5 rounded">디자이너: {course.designer}</span>}
+                            {course.difficulty && <span className="bg-amber-100 text-amber-900 px-2 py-0.5 rounded font-bold">난이도: {course.difficulty}</span>}
+                            {course.grassType && <span className="bg-emerald-100 text-emerald-900 px-2 py-0.5 rounded">잔디: {course.grassType}</span>}
+                          </div>
+                          {course.description && (
+                            <p className="text-xs text-slate-600 leading-relaxed pt-1">{course.description}</p>
+                          )}
+                          {course.facilities && course.facilities.length > 0 && (
+                            <div className="flex flex-wrap gap-1 pt-1">
+                              {course.facilities.map((fac, fIdx) => (
+                                <span key={fIdx} className="text-[10px] bg-slate-100 text-slate-700 px-2 py-0.5 rounded-md font-medium">
+                                  ✓ {fac}
+                                </span>
+                              ))}
+                            </div>
+                          )}
+                        </div>
                       ))}
                     </div>
                   </div>
@@ -473,35 +620,45 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               </div>
             )}
 
-            {/* Special Golf Specs */}
-            {product.golfSpecs && (
-              <div className="bg-emerald-50/80 border border-emerald-200 p-6 rounded-3xl space-y-4">
-                <h3 className="font-extrabold text-emerald-950 text-base flex items-center gap-2">
-                  ⛳ 럭셔리 골프 라운딩 구성 ({product.golfSpecs.holes}홀)
+            {/* 3. Special Agency Specs (Theme, Vehicle, Guide, Highlights) */}
+            {(product.travelTheme || product.vehicleInfo || product.guideInfo || (product.highlights && product.highlights.length > 0)) && (
+              <div className="bg-gradient-to-br from-amber-50 to-orange-50/40 border-2 border-amber-200/80 p-6 sm:p-7 rounded-3xl space-y-4 shadow-xs">
+                <h3 className="font-black text-amber-950 text-base sm:text-lg flex items-center gap-2 border-b border-amber-200/60 pb-3">
+                  <span className="text-xl">🧭</span>
+                  <span>XinChaoTour 여행사 단독 맞춤 서비스 구성</span>
                 </h3>
-                <div className="text-xs text-emerald-900 space-y-1.5 font-medium">
-                  <p>• 포함 골프장: <strong className="text-emerald-950 font-black">{product.golfSpecs.golfCourseNames.join(' / ')}</strong></p>
-                  <p>• 그린피, 카트비(2인 1카트), 캐디피 전액 포함 (캐디팁 별도)</p>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                  {product.travelTheme && (
+                    <div className="bg-white p-3.5 rounded-2xl border border-amber-100 shadow-2xs">
+                      <span className="text-[11px] font-bold text-slate-500 block mb-0.5">🎯 여행 테마</span>
+                      <span className="font-black text-slate-900 text-sm">{product.travelTheme}</span>
+                    </div>
+                  )}
+
+                  {product.vehicleInfo && (
+                    <div className="bg-white p-3.5 rounded-2xl border border-amber-100 shadow-2xs">
+                      <span className="text-[11px] font-bold text-slate-500 block mb-0.5">🚐 단독 전용 차량</span>
+                      <span className="font-bold text-slate-900">{product.vehicleInfo}</span>
+                    </div>
+                  )}
+
+                  {product.guideInfo && (
+                    <div className="bg-white p-3.5 rounded-2xl border border-amber-100 shadow-2xs sm:col-span-2">
+                      <span className="text-[11px] font-bold text-slate-500 block mb-0.5">🎙️ 가이드 서비스</span>
+                      <span className="font-bold text-slate-900">{product.guideInfo}</span>
+                    </div>
+                  )}
                 </div>
 
-                {product.golfSpecs.courseDetails && product.golfSpecs.courseDetails.length > 0 && (
-                  <div className="mt-4 space-y-3 pt-4 border-t border-emerald-200/80">
-                    <span className="text-xs font-black text-emerald-950 block">코스별 상세 정보:</span>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      {product.golfSpecs.courseDetails.map((course, idx) => (
-                        <div key={idx} className="bg-white p-3.5 rounded-2xl border border-emerald-100 text-xs space-y-1.5 shadow-xs">
-                          <div className="flex items-center justify-between font-bold text-slate-900">
-                            <span className="font-black text-sm">{course.name}</span>
-                            <span className="text-[11px] bg-emerald-100 text-emerald-800 font-black px-2 py-0.5 rounded-lg">{course.holes}홀</span>
-                          </div>
-                          {course.designer && (
-                            <p className="text-[11px] text-teal-800 font-semibold">설계: {course.designer}</p>
-                          )}
-                          {course.difficulty && (
-                            <p className="text-[11px] text-amber-800 font-semibold">코스 난이도: {course.difficulty}</p>
-                          )}
-                          <p className="text-xs text-slate-600 leading-relaxed">{course.description}</p>
-                        </div>
+                {product.highlights && product.highlights.length > 0 && (
+                  <div className="pt-2">
+                    <span className="text-xs font-black text-amber-950 block mb-2">🌟 핵심 관광지 하이라이트:</span>
+                    <div className="flex flex-wrap gap-1.5">
+                      {product.highlights.map((hl, idx) => (
+                        <span key={idx} className="bg-white text-amber-900 text-xs font-bold px-3 py-1.5 rounded-xl border border-amber-200 shadow-2xs">
+                          📍 {hl}
+                        </span>
                       ))}
                     </div>
                   </div>
@@ -566,7 +723,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                           {item.description}
                         </p>
 
-                        <div className="pt-3 flex flex-wrap gap-4 text-xs text-slate-600 border-t border-slate-200">
+                        <div className="pt-3 flex flex-wrap gap-3 text-xs text-slate-600 border-t border-slate-200">
                           {item.meal && (
                             <span className="flex items-center gap-1.5 text-slate-800 font-bold bg-white px-3 py-1 rounded-lg border border-slate-200">
                               <Utensils className="w-4 h-4 text-amber-600" />
@@ -577,6 +734,16 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                             <span className="flex items-center gap-1.5 text-slate-800 font-bold bg-white px-3 py-1 rounded-lg border border-slate-200">
                               <Hotel className="w-4 h-4 text-teal-600" />
                               숙소: {item.hotel}
+                            </span>
+                          )}
+                          {item.vehicle && (
+                            <span className="flex items-center gap-1.5 text-slate-800 font-bold bg-white px-3 py-1 rounded-lg border border-slate-200">
+                              <span>🚐 차량: {item.vehicle}</span>
+                            </span>
+                          )}
+                          {item.attractions && item.attractions.length > 0 && (
+                            <span className="flex items-center gap-1 text-teal-900 font-bold bg-teal-50 px-3 py-1 rounded-lg border border-teal-200">
+                              <span>📍 {item.attractions.join(' · ')}</span>
                             </span>
                           )}
                         </div>
