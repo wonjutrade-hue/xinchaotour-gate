@@ -29,19 +29,25 @@ const CLEAN_VILLA_PHOTOS = [
   'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80'
 ];
 
+function isSamplePhotoUrl(url: string | undefined): boolean {
+  if (!url) return false;
+  return url.includes('images.unsplash.com') || url === 'VILLA_PHOTO_DATA' || url === 'TEST_IMG';
+}
+
 function sanitizeProduct(p: Product, idx: number): Product {
   if (!p) return p;
   let img = p.imageUrl || '';
-  // Only replace if totally empty or broken dummy test strings
+  const cleanSubs = (p.additionalImages || []).filter(sub => Boolean(sub) && sub !== 'VILLA_PHOTO_DATA' && sub !== 'TEST_IMG');
+  
+  // If main image is empty or invalid, try to use first gallery image before falling back to sample photo
   if (!img || img === 'VILLA_PHOTO_DATA' || img === 'TEST_IMG') {
-    img = CLEAN_VILLA_PHOTOS[idx % CLEAN_VILLA_PHOTOS.length];
-  }
-  const cleanSubs = (p.additionalImages || []).map((sub, sIdx) => {
-    if (!sub || sub === 'VILLA_PHOTO_DATA' || sub === 'TEST_IMG') {
-      return CLEAN_VILLA_PHOTOS[(idx + sIdx + 1) % CLEAN_VILLA_PHOTOS.length];
+    if (cleanSubs.length > 0) {
+      img = cleanSubs[0];
+    } else {
+      img = CLEAN_VILLA_PHOTOS[idx % CLEAN_VILLA_PHOTOS.length];
     }
-    return sub;
-  });
+  }
+
   return {
     ...p,
     imageUrl: img,

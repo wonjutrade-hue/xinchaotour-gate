@@ -41,8 +41,8 @@ import {
   loadInquiriesFromIndexedDB
 } from './lib/indexedDb';
 
-const PRODUCTS_CACHE_KEY = 'xinchao_products_cache_v11';
-const DB_INITIALIZED_KEY = 'xinchao_db_initialized_v11';
+const PRODUCTS_CACHE_KEY = 'xinchao_products_cache_v12';
+const DB_INITIALIZED_KEY = 'xinchao_db_initialized_v12';
 
 function getStoredJson<T>(key: string, fallback: T): T {
   try {
