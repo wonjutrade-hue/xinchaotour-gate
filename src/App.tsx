@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Product, Category, Region, City, ConsultationRequest } from './types';
-import { Navbar } from './components/Navbar';
+import { Navbar, MainNavPage } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { CategoryNav } from './components/CategoryNav';
 import { ProductCard } from './components/ProductCard';
@@ -15,6 +15,9 @@ import { TravelInfoPage, TravelInfoTab } from './components/TravelInfoPage';
 import { KakaoModal } from './components/KakaoModal';
 import { AdminMode } from './components/AdminMode';
 import { AdminLoginModal } from './components/AdminLoginModal';
+import { ReviewsPage } from './components/ReviewsPage';
+import { CompanyPage } from './components/CompanyPage';
+import { ReservationPage } from './components/ReservationPage';
 import { INITIAL_PRODUCTS, SAMPLE_PRODUCTS } from './data/seedProducts';
 import { getLiveExchangeRates, ExchangeRates, DEFAULT_RATES } from './lib/exchangeRate';
 import { 
@@ -38,15 +41,15 @@ import {
   loadInquiriesFromIndexedDB
 } from './lib/indexedDb';
 
-const PRODUCTS_CACHE_KEY = 'xinchao_products_cache_v10';
-const DB_INITIALIZED_KEY = 'xinchao_db_initialized_v10';
+const PRODUCTS_CACHE_KEY = 'xinchao_products_cache_v11';
+const DB_INITIALIZED_KEY = 'xinchao_db_initialized_v11';
 
 function getStoredJson<T>(key: string, fallback: T): T {
   try {
     const raw = localStorage.getItem(key);
     if (raw) {
       const parsed = JSON.parse(raw);
-      if (parsed !== null && parsed !== undefined && Array.isArray(parsed)) {
+      if (parsed !== null && parsed !== undefined && Array.isArray(parsed) && parsed.length > 0) {
         return parsed as T;
       }
     }
@@ -80,6 +83,9 @@ export default function App() {
   // Sync locks to avoid race conditions with polling
   const lastClientSaveTimestampRef = useRef<number>(0);
   const isSavingToServerRef = useRef<boolean>(false);
+
+  // Active Main Navigation Page
+  const [currentPage, setCurrentPage] = useState<MainNavPage>('home');
 
   // Sync products state to IndexedDB, localStorage, and server backend
   const persistProducts = async (updatedProducts: Product[]): Promise<boolean> => {
@@ -167,7 +173,7 @@ export default function App() {
     saveInquiriesToIndexedDB(updatedInquiries);
   };
 
-  // Synchronize Browser History with Product Selection & Travel Guide View
+  // Synchronize Browser History with Product Selection & Navigation
   const handleSelectProduct = (prod: Product) => {
     setSelectedProduct(prod);
     setIsTravelInfoPageOpen(false);
@@ -207,11 +213,36 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleGoHome = () => {
+  const handleNavigate = (page: MainNavPage) => {
     setSelectedProduct(null);
     setIsTravelInfoPageOpen(false);
     setIsTravelInfoOpen(false);
-    setActiveCategory('전체');
+    setCurrentPage(page);
+
+    if (page === 'home') {
+      setActiveCategory('전체');
+    } else if (page === '자유여행') {
+      setActiveCategory('자유여행');
+    } else if (page === '풀빌라') {
+      setActiveCategory('풀빌라');
+    } else if (page === '골프여행') {
+      setActiveCategory('골프투어');
+    }
+
+    try {
+      if (page === 'home') {
+        window.history.pushState(null, '', window.location.pathname);
+      } else {
+        window.history.pushState({ page }, '', `#${page}`);
+      }
+    } catch (e) {
+      console.warn(e);
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleGoHome = () => {
+    handleNavigate('home');
     setActiveRegion('전체');
     setActiveCity('전체');
     setSubFilter('전체');
@@ -221,20 +252,11 @@ export default function App() {
     setIsQuizOpen(false);
     setIsRateModalOpen(false);
     setIsKakaoModalOpen(false);
-    try {
-      if (window.location.hash) {
-        window.history.pushState(null, '', window.location.pathname);
-      }
-    } catch (e) {
-      console.warn('History clear error:', e);
-    }
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   useEffect(() => {
     const handlePopState = (e: PopStateEvent) => {
       if (!e.state) {
-        // If hash exists on load/back
         if (window.location.hash.startsWith('#guide')) {
           const tabPart = window.location.hash.replace('#guide-', '') as TravelInfoTab;
           setSelectedProduct(null);
@@ -248,54 +270,50 @@ export default function App() {
           if (found) {
             setSelectedProduct(found);
             setIsTravelInfoPageOpen(false);
-          } else {
-            setSelectedProduct(null);
-            setIsTravelInfoPageOpen(false);
           }
         } else {
           setSelectedProduct(null);
           setIsTravelInfoPageOpen(false);
         }
-      } else if (e.state.view === 'travel-info') {
-        setSelectedProduct(null);
-        setIsTravelInfoPageOpen(true);
-        if (e.state.tab) {
-          setTravelInfoTab(e.state.tab);
-        }
       } else if (e.state.productId) {
-        setIsTravelInfoPageOpen(false);
         const found = products.find(p => p.id === e.state.productId);
         if (found) {
           setSelectedProduct(found);
-        } else {
-          setSelectedProduct(null);
+          setIsTravelInfoPageOpen(false);
         }
+      } else if (e.state.view === 'travel-info') {
+        setSelectedProduct(null);
+        setIsTravelInfoPageOpen(true);
+        if (e.state.tab) setTravelInfoTab(e.state.tab);
+      } else if (e.state.page) {
+        setCurrentPage(e.state.page);
+        setSelectedProduct(null);
+        setIsTravelInfoPageOpen(false);
       } else {
         setSelectedProduct(null);
         setIsTravelInfoPageOpen(false);
       }
     };
+
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
   }, [products]);
 
-  useEffect(() => {
-    const handleOpenKakaoModal = () => setIsKakaoModalOpen(true);
-    window.addEventListener('open-kakao-modal', handleOpenKakaoModal);
-    return () => window.removeEventListener('open-kakao-modal', handleOpenKakaoModal);
-  }, []);
-
-  // Fetch Exchange Rates
+  // Load exchange rate
   const loadRates = async () => {
     setIsRefreshingRates(true);
-    const rates = await getLiveExchangeRates();
-    setExchangeRates(rates);
-    setIsRefreshingRates(false);
+    try {
+      const live = await getLiveExchangeRates();
+      setExchangeRates(live);
+    } catch (err) {
+      console.warn('Live exchange fetch error, keeping current/fallback rates');
+    } finally {
+      setIsRefreshingRates(false);
+    }
   };
 
-  // Fetch Products & Inquiries with bulletproof two-way synchronization
-  const syncAllDataFromServer = async (showLoading = false) => {
-    // Prevent background polling from overwriting state if a save just occurred (< 4 seconds) or is currently saving
+  // Sync Data with Server and Local DB
+  const syncAllDataFromServer = async (showLoading: boolean = false) => {
     if (isSavingToServerRef.current || (Date.now() - lastClientSaveTimestampRef.current < 4000)) {
       return;
     }
@@ -306,7 +324,6 @@ export default function App() {
         const data = await res.json();
         if (data.success) {
           if (Array.isArray(data.products) && data.products.length > 0) {
-            // Check again that user didn't save during the network round-trip
             if (!isSavingToServerRef.current && (Date.now() - lastClientSaveTimestampRef.current >= 4000)) {
               setProducts(data.products);
               await saveProductsToIndexedDB(data.products);
@@ -322,7 +339,6 @@ export default function App() {
       }
     } catch (err) {
       console.warn('API sync fallback to individual endpoints:', err);
-      // Fallback
       await Promise.all([fetchProducts(), fetchInquiries()]);
     } finally {
       if (showLoading) setIsLoadingProducts(false);
@@ -354,7 +370,7 @@ export default function App() {
 
     try {
       const fromIndexed = await loadProductsFromIndexedDB();
-      if (Array.isArray(fromIndexed)) {
+      if (Array.isArray(fromIndexed) && fromIndexed.length > 0) {
         setProducts(fromIndexed);
         setStoredJson(PRODUCTS_CACHE_KEY, fromIndexed);
       }
@@ -385,12 +401,10 @@ export default function App() {
     loadRates();
     syncAllDataFromServer(true);
 
-    // 1. Cross-Device Realtime Polling (every 5 seconds)
     const pollTimer = setInterval(() => {
       syncAllDataFromServer(false);
-    }, 5000);
+    }, 6000);
 
-    // 2. Immediate synchronization when tab/phone screen becomes visible or focused
     const handleReSync = () => {
       syncAllDataFromServer(false);
       loadRates();
@@ -411,165 +425,6 @@ export default function App() {
     };
   }, []);
 
-  // API Actions
-  const handleAddProduct = async (newProd: Omit<Product, 'id'>) => {
-    const createdId = `prod-${Date.now()}`;
-    const productWithId: Product = {
-      ...newProd,
-      id: createdId,
-      createdAt: new Date().toISOString()
-    };
-
-    // 1. Instantly update React state & local DB
-    setProducts(prev => {
-      const next = [productWithId, ...prev.filter(p => p.id !== createdId)];
-      saveProductsToIndexedDB(next);
-      setStoredJson(PRODUCTS_CACHE_KEY, next);
-      return next;
-    });
-
-    // 2. Persist to server
-    try {
-      const res = await fetch('/api/products', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(productWithId)
-      });
-      if (res.ok) {
-        const data = await res.json();
-        if (data.success && data.product) {
-          const finalProduct = data.product;
-          setProducts(prev => {
-            const next = [finalProduct, ...prev.filter(p => p.id !== finalProduct.id && p.id !== createdId)];
-            saveProductsToIndexedDB(next);
-            setStoredJson(PRODUCTS_CACHE_KEY, next);
-            return next;
-          });
-          return finalProduct;
-        }
-      }
-    } catch (err) {
-      console.warn('Backend add warning, product stored locally:', err);
-    }
-    return productWithId;
-  };
-
-  const handleUpdateProduct = async (id: string, updated: Partial<Product>) => {
-    setProducts(prev => {
-      const next = prev.map(p => (p.id === id ? { ...p, ...updated } : p));
-      saveProductsToIndexedDB(next);
-      setStoredJson(PRODUCTS_CACHE_KEY, next);
-      return next;
-    });
-
-    if (selectedProduct && selectedProduct.id === id) {
-      setSelectedProduct(prev => prev ? { ...prev, ...updated } : null);
-    }
-
-    try {
-      const res = await fetch(`/api/products/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updated)
-      });
-      if (res.ok) {
-        const data = await res.json();
-        if (data.success && data.product) {
-          return data.product;
-        }
-      }
-    } catch (err) {
-      console.warn('Backend update warning, product updated locally:', err);
-    }
-  };
-
-  const handleDeleteProduct = async (id: string) => {
-    setProducts(prev => {
-      const next = prev.filter(p => p.id !== id);
-      saveProductsToIndexedDB(next);
-      setStoredJson(PRODUCTS_CACHE_KEY, next);
-      return next;
-    });
-
-    if (selectedProduct && selectedProduct.id === id) {
-      setSelectedProduct(null);
-    }
-
-    try {
-      await fetch(`/api/products/${id}`, { method: 'DELETE' });
-    } catch (err) {
-      console.warn('API delete failed:', err);
-    }
-  };
-
-  const handleResetProducts = async () => {
-    try {
-      const res = await fetch('/api/products/reset', { method: 'POST' });
-      const data = await res.json();
-      if (data.success && Array.isArray(data.products)) {
-        persistProducts(data.products);
-        return;
-      }
-    } catch (err) {
-      console.warn('API reset failed');
-    }
-    persistProducts([...SAMPLE_PRODUCTS]);
-  };
-
-  const handleClearAllProducts = async () => {
-    setProducts([]);
-    saveProductsToIndexedDB([]);
-    setStoredJson(PRODUCTS_CACHE_KEY, []);
-    setSelectedProduct(null);
-    try {
-      await fetch('/api/products/clear', { method: 'POST' });
-    } catch (e) {
-      console.warn('Clear all API error:', e);
-    }
-  };
-
-  const handleClearAllPhotos = async () => {
-    setProducts(prev => {
-      const next = prev.map(p => ({
-        ...p,
-        imageUrl: '',
-        additionalImages: []
-      }));
-      saveProductsToIndexedDB(next);
-      setStoredJson(PRODUCTS_CACHE_KEY, next);
-      return next;
-    });
-
-    if (selectedProduct) {
-      setSelectedProduct(prev => prev ? { ...prev, imageUrl: '', additionalImages: [] } : null);
-    }
-    try {
-      await fetch('/api/products/clear-photos', { method: 'POST' });
-    } catch (e) {
-      console.warn('Clear photos API error:', e);
-    }
-  };
-
-  const handleImportProducts = async (items: any[], replace: boolean) => {
-    const formattedItems: Product[] = items.map((it, idx) => ({
-      ...it,
-      id: it.id || `imp-${Date.now()}-${idx}`
-    }));
-
-    const newList = replace ? formattedItems : [...formattedItems, ...products];
-    persistProducts(newList);
-
-    try {
-      await fetch('/api/products/import', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ items, replaceExisting: replace })
-      });
-    } catch (err) {
-      console.warn('API import warning:', err);
-    }
-  };
-
   const handleSubmitInquiry = async (payload: any): Promise<boolean> => {
     try {
       const res = await fetch('/api/inquiries', {
@@ -583,64 +438,36 @@ export default function App() {
         return true;
       }
     } catch (err) {
-      console.warn('Inquiry submit API failed');
+      console.warn('Inquiry submit API fallback to local');
     }
-    // Fallback local inquiry append
-    const localInq = { ...payload, id: `inq-${Date.now()}`, status: 'pending', createdAt: new Date().toISOString() };
+    const localInq: ConsultationRequest = {
+      ...payload,
+      id: `inq-${Date.now()}`,
+      status: 'pending',
+      createdAt: new Date().toISOString()
+    };
     setInquiries(prev => [localInq, ...prev]);
+    saveInquiriesToIndexedDB([localInq, ...inquiries]);
     return true;
-  };
-
-  const handleUpdateInquiryStatus = async (id: string, status: ConsultationRequest['status']) => {
-    try {
-      await fetch(`/api/inquiries/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status })
-      });
-    } catch (err) {
-      console.warn('API inquiry update failed');
-    }
-    setInquiries(prev => prev.map(i => i.id === id ? { ...i, status } : i));
   };
 
   // Filter & Sort Logic
   const filteredProducts = products.filter((p) => {
-    // Category match
     if (activeCategory !== '전체' && p.category !== activeCategory) {
       return false;
     }
-    // Region match
     if (activeRegion !== '전체' && p.region !== activeRegion) {
       return false;
     }
-    // City match
     if (activeCity !== '전체' && p.city !== activeCity) {
       return false;
     }
-    // Sub-filter match
-    if (subFilter !== '전체') {
-      if (activeCategory === '자유여행') {
-        if (subFilter === '1일투어' && !p.duration.includes('1일') && !p.duration.includes('당일')) return false;
-        if (subFilter === '3박4일' && !p.duration.includes('3박')) return false;
-        if (subFilter === '4박5일' && !p.duration.includes('4박')) return false;
-      } else if (activeCategory === '골프투어') {
-        if (subFilter === '18홀' && p.golfSpecs?.holes !== 18) return false;
-        if (subFilter === '54홀' && p.golfSpecs?.holes !== 54) return false;
-        if (subFilter === '72홀' && p.golfSpecs?.holes !== 72) return false;
-      } else if (activeCategory === '풀빌라') {
-        if (subFilter === '1_2bed' && (p.villaSpecs?.bedrooms || 0) > 2) return false;
-        if (subFilter === '3_4bed' && (p.villaSpecs?.bedrooms || 0) < 3) return false;
-        if (subFilter === 'ocean' && !p.villaSpecs?.oceanView) return false;
-      }
-    }
-    // Search keyword match
     if (searchTerm.trim()) {
       const kw = searchTerm.toLowerCase();
       const matchTitle = p.title.toLowerCase().includes(kw);
-      const matchSub = p.subTitle.toLowerCase().includes(kw);
+      const matchSub = (p.subTitle || '').toLowerCase().includes(kw);
       const matchCity = p.city.toLowerCase().includes(kw);
-      const matchTags = p.tags.some(t => t.toLowerCase().includes(kw));
+      const matchTags = (p.tags || []).some(t => t.toLowerCase().includes(kw));
       if (!matchTitle && !matchSub && !matchCity && !matchTags) {
         return false;
       }
@@ -650,7 +477,6 @@ export default function App() {
     if (sortBy === 'price_asc') return a.priceKRW - b.priceKRW;
     if (sortBy === 'price_desc') return b.priceKRW - a.priceKRW;
     if (sortBy === 'rating') return b.rating - a.rating;
-    // Popularity default
     return (b.reviewCount || 0) - (a.reviewCount || 0);
   });
 
@@ -677,27 +503,28 @@ export default function App() {
     <div className="min-h-screen bg-white text-slate-900 font-sans flex flex-col">
       {/* Top Navbar */}
       <Navbar
+        currentPage={currentPage}
+        onNavigate={handleNavigate}
         activeCategory={activeCategory}
-        activeRegion={activeRegion}
-        activeCity={activeCity}
-        onSelectCategory={setActiveCategory}
-        onSelectRegion={setActiveRegion}
-        onSelectCity={setActiveCity}
-        onGoHome={handleGoHome}
-        onOpenAdmin={handleOpenAdmin}
+        onSelectCategory={(cat) => {
+          setActiveCategory(cat);
+          if (cat === '자유여행') setCurrentPage('자유여행');
+          else if (cat === '풀빌라') setCurrentPage('풀빌라');
+          else if (cat === '골프투어') setCurrentPage('골프여행');
+          else setCurrentPage('home');
+        }}
         onOpenConsultation={() => {
           setConsultationTargetProduct(null);
           setIsConsultationOpen(true);
         }}
+        onOpenAdmin={handleOpenAdmin}
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
         exchangeRates={exchangeRates}
         onOpenRateCalculator={() => setIsRateModalOpen(true)}
-        onOpenTravelInfo={handleOpenTravelInfoPage}
-        inquiriesCount={inquiries.filter(i => i.status === 'pending' || !i.status).length || inquiries.length}
       />
 
-      {/* Conditional: Full Page Product Detail View OR Full Page Travel Info Guide OR Main Marketplace */}
+      {/* Main Content Router */}
       {selectedProduct ? (
         <ProductDetailPage
           product={selectedProduct}
@@ -722,17 +549,44 @@ export default function App() {
             setIsConsultationOpen(true);
           }}
         />
+      ) : currentPage === '여행후기' ? (
+        <ReviewsPage
+          onOpenConsultation={(prodTitle) => {
+            const matched = products.find(p => p.title === prodTitle);
+            setConsultationTargetProduct(matched || null);
+            setIsConsultationOpen(true);
+          }}
+        />
+      ) : currentPage === '회사소개' ? (
+        <CompanyPage
+          onOpenConsultation={() => {
+            setConsultationTargetProduct(null);
+            setIsConsultationOpen(true);
+          }}
+        />
+      ) : currentPage === '예약문의' ? (
+        <ReservationPage
+          products={products}
+          onSubmitInquiry={handleSubmitInquiry}
+        />
       ) : (
         <>
           {/* Hero Carousel Section */}
-          <Hero
-            onSelectCategory={setActiveCategory}
-            onOpenQuiz={() => setIsQuizOpen(true)}
-            products={products}
-            onSelectProduct={handleSelectProduct}
-          />
+          {currentPage === 'home' && (
+            <Hero
+              onSelectCategory={(cat) => {
+                setActiveCategory(cat);
+                if (cat === '자유여행') setCurrentPage('자유여행');
+                else if (cat === '풀빌라') setCurrentPage('풀빌라');
+                else if (cat === '골프투어') setCurrentPage('골프여행');
+              }}
+              onOpenQuiz={() => setIsQuizOpen(true)}
+              products={products}
+              onSelectProduct={handleSelectProduct}
+            />
+          )}
 
-          {/* Category Nav & Regional Breakdown Filter */}
+          {/* Category Nav & Regional Filter */}
           <CategoryNav
             activeCategory={activeCategory}
             activeRegion={activeRegion}
@@ -741,7 +595,10 @@ export default function App() {
             sortBy={sortBy}
             onSelectCategory={(cat) => {
               setActiveCategory(cat);
-              setSubFilter('전체');
+              if (cat === '자유여행') setCurrentPage('자유여행');
+              else if (cat === '풀빌라') setCurrentPage('풀빌라');
+              else if (cat === '골프투어') setCurrentPage('골프여행');
+              else if (cat === '전체') setCurrentPage('home');
             }}
             onSelectRegion={setActiveRegion}
             onSelectCity={setActiveCity}
@@ -750,15 +607,15 @@ export default function App() {
             totalProductsCount={filteredProducts.length}
           />
 
-          {/* Main Content Product Display Grid */}
+          {/* Products Grid */}
           <main id="products-section" className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full space-y-8">
-            {/* Active Filter Title Banner */}
+            {/* Header / Section Title */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
               <div>
                 <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-                  <Palmtree className="w-6 h-6 text-teal-700" />
+                  <Palmtree className="w-6 h-6 text-emerald-700" />
                   <span>
-                    {activeCategory === '전체' ? '베트남 종합 맞춤 상품' : activeCategory}
+                    {activeCategory === '전체' ? '베트남 종합 추천 상품' : activeCategory}
                     {activeRegion !== '전체' && ` (${activeRegion} 권역)`}
                     {activeCity !== '전체' && ` - ${activeCity}`}
                   </span>
@@ -775,10 +632,11 @@ export default function App() {
                     setActiveRegion('전체');
                     setActiveCity('전체');
                     setSearchTerm('');
+                    setCurrentPage('home');
                   }}
-                  className="text-xs font-bold text-teal-700 hover:text-teal-900 bg-teal-50 px-3 py-1.5 rounded-xl self-start sm:self-auto transition-colors"
+                  className="text-xs font-bold text-emerald-700 hover:text-emerald-900 bg-emerald-50 px-3 py-1.5 rounded-xl self-start sm:self-auto transition-colors cursor-pointer"
                 >
-                  🔄 전체 필터 초기화
+                  🔄 전체 목록 보기
                 </button>
               )}
             </div>
@@ -788,10 +646,10 @@ export default function App() {
               <div className="py-20 text-center bg-slate-50 rounded-3xl border border-dashed border-slate-200 space-y-4">
                 <SearchX className="w-12 h-12 text-slate-400 mx-auto" />
                 <h3 className="text-base font-extrabold text-slate-800">
-                  현재 등록된 여행 상품이 없습니다.
+                  해당 조건에 맞는 상품이 없습니다.
                 </h3>
                 <p className="text-xs text-slate-500 max-w-sm mx-auto">
-                  새로운 여행 상품 준비 중입니다. 1:1 카카오톡 상담 또는 맞춤 견적 신청을 이용해주세요.
+                  원하시는 지역이나 일정을 1:1 맞춤 상담을 통해 신청해주시면 최적의 견적을 안내해드립니다.
                 </p>
                 <div className="flex items-center justify-center gap-3">
                   <button
@@ -799,7 +657,7 @@ export default function App() {
                       setConsultationTargetProduct(null);
                       setIsConsultationOpen(true);
                     }}
-                    className="px-5 py-2.5 bg-teal-700 hover:bg-teal-800 text-white rounded-2xl font-bold text-xs cursor-pointer shadow-sm"
+                    className="px-5 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-2xl font-bold text-xs cursor-pointer shadow-sm"
                   >
                     💬 1:1 맞춤 여행 견적 문의하기
                   </button>
@@ -823,27 +681,27 @@ export default function App() {
             )}
 
             {/* Trust & Unique Benefits Section */}
-            <section className="bg-gradient-to-br from-slate-900 via-teal-950 to-slate-900 text-white rounded-3xl p-6 sm:p-10 shadow-xl space-y-8">
+            <section className="bg-gradient-to-br from-slate-950 via-teal-950 to-emerald-950 text-white rounded-3xl p-6 sm:p-10 shadow-xl space-y-8">
               <div className="text-center max-w-2xl mx-auto space-y-2">
-                <span className="text-amber-400 font-extrabold text-xs tracking-wider uppercase bg-amber-400/10 px-3 py-1 rounded-full border border-amber-400/30">
-                  Why Xin Chao Tour
+                <span className="text-emerald-400 font-extrabold text-xs tracking-wider uppercase bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-400/30">
+                  Why XinChaoTour
                 </span>
                 <h3 className="text-2xl sm:text-3xl font-black tracking-tight text-white">
-                  왜 한국 여행객들은 '신차오투어'를 선택할까요?
+                  왜 한국 여행객들은 '신짜오투어'를 선택할까요?
                 </h3>
                 <p className="text-xs sm:text-sm text-slate-300">
-                  베트남 현지 직접 운영으로 거품을 완전히 뺀 정직한 가격과 완벽한 안심 케어를 제공합니다.
+                  베트남 현지 직영 운영으로 거품 없는 가격과 24시간 안심 케어를 약속합니다.
                 </p>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-slate-200">
                 <div className="bg-white/5 backdrop-blur-md p-6 rounded-2xl border border-white/10 space-y-3">
-                  <div className="w-12 h-12 rounded-2xl bg-teal-500/20 text-teal-300 flex items-center justify-center font-bold">
-                    <ShieldCheck className="w-6 h-6 text-amber-300" />
+                  <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-300 flex items-center justify-center font-bold">
+                    <ShieldCheck className="w-6 h-6 text-emerald-400" />
                   </div>
-                  <h4 className="font-extrabold text-white text-base">100% 현지 직영 & 단독 차량</h4>
+                  <h4 className="font-extrabold text-white text-base">100% 현지 직영 & 단독 VIP 차량</h4>
                   <p className="text-xs text-slate-300 leading-relaxed">
-                    중개 수수료 제로! 하노이, 다낭, 호치민, 푸꾸옥 현지 지사에서 전용 럭셔리 차와 한국어 전문 가이드를 수시로 직영 배치합니다.
+                    중개 수수료 제로! 다낭, 하노이, 호치민 현지 지사에서 전용 럭셔리 밴과 검증된 한국어 가이드를 직접 배정합니다.
                   </p>
                 </div>
 
@@ -853,7 +711,7 @@ export default function App() {
                   </div>
                   <h4 className="font-extrabold text-white text-base">24시간 카카오톡 실시간 케어</h4>
                   <p className="text-xs text-slate-300 leading-relaxed">
-                    여행 중 어떤 돌발 상황도 즉각 해결! 한국어 소통이 원활한 24시간 비상 긴급 지원 센터를 현지에서 가동합니다.
+                    여행 중 긴급 상황이나 식당 예약, 일정 변경도 카카오톡으로 실시간 신속하게 해결해드립니다.
                   </p>
                 </div>
 
@@ -861,9 +719,9 @@ export default function App() {
                   <div className="w-12 h-12 rounded-2xl bg-rose-500/20 text-rose-300 flex items-center justify-center font-bold">
                     <ThumbsUp className="w-6 h-6 text-amber-300" />
                   </div>
-                  <h4 className="font-extrabold text-white text-base">NO 강요 쇼핑 / 최저가 보장</h4>
+                  <h4 className="font-extrabold text-white text-base">NO 강요 쇼핑 · 최저가 보장</h4>
                   <p className="text-xs text-slate-300 leading-relaxed">
-                    원치 않는 저급 쇼핑센터 방문 없는 100% 힐링 동선! 불만족 시 100% 책임 환불제를 실시합니다.
+                    불필요한 의무 쇼핑센터 방문 없는 온전한 힐링! 고객 맞춤형 일정으로 감동을 드립니다.
                   </p>
                 </div>
               </div>
@@ -874,18 +732,18 @@ export default function App() {
 
       {/* Footer */}
       <Footer
+        onNavigate={handleNavigate}
         onSelectCategory={setActiveCategory}
         onSelectRegion={setActiveRegion}
         onGoHome={handleGoHome}
         onOpenAdmin={handleOpenAdmin}
-        onOpenTravelInfo={handleOpenTravelInfoPage}
         onOpenConsultation={() => {
           setConsultationTargetProduct(null);
           setIsConsultationOpen(true);
         }}
       />
 
-      {/* Floating Inquiry Button */}
+      {/* Floating Action Buttons */}
       <FloatingChatWidget
         onOpenConsultation={() => {
           setConsultationTargetProduct(null);
@@ -893,7 +751,7 @@ export default function App() {
         }}
       />
 
-      {/* Real-time Exchange Rate & Calculator Modal */}
+      {/* Real-time Exchange Rate Modal */}
       <ExchangeRateModal
         isOpen={isRateModalOpen}
         onClose={() => setIsRateModalOpen(false)}
@@ -932,6 +790,9 @@ export default function App() {
           setActiveCategory(cat);
           setActiveRegion(reg);
           setActiveCity('전체');
+          if (cat === '자유여행') setCurrentPage('자유여행');
+          else if (cat === '풀빌라') setCurrentPage('풀빌라');
+          else if (cat === '골프투어') setCurrentPage('골프여행');
         }}
       />
 

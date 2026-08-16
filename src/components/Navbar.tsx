@@ -10,250 +10,200 @@ import {
   Menu, 
   X,
   Palmtree,
-  Calendar,
-  Layers,
-  RefreshCw,
-  TrendingUp,
-  ChevronDown,
-  Sun,
   DollarSign,
-  FileText,
-  Utensils,
-  Lightbulb,
-  Headphones
+  Star,
+  Building2,
+  CalendarCheck,
+  Send
 } from 'lucide-react';
 import { Category, Region, City } from '../types';
 import { COMPANY_PHONE, COMPANY_PHONE_TEL, handleOpenKakaoTalkDirect } from '../constants';
 import { ExchangeRates } from '../lib/exchangeRate';
-import { TravelInfoTab } from './TravelInfoModal';
+
+export type MainNavPage = 'home' | '자유여행' | '풀빌라' | '골프여행' | '여행후기' | '회사소개' | '예약문의';
 
 interface NavbarProps {
+  currentPage: MainNavPage;
+  onNavigate: (page: MainNavPage) => void;
   activeCategory: Category | '전체';
-  activeRegion: Region;
-  activeCity: City;
   onSelectCategory: (cat: Category | '전체') => void;
-  onSelectRegion: (reg: Region) => void;
-  onSelectCity: (city: City) => void;
   onOpenConsultation: () => void;
-  onGoHome?: () => void;
   onOpenAdmin?: () => void;
   searchTerm: string;
   onSearchChange: (val: string) => void;
   exchangeRates: ExchangeRates;
   onOpenRateCalculator?: () => void;
-  onOpenTravelInfo?: (tab?: TravelInfoTab) => void;
-  inquiriesCount?: number;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
+  currentPage,
+  onNavigate,
   activeCategory,
-  activeRegion,
-  activeCity,
   onSelectCategory,
-  onSelectRegion,
-  onSelectCity,
   onOpenConsultation,
-  onGoHome,
   onOpenAdmin,
   searchTerm,
   onSearchChange,
   exchangeRates,
-  onOpenRateCalculator,
-  onOpenTravelInfo,
-  inquiriesCount = 0,
+  onOpenRateCalculator
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [travelDropdownOpen, setTravelDropdownOpen] = useState(false);
 
-  const categories: { key: Category; label: string; icon: string }[] = [
-    { key: '추천패키지', label: '추천 패키지', icon: '🎒' },
-    { key: '자유여행', label: '자유 여행', icon: '🛫' },
-    { key: '골프투어', label: '골프 투어', icon: '⛳' },
-    { key: '풀빌라', label: '풀빌라 & 리조트', icon: '🏰' },
+  const navItems: { page: MainNavPage; label: string; icon: string }[] = [
+    { page: 'home', label: 'HOME', icon: '🏠' },
+    { page: '자유여행', label: '자유여행', icon: '🛫' },
+    { page: '풀빌라', label: '풀빌라', icon: '🏰' },
+    { page: '골프여행', label: '골프여행', icon: '⛳' },
+    { page: '여행후기', label: '여행후기', icon: '⭐' },
+    { page: '회사소개', label: '회사소개', icon: '🏢' },
+    { page: '예약문의', label: '예약문의', icon: '📝' }
   ];
 
-  const travelInfoItems: { tab: TravelInfoTab; label: string; icon: React.ReactNode }[] = [
-    { tab: 'course', label: '여행정보 코스/안내', icon: <Compass className="w-4 h-4 text-teal-600" /> },
-    { tab: 'weather', label: '베트남 날씨', icon: <Sun className="w-4 h-4 text-amber-500" /> },
-    { tab: 'exchange', label: '베트남 환율', icon: <DollarSign className="w-4 h-4 text-emerald-600" /> },
-    { tab: 'visa', label: '비자 가이드', icon: <FileText className="w-4 h-4 text-sky-600" /> },
-    { tab: 'food', label: '맛집 가이드', icon: <Utensils className="w-4 h-4 text-rose-500" /> },
-    { tab: 'tips', label: '여행 알짜팁', icon: <Lightbulb className="w-4 h-4 text-amber-600" /> },
-  ];
+  const handleNavClick = (page: MainNavPage) => {
+    onNavigate(page);
+    if (page === '자유여행') onSelectCategory('자유여행');
+    else if (page === '풀빌라') onSelectCategory('풀빌라');
+    else if (page === '골프여행') onSelectCategory('골프투어');
+    setMobileMenuOpen(false);
+  };
 
-  // Calculate live VND per 1000 KRW
   const vndPerThousandKRW = Math.round((1000 / (exchangeRates.KRW || 1350)) * (exchangeRates.VND || 25200));
 
   return (
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md shadow-xs border-b border-slate-100">
       {/* Top Banner Bar */}
-      <div className="bg-slate-900 text-slate-200 text-xs py-1.5 px-3 sm:px-4">
+      <div className="bg-slate-950 text-slate-200 text-xs py-1.5 px-3 sm:px-4">
         <div className="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-x-4 gap-y-1">
           <div className="flex items-center gap-2.5 text-slate-300 text-[11px] sm:text-xs flex-wrap">
             <span className="flex items-center gap-1.5 font-bold whitespace-nowrap text-emerald-400">
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-              100% 현지 직영 | 한국인 전담 가이드
+              100% 현지 직영 | 한국인 전담 가이드 & 단독 VIP 차량
             </span>
             <span className="hidden md:inline-block text-slate-700">|</span>
             {/* Live Exchange Rate Indicator */}
             <button
               onClick={onOpenRateCalculator}
-              className="hidden md:inline-flex items-center gap-1.5 text-amber-300 hover:text-amber-200 font-bold bg-slate-800/90 px-2.5 py-0.5 rounded-full border border-slate-700 transition-colors whitespace-nowrap"
-              title="네이버 실시간 환율 상세 및 환율 계산기 보기"
+              className="hidden sm:inline-flex items-center gap-1 text-slate-300 hover:text-emerald-400 transition cursor-pointer font-medium"
+              title="실시간 베트남 동(VND) 환율 계산기 열기"
             >
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
-              <TrendingUp className="w-3 h-3 text-emerald-400 shrink-0" />
-              <span>네이버 환율 연동: 1,000원 ≒ {vndPerThousandKRW.toLocaleString()} ₫</span>
-              <span className="text-[10px] text-slate-400 ml-0.5">($1 = {Math.round(exchangeRates.KRW).toLocaleString()}원)</span>
+              <DollarSign className="w-3.5 h-3.5 text-emerald-400" />
+              <span>실시간 환율: 1,000원 ≒ <strong>{vndPerThousandKRW.toLocaleString()}동</strong></span>
             </button>
           </div>
 
-          <div className="flex items-center gap-2.5 sm:gap-3.5 text-[11px] sm:text-xs font-medium ml-auto">
-            <a 
-              href={COMPANY_PHONE_TEL} 
-              className="flex items-center gap-1 hover:text-amber-300 transition-colors font-bold whitespace-nowrap"
+          <div className="flex items-center gap-3 text-xs ml-auto">
+            {/* Phone button */}
+            <a
+              href={COMPANY_PHONE_TEL}
+              className="flex items-center gap-1 text-slate-200 hover:text-emerald-400 font-semibold transition"
             >
-              <PhoneCall className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-              <span>전화문의 {COMPANY_PHONE}</span>
+              <PhoneCall className="w-3 h-3 text-emerald-400" />
+              <span>{COMPANY_PHONE}</span>
             </a>
+
+            {/* Kakao quick chat */}
             <button
-              onClick={handleOpenKakaoTalkDirect}
-              className="flex items-center gap-1 text-amber-300 hover:text-amber-200 font-bold transition-colors bg-amber-400/10 hover:bg-amber-400/20 px-2.5 py-0.5 rounded-full border border-amber-400/30 whitespace-nowrap"
-              title="카카오톡 개인/직영 상담 즉시 연결"
+              onClick={(e) => handleOpenKakaoTalkDirect(e)}
+              className="inline-flex items-center gap-1 text-amber-300 hover:text-amber-200 font-bold transition cursor-pointer"
             >
-              <MessageCircle className="w-3.5 h-3.5 text-amber-300 shrink-0" />
-              <span>실시간 카톡 바로상담</span>
+              <MessageCircle className="w-3 h-3 fill-amber-400 text-amber-400" />
+              <span>카카오톡 상담</span>
             </button>
+
+            {/* Admin trigger button */}
             {onOpenAdmin && (
               <button
                 onClick={onOpenAdmin}
-                className="flex items-center gap-1 text-amber-300 sm:text-slate-300 hover:text-white font-bold transition-colors bg-slate-800 hover:bg-slate-700 px-2.5 py-0.5 rounded-full border border-amber-400/40 sm:border-slate-700 whitespace-nowrap cursor-pointer"
-                title="상품 추가/수정 및 고객 상담 관리자 모드"
+                className="text-[11px] text-slate-400 hover:text-slate-200 flex items-center gap-1 px-1.5 py-0.5 rounded transition cursor-pointer"
+                title="관리자 모드"
               >
-                <Lock className="w-3 h-3 text-amber-400 shrink-0" />
-                <span>관리자</span>
-                {inquiriesCount > 0 && (
-                  <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
-                )}
+                <Lock className="w-3 h-3" />
+                <span className="hidden md:inline">관리자</span>
               </button>
             )}
           </div>
         </div>
       </div>
 
-      {/* Main Navbar */}
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 sm:h-20 gap-2">
+      {/* Main Nav Bar */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16 sm:h-20 gap-4">
           {/* Logo */}
-          <div className="flex items-center gap-2.5 shrink-0">
-            <button 
-              onClick={() => {
-                if (onGoHome) {
-                  onGoHome();
-                } else {
-                  onSelectCategory('전체');
-                  onSelectRegion('전체');
-                  onSelectCity('전체');
-                }
-              }}
-              className="flex items-center gap-2.5 text-left group py-1 cursor-pointer focus:outline-hidden"
-              title="홈 (메인 화면)으로 이동"
-            >
-              <img 
-                src="/logo.svg" 
-                alt="Tours XIN CHÀO" 
-                className="h-10 sm:h-12 w-auto object-contain group-hover:scale-105 transition-transform" 
-              />
-              <div className="hidden xl:block border-l border-slate-200 pl-2.5 py-0.5">
-                <span className="text-[10px] font-extrabold text-teal-800 bg-teal-50 px-2 py-0.5 rounded-full border border-teal-200 whitespace-nowrap">
-                  베트남 현지 직영
-                </span>
-                <p className="text-[11px] font-bold text-slate-600 mt-0.5 whitespace-nowrap">
-                  맞춤 패키지 · 골프 · 독채 풀빌라
-                </p>
+          <button
+            onClick={() => handleNavClick('home')}
+            className="flex items-center gap-2.5 text-left shrink-0 cursor-pointer group"
+          >
+            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-white shadow-md shadow-emerald-500/20 group-hover:scale-105 transition">
+              <Palmtree className="w-6 h-6" />
+            </div>
+            <div>
+              <div className="font-black text-xl sm:text-2xl text-slate-900 tracking-tight flex items-center gap-1">
+                <span>XinChao</span>
+                <span className="text-emerald-600">Tour</span>
               </div>
-            </button>
-          </div>
+              <p className="text-[10px] text-slate-500 font-semibold tracking-wider uppercase">
+                베트남 전문 여행 플랫폼 · 신짜오투어
+              </p>
+            </div>
+          </button>
 
-          {/* Desktop Nav Categories */}
-          <nav className="hidden lg:flex items-center gap-1 xl:gap-1.5 flex-nowrap">
-            {categories.map((cat) => {
-              const isActive = activeCategory === cat.key;
+          {/* Desktop Navigation Links */}
+          <nav className="hidden lg:flex items-center gap-1 xl:gap-2">
+            {navItems.map(item => {
+              const isActive = currentPage === item.page;
               return (
                 <button
-                  key={cat.key}
-                  onClick={() => {
-                    onSelectCategory(cat.key);
-                    setTimeout(() => {
-                      document.getElementById('filter-section')?.scrollIntoView({ behavior: 'smooth' });
-                    }, 50);
-                  }}
-                  className={`flex items-center gap-1.5 px-2.5 py-1.5 xl:px-3.5 xl:py-2 rounded-xl font-bold text-xs xl:text-sm whitespace-nowrap transition-all shrink-0 ${
+                  key={item.page}
+                  onClick={() => handleNavClick(item.page)}
+                  className={`px-3.5 py-2 rounded-xl text-sm font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
                     isActive
-                      ? 'bg-teal-700 text-white shadow-md shadow-teal-700/20'
-                      : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900'
+                      ? 'bg-emerald-50 text-emerald-700 font-extrabold shadow-2xs'
+                      : 'text-slate-700 hover:text-emerald-600 hover:bg-slate-50'
                   }`}
                 >
-                  <span className="text-sm xl:text-base">{cat.icon}</span>
-                  <span>{cat.label}</span>
+                  <span>{item.label}</span>
                 </button>
               );
             })}
-
-            {/* 여행정보 Dropdown Menu */}
-            <div 
-              className="relative shrink-0"
-              onMouseEnter={() => setTravelDropdownOpen(true)}
-              onMouseLeave={() => setTravelDropdownOpen(false)}
-            >
-              <button
-                onClick={() => {
-                  setTravelDropdownOpen(!travelDropdownOpen);
-                  if (onOpenTravelInfo) onOpenTravelInfo('course');
-                }}
-                className="flex items-center gap-1 px-2.5 py-1.5 xl:px-3.5 xl:py-2 rounded-xl font-black text-xs xl:text-sm text-teal-800 hover:bg-teal-50 transition-all border border-teal-200 bg-teal-50/50 whitespace-nowrap"
-              >
-                <span>여행정보</span>
-                <ChevronDown className={`w-3.5 h-3.5 transition-transform ${travelDropdownOpen ? 'rotate-180' : ''}`} />
-              </button>
-
-              {travelDropdownOpen && (
-                <div className="absolute top-full right-0 mt-1 w-56 bg-white rounded-2xl shadow-xl border border-slate-100 p-2 space-y-1 animate-fadeIn z-50">
-                  {travelInfoItems.map((item) => (
-                    <button
-                      key={item.tab}
-                      onClick={() => {
-                        setTravelDropdownOpen(false);
-                        if (onOpenTravelInfo) onOpenTravelInfo(item.tab);
-                      }}
-                      className="w-full text-left px-3 py-2.5 rounded-xl hover:bg-teal-50 text-slate-800 hover:text-teal-900 text-xs font-bold flex items-center gap-2.5 transition-colors whitespace-nowrap"
-                    >
-                      {item.icon}
-                      <span>{item.label}</span>
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
           </nav>
 
-          {/* Action Buttons */}
-          <div className="hidden sm:flex items-center gap-2 shrink-0">
-            {/* Quick Consultation Button */}
+          {/* Search bar & Action Button */}
+          <div className="flex items-center gap-2 sm:gap-3">
+            {/* Quick Search */}
+            <div className="relative hidden md:block w-48 xl:w-56">
+              <input
+                type="text"
+                placeholder="지역, 풀빌라, 골프 검색"
+                value={searchTerm}
+                onChange={e => onSearchChange(e.target.value)}
+                className="w-full text-xs bg-slate-50 border border-slate-200 rounded-full pl-8 pr-3 py-2 text-slate-800 placeholder-slate-400 focus:outline-hidden focus:ring-2 focus:ring-emerald-500 focus:bg-white transition"
+              />
+              <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2.5 pointer-events-none" />
+              {searchTerm && (
+                <button
+                  onClick={() => onSearchChange('')}
+                  className="absolute right-2.5 top-2 text-slate-400 hover:text-slate-600 text-xs"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
+
+            {/* Top Quick Consultation button */}
             <button
               onClick={onOpenConsultation}
-              className="flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-teal-700 hover:bg-teal-800 text-white font-bold text-xs shadow-xs hover:shadow-md transition-all whitespace-nowrap shrink-0"
+              className="bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm shadow-sm hover:shadow-md transition flex items-center gap-1.5 shrink-0 cursor-pointer"
             >
-              <Calendar className="w-3.5 h-3.5 text-amber-300 shrink-0" />
-              <span>견적/상담 신청</span>
+              <CalendarCheck className="w-4 h-4" />
+              <span className="hidden sm:inline">1:1 빠른상담</span>
+              <span className="sm:hidden">상담</span>
             </button>
-          </div>
 
-          {/* Mobile Menu Button */}
-          <div className="flex lg:hidden items-center gap-1.5 shrink-0">
+            {/* Mobile Hamburger Toggle */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 text-slate-700 hover:bg-slate-100 rounded-xl"
+              className="lg:hidden p-2 rounded-xl text-slate-700 hover:text-slate-900 hover:bg-slate-100 transition cursor-pointer"
+              aria-label="메뉴 열기"
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -261,139 +211,64 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
       </div>
 
-      {/* Mobile Horizontal Category Nav Bar (Always visible on smartphone header) */}
-      <div className="lg:hidden bg-slate-900 border-t border-slate-800 px-3 py-2 overflow-x-auto scrollbar-none flex items-center gap-2 whitespace-nowrap shadow-inner">
-        <button
-          onClick={() => {
-            onSelectCategory('전체');
-            setTimeout(() => {
-              document.getElementById('filter-section')?.scrollIntoView({ behavior: 'smooth' });
-            }, 50);
-          }}
-          className={`px-3 py-1.5 rounded-xl text-xs font-black shrink-0 transition-all ${
-            activeCategory === '전체'
-              ? 'bg-amber-400 text-slate-950 font-black shadow-xs'
-              : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
-          }`}
-        >
-          🌐 전체상품
-        </button>
-        {categories.map((cat) => {
-          const isActive = activeCategory === cat.key;
-          return (
-            <button
-              key={`mob-cat-${cat.key}`}
-              onClick={() => {
-                onSelectCategory(cat.key);
-                setTimeout(() => {
-                  document.getElementById('filter-section')?.scrollIntoView({ behavior: 'smooth' });
-                }, 50);
-              }}
-              className={`flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-black shrink-0 transition-all ${
-                isActive
-                  ? 'bg-teal-500 text-slate-950 font-black shadow-xs'
-                  : 'bg-slate-800 text-slate-200 hover:bg-slate-700'
-              }`}
-            >
-              <span>{cat.icon}</span>
-              <span>{cat.label}</span>
-            </button>
-          );
-        })}
-        <button
-          onClick={() => {
-            if (onOpenTravelInfo) onOpenTravelInfo('course');
-          }}
-          className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-black text-amber-300 bg-slate-800 border border-slate-700 shrink-0"
-        >
-          <span>🧭</span>
-          <span>여행정보</span>
-        </button>
-      </div>
-
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-white border-b border-slate-200 px-4 pt-3 pb-6 space-y-4">
-          <div>
-            <span className="text-[10px] font-black text-slate-400 block uppercase mb-1">카테고리</span>
-            <div className="grid grid-cols-2 gap-2">
-              {categories.map((cat) => (
+        <div className="lg:hidden border-t border-slate-100 bg-white px-4 pt-3 pb-6 space-y-3 shadow-xl">
+          {/* Mobile Search */}
+          <div className="relative mb-3">
+            <input
+              type="text"
+              placeholder="베트남 여행상품, 풀빌라, 골프 검색"
+              value={searchTerm}
+              onChange={e => onSearchChange(e.target.value)}
+              className="w-full text-sm bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-3 py-2.5 text-slate-800 placeholder-slate-400 focus:outline-hidden focus:ring-2 focus:ring-emerald-500"
+            />
+            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-3 pointer-events-none" />
+          </div>
+
+          {/* Navigation Links */}
+          <div className="grid grid-cols-2 gap-2">
+            {navItems.map(item => {
+              const isActive = currentPage === item.page;
+              return (
                 <button
-                  key={cat.key}
-                  onClick={() => {
-                    onSelectCategory(cat.key);
-                    setMobileMenuOpen(false);
-                    setTimeout(() => {
-                      document.getElementById('filter-section')?.scrollIntoView({ behavior: 'smooth' });
-                    }, 50);
-                  }}
-                  className={`flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold ${
-                    activeCategory === cat.key
-                      ? 'bg-teal-700 text-white'
-                      : 'bg-slate-50 text-slate-700 hover:bg-slate-100'
+                  key={item.page}
+                  onClick={() => handleNavClick(item.page)}
+                  className={`p-3 rounded-xl text-sm font-bold transition text-left flex items-center gap-2 cursor-pointer ${
+                    isActive
+                      ? 'bg-emerald-600 text-white'
+                      : 'bg-slate-50 text-slate-800 hover:bg-slate-100'
                   }`}
                 >
-                  <span>{cat.icon}</span>
-                  <span>{cat.label}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Mobile Travel Info Section */}
-          <div>
-            <span className="text-[10px] font-black text-teal-800 block uppercase mb-1">여행 정보 가이드</span>
-            <div className="grid grid-cols-2 gap-2">
-              {travelInfoItems.map((item) => (
-                <button
-                  key={item.tab}
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    if (onOpenTravelInfo) onOpenTravelInfo(item.tab);
-                  }}
-                  className="flex items-center gap-2 p-2.5 rounded-xl bg-teal-50/60 border border-teal-100 text-teal-900 text-xs font-bold text-left"
-                >
-                  {item.icon}
+                  <span className="text-base">{item.icon}</span>
                   <span>{item.label}</span>
                 </button>
-              ))}
-            </div>
+              );
+            })}
           </div>
 
-          <div className="pt-2 flex flex-col gap-2">
-            <button
-              onClick={handleOpenKakaoTalkDirect}
-              className="w-full py-2.5 bg-amber-400 text-slate-950 rounded-xl font-black text-xs flex items-center justify-center gap-2"
+          {/* Mobile Quick Contact buttons */}
+          <div className="pt-2 grid grid-cols-2 gap-2">
+            <a
+              href={COMPANY_PHONE_TEL}
+              className="p-2.5 rounded-xl bg-slate-100 text-slate-800 text-xs font-bold flex items-center justify-center gap-1.5"
             >
-              <MessageCircle className="w-4 h-4 fill-slate-950" />
-              카카오톡 1:1 상담 바로 연결
-            </button>
+              <PhoneCall className="w-3.5 h-3.5 text-emerald-600" />
+              <span>전화 상담</span>
+            </a>
             <button
-              onClick={() => {
-                onOpenConsultation();
+              onClick={(e) => {
                 setMobileMenuOpen(false);
+                handleOpenKakaoTalkDirect(e);
               }}
-              className="w-full py-2.5 bg-teal-700 text-white rounded-xl font-bold text-xs flex items-center justify-center gap-2"
+              className="p-2.5 rounded-xl bg-amber-400 text-slate-950 text-xs font-bold flex items-center justify-center gap-1.5"
             >
-              <Calendar className="w-4 h-4 text-amber-300" />
-              실시간 예약 및 맞춤견적 신청
+              <MessageCircle className="w-3.5 h-3.5" />
+              <span>카카오톡 상담</span>
             </button>
-            {onOpenAdmin && (
-              <button
-                onClick={() => {
-                  onOpenAdmin();
-                  setMobileMenuOpen(false);
-                }}
-                className="w-full py-2.5 bg-slate-900 text-slate-200 rounded-xl font-bold text-xs flex items-center justify-center gap-2 border border-slate-800"
-              >
-                <Lock className="w-3.5 h-3.5 text-amber-400" />
-                관리자 모드 (상품 등록·수정·고객관리)
-              </button>
-            )}
           </div>
         </div>
       )}
     </header>
   );
 };
-
