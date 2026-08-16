@@ -8,6 +8,7 @@ import { Product, ConsultationRequest } from './src/types.js';
 
 // In-memory or persisted store for products and inquiries
 const PRODUCTS_FILE_PATH = path.join(process.cwd(), 'stored_products.json');
+const PRODUCTS_DATA_DIR_PATH = path.join(process.cwd(), 'src', 'data', 'stored_products.json');
 const PRODUCTS_BACKUP_PATH = path.join(process.cwd(), 'stored_products.backup.json');
 const INQUIRIES_FILE_PATH = path.join(process.cwd(), 'stored_inquiries.json');
 const UPLOADS_DIR = path.join(process.cwd(), 'public', 'uploads');
@@ -20,41 +21,92 @@ if (!fs.existsSync(UPLOADS_DIR)) {
   }
 }
 
+const CLEAN_VILLA_PHOTOS = [
+  'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1200&q=80',
+  'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80',
+  'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80',
+  'https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=1200&q=80',
+  'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80'
+];
+
+function sanitizeProduct(p: Product, idx: number): Product {
+  if (!p) return p;
+  let img = p.imageUrl || '';
+  // Only replace if totally empty or broken dummy test strings
+  if (!img || img === 'VILLA_PHOTO_DATA' || img === 'TEST_IMG') {
+    img = CLEAN_VILLA_PHOTOS[idx % CLEAN_VILLA_PHOTOS.length];
+  }
+  const cleanSubs = (p.additionalImages || []).map((sub, sIdx) => {
+    if (!sub || sub === 'VILLA_PHOTO_DATA' || sub === 'TEST_IMG') {
+      return CLEAN_VILLA_PHOTOS[(idx + sIdx + 1) % CLEAN_VILLA_PHOTOS.length];
+    }
+    return sub;
+  });
+  return {
+    ...p,
+    imageUrl: img,
+    additionalImages: cleanSubs
+  };
+}
+
 function loadStoredProducts(): Product[] {
+  // 1. Try root stored_products.json
   try {
     if (fs.existsSync(PRODUCTS_FILE_PATH)) {
       const fileData = fs.readFileSync(PRODUCTS_FILE_PATH, 'utf-8');
       const parsed = JSON.parse(fileData);
       if (Array.isArray(parsed) && parsed.length > 0) {
         console.log(`[Server] Loaded ${parsed.length} products from stored_products.json`);
-        return parsed;
+        return parsed.map((p, i) => sanitizeProduct(p, i));
       }
     }
   } catch (err) {
-    console.warn('[Server] Failed to read stored_products.json, checking backup:', err);
+    console.warn('[Server] Failed to read stored_products.json:', err);
   }
 
+  // 2. Try src/data/stored_products.json
+  try {
+    if (fs.existsSync(PRODUCTS_DATA_DIR_PATH)) {
+      const fileData = fs.readFileSync(PRODUCTS_DATA_DIR_PATH, 'utf-8');
+      const parsed = JSON.parse(fileData);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        console.log(`[Server] Loaded ${parsed.length} products from src/data/stored_products.json`);
+        return parsed.map((p, i) => sanitizeProduct(p, i));
+      }
+    }
+  } catch (err) {
+    console.warn('[Server] Failed to read src/data/stored_products.json:', err);
+  }
+
+  // 3. Try backup file
   try {
     if (fs.existsSync(PRODUCTS_BACKUP_PATH)) {
       const backupData = fs.readFileSync(PRODUCTS_BACKUP_PATH, 'utf-8');
       const parsedBackup = JSON.parse(backupData);
       if (Array.isArray(parsedBackup) && parsedBackup.length > 0) {
         console.log(`[Server] Restored ${parsedBackup.length} products from backup`);
-        return parsedBackup;
+        return parsedBackup.map((p, i) => sanitizeProduct(p, i));
       }
     }
   } catch (bErr) {
     console.warn('[Server] Backup read also failed:', bErr);
   }
 
-  // Initial seed products if no file exists
-  return [...SAMPLE_PRODUCTS];
+  // 4. Initial seed products if no saved data
+  const initial = [...SAMPLE_PRODUCTS];
+  saveStoredProducts(initial);
+  return initial;
 }
 
 function saveStoredProducts(prods: Product[]) {
   try {
     const dataStr = JSON.stringify(prods, null, 2);
     fs.writeFileSync(PRODUCTS_FILE_PATH, dataStr, 'utf-8');
+    try {
+      fs.writeFileSync(PRODUCTS_DATA_DIR_PATH, dataStr, 'utf-8');
+    } catch (e) {
+      // directory might not exist in prod
+    }
     fs.writeFileSync(PRODUCTS_BACKUP_PATH, dataStr, 'utf-8');
     console.log(`[Server] Persisted ${prods.length} products to stored_products.json & backup`);
   } catch (err) {

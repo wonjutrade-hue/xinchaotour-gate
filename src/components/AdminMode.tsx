@@ -311,8 +311,10 @@ export const AdminMode: React.FC<AdminModeProps> = ({
     }
   };
 
+  const [isSavingProduct, setIsSavingProduct] = useState(false);
+
   // Save Product Changes
-  const handleSaveProductChanges = () => {
+  const handleSaveProductChanges = async () => {
     if (!editingProduct) return;
     if (!editingProduct.title.trim()) {
       alert('상품명을 입력해 주세요.');
@@ -320,18 +322,27 @@ export const AdminMode: React.FC<AdminModeProps> = ({
       return;
     }
 
-    const exists = products.some(p => p.id === editingProduct.id);
-    let updated: Product[];
-    if (exists) {
-      updated = products.map(p => p.id === editingProduct.id ? editingProduct : p);
-    } else {
-      updated = [editingProduct, ...products];
-    }
+    setIsSavingProduct(true);
+    try {
+      const exists = products.some(p => p.id === editingProduct.id);
+      let updated: Product[];
+      if (exists) {
+        updated = products.map(p => p.id === editingProduct.id ? editingProduct : p);
+      } else {
+        updated = [editingProduct, ...products];
+      }
 
-    onSaveProducts(updated);
-    setIsEditorOpen(false);
-    setEditingProduct(null);
-    showNotification(`💾 "${editingProduct.title}" 상품이 성공적으로 저장되었습니다!`);
+      await onSaveProducts(updated);
+      setIsEditorOpen(false);
+      const savedTitle = editingProduct.title;
+      setEditingProduct(null);
+      showNotification(`💾 "${savedTitle}" 상품과 사진이 성공적으로 저장되었습니다!`);
+    } catch (err) {
+      console.error('Save error:', err);
+      showNotification('⚠️ 저장 중 오류가 발생했습니다.');
+    } finally {
+      setIsSavingProduct(false);
+    }
   };
 
   // Process and upload files helper
@@ -2447,10 +2458,20 @@ export const AdminMode: React.FC<AdminModeProps> = ({
                 <button
                   type="button"
                   onClick={handleSaveProductChanges}
-                  className="flex-1 sm:flex-none px-6 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs sm:text-sm shadow-xl transition-all cursor-pointer flex items-center justify-center gap-1.5"
+                  disabled={isSavingProduct || isUploadingImages}
+                  className="flex-1 sm:flex-none px-6 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs sm:text-sm shadow-xl transition-all cursor-pointer flex items-center justify-center gap-1.5 disabled:opacity-50"
                 >
-                  <Save className="w-4 h-4" />
-                  <span>상품 저장 완료</span>
+                  {isSavingProduct ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span>저장 중...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Save className="w-4 h-4" />
+                      <span>상품 저장 완료</span>
+                    </>
+                  )}
                 </button>
               </div>
             </div>

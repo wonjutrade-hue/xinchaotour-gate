@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Product, Category, Region, City, ConsultationRequest } from './types';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
@@ -70,22 +70,56 @@ function setStoredJson(key: string, data: any) {
 
 export default function App() {
   const [products, setProducts] = useState<Product[]>(() => {
-    return getStoredJson<Product[]>(PRODUCTS_CACHE_KEY, []);
+    const cached = getStoredJson<Product[]>(PRODUCTS_CACHE_KEY, []);
+    if (cached && cached.length > 0) return cached;
+    return INITIAL_PRODUCTS;
   });
   const [inquiries, setInquiries] = useState<ConsultationRequest[]>([]);
   const [isLoadingProducts, setIsLoadingProducts] = useState(true);
 
+  // Sync locks to avoid race conditions with polling
+  const lastClientSaveTimestampRef = useRef<number>(0);
+  const isSavingToServerRef = useRef<boolean>(false);
+
   // Sync products state to IndexedDB, localStorage, and server backend
-  const persistProducts = (updatedProducts: Product[]) => {
+  const persistProducts = async (updatedProducts: Product[]): Promise<boolean> => {
+    lastClientSaveTimestampRef.current = Date.now();
+    isSavingToServerRef.current = true;
+
+    // 1. Instantly update React state & client local stores
     setProducts(updatedProducts);
-    saveProductsToIndexedDB(updatedProducts);
+    await saveProductsToIndexedDB(updatedProducts);
     setStoredJson(PRODUCTS_CACHE_KEY, updatedProducts);
-    // Background sync to server
-    fetch('/api/products/sync', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ products: updatedProducts })
-    }).catch(e => console.warn('Background sync warning:', e));
+
+    // If currently viewing a product that was modified, update selectedProduct
+    setSelectedProduct(prev => {
+      if (!prev) return null;
+      const updatedMatch = updatedProducts.find(p => p.id === prev.id);
+      return updatedMatch || prev;
+    });
+
+    // 2. Persist to server backend and confirm
+    try {
+      const res = await fetch('/api/products/sync', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ products: updatedProducts })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success && Array.isArray(data.products)) {
+          setProducts(data.products);
+          await saveProductsToIndexedDB(data.products);
+          setStoredJson(PRODUCTS_CACHE_KEY, data.products);
+          return true;
+        }
+      }
+    } catch (e) {
+      console.warn('Backend sync warning (offline/local mode active):', e);
+    } finally {
+      isSavingToServerRef.current = false;
+    }
+    return true;
   };
 
   // Exchange Rates state
@@ -261,20 +295,27 @@ export default function App() {
 
   // Fetch Products & Inquiries with bulletproof two-way synchronization
   const syncAllDataFromServer = async (showLoading = false) => {
+    // Prevent background polling from overwriting state if a save just occurred (< 4 seconds) or is currently saving
+    if (isSavingToServerRef.current || (Date.now() - lastClientSaveTimestampRef.current < 4000)) {
+      return;
+    }
     if (showLoading) setIsLoadingProducts(true);
     try {
       const res = await fetch('/api/sync');
       if (res.ok) {
         const data = await res.json();
         if (data.success) {
-          if (Array.isArray(data.products)) {
-            setProducts(data.products);
-            saveProductsToIndexedDB(data.products);
-            setStoredJson(PRODUCTS_CACHE_KEY, data.products);
+          if (Array.isArray(data.products) && data.products.length > 0) {
+            // Check again that user didn't save during the network round-trip
+            if (!isSavingToServerRef.current && (Date.now() - lastClientSaveTimestampRef.current >= 4000)) {
+              setProducts(data.products);
+              await saveProductsToIndexedDB(data.products);
+              setStoredJson(PRODUCTS_CACHE_KEY, data.products);
+            }
           }
           if (Array.isArray(data.inquiries)) {
             setInquiries(data.inquiries);
-            saveInquiriesToIndexedDB(data.inquiries);
+            await saveInquiriesToIndexedDB(data.inquiries);
           }
           return data;
         }
@@ -289,14 +330,19 @@ export default function App() {
   };
 
   const fetchProducts = async () => {
+    if (isSavingToServerRef.current || (Date.now() - lastClientSaveTimestampRef.current < 4000)) {
+      return;
+    }
     try {
       const res = await fetch('/api/products');
       if (res.ok) {
         const data = await res.json();
-        if (data.success && Array.isArray(data.products)) {
-          setProducts(data.products);
-          await saveProductsToIndexedDB(data.products);
-          setStoredJson(PRODUCTS_CACHE_KEY, data.products);
+        if (data.success && Array.isArray(data.products) && data.products.length > 0) {
+          if (!isSavingToServerRef.current && (Date.now() - lastClientSaveTimestampRef.current >= 4000)) {
+            setProducts(data.products);
+            await saveProductsToIndexedDB(data.products);
+            setStoredJson(PRODUCTS_CACHE_KEY, data.products);
+          }
           return;
         }
       }
