@@ -50,8 +50,6 @@ interface ProductDetailPageProps {
   exchangeRates?: ExchangeRates;
   relatedProducts?: Product[];
   onSelectProduct?: (prod: Product) => void;
-  onEditProduct?: (prod: Product) => void;
-  onDeleteProduct?: (id: string) => void;
 }
 
 export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
@@ -61,8 +59,6 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   exchangeRates,
   relatedProducts = [],
   onSelectProduct,
-  onEditProduct,
-  onDeleteProduct,
 }) => {
   const [activeTab, setActiveTab] = useState<'itinerary' | 'inclusion' | 'specs'>('itinerary');
   const [currentImgIndex, setCurrentImgIndex] = useState<number>(0);
@@ -186,33 +182,6 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
 
           {/* Right: Quick Action Buttons */}
           <div className="flex items-center gap-2">
-            {onEditProduct && (
-              <button
-                onClick={() => onEditProduct(product)}
-                className="px-3 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs flex items-center gap-1 shadow-xs transition-transform active:scale-95 cursor-pointer"
-                title="상품 정보 및 사진 수정"
-              >
-                <Edit3 className="w-3.5 h-3.5" />
-                <span>수정</span>
-              </button>
-            )}
-
-            {onDeleteProduct && (
-              <button
-                onClick={() => {
-                  if (window.confirm(`"${product.title}" 상품을 삭제하시겠습니까?`)) {
-                    onDeleteProduct(product.id);
-                    onBackToList();
-                  }
-                }}
-                className="px-3 py-2 rounded-xl bg-rose-50 hover:bg-rose-600 text-rose-600 hover:text-white font-bold text-xs flex items-center gap-1 transition-colors cursor-pointer border border-rose-200"
-                title="상품 삭제"
-              >
-                <Trash2 className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">삭제</span>
-              </button>
-            )}
-
             <button
               onClick={handleShare}
               className="p-2 sm:px-3 sm:py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
@@ -374,15 +343,6 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
             <p className="text-xs text-slate-300 max-w-md mx-auto">
               현재 등록된 사진을 준비 중입니다. 1:1 카카오톡 및 맞춤 견적 신청을 통해 실시간 사진과 일정을 상담받으실 수 있습니다.
             </p>
-            {onEditProduct && (
-              <button
-                onClick={() => onEditProduct(product)}
-                className="mt-2 px-4 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs inline-flex items-center gap-1.5 shadow-md cursor-pointer"
-              >
-                <Edit3 className="w-3.5 h-3.5" />
-                <span>관리자: 사진 등록하기</span>
-              </button>
-            )}
           </section>
         )}
 

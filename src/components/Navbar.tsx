@@ -35,7 +35,6 @@ interface NavbarProps {
   onSelectRegion: (reg: Region) => void;
   onSelectCity: (city: City) => void;
   onOpenConsultation: () => void;
-  onOpenAdmin: () => void;
   searchTerm: string;
   onSearchChange: (val: string) => void;
   exchangeRates: ExchangeRates;
@@ -52,7 +51,6 @@ export const Navbar: React.FC<NavbarProps> = ({
   onSelectRegion,
   onSelectCity,
   onOpenConsultation,
-  onOpenAdmin,
   searchTerm,
   onSearchChange,
   exchangeRates,
@@ -121,19 +119,6 @@ export const Navbar: React.FC<NavbarProps> = ({
             >
               <MessageCircle className="w-3.5 h-3.5 text-amber-300 shrink-0" />
               <span>실시간 카톡 바로상담</span>
-            </button>
-            <button
-              onClick={onOpenAdmin}
-              className="flex items-center gap-1.5 text-slate-300 hover:text-white transition-colors bg-slate-800 hover:bg-slate-700 px-2.5 py-0.5 rounded-lg border border-slate-700 text-[10px] sm:text-[11px] whitespace-nowrap cursor-pointer shadow-xs"
-              title="관리자 전용 상품 관리 및 실시간 예약/상담 접수 확인"
-            >
-              <Lock className="w-3 h-3 text-amber-400 shrink-0" />
-              <span>관리자</span>
-              {inquiriesCount > 0 && (
-                <span className="bg-rose-500 text-white font-black px-1.5 py-0.2 rounded-full text-[9px] animate-pulse">
-                  {inquiriesCount}
-                </span>
-              )}
             </button>
           </div>
         </div>
@@ -370,21 +355,6 @@ export const Navbar: React.FC<NavbarProps> = ({
             >
               <Calendar className="w-4 h-4 text-amber-300" />
               실시간 예약 및 맞춤견적 신청
-            </button>
-            <button
-              onClick={() => {
-                onOpenAdmin();
-                setMobileMenuOpen(false);
-              }}
-              className="w-full py-2 bg-slate-100 text-slate-800 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5"
-            >
-              <Lock className="w-3.5 h-3.5 text-amber-600" />
-              <span>관리자 패널 (상품 관리 / 실시간 상담 접수)</span>
-              {inquiriesCount > 0 && (
-                <span className="bg-rose-500 text-white font-black px-2 py-0.5 rounded-full text-[10px] ml-1 animate-pulse">
-                  신규 {inquiriesCount}건
-                </span>
-              )}
             </button>
           </div>
         </div>

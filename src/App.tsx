@@ -7,7 +7,6 @@ import { ProductCard } from './components/ProductCard';
 import { ProductDetailPage } from './components/ProductDetailPage';
 import { ConsultationModal } from './components/ConsultationModal';
 import { AiTravelAssistantModal } from './components/AiTravelAssistantModal';
-import { AdminPanel } from './components/AdminPanel';
 import { TravelQuiz } from './components/TravelQuiz';
 import { FloatingChatWidget } from './components/FloatingChatWidget';
 import { Footer } from './components/Footer';
@@ -105,7 +104,6 @@ export default function App() {
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
   const [consultationTargetProduct, setConsultationTargetProduct] = useState<Product | null>(null);
   const [isAiAssistantOpen, setIsAiAssistantOpen] = useState(false);
-  const [isAdminOpen, setIsAdminOpen] = useState(false);
   const [isQuizOpen, setIsQuizOpen] = useState(false);
   const [isTravelInfoOpen, setIsTravelInfoOpen] = useState(false);
   const [travelInfoTab, setTravelInfoTab] = useState<TravelInfoTab>('course');
@@ -497,7 +495,6 @@ export default function App() {
           setConsultationTargetProduct(null);
           setIsConsultationOpen(true);
         }}
-        onOpenAdmin={() => setIsAdminOpen(true)}
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
         exchangeRates={exchangeRates}
@@ -523,8 +520,6 @@ export default function App() {
             p => p.id !== selectedProduct.id && (p.city === selectedProduct.city || p.category === selectedProduct.category)
           )}
           onSelectProduct={handleSelectProduct}
-          onEditProduct={() => setIsAdminOpen(true)}
-          onDeleteProduct={handleDeleteProduct}
         />
       ) : (
         <>
@@ -592,23 +587,17 @@ export default function App() {
               <div className="py-20 text-center bg-slate-50 rounded-3xl border border-dashed border-slate-200 space-y-4">
                 <SearchX className="w-12 h-12 text-slate-400 mx-auto" />
                 <h3 className="text-base font-extrabold text-slate-800">
-                  등록되어 있는 여행 상품이 없습니다.
+                  해당 조건의 여행 상품이 없습니다.
                 </h3>
                 <p className="text-xs text-slate-500 max-w-sm mx-auto">
-                  사장님만의 멋진 사진과 상품 정보를 지금 바로 간편하게 올려보세요!
+                  다른 카테고리나 지역을 선택해보시거나 검색어를 변경해보세요.
                 </p>
                 <div className="flex items-center justify-center gap-3">
                   <button
-                    onClick={() => setIsAdminOpen(true)}
-                    className="px-5 py-3 bg-teal-700 hover:bg-teal-800 text-white rounded-2xl font-black text-xs shadow-md shadow-teal-700/20 cursor-pointer"
-                  >
-                    ✨ 관리자 센터에서 새 상품 등록하기
-                  </button>
-                  <button
                     onClick={handleResetProducts}
-                    className="px-4 py-3 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-2xl font-bold text-xs cursor-pointer"
+                    className="px-5 py-2.5 bg-teal-700 hover:bg-teal-800 text-white rounded-2xl font-bold text-xs cursor-pointer shadow-sm"
                   >
-                    🔄 기본 샘플 불러오기
+                    🔄 전체 상품 목록 보기
                   </button>
                 </div>
               </div>
@@ -687,7 +676,6 @@ export default function App() {
           setConsultationTargetProduct(null);
           setIsConsultationOpen(true);
         }}
-        onOpenAdmin={() => setIsAdminOpen(true)}
       />
 
       {/* Floating Inquiry Button */}
@@ -716,23 +704,6 @@ export default function App() {
           setConsultationTargetProduct(null);
         }}
         onSubmitInquiry={handleSubmitInquiry}
-      />
-
-      {/* Admin Panel (Complete Master Admin Studio: Add, Edit, Delete, Photos, Inquiries, Settings) */}
-      <AdminPanel
-        isOpen={isAdminOpen}
-        onClose={() => setIsAdminOpen(false)}
-        products={products}
-        inquiries={inquiries}
-        onAddProduct={handleAddProduct}
-        onUpdateProduct={handleUpdateProduct}
-        onDeleteProduct={handleDeleteProduct}
-        onClearAllProducts={handleClearAllProducts}
-        onClearAllPhotos={handleClearAllPhotos}
-        onResetProducts={handleResetProducts}
-        onImportProducts={handleImportProducts}
-        onUpdateInquiryStatus={handleUpdateInquiryStatus}
-        exchangeRates={exchangeRates}
       />
 
       {/* Interactive Travel Quiz */}

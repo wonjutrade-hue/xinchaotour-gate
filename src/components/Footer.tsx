@@ -7,14 +7,12 @@ interface FooterProps {
   onSelectCategory: (cat: Category | '전체') => void;
   onSelectRegion: (reg: Region) => void;
   onOpenConsultation: () => void;
-  onOpenAdmin: () => void;
 }
 
 export const Footer: React.FC<FooterProps> = ({
   onSelectCategory,
   onSelectRegion,
   onOpenConsultation,
-  onOpenAdmin,
 }) => {
   return (
     <footer className="bg-slate-950 text-slate-400 pt-16 pb-12 border-t border-slate-800">
@@ -152,12 +150,6 @@ export const Footer: React.FC<FooterProps> = ({
           <div className="flex items-center gap-4">
             <span className="hover:underline cursor-pointer">이용약관</span>
             <span className="hover:underline cursor-pointer font-bold text-slate-300">개인정보처리방침</span>
-            <button
-              onClick={onOpenAdmin}
-              className="text-amber-500 font-bold hover:underline"
-            >
-              [관리자 모드]
-            </button>
           </div>
         </div>
       </div>
