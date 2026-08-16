@@ -9,6 +9,7 @@ interface FooterProps {
   onOpenConsultation: () => void;
   onGoHome?: () => void;
   onOpenTravelInfo?: (tab?: any) => void;
+  onOpenAdmin?: () => void;
 }
 
 export const Footer: React.FC<FooterProps> = ({
@@ -17,6 +18,7 @@ export const Footer: React.FC<FooterProps> = ({
   onOpenConsultation,
   onGoHome,
   onOpenTravelInfo,
+  onOpenAdmin,
 }) => {
   return (
     <footer className="bg-slate-950 text-slate-400 pt-16 pb-12 border-t border-slate-800">
@@ -176,6 +178,15 @@ export const Footer: React.FC<FooterProps> = ({
           <div className="flex items-center gap-4">
             <span className="hover:underline cursor-pointer">이용약관</span>
             <span className="hover:underline cursor-pointer font-bold text-slate-300">개인정보처리방침</span>
+            {onOpenAdmin && (
+              <button
+                onClick={onOpenAdmin}
+                className="text-slate-400 hover:text-amber-300 transition-colors flex items-center gap-1 font-bold cursor-pointer"
+              >
+                <span>🔒</span>
+                <span>관리자 로그인 (CMS)</span>
+              </button>
+            )}
           </div>
         </div>
       </div>

@@ -36,6 +36,7 @@ interface NavbarProps {
   onSelectCity: (city: City) => void;
   onOpenConsultation: () => void;
   onGoHome?: () => void;
+  onOpenAdmin?: () => void;
   searchTerm: string;
   onSearchChange: (val: string) => void;
   exchangeRates: ExchangeRates;
@@ -53,6 +54,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onSelectCity,
   onOpenConsultation,
   onGoHome,
+  onOpenAdmin,
   searchTerm,
   onSearchChange,
   exchangeRates,
@@ -122,6 +124,19 @@ export const Navbar: React.FC<NavbarProps> = ({
               <MessageCircle className="w-3.5 h-3.5 text-amber-300 shrink-0" />
               <span>실시간 카톡 바로상담</span>
             </button>
+            {onOpenAdmin && (
+              <button
+                onClick={onOpenAdmin}
+                className="hidden sm:flex items-center gap-1 text-slate-300 hover:text-white font-bold transition-colors bg-slate-800 hover:bg-slate-700 px-2.5 py-0.5 rounded-full border border-slate-700 whitespace-nowrap cursor-pointer"
+                title="상품 추가/수정 및 고객 상담 관리자 모드"
+              >
+                <Lock className="w-3 h-3 text-amber-400 shrink-0" />
+                <span>관리자</span>
+                {inquiriesCount > 0 && (
+                  <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse"></span>
+                )}
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -363,6 +378,18 @@ export const Navbar: React.FC<NavbarProps> = ({
               <Calendar className="w-4 h-4 text-amber-300" />
               실시간 예약 및 맞춤견적 신청
             </button>
+            {onOpenAdmin && (
+              <button
+                onClick={() => {
+                  onOpenAdmin();
+                  setMobileMenuOpen(false);
+                }}
+                className="w-full py-2.5 bg-slate-900 text-slate-200 rounded-xl font-bold text-xs flex items-center justify-center gap-2 border border-slate-800"
+              >
+                <Lock className="w-3.5 h-3.5 text-amber-400" />
+                관리자 모드 (상품 등록·수정·고객관리)
+              </button>
+            )}
           </div>
         </div>
       )}

@@ -13,6 +13,8 @@ import { Footer } from './components/Footer';
 import { ExchangeRateModal } from './components/ExchangeRateModal';
 import { TravelInfoPage, TravelInfoTab } from './components/TravelInfoPage';
 import { KakaoModal } from './components/KakaoModal';
+import { AdminMode } from './components/AdminMode';
+import { AdminLoginModal } from './components/AdminLoginModal';
 import { INITIAL_PRODUCTS, SAMPLE_PRODUCTS } from './data/seedProducts';
 import { getLiveExchangeRates, ExchangeRates, DEFAULT_RATES } from './lib/exchangeRate';
 import { 
@@ -109,6 +111,27 @@ export default function App() {
   const [isTravelInfoOpen, setIsTravelInfoOpen] = useState(false);
   const [travelInfoTab, setTravelInfoTab] = useState<TravelInfoTab>('course');
   const [isKakaoModalOpen, setIsKakaoModalOpen] = useState(false);
+  const [isAdminMode, setIsAdminMode] = useState(false);
+  const [isAdminLoginOpen, setIsAdminLoginOpen] = useState(false);
+
+  const handleOpenAdmin = () => {
+    try {
+      const isAuth = localStorage.getItem('xinchao_admin_auth') === 'true';
+      if (isAuth) {
+        setIsAdminMode(true);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        setIsAdminLoginOpen(true);
+      }
+    } catch (e) {
+      setIsAdminLoginOpen(true);
+    }
+  };
+
+  const handleSaveInquiries = (updatedInquiries: ConsultationRequest[]) => {
+    setInquiries(updatedInquiries);
+    saveInquiriesToIndexedDB(updatedInquiries);
+  };
 
   // Synchronize Browser History with Product Selection & Travel Guide View
   const handleSelectProduct = (prod: Product) => {
@@ -533,6 +556,23 @@ export default function App() {
     return (b.reviewCount || 0) - (a.reviewCount || 0);
   });
 
+  if (isAdminMode) {
+    return (
+      <AdminMode
+        products={products}
+        inquiries={inquiries}
+        rates={exchangeRates}
+        onSaveProducts={persistProducts}
+        onSaveInquiries={handleSaveInquiries}
+        onExitAdmin={() => setIsAdminMode(false)}
+        onPreviewProduct={(prod) => {
+          setIsAdminMode(false);
+          handleSelectProduct(prod);
+        }}
+      />
+    );
+  }
+
   return (
     <div className="min-h-screen bg-white text-slate-900 font-sans flex flex-col">
       {/* Top Navbar */}
@@ -544,6 +584,7 @@ export default function App() {
         onSelectRegion={setActiveRegion}
         onSelectCity={setActiveCity}
         onGoHome={handleGoHome}
+        onOpenAdmin={handleOpenAdmin}
         onOpenConsultation={() => {
           setConsultationTargetProduct(null);
           setIsConsultationOpen(true);
@@ -736,6 +777,7 @@ export default function App() {
         onSelectCategory={setActiveCategory}
         onSelectRegion={setActiveRegion}
         onGoHome={handleGoHome}
+        onOpenAdmin={handleOpenAdmin}
         onOpenTravelInfo={handleOpenTravelInfoPage}
         onOpenConsultation={() => {
           setConsultationTargetProduct(null);
@@ -758,6 +800,17 @@ export default function App() {
         rates={exchangeRates}
         onRefresh={loadRates}
         isRefreshing={isRefreshingRates}
+      />
+
+      {/* Admin Login Modal */}
+      <AdminLoginModal
+        isOpen={isAdminLoginOpen}
+        onClose={() => setIsAdminLoginOpen(false)}
+        onSuccess={() => {
+          setIsAdminLoginOpen(false);
+          setIsAdminMode(true);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
       />
 
       {/* Real-time Consultation Booking Modal */}
