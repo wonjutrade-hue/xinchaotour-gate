@@ -12,6 +12,7 @@ import {
 } from '../types';
 import { ExchangeRates, calculateVNDFromKRW, calculateKRWFromVND, formatVND } from '../lib/exchangeRate';
 import { COMPANY_PHONE, COMPANY_PHONE_TEL } from '../constants';
+import { optimizeImageFile, uploadImagesToServer } from '../lib/imageUtils';
 import {
   ShieldCheck,
   Lock,
@@ -53,7 +54,12 @@ import {
   FileText,
   Key,
   Smartphone,
-  Info
+  Info,
+  ArrowUp,
+  ArrowDown,
+  RefreshCw,
+  Loader2,
+  FolderOpen
 } from 'lucide-react';
 
 interface AdminModeProps {
@@ -137,9 +143,12 @@ export const AdminMode: React.FC<AdminModeProps> = ({
   const [customIncludedInput, setCustomIncludedInput] = useState('');
   const [customExcludedInput, setCustomExcludedInput] = useState('');
   
-  // Image Uploading
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  // Image Uploading & Drag/Drop
+  const mainImageInputRef = useRef<HTMLInputElement>(null);
+  const galleryImageInputRef = useRef<HTMLInputElement>(null);
   const [isUploadingImages, setIsUploadingImages] = useState(false);
+  const [uploadProgressText, setUploadProgressText] = useState<string | null>(null);
+  const [isPhotoDragOver, setIsPhotoDragOver] = useState(false);
 
   // Status Notification
   const [saveSuccessMsg, setSaveSuccessMsg] = useState<string | null>(null);
@@ -306,54 +315,113 @@ export const AdminMode: React.FC<AdminModeProps> = ({
     showNotification(`💾 "${editingProduct.title}" 상품이 성공적으로 저장되었습니다!`);
   };
 
-  // Multi Image Upload Handler
-  const handleImageFilesUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
+  // Process and upload files helper
+  const processAndUploadFiles = async (
+    files: File[],
+    targetType: 'main' | 'gallery' = 'gallery'
+  ) => {
     if (!files || files.length === 0 || !editingProduct) return;
 
     setIsUploadingImages(true);
+    setUploadProgressText(`⚡ 사진 ${files.length}장 고화질 압축 및 최적화 중...`);
+
     try {
-      const base64Promises = (Array.from(files) as File[]).map(file => {
-        return new Promise<string>((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onload = () => resolve(reader.result as string);
-          reader.onerror = reject;
-          reader.readAsDataURL(file);
+      // 1. Client-side parallel compression & optimization
+      const imageFiles = files.filter(f => f.type.startsWith('image/'));
+      if (imageFiles.length === 0) {
+        showNotification('⚠️ 이미지 파일(JPG, PNG, WebP)만 선택해주세요.');
+        return;
+      }
+
+      const optimizedResults = [];
+      for (let i = 0; i < imageFiles.length; i++) {
+        setUploadProgressText(`⚡ 이미지 최적화 중 (${i + 1}/${imageFiles.length})...`);
+        const opt = await optimizeImageFile(imageFiles[i], 1920, 1440, 0.85);
+        optimizedResults.push(opt);
+      }
+
+      setUploadProgressText('💾 이미지 저장 및 등록 중...');
+      
+      // 2. Upload to server or fallback smoothly to compressed data URL
+      const finalUrls = await uploadImagesToServer(optimizedResults);
+
+      if (finalUrls.length > 0) {
+        setEditingProduct(prev => {
+          if (!prev) return prev;
+          
+          if (targetType === 'main') {
+            return {
+              ...prev,
+              imageUrl: finalUrls[0]
+            };
+          } else {
+            const currentSubs = prev.additionalImages || [];
+            // If main image was empty, use first uploaded as main
+            if (!prev.imageUrl && finalUrls.length > 0) {
+              return {
+                ...prev,
+                imageUrl: finalUrls[0],
+                additionalImages: Array.from(new Set([...currentSubs, ...finalUrls.slice(1)]))
+              };
+            }
+            return {
+              ...prev,
+              additionalImages: Array.from(new Set([...currentSubs, ...finalUrls]))
+            };
+          }
         });
-      });
 
-      const base64List = await Promise.all(base64Promises);
-      
-      // Try uploading to server endpoint
-      const res = await fetch('/api/upload-images', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ images: base64List })
-      });
-      const data = await res.json();
-      
-      const uploadedUrls: string[] = (data && data.urls && data.urls.length > 0) ? data.urls : base64List;
-
-      setEditingProduct(prev => {
-        if (!prev) return prev;
-        const mainImg = prev.imageUrl || uploadedUrls[0];
-        const restUrls = prev.imageUrl ? uploadedUrls : uploadedUrls.slice(1);
-        const existingSubs = prev.additionalImages || [];
-        return {
-          ...prev,
-          imageUrl: mainImg,
-          additionalImages: Array.from(new Set([...existingSubs, ...restUrls]))
-        };
-      });
-
-      showNotification(`📸 ${uploadedUrls.length}장의 사진이 성공적으로 등록되었습니다.`);
+        showNotification(`📸 ${finalUrls.length}장의 사진이 성공적으로 등록되었습니다!`);
+      }
     } catch (err) {
       console.error('Image upload failed:', err);
-      alert('이미지 업로드 중 오류가 발생했습니다. 이미지 URL을 직접 입력해 주세요.');
+      showNotification('⚠️ 이미지 처리 중 문제가 발생했습니다. 다시 시도해주세요.');
     } finally {
       setIsUploadingImages(false);
-      if (fileInputRef.current) fileInputRef.current.value = '';
+      setUploadProgressText(null);
+      if (mainImageInputRef.current) mainImageInputRef.current.value = '';
+      if (galleryImageInputRef.current) galleryImageInputRef.current.value = '';
     }
+  };
+
+  // Main Image (Single) Upload
+  const handleMainImageFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+    processAndUploadFiles(Array.from(files), 'main');
+  };
+
+  // Multi Image Gallery Upload
+  const handleGalleryImagesUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+    processAndUploadFiles(Array.from(files), 'gallery');
+  };
+
+  // Drag & Drop Handler
+  const handlePhotoDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsPhotoDragOver(false);
+    const files = e.dataTransfer.files;
+    if (files && files.length > 0) {
+      processAndUploadFiles(Array.from(files), 'gallery');
+    }
+  };
+
+  // Reorder Gallery Image
+  const handleMoveGalleryImage = (index: number, direction: 'left' | 'right') => {
+    setEditingProduct(prev => {
+      if (!prev || !prev.additionalImages) return prev;
+      const list = [...prev.additionalImages];
+      const targetIndex = direction === 'left' ? index - 1 : index + 1;
+      if (targetIndex < 0 || targetIndex >= list.length) return prev;
+      
+      const temp = list[index];
+      list[index] = list[targetIndex];
+      list[targetIndex] = temp;
+      
+      return { ...prev, additionalImages: list };
+    });
   };
 
   // Export JSON Backup
@@ -1397,77 +1465,301 @@ export const AdminMode: React.FC<AdminModeProps> = ({
               {/* ============================================================= */}
               {editorTab === 'photos' && (
                 <div className="space-y-6 animate-fadeIn">
-                  {/* Upload & Direct Input Bar */}
-                  <div className="bg-slate-950 p-5 rounded-3xl border border-slate-800 space-y-4">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  
+                  {/* Hidden File Inputs */}
+                  <input
+                    ref={galleryImageInputRef}
+                    type="file"
+                    multiple
+                    accept="image/jpeg,image/png,image/webp,image/jpg"
+                    onChange={handleGalleryImagesUpload}
+                    className="hidden"
+                    disabled={isUploadingImages}
+                  />
+                  <input
+                    ref={mainImageInputRef}
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp,image/jpg"
+                    onChange={handleMainImageFileUpload}
+                    className="hidden"
+                    disabled={isUploadingImages}
+                  />
+
+                  {/* 1. Drag & Drop & Upload Zone */}
+                  <div
+                    onDragOver={(e) => {
+                      e.preventDefault();
+                      setIsPhotoDragOver(true);
+                    }}
+                    onDragLeave={() => setIsPhotoDragOver(false)}
+                    onDrop={handlePhotoDrop}
+                    className={`relative rounded-3xl border-2 border-dashed p-6 sm:p-8 text-center transition-all ${
+                      isPhotoDragOver
+                        ? 'border-amber-400 bg-amber-500/10 scale-[1.01]'
+                        : 'border-slate-700 bg-slate-950/90 hover:border-teal-500/80 hover:bg-slate-950'
+                    }`}
+                  >
+                    <div className="max-w-xl mx-auto space-y-4">
+                      <div className="w-14 h-14 mx-auto rounded-2xl bg-teal-500/20 border border-teal-500/30 flex items-center justify-center text-teal-400">
+                        {isUploadingImages ? (
+                          <Loader2 className="w-7 h-7 animate-spin text-amber-400" />
+                        ) : (
+                          <Upload className="w-7 h-7" />
+                        )}
+                      </div>
+
                       <div>
-                        <h4 className="font-black text-white text-base">상품 대표 및 갤러리 사진 관리</h4>
-                        <p className="text-xs text-slate-400">내 컴퓨터의 사진을 업로드하거나 고화질 베트남 프리셋 사진을 1초 만에 선택하세요.</p>
+                        <h4 className="text-base font-black text-white">
+                          내 컴퓨터의 사진을 업로드하세요
+                        </h4>
+                        <p className="text-xs text-slate-400 mt-1">
+                          컴퓨터에 있는 사진을 <strong>마우스로 끌어다 놓거나(Drag & Drop)</strong> 아래 버튼을 클릭하여 선택하세요.<br />
+                          <span className="text-teal-400 font-bold text-[11px]">✨ 자동 고화질 압축 및 용량 최적화가 적용되어 초고속으로 등록됩니다. (JPG, PNG, WebP 지원)</span>
+                        </p>
                       </div>
 
-                      {/* File Upload Button */}
-                      <label className="px-4 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-black text-xs flex items-center gap-2 cursor-pointer transition-colors shrink-0">
-                        <Upload className="w-4 h-4" />
-                        <span>{isUploadingImages ? '업로드 중...' : '내 컴퓨터 사진 업로드'}</span>
-                        <input
-                          ref={fileInputRef}
-                          type="file"
-                          multiple
-                          accept="image/*"
-                          onChange={handleImageFilesUpload}
-                          className="hidden"
-                          disabled={isUploadingImages}
-                        />
-                      </label>
-                    </div>
-
-                    {/* Main Thumbnail URL input */}
-                    <div className="space-y-1.5 pt-2">
-                      <label className="font-bold text-slate-300 block">대표 썸네일 이미지 URL (가장 메인)</label>
-                      <div className="flex gap-2">
-                        <input
-                          type="text"
-                          value={editingProduct.imageUrl}
-                          onChange={(e) => setEditingProduct(prev => prev ? { ...prev, imageUrl: e.target.value } : prev)}
-                          placeholder="https://..."
-                          className="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-hidden"
-                        />
-                      </div>
-                    </div>
-
-                    {/* Sub image URL add */}
-                    <div className="space-y-1.5">
-                      <label className="font-bold text-slate-300 block">추가 갤러리 사진 URL 추가</label>
-                      <div className="flex gap-2">
-                        <input
-                          type="text"
-                          value={customPhotoUrlInput}
-                          onChange={(e) => setCustomPhotoUrlInput(e.target.value)}
-                          placeholder="https://..."
-                          className="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-hidden"
-                        />
+                      {/* Upload Action Buttons */}
+                      <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
                         <button
                           type="button"
-                          onClick={() => {
-                            if (customPhotoUrlInput.trim()) {
-                              setEditingProduct(prev => prev ? {
-                                ...prev,
-                                additionalImages: [...(prev.additionalImages || []), customPhotoUrlInput.trim()]
-                              } : prev);
-                              setCustomPhotoUrlInput('');
-                            }
-                          }}
-                          className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs"
+                          onClick={() => galleryImageInputRef.current?.click()}
+                          disabled={isUploadingImages}
+                          className="px-5 py-3 rounded-2xl bg-teal-600 hover:bg-teal-500 active:scale-95 text-white font-black text-xs shadow-lg shadow-teal-900/30 flex items-center gap-2 cursor-pointer transition-all disabled:opacity-50"
                         >
-                          추가
+                          <FolderOpen className="w-4 h-4" />
+                          <span>📁 내 컴퓨터 사진 추가 (여러 장 선택 가능)</span>
                         </button>
+
+                        <button
+                          type="button"
+                          onClick={() => mainImageInputRef.current?.click()}
+                          disabled={isUploadingImages}
+                          className="px-4 py-3 rounded-2xl bg-amber-500 hover:bg-amber-400 active:scale-95 text-slate-950 font-black text-xs shadow-lg shadow-amber-900/30 flex items-center gap-2 cursor-pointer transition-all disabled:opacity-50"
+                        >
+                          <Star className="w-4 h-4 fill-slate-950" />
+                          <span>👑 대표 썸네일 1장 바로 변경</span>
+                        </button>
+                      </div>
+
+                      {/* Loading Progress Feedback */}
+                      {isUploadingImages && uploadProgressText && (
+                        <div className="mt-4 p-3 bg-amber-400/10 border border-amber-400/30 rounded-2xl flex items-center justify-center gap-2.5 animate-pulse">
+                          <Loader2 className="w-4 h-4 animate-spin text-amber-400 shrink-0" />
+                          <span className="text-xs font-bold text-amber-300">
+                            {uploadProgressText}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* 2. Direct URL Inputs (Optional) */}
+                  <div className="bg-slate-950 p-5 rounded-3xl border border-slate-800 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-slate-300 flex items-center gap-1.5">
+                        <ImageIcon className="w-3.5 h-3.5 text-slate-400" />
+                        <span>이미지 웹 URL 직접 입력 (선택사항)</span>
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div className="space-y-1">
+                        <label className="text-[11px] font-bold text-slate-400">대표 썸네일 URL</label>
+                        <input
+                          type="text"
+                          value={editingProduct.imageUrl || ''}
+                          onChange={(e) => setEditingProduct(prev => prev ? { ...prev, imageUrl: e.target.value } : prev)}
+                          placeholder="https://..."
+                          className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-hidden focus:border-amber-400"
+                        />
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="text-[11px] font-bold text-slate-400">추가 갤러리 URL</label>
+                        <div className="flex gap-1.5">
+                          <input
+                            type="text"
+                            value={customPhotoUrlInput}
+                            onChange={(e) => setCustomPhotoUrlInput(e.target.value)}
+                            placeholder="https://..."
+                            className="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-hidden focus:border-amber-400"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (customPhotoUrlInput.trim()) {
+                                setEditingProduct(prev => prev ? {
+                                  ...prev,
+                                  additionalImages: [...(prev.additionalImages || []), customPhotoUrlInput.trim()]
+                                } : prev);
+                                setCustomPhotoUrlInput('');
+                              }
+                            }}
+                            className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs shrink-0 cursor-pointer"
+                          >
+                            추가
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
 
-                  {/* 1-Click High Quality Presets */}
-                  <div className="space-y-3">
-                    <span className="font-bold text-slate-300 block">✨ 고화질 베트남 프리셋 사진 원클릭 추가</span>
+                  {/* 3. Registered Photos List & Gallery Arrangement */}
+                  <div className="space-y-3 pt-2">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-slate-200 text-sm flex items-center gap-2">
+                        <span>현재 등록된 사진 목록</span>
+                        <span className="text-xs bg-slate-800 text-amber-400 px-2.5 py-0.5 rounded-full font-black border border-slate-700">
+                          총 {(editingProduct.additionalImages?.length || 0) + (editingProduct.imageUrl ? 1 : 0)}장
+                        </span>
+                      </span>
+                      <span className="text-[11px] text-slate-500 hidden sm:inline">
+                        마우스 오버 시 대표 사진 지정, 순서 이동, 삭제가 가능합니다.
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3.5">
+                      {/* Main Thumbnail Card */}
+                      {editingProduct.imageUrl && (
+                        <div className="relative rounded-2xl overflow-hidden bg-slate-950 border-2 border-amber-400 aspect-video group shadow-lg">
+                          <img 
+                            src={editingProduct.imageUrl} 
+                            alt="대표 메인 사진" 
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform" 
+                          />
+                          <div className="absolute top-2 left-2 bg-amber-400 text-slate-950 text-[10px] font-black px-2 py-0.5 rounded-full shadow-md flex items-center gap-1">
+                            <Star className="w-3 h-3 fill-slate-950" />
+                            <span>대표 메인</span>
+                          </div>
+                          
+                          <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1.5 p-2">
+                            <button
+                              type="button"
+                              onClick={() => mainImageInputRef.current?.click()}
+                              className="px-2.5 py-1.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 text-[11px] font-black flex items-center gap-1 cursor-pointer"
+                              title="대표 사진 변경"
+                            >
+                              <RefreshCw className="w-3 h-3" />
+                              <span>사진 교체</span>
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setEditingProduct(prev => {
+                                  if (!prev) return prev;
+                                  const subs = prev.additionalImages || [];
+                                  const newMain = subs.length > 0 ? subs[0] : '';
+                                  return {
+                                    ...prev,
+                                    imageUrl: newMain,
+                                    additionalImages: subs.slice(1)
+                                  };
+                                });
+                              }}
+                              className="p-1.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white cursor-pointer"
+                              title="대표 사진 삭제"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Additional Gallery Photos */}
+                      {(editingProduct.additionalImages || []).map((url, sIdx) => (
+                        <div key={sIdx} className="relative rounded-2xl overflow-hidden bg-slate-950 border border-slate-700 hover:border-slate-500 aspect-video group shadow-md">
+                          <img 
+                            src={url} 
+                            alt={`갤러리 사진 ${sIdx + 1}`} 
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform" 
+                          />
+                          <span className="absolute bottom-1.5 right-1.5 bg-black/70 text-slate-300 text-[10px] font-bold px-1.5 py-0.5 rounded">
+                            #{sIdx + 1}
+                          </span>
+
+                          <div className="absolute inset-0 bg-slate-950/80 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-between p-2">
+                            {/* Top action row */}
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-1">
+                                {sIdx > 0 && (
+                                  <button
+                                    type="button"
+                                    onClick={() => handleMoveGalleryImage(sIdx, 'left')}
+                                    className="p-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 cursor-pointer"
+                                    title="앞으로 이동"
+                                  >
+                                    <ArrowLeft className="w-3 h-3" />
+                                  </button>
+                                )}
+                                {sIdx < (editingProduct.additionalImages?.length || 0) - 1 && (
+                                  <button
+                                    type="button"
+                                    onClick={() => handleMoveGalleryImage(sIdx, 'right')}
+                                    className="p-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 cursor-pointer"
+                                    title="뒤로 이동"
+                                  >
+                                    <ArrowLeft className="w-3 h-3 rotate-180" />
+                                  </button>
+                                )}
+                              </div>
+
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setEditingProduct(prev => prev ? {
+                                    ...prev,
+                                    additionalImages: (prev.additionalImages || []).filter((_, i) => i !== sIdx)
+                                  } : prev);
+                                }}
+                                className="p-1 rounded-lg bg-rose-600 hover:bg-rose-500 text-white cursor-pointer"
+                                title="사진 삭제"
+                              >
+                                <Trash2 className="w-3 h-3" />
+                              </button>
+                            </div>
+
+                            {/* Bottom action: Promote to Main */}
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const oldMain = editingProduct.imageUrl;
+                                setEditingProduct(prev => {
+                                  if (!prev) return prev;
+                                  const filtered = (prev.additionalImages || []).filter((_, i) => i !== sIdx);
+                                  return {
+                                    ...prev,
+                                    imageUrl: url,
+                                    additionalImages: [oldMain, ...filtered].filter(Boolean)
+                                  };
+                                });
+                                showNotification('👑 대표 메인 사진으로 지정되었습니다.');
+                              }}
+                              className="w-full py-1.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 text-[10px] font-black flex items-center justify-center gap-1 cursor-pointer transition-colors"
+                            >
+                              <Star className="w-3 h-3 fill-slate-950" />
+                              <span>대표로 지정</span>
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+
+                      {/* Quick Add Card at the end */}
+                      <button
+                        type="button"
+                        onClick={() => galleryImageInputRef.current?.click()}
+                        className="rounded-2xl border border-dashed border-slate-700 hover:border-teal-400 bg-slate-950/60 hover:bg-teal-950/30 aspect-video flex flex-col items-center justify-center gap-1.5 text-slate-400 hover:text-teal-300 transition-all cursor-pointer group"
+                      >
+                        <Plus className="w-6 h-6 group-hover:scale-110 transition-transform" />
+                        <span className="text-[11px] font-bold">+ 사진 추가</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* 4. 1-Click High Quality Presets */}
+                  <div className="space-y-3 pt-4 border-t border-slate-800">
+                    <span className="font-bold text-slate-300 block text-xs">
+                      ✨ 고화질 베트남 프리셋 사진 원클릭 추가
+                    </span>
                     <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-2.5">
                       {PRESET_PHOTOS.map((item, idx) => (
                         <div
@@ -1484,7 +1776,7 @@ export const AdminMode: React.FC<AdminModeProps> = ({
                             });
                             showNotification(`📸 "${item.label}" 사진이 추가되었습니다.`);
                           }}
-                          className="group relative rounded-2xl overflow-hidden bg-slate-950 border border-slate-800 hover:border-amber-400 cursor-pointer transition-all aspect-video"
+                          className="group relative rounded-2xl overflow-hidden bg-slate-950 border border-slate-800 hover:border-amber-400 cursor-pointer transition-all aspect-video shadow-sm"
                         >
                           <img src={item.url} alt={item.label} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
                           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-2">
@@ -1495,63 +1787,6 @@ export const AdminMode: React.FC<AdminModeProps> = ({
                     </div>
                   </div>
 
-                  {/* Registered Photos List */}
-                  <div className="space-y-3 pt-2">
-                    <span className="font-bold text-slate-300 block">
-                      현재 등록된 사진 목록 (대표 사진 포함 총 {(editingProduct.additionalImages?.length || 0) + (editingProduct.imageUrl ? 1 : 0)}장)
-                    </span>
-                    <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-3">
-                      {/* Main */}
-                      {editingProduct.imageUrl && (
-                        <div className="relative rounded-2xl overflow-hidden bg-slate-950 border-2 border-amber-400 aspect-video group">
-                          <img src={editingProduct.imageUrl} alt="대표 사진" className="w-full h-full object-cover" />
-                          <span className="absolute top-1 left-1 bg-amber-400 text-slate-950 text-[9px] font-black px-1.5 py-0.2 rounded">
-                            👑 대표 사진
-                          </span>
-                        </div>
-                      )}
-
-                      {/* Sub images */}
-                      {(editingProduct.additionalImages || []).map((url, sIdx) => (
-                        <div key={sIdx} className="relative rounded-2xl overflow-hidden bg-slate-950 border border-slate-700 aspect-video group">
-                          <img src={url} alt={`갤러리 ${sIdx + 1}`} className="w-full h-full object-cover" />
-                          <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                            <button
-                              type="button"
-                              onClick={() => {
-                                // Set as main
-                                const oldMain = editingProduct.imageUrl;
-                                setEditingProduct(prev => {
-                                  if (!prev) return prev;
-                                  const filtered = (prev.additionalImages || []).filter((_, i) => i !== sIdx);
-                                  return {
-                                    ...prev,
-                                    imageUrl: url,
-                                    additionalImages: [oldMain, ...filtered].filter(Boolean)
-                                  };
-                                });
-                              }}
-                              className="px-2 py-1 rounded bg-amber-400 text-slate-950 text-[10px] font-bold"
-                            >
-                              대표로 지정
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setEditingProduct(prev => prev ? {
-                                  ...prev,
-                                  additionalImages: (prev.additionalImages || []).filter((_, i) => i !== sIdx)
-                                } : prev);
-                              }}
-                              className="p-1 rounded bg-rose-600 text-white"
-                            >
-                              <Trash2 className="w-3.5 h-3.5" />
-                            </button>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
                 </div>
               )}
 
