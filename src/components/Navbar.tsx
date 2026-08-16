@@ -127,13 +127,13 @@ export const Navbar: React.FC<NavbarProps> = ({
             {onOpenAdmin && (
               <button
                 onClick={onOpenAdmin}
-                className="hidden sm:flex items-center gap-1 text-slate-300 hover:text-white font-bold transition-colors bg-slate-800 hover:bg-slate-700 px-2.5 py-0.5 rounded-full border border-slate-700 whitespace-nowrap cursor-pointer"
+                className="flex items-center gap-1 text-amber-300 sm:text-slate-300 hover:text-white font-bold transition-colors bg-slate-800 hover:bg-slate-700 px-2.5 py-0.5 rounded-full border border-amber-400/40 sm:border-slate-700 whitespace-nowrap cursor-pointer"
                 title="상품 추가/수정 및 고객 상담 관리자 모드"
               >
                 <Lock className="w-3 h-3 text-amber-400 shrink-0" />
                 <span>관리자</span>
                 {inquiriesCount > 0 && (
-                  <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse"></span>
+                  <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
                 )}
               </button>
             )}

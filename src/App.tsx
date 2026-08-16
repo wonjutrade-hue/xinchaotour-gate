@@ -260,6 +260,34 @@ export default function App() {
   };
 
   // Fetch Products & Inquiries with bulletproof two-way synchronization
+  const syncAllDataFromServer = async (showLoading = false) => {
+    if (showLoading) setIsLoadingProducts(true);
+    try {
+      const res = await fetch('/api/sync');
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success) {
+          if (Array.isArray(data.products)) {
+            setProducts(data.products);
+            saveProductsToIndexedDB(data.products);
+            setStoredJson(PRODUCTS_CACHE_KEY, data.products);
+          }
+          if (Array.isArray(data.inquiries)) {
+            setInquiries(data.inquiries);
+            saveInquiriesToIndexedDB(data.inquiries);
+          }
+          return data;
+        }
+      }
+    } catch (err) {
+      console.warn('API sync fallback to individual endpoints:', err);
+      // Fallback
+      await Promise.all([fetchProducts(), fetchInquiries()]);
+    } finally {
+      if (showLoading) setIsLoadingProducts(false);
+    }
+  };
+
   const fetchProducts = async () => {
     try {
       const res = await fetch('/api/products');
@@ -309,8 +337,32 @@ export default function App() {
 
   useEffect(() => {
     loadRates();
-    fetchProducts();
-    fetchInquiries();
+    syncAllDataFromServer(true);
+
+    // 1. Cross-Device Realtime Polling (every 5 seconds)
+    const pollTimer = setInterval(() => {
+      syncAllDataFromServer(false);
+    }, 5000);
+
+    // 2. Immediate synchronization when tab/phone screen becomes visible or focused
+    const handleReSync = () => {
+      syncAllDataFromServer(false);
+      loadRates();
+    };
+
+    window.addEventListener('focus', handleReSync);
+    const handleVisibility = () => {
+      if (document.visibilityState === 'visible') {
+        handleReSync();
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibility);
+
+    return () => {
+      clearInterval(pollTimer);
+      window.removeEventListener('focus', handleReSync);
+      document.removeEventListener('visibilitychange', handleVisibility);
+    };
   }, []);
 
   // API Actions
@@ -565,6 +617,8 @@ export default function App() {
         onSaveProducts={persistProducts}
         onSaveInquiries={handleSaveInquiries}
         onExitAdmin={() => setIsAdminMode(false)}
+        onForceSync={() => syncAllDataFromServer(true)}
+        isSyncing={isLoadingProducts}
         onPreviewProduct={(prod) => {
           setIsAdminMode(false);
           handleSelectProduct(prod);

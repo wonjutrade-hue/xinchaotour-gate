@@ -9,6 +9,7 @@ import { Product, ConsultationRequest } from './src/types.js';
 // In-memory or persisted store for products and inquiries
 const PRODUCTS_FILE_PATH = path.join(process.cwd(), 'stored_products.json');
 const PRODUCTS_BACKUP_PATH = path.join(process.cwd(), 'stored_products.backup.json');
+const INQUIRIES_FILE_PATH = path.join(process.cwd(), 'stored_inquiries.json');
 const UPLOADS_DIR = path.join(process.cwd(), 'public', 'uploads');
 
 if (!fs.existsSync(UPLOADS_DIR)) {
@@ -46,7 +47,8 @@ function loadStoredProducts(): Product[] {
     console.warn('[Server] Backup read also failed:', bErr);
   }
 
-  return [];
+  // Initial seed products if no file exists
+  return [...SAMPLE_PRODUCTS];
 }
 
 function saveStoredProducts(prods: Product[]) {
@@ -60,39 +62,64 @@ function saveStoredProducts(prods: Product[]) {
   }
 }
 
-let products: Product[] = loadStoredProducts();
-let inquiries: ConsultationRequest[] = [
-  {
-    id: 'inq-101',
-    userName: '김철수',
-    userPhone: '010-1234-5678',
-    kakaoId: 'chulsoo_kr',
-    productId: 'prod-101',
-    productTitle: '[북부/하롱베이] 하노이 & 하롱베이 5성급 럭셔리 크루즈 3박 5일',
-    regionPreference: '북부',
-    categoryPreference: '추천패키지',
-    startDate: '2026-09-15',
-    travelerCount: { adult: 2, child: 1 },
-    message: '하롱베이 크루즈 객실 오션뷰 업그레이드 및 7세 아동 침대 추가 문의드립니다.',
-    status: 'in_progress',
-    createdAt: new Date(Date.now() - 3600000 * 5).toISOString()
-  },
-  {
-    id: 'inq-102',
-    userName: '박지영',
-    userPhone: '010-9876-5432',
-    kakaoId: 'jiyoung_vietnam',
-    productId: 'prod-104',
-    productTitle: '[골프투어/중부] 다낭 BRG & 바나힐 명문 CC 럭셔리 골프 3박 5일 (54홀)',
-    regionPreference: '중부',
-    categoryPreference: '골프투어',
-    startDate: '2026-10-02',
-    travelerCount: { adult: 4, child: 0 },
-    message: '성인 4인 골프 36홀 티타임 오전 7시대로 배정 가능한지 확인 부탁드립니다.',
-    status: 'pending',
-    createdAt: new Date(Date.now() - 3600000 * 2).toISOString()
+function loadStoredInquiries(): ConsultationRequest[] {
+  try {
+    if (fs.existsSync(INQUIRIES_FILE_PATH)) {
+      const fileData = fs.readFileSync(INQUIRIES_FILE_PATH, 'utf-8');
+      const parsed = JSON.parse(fileData);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed;
+      }
+    }
+  } catch (err) {
+    console.warn('[Server] Failed to read stored_inquiries.json:', err);
   }
-];
+  return [
+    {
+      id: 'inq-101',
+      userName: '김철수',
+      userPhone: '010-1234-5678',
+      kakaoId: 'chulsoo_kr',
+      productId: 'prod-101',
+      productTitle: '[북부/하롱베이] 하노이 & 하롱베이 5성급 럭셔리 크루즈 3박 5일',
+      regionPreference: '북부',
+      categoryPreference: '추천패키지',
+      startDate: '2026-09-15',
+      travelerCount: { adult: 2, child: 1 },
+      message: '하롱베이 크루즈 객실 오션뷰 업그레이드 및 7세 아동 침대 추가 문의드립니다.',
+      status: 'in_progress',
+      createdAt: new Date(Date.now() - 3600000 * 5).toISOString()
+    },
+    {
+      id: 'inq-102',
+      userName: '박지영',
+      userPhone: '010-9876-5432',
+      kakaoId: 'jiyoung_vietnam',
+      productId: 'prod-104',
+      productTitle: '[골프투어/중부] 다낭 BRG & 바나힐 명문 CC 럭셔리 골프 3박 5일 (54홀)',
+      regionPreference: '중부',
+      categoryPreference: '골프투어',
+      startDate: '2026-10-02',
+      travelerCount: { adult: 4, child: 0 },
+      message: '성인 4인 골프 36홀 티타임 오전 7시대로 배정 가능한지 확인 부탁드립니다.',
+      status: 'pending',
+      createdAt: new Date(Date.now() - 3600000 * 2).toISOString()
+    }
+  ];
+}
+
+function saveStoredInquiries(inqs: ConsultationRequest[]) {
+  try {
+    const dataStr = JSON.stringify(inqs, null, 2);
+    fs.writeFileSync(INQUIRIES_FILE_PATH, dataStr, 'utf-8');
+  } catch (err) {
+    console.error('[Server] Failed to save inquiries to stored_inquiries.json:', err);
+  }
+}
+
+let products: Product[] = loadStoredProducts();
+let inquiries: ConsultationRequest[] = loadStoredInquiries();
+let lastDataSyncTimestamp = Date.now();
 
 // Lazy Gemini AI setup
 const getGenAIClient = () => {
@@ -217,7 +244,19 @@ async function startServer() {
         products = reloaded;
       }
     }
-    res.json({ success: true, count: products.length, products });
+    res.json({ success: true, count: products.length, products, lastUpdated: lastDataSyncTimestamp });
+  });
+
+  // 1-B. Unified Cross-Device Sync Endpoint (PC ↔ Mobile)
+  app.get('/api/sync', (req: Request, res: Response) => {
+    res.json({
+      success: true,
+      timestamp: lastDataSyncTimestamp,
+      productsCount: products.length,
+      products,
+      inquiriesCount: inquiries.length,
+      inquiries
+    });
   });
 
   // 2. Add Product
@@ -231,6 +270,7 @@ async function startServer() {
       // Prevent duplicates by ID
       products = [newProduct, ...products.filter(p => p.id !== newProduct.id)];
       saveStoredProducts(products);
+      lastDataSyncTimestamp = Date.now();
       res.json({ success: true, product: newProduct });
     } catch (err: any) {
       res.status(500).json({ success: false, error: err.message });
@@ -246,6 +286,7 @@ async function startServer() {
     }
     products[index] = { ...products[index], ...req.body };
     saveStoredProducts(products);
+    lastDataSyncTimestamp = Date.now();
     res.json({ success: true, product: products[index] });
   });
 
@@ -254,6 +295,7 @@ async function startServer() {
     const { id } = req.params;
     products = products.filter(p => p.id !== id);
     saveStoredProducts(products);
+    lastDataSyncTimestamp = Date.now();
     res.json({ success: true, message: 'Product deleted' });
   });
 
@@ -261,6 +303,7 @@ async function startServer() {
   app.post('/api/products/clear', (req: Request, res: Response) => {
     products = [];
     saveStoredProducts([]);
+    lastDataSyncTimestamp = Date.now();
     res.json({ success: true, count: 0, products: [] });
   });
 
@@ -271,6 +314,7 @@ async function startServer() {
       if (Array.isArray(newProducts)) {
         products = newProducts;
         saveStoredProducts(products);
+        lastDataSyncTimestamp = Date.now();
         res.json({ success: true, count: products.length, products });
       } else {
         res.status(400).json({ success: false, error: 'products must be an array' });
@@ -288,6 +332,7 @@ async function startServer() {
       additionalImages: []
     }));
     saveStoredProducts(products);
+    lastDataSyncTimestamp = Date.now();
     res.json({ success: true, count: products.length, products });
   });
 
@@ -295,6 +340,7 @@ async function startServer() {
   app.post('/api/products/reset', (req: Request, res: Response) => {
     products = [...SAMPLE_PRODUCTS];
     saveStoredProducts(products);
+    lastDataSyncTimestamp = Date.now();
     res.json({ success: true, products });
   });
 
@@ -320,6 +366,7 @@ async function startServer() {
       }
 
       saveStoredProducts(products);
+      lastDataSyncTimestamp = Date.now();
       res.json({ success: true, productsCount: products.length, products });
     } catch (err: any) {
       res.status(500).json({ success: false, error: err.message });
@@ -341,6 +388,8 @@ async function startServer() {
         createdAt: new Date().toISOString()
       };
       inquiries.unshift(newInquiry);
+      saveStoredInquiries(inquiries);
+      lastDataSyncTimestamp = Date.now();
       res.json({ success: true, inquiry: newInquiry });
     } catch (err: any) {
       res.status(500).json({ success: false, error: err.message });
@@ -356,6 +405,8 @@ async function startServer() {
       return res.status(404).json({ success: false, error: 'Inquiry not found' });
     }
     inq.status = status;
+    saveStoredInquiries(inquiries);
+    lastDataSyncTimestamp = Date.now();
     res.json({ success: true, inquiry: inq });
   });
 

@@ -70,6 +70,8 @@ interface AdminModeProps {
   onSaveInquiries: (inquiries: ConsultationRequest[]) => void;
   onExitAdmin: () => void;
   onPreviewProduct: (product: Product) => void;
+  onForceSync?: () => Promise<void> | void;
+  isSyncing?: boolean;
 }
 
 // Preset high quality Vietnam travel photos for 1-click selection
@@ -125,12 +127,15 @@ export const AdminMode: React.FC<AdminModeProps> = ({
   onSaveInquiries,
   onExitAdmin,
   onPreviewProduct,
+  onForceSync,
+  isSyncing = false,
 }) => {
   // Navigation & Tabs
   const [adminTab, setAdminTab] = useState<'products' | 'inquiries'>('products');
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCategory, setFilterCategory] = useState<string>('전체');
   const [filterRegion, setFilterRegion] = useState<string>('전체');
+  const [isManualSyncing, setIsManualSyncing] = useState(false);
   
   // Product Editor Modal State
   const [isEditorOpen, setIsEditorOpen] = useState(false);
@@ -157,7 +162,21 @@ export const AdminMode: React.FC<AdminModeProps> = ({
     setSaveSuccessMsg(msg);
     setTimeout(() => {
       setSaveSuccessMsg(null);
-    }, 3000);
+    }, 3500);
+  };
+
+  const handleManualSync = async () => {
+    setIsManualSyncing(true);
+    try {
+      if (onForceSync) {
+        await onForceSync();
+      }
+      showNotification('⚡ PC 및 모바일 최신 데이터가 성공적으로 동기화되었습니다!');
+    } catch (err) {
+      showNotification('⚠️ 동기화 중 오류가 발생했습니다.');
+    } finally {
+      setIsManualSyncing(false);
+    }
   };
 
   // Filtered Products
@@ -517,61 +536,78 @@ export const AdminMode: React.FC<AdminModeProps> = ({
 
       {/* Admin Top Sticky Navigation Bar */}
       <header className="bg-slate-950/95 backdrop-blur-md border-b border-slate-800 sticky top-0 z-40 shadow-xl">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-500 to-amber-300 text-slate-950 flex items-center justify-center font-black shadow-md">
-              <ShieldCheck className="w-5 h-5" />
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-2.5 sm:py-3.5 flex items-center justify-between gap-2 sm:gap-4">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-tr from-amber-500 to-amber-300 text-slate-950 flex items-center justify-center font-black shadow-md shrink-0">
+              <ShieldCheck className="w-4 h-4 sm:w-5 sm:h-5" />
             </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h1 className="text-base sm:text-lg font-black text-white tracking-tight">
-                  신짜오투어 관리자 모드
+            <div className="min-w-0">
+              <div className="flex items-center gap-1.5 sm:gap-2">
+                <h1 className="text-sm sm:text-lg font-black text-white tracking-tight truncate">
+                  신짜오투어 관리자
                 </h1>
-                <span className="bg-amber-400/20 text-amber-300 text-[10px] font-black px-2 py-0.5 rounded-md border border-amber-400/30">
-                  ADMIN CMS
+                <span className="bg-amber-400/20 text-amber-300 text-[9px] sm:text-[10px] font-black px-1.5 py-0.5 rounded-md border border-amber-400/30 shrink-0">
+                  CMS
                 </span>
               </div>
-              <p className="text-xs text-slate-400 hidden sm:block">
+              <p className="text-[11px] sm:text-xs text-slate-400 hidden sm:block">
                 상품 추가·수정·삭제, 실시간 환율 연동, 카테고리별 특화 스펙 및 고객 예약 문의 통합 관리
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
+            {/* Live Sync Status Pill */}
+            <div className="hidden md:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[11px] font-bold">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
+              <span>PC ↔ 모바일 실시간 연동 중</span>
+            </div>
+
+            {/* Force Sync button */}
+            <button
+              onClick={handleManualSync}
+              disabled={isManualSyncing || isSyncing}
+              className="inline-flex items-center gap-1 sm:gap-1.5 px-2.5 py-1.5 sm:px-3 sm:py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 active:scale-95 text-amber-300 font-bold text-xs sm:text-xs border border-amber-400/30 transition-all cursor-pointer disabled:opacity-50"
+              title="PC 및 모바일 기기 간의 최신 상품/사진 즉시 동기화"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 ${isManualSyncing || isSyncing ? 'animate-spin text-amber-400' : ''}`} />
+              <span>{isManualSyncing || isSyncing ? '동기화 중...' : '기기 동기화'}</span>
+            </button>
+
             {/* View live store button */}
             <button
               onClick={onExitAdmin}
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-black text-xs sm:text-sm shadow-md transition-all cursor-pointer"
+              className="inline-flex items-center gap-1 sm:gap-2 px-3 py-1.5 sm:px-4 sm:py-2.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-black text-xs sm:text-sm shadow-md transition-all cursor-pointer"
             >
-              <Eye className="w-4 h-4 text-amber-300" />
-              <span>손님 화면으로 이동</span>
+              <Eye className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-300" />
+              <span>손님 화면</span>
             </button>
           </div>
         </div>
 
         {/* Tab switcher: Products vs Inquiries */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center gap-3 border-t border-slate-800/80 pt-2 pb-2">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 flex items-center gap-2 sm:gap-3 border-t border-slate-800/80 pt-1.5 pb-1.5 sm:pt-2 sm:pb-2 overflow-x-auto scrollbar-none">
           <button
             onClick={() => setAdminTab('products')}
-            className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-black flex items-center gap-2 transition-all cursor-pointer ${
+            className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl text-xs sm:text-sm font-black flex items-center gap-1.5 sm:gap-2 whitespace-nowrap transition-all cursor-pointer ${
               adminTab === 'products'
                 ? 'bg-amber-400 text-slate-950 shadow-md'
                 : 'text-slate-400 hover:text-white hover:bg-slate-800'
             }`}
           >
-            <Layers className="w-4 h-4" />
-            <span>여행 상품 관리 ({products.length})</span>
+            <Layers className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+            <span>여행 상품 ({products.length})</span>
           </button>
 
           <button
             onClick={() => setAdminTab('inquiries')}
-            className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-black flex items-center gap-2 transition-all cursor-pointer ${
+            className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl text-xs sm:text-sm font-black flex items-center gap-1.5 sm:gap-2 whitespace-nowrap transition-all cursor-pointer ${
               adminTab === 'inquiries'
                 ? 'bg-amber-400 text-slate-950 shadow-md'
                 : 'text-slate-400 hover:text-white hover:bg-slate-800'
             }`}
           >
-            <MessageSquare className="w-4 h-4" />
+            <MessageSquare className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             <span>고객 맞춤 상담/견적 ({inquiries.length})</span>
             {pendingInquiriesCount > 0 && (
               <span className="bg-rose-500 text-white text-[10px] font-black px-1.5 py-0.2 rounded-full animate-pulse">
@@ -583,26 +619,26 @@ export const AdminMode: React.FC<AdminModeProps> = ({
       </header>
 
       {/* Main Content Area */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 space-y-6">
+      <main className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 pt-4 sm:pt-6 space-y-4 sm:space-y-6">
 
         {/* =================================================================== */}
         {/* TAB 1: TRAVEL PRODUCTS MANAGEMENT                                   */}
         {/* =================================================================== */}
         {adminTab === 'products' && (
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             {/* Quick Action Top Bar */}
-            <div className="bg-slate-800/90 border border-slate-700 p-4 sm:p-5 rounded-3xl shadow-xl flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
+            <div className="bg-slate-800/90 border border-slate-700 p-3 sm:p-5 rounded-2xl sm:rounded-3xl shadow-xl flex flex-col gap-3">
               
-              {/* Category & Region Filters */}
-              <div className="flex flex-wrap items-center gap-2">
-                <div className="relative">
+              {/* Category, Region Filters & Search */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                <div className="relative col-span-1 sm:col-span-1">
                   <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
                   <input
                     type="text"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     placeholder="상품명, 도시, 태그 검색..."
-                    className="bg-slate-900 border border-slate-700 focus:border-amber-400 rounded-xl pl-9 pr-3 py-2 text-xs font-bold text-white placeholder-slate-500 focus:outline-hidden w-48 sm:w-56"
+                    className="w-full bg-slate-900 border border-slate-700 focus:border-amber-400 rounded-xl pl-9 pr-3 py-2 text-xs font-bold text-white placeholder-slate-500 focus:outline-hidden"
                   />
                 </div>
 
@@ -631,48 +667,50 @@ export const AdminMode: React.FC<AdminModeProps> = ({
               </div>
 
               {/* Action Buttons: Add Product & Backup Tools */}
-              <div className="flex flex-wrap items-center gap-2">
-                {/* Add New Product Dropdown / Primary Button */}
-                <button
-                  onClick={() => handleCreateNewProduct('추천패키지')}
-                  className="px-4 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs sm:text-sm flex items-center gap-1.5 shadow-lg transition-all cursor-pointer shrink-0"
-                >
-                  <Plus className="w-4 h-4 stroke-[3]" />
-                  <span>새 여행상품 등록</span>
-                </button>
+              <div className="flex flex-wrap items-center justify-between gap-2 pt-1 border-t border-slate-700/60">
+                <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                  {/* Add New Product Primary Button */}
+                  <button
+                    onClick={() => handleCreateNewProduct('추천패키지')}
+                    className="px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 active:scale-95 text-slate-950 font-black text-xs sm:text-sm flex items-center gap-1.5 shadow-lg transition-all cursor-pointer shrink-0"
+                  >
+                    <Plus className="w-4 h-4 stroke-[3]" />
+                    <span>+ 새 여행상품 등록</span>
+                  </button>
 
-                {/* Specific Category Shortcut Add */}
-                <button
-                  onClick={() => handleCreateNewProduct('풀빌라')}
-                  className="px-3 py-2 rounded-xl bg-slate-900 hover:bg-slate-700 text-slate-200 font-bold text-xs border border-slate-700 transition-colors"
-                  title="풀빌라 전용 스펙 상품 등록"
-                >
-                  + 🏰 풀빌라
-                </button>
+                  {/* Specific Category Shortcut Add */}
+                  <button
+                    onClick={() => handleCreateNewProduct('풀빌라')}
+                    className="px-2.5 py-2 sm:px-3 sm:py-2 rounded-xl bg-slate-900 hover:bg-slate-700 text-slate-200 font-bold text-xs border border-slate-700 transition-colors shrink-0"
+                    title="풀빌라 전용 스펙 상품 등록"
+                  >
+                    + 🏰 풀빌라
+                  </button>
 
-                <button
-                  onClick={() => handleCreateNewProduct('골프투어')}
-                  className="px-3 py-2 rounded-xl bg-slate-900 hover:bg-slate-700 text-slate-200 font-bold text-xs border border-slate-700 transition-colors"
-                  title="골프투어 전용 스펙 상품 등록"
-                >
-                  + ⛳ 골프
-                </button>
+                  <button
+                    onClick={() => handleCreateNewProduct('골프투어')}
+                    className="px-2.5 py-2 sm:px-3 sm:py-2 rounded-xl bg-slate-900 hover:bg-slate-700 text-slate-200 font-bold text-xs border border-slate-700 transition-colors shrink-0"
+                    title="골프투어 전용 스펙 상품 등록"
+                  >
+                    + ⛳ 골프
+                  </button>
+                </div>
 
                 {/* Backup & Tools Menu */}
-                <div className="flex items-center gap-1.5 ml-auto sm:ml-0">
+                <div className="flex items-center gap-1.5 ml-auto">
                   <button
                     onClick={handleExportJSON}
                     className="p-2 rounded-xl bg-slate-900 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 transition-colors"
                     title="전체 상품 JSON 백업 다운로드"
                   >
-                    <Download className="w-4 h-4" />
+                    <Download className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                   </button>
 
                   <label 
                     className="p-2 rounded-xl bg-slate-900 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 transition-colors cursor-pointer"
                     title="JSON 백업 파일 복원"
                   >
-                    <Upload className="w-4 h-4" />
+                    <Upload className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                     <input type="file" accept=".json" onChange={handleImportJSON} className="hidden" />
                   </label>
 
@@ -681,7 +719,7 @@ export const AdminMode: React.FC<AdminModeProps> = ({
                     className="p-2 rounded-xl bg-slate-900 hover:bg-rose-900/60 text-slate-400 hover:text-rose-200 border border-slate-700 transition-colors"
                     title="초기 샘플 데이터로 리셋"
                   >
-                    <RotateCcw className="w-4 h-4" />
+                    <RotateCcw className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                   </button>
                 </div>
               </div>
@@ -825,11 +863,11 @@ export const AdminMode: React.FC<AdminModeProps> = ({
                         </div>
 
                         {/* Right: Quick Action Buttons */}
-                        <div className="flex items-center gap-2 shrink-0 border-t md:border-t-0 border-slate-700/60 pt-3 md:pt-0">
+                        <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 shrink-0 border-t md:border-t-0 border-slate-700/60 pt-3 md:pt-0 justify-end">
                           {/* Preview Product */}
                           <button
                             onClick={() => onPreviewProduct(prod)}
-                            className="px-3 py-2 rounded-xl bg-slate-700 hover:bg-slate-600 text-slate-200 font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+                            className="px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl bg-slate-700 hover:bg-slate-600 active:scale-95 text-slate-200 font-bold text-xs flex items-center gap-1 sm:gap-1.5 transition-colors cursor-pointer"
                             title="손님 화면에서 어떻게 보일지 미리보기"
                           >
                             <Eye className="w-3.5 h-3.5 text-teal-400" />
@@ -839,7 +877,7 @@ export const AdminMode: React.FC<AdminModeProps> = ({
                           {/* 1-Click Duplicate */}
                           <button
                             onClick={() => handleDuplicateProduct(prod)}
-                            className="px-3 py-2 rounded-xl bg-slate-700 hover:bg-slate-600 text-slate-200 font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+                            className="px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl bg-slate-700 hover:bg-slate-600 active:scale-95 text-slate-200 font-bold text-xs flex items-center gap-1 sm:gap-1.5 transition-colors cursor-pointer"
                             title="동일한 스펙으로 상품 즉시 복제"
                           >
                             <Copy className="w-3.5 h-3.5 text-amber-400" />
@@ -849,7 +887,7 @@ export const AdminMode: React.FC<AdminModeProps> = ({
                           {/* Edit Product */}
                           <button
                             onClick={() => handleEditProduct(prod)}
-                            className="px-3.5 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs flex items-center gap-1.5 shadow-md transition-colors cursor-pointer"
+                            className="px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-amber-400 hover:bg-amber-300 active:scale-95 text-slate-950 font-black text-xs flex items-center gap-1 sm:gap-1.5 shadow-md transition-colors cursor-pointer"
                           >
                             <Edit3 className="w-3.5 h-3.5" />
                             <span>수정</span>
@@ -858,10 +896,10 @@ export const AdminMode: React.FC<AdminModeProps> = ({
                           {/* Delete Product */}
                           <button
                             onClick={() => handleDeleteProduct(prod.id, prod.title)}
-                            className="p-2 rounded-xl bg-slate-700/50 hover:bg-rose-600 text-slate-400 hover:text-white transition-colors cursor-pointer"
+                            className="p-1.5 sm:p-2 rounded-xl bg-slate-700/50 hover:bg-rose-600 active:scale-95 text-slate-400 hover:text-white transition-colors cursor-pointer"
                             title="상품 삭제"
                           >
-                            <Trash2 className="w-4 h-4" />
+                            <Trash2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                           </button>
                         </div>
                       </div>
@@ -1021,36 +1059,36 @@ export const AdminMode: React.FC<AdminModeProps> = ({
       {/* FULL PRODUCT EDITOR MODAL / DRAWER                                 */}
       {/* =================================================================== */}
       {isEditorOpen && editingProduct && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md overflow-y-auto flex items-center justify-center p-2 sm:p-4">
-          <div className="bg-slate-900 border border-slate-700 rounded-3xl w-full max-w-5xl overflow-hidden shadow-2xl flex flex-col max-h-[94vh] animate-scaleUp">
+        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md overflow-y-auto flex items-end sm:items-center justify-center sm:p-4">
+          <div className="bg-slate-900 border-t sm:border border-slate-700 rounded-t-3xl sm:rounded-3xl w-full max-w-5xl overflow-hidden shadow-2xl flex flex-col h-[96vh] sm:h-auto sm:max-h-[94vh] animate-scaleUp">
             
             {/* Modal Header */}
-            <div className="bg-slate-950 px-6 py-4 border-b border-slate-800 flex items-center justify-between shrink-0">
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-amber-400 text-slate-950 flex items-center justify-center font-black">
-                  <Edit3 className="w-5 h-5" />
+            <div className="bg-slate-950 px-4 sm:px-6 py-3 sm:py-4 border-b border-slate-800 flex items-center justify-between shrink-0">
+              <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-amber-400 text-slate-950 flex items-center justify-center font-black shrink-0">
+                  <Edit3 className="w-4 h-4 sm:w-5 sm:h-5" />
                 </div>
-                <div>
-                  <h3 className="text-base sm:text-lg font-black text-white">
+                <div className="min-w-0">
+                  <h3 className="text-sm sm:text-lg font-black text-white truncate">
                     {editingProduct.title ? `[수정] ${editingProduct.title}` : '✨ 새 여행 상품 등록'}
                   </h3>
-                  <p className="text-xs text-slate-400">
+                  <p className="text-[11px] sm:text-xs text-slate-400 hidden sm:block">
                     카테고리별 특화 스펙과 실시간 환율을 설정하여 손님들이 한눈에 볼 수 있도록 구성하세요.
                   </p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
                 <button
                   onClick={handleSaveProductChanges}
-                  className="px-4 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs sm:text-sm flex items-center gap-1.5 shadow-md transition-colors cursor-pointer"
+                  className="px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-amber-400 hover:bg-amber-300 active:scale-95 text-slate-950 font-black text-xs sm:text-sm flex items-center gap-1.5 shadow-md transition-colors cursor-pointer"
                 >
-                  <Save className="w-4 h-4" />
-                  <span>저장 완료</span>
+                  <Save className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                  <span>저장</span>
                 </button>
                 <button
                   onClick={() => setIsEditorOpen(false)}
-                  className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition-colors cursor-pointer"
+                  className="p-1.5 sm:p-2 rounded-xl bg-slate-800 hover:bg-slate-700 active:scale-95 text-slate-400 hover:text-white transition-colors cursor-pointer"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -1058,21 +1096,21 @@ export const AdminMode: React.FC<AdminModeProps> = ({
             </div>
 
             {/* Editor Tab Navigation */}
-            <div className="bg-slate-950/80 px-6 py-2.5 border-b border-slate-800 overflow-x-auto flex items-center gap-2 shrink-0">
+            <div className="bg-slate-950/90 px-3 sm:px-6 py-2 border-b border-slate-800 overflow-x-auto scrollbar-none flex items-center gap-1.5 sm:gap-2 shrink-0">
               {[
-                { id: 'basic', label: '1. 기본 정보', icon: <Info className="w-3.5 h-3.5" /> },
-                { id: 'pricing', label: '2. 가격 & 실시간 환율', icon: <DollarSign className="w-3.5 h-3.5" /> },
-                { id: 'photos', label: '3. 사진 & 갤러리', icon: <ImageIcon className="w-3.5 h-3.5" /> },
-                { id: 'specs', label: `4. ${editingProduct.category === '풀빌라' ? '🏰 풀빌라 스펙' : editingProduct.category === '골프투어' ? '⛳ 골프 스펙' : '⭐ 상세 스펙'}`, icon: <Home className="w-3.5 h-3.5" /> },
-                { id: 'itinerary', label: '5. 일자별 여행 일정표', icon: <Calendar className="w-3.5 h-3.5" /> },
-                { id: 'terms', label: '6. 포함/불포함 & 소개글', icon: <FileText className="w-3.5 h-3.5" /> },
+                { id: 'basic', label: '1. 기본정보', icon: <Info className="w-3.5 h-3.5" /> },
+                { id: 'pricing', label: '2. 가격&환율', icon: <DollarSign className="w-3.5 h-3.5" /> },
+                { id: 'photos', label: '3. 사진&갤러리', icon: <ImageIcon className="w-3.5 h-3.5" /> },
+                { id: 'specs', label: `4. ${editingProduct.category === '풀빌라' ? '🏰 풀빌라스펙' : editingProduct.category === '골프투어' ? '⛳ 골프스펙' : '⭐ 상세스펙'}`, icon: <Home className="w-3.5 h-3.5" /> },
+                { id: 'itinerary', label: '5. 여행일정표', icon: <Calendar className="w-3.5 h-3.5" /> },
+                { id: 'terms', label: '6. 포함/불포함', icon: <FileText className="w-3.5 h-3.5" /> },
               ].map((tab) => {
                 const isActive = editorTab === tab.id;
                 return (
                   <button
                     key={tab.id}
                     onClick={() => setEditorTab(tab.id as any)}
-                    className={`px-3.5 py-2 rounded-xl text-xs font-black flex items-center gap-1.5 whitespace-nowrap transition-all cursor-pointer ${
+                    className={`px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl text-xs font-black flex items-center gap-1 sm:gap-1.5 whitespace-nowrap transition-all cursor-pointer ${
                       isActive
                         ? 'bg-teal-600 text-white shadow-md'
                         : 'bg-slate-900 text-slate-400 hover:text-slate-200 hover:bg-slate-850'
@@ -1086,7 +1124,7 @@ export const AdminMode: React.FC<AdminModeProps> = ({
             </div>
 
             {/* Modal Body (Scrollable) */}
-            <div className="p-6 overflow-y-auto space-y-6 flex-1 text-xs sm:text-sm">
+            <div className="p-4 sm:p-6 overflow-y-auto space-y-4 sm:space-y-6 flex-1 text-xs sm:text-sm">
 
               {/* ============================================================= */}
               {/* TAB 1: BASIC INFO                                             */}
@@ -1510,34 +1548,34 @@ export const AdminMode: React.FC<AdminModeProps> = ({
 
                       <div>
                         <h4 className="text-base font-black text-white">
-                          내 컴퓨터의 사진을 업로드하세요
+                          내 컴퓨터 및 스마트폰 사진 업로드
                         </h4>
                         <p className="text-xs text-slate-400 mt-1">
-                          컴퓨터에 있는 사진을 <strong>마우스로 끌어다 놓거나(Drag & Drop)</strong> 아래 버튼을 클릭하여 선택하세요.<br />
+                          기기에 있는 사진을 <strong>선택하거나 끌어다 놓으세요.</strong><br />
                           <span className="text-teal-400 font-bold text-[11px]">✨ 자동 고화질 압축 및 용량 최적화가 적용되어 초고속으로 등록됩니다. (JPG, PNG, WebP 지원)</span>
                         </p>
                       </div>
 
                       {/* Upload Action Buttons */}
-                      <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+                      <div className="flex flex-wrap items-center justify-center gap-2.5 pt-2">
                         <button
                           type="button"
                           onClick={() => galleryImageInputRef.current?.click()}
                           disabled={isUploadingImages}
-                          className="px-5 py-3 rounded-2xl bg-teal-600 hover:bg-teal-500 active:scale-95 text-white font-black text-xs shadow-lg shadow-teal-900/30 flex items-center gap-2 cursor-pointer transition-all disabled:opacity-50"
+                          className="px-4 py-2.5 sm:px-5 sm:py-3 rounded-2xl bg-teal-600 hover:bg-teal-500 active:scale-95 text-white font-black text-xs shadow-lg shadow-teal-900/30 flex items-center gap-2 cursor-pointer transition-all disabled:opacity-50"
                         >
                           <FolderOpen className="w-4 h-4" />
-                          <span>📁 내 컴퓨터 사진 추가 (여러 장 선택 가능)</span>
+                          <span>📁 갤러리/사진 추가 (여러 장 선택)</span>
                         </button>
 
                         <button
                           type="button"
                           onClick={() => mainImageInputRef.current?.click()}
                           disabled={isUploadingImages}
-                          className="px-4 py-3 rounded-2xl bg-amber-500 hover:bg-amber-400 active:scale-95 text-slate-950 font-black text-xs shadow-lg shadow-amber-900/30 flex items-center gap-2 cursor-pointer transition-all disabled:opacity-50"
+                          className="px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-2xl bg-amber-500 hover:bg-amber-400 active:scale-95 text-slate-950 font-black text-xs shadow-lg shadow-amber-900/30 flex items-center gap-1.5 cursor-pointer transition-all disabled:opacity-50"
                         >
                           <Star className="w-4 h-4 fill-slate-950" />
-                          <span>👑 대표 썸네일 1장 바로 변경</span>
+                          <span>👑 대표 썸네일 교체</span>
                         </button>
                       </div>
 
@@ -2393,23 +2431,23 @@ export const AdminMode: React.FC<AdminModeProps> = ({
             </div>
 
             {/* Modal Bottom Action Footer */}
-            <div className="bg-slate-950 px-6 py-4 border-t border-slate-800 flex items-center justify-between shrink-0">
-              <span className="text-xs text-slate-400">
+            <div className="bg-slate-950 px-4 sm:px-6 py-3 sm:py-4 border-t border-slate-800 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 shrink-0">
+              <span className="text-[11px] sm:text-xs text-slate-400 hidden sm:inline">
                 💡 저장을 누르면 손님 화면에 즉시 반영되며 서버와 브라우저에 영구 저장됩니다.
               </span>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center justify-end gap-2 w-full sm:w-auto">
                 <button
                   type="button"
                   onClick={() => setIsEditorOpen(false)}
-                  className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs transition-colors cursor-pointer"
+                  className="flex-1 sm:flex-none px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs transition-colors cursor-pointer"
                 >
                   취소
                 </button>
                 <button
                   type="button"
                   onClick={handleSaveProductChanges}
-                  className="px-6 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs sm:text-sm shadow-xl transition-all cursor-pointer flex items-center gap-1.5"
+                  className="flex-1 sm:flex-none px-6 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs sm:text-sm shadow-xl transition-all cursor-pointer flex items-center justify-center gap-1.5"
                 >
                   <Save className="w-4 h-4" />
                   <span>상품 저장 완료</span>
