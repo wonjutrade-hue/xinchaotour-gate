@@ -5,12 +5,16 @@ import { createServer as createViteServer } from 'vite';
 import { GoogleGenAI } from '@google/genai';
 import { INITIAL_PRODUCTS, SAMPLE_PRODUCTS } from './src/data/seedProducts.js';
 import { Product, ConsultationRequest } from './src/types.js';
+import { COMPANY_INFO } from './src/data/companyInfo.js';
+import { INITIAL_REVIEWS } from './src/data/reviews.js';
 
-// In-memory or persisted store for products and inquiries
+// Persisted stores
 const PRODUCTS_FILE_PATH = path.join(process.cwd(), 'stored_products.json');
 const PRODUCTS_DATA_DIR_PATH = path.join(process.cwd(), 'src', 'data', 'stored_products.json');
 const PRODUCTS_BACKUP_PATH = path.join(process.cwd(), 'stored_products.backup.json');
 const INQUIRIES_FILE_PATH = path.join(process.cwd(), 'stored_inquiries.json');
+const REVIEWS_FILE_PATH = path.join(process.cwd(), 'stored_reviews.json');
+const SETTINGS_FILE_PATH = path.join(process.cwd(), 'stored_settings.json');
 const UPLOADS_DIR = path.join(process.cwd(), 'public', 'uploads');
 
 if (!fs.existsSync(UPLOADS_DIR)) {
@@ -21,17 +25,10 @@ if (!fs.existsSync(UPLOADS_DIR)) {
   }
 }
 
-function isSamplePhotoUrl(url: string | undefined): boolean {
-  if (!url) return false;
-  return url.includes('images.unsplash.com') || url === 'VILLA_PHOTO_DATA' || url === 'TEST_IMG';
-}
-
 function sanitizeProduct(p: Product): Product {
   if (!p) return p;
   const img = p.imageUrl || '';
   const cleanSubs = (p.additionalImages || []).filter(sub => Boolean(sub) && sub !== 'VILLA_PHOTO_DATA' && sub !== 'TEST_IMG');
-  
-  // Clean corrupt placeholder markers without forcing external sample photos
   const cleanMain = (img === 'VILLA_PHOTO_DATA' || img === 'TEST_IMG') ? '' : img;
 
   return {
@@ -47,7 +44,7 @@ function loadStoredProducts(): Product[] {
     if (fs.existsSync(PRODUCTS_FILE_PATH)) {
       const fileData = fs.readFileSync(PRODUCTS_FILE_PATH, 'utf-8');
       const parsed = JSON.parse(fileData);
-      if (Array.isArray(parsed) && parsed.length > 0) {
+      if (Array.isArray(parsed)) {
         console.log(`[Server] Loaded ${parsed.length} products from stored_products.json`);
         return parsed.map((p) => sanitizeProduct(p));
       }
@@ -61,7 +58,7 @@ function loadStoredProducts(): Product[] {
     if (fs.existsSync(PRODUCTS_DATA_DIR_PATH)) {
       const fileData = fs.readFileSync(PRODUCTS_DATA_DIR_PATH, 'utf-8');
       const parsed = JSON.parse(fileData);
-      if (Array.isArray(parsed) && parsed.length > 0) {
+      if (Array.isArray(parsed)) {
         console.log(`[Server] Loaded ${parsed.length} products from src/data/stored_products.json`);
         return parsed.map((p) => sanitizeProduct(p));
       }
@@ -75,7 +72,7 @@ function loadStoredProducts(): Product[] {
     if (fs.existsSync(PRODUCTS_BACKUP_PATH)) {
       const backupData = fs.readFileSync(PRODUCTS_BACKUP_PATH, 'utf-8');
       const parsedBackup = JSON.parse(backupData);
-      if (Array.isArray(parsedBackup) && parsedBackup.length > 0) {
+      if (Array.isArray(parsedBackup)) {
         console.log(`[Server] Restored ${parsedBackup.length} products from backup`);
         return parsedBackup.map((p) => sanitizeProduct(p));
       }
@@ -84,10 +81,7 @@ function loadStoredProducts(): Product[] {
     console.warn('[Server] Backup read also failed:', bErr);
   }
 
-  // 4. Initial seed products if no saved data
-  const initial = [...SAMPLE_PRODUCTS].map(p => sanitizeProduct(p));
-  saveStoredProducts(initial);
-  return initial;
+  return [];
 }
 
 function saveStoredProducts(prods: Product[]) {
@@ -111,45 +105,14 @@ function loadStoredInquiries(): ConsultationRequest[] {
     if (fs.existsSync(INQUIRIES_FILE_PATH)) {
       const fileData = fs.readFileSync(INQUIRIES_FILE_PATH, 'utf-8');
       const parsed = JSON.parse(fileData);
-      if (Array.isArray(parsed) && parsed.length > 0) {
+      if (Array.isArray(parsed)) {
         return parsed;
       }
     }
   } catch (err) {
     console.warn('[Server] Failed to read stored_inquiries.json:', err);
   }
-  return [
-    {
-      id: 'inq-101',
-      userName: '김철수',
-      userPhone: '010-1234-5678',
-      kakaoId: 'chulsoo_kr',
-      productId: 'prod-101',
-      productTitle: '[북부/하롱베이] 하노이 & 하롱베이 5성급 럭셔리 크루즈 3박 5일',
-      regionPreference: '북부',
-      categoryPreference: '추천패키지',
-      startDate: '2026-09-15',
-      travelerCount: { adult: 2, child: 1 },
-      message: '하롱베이 크루즈 객실 오션뷰 업그레이드 및 7세 아동 침대 추가 문의드립니다.',
-      status: 'in_progress',
-      createdAt: new Date(Date.now() - 3600000 * 5).toISOString()
-    },
-    {
-      id: 'inq-102',
-      userName: '박지영',
-      userPhone: '010-9876-5432',
-      kakaoId: 'jiyoung_vietnam',
-      productId: 'prod-104',
-      productTitle: '[골프투어/중부] 다낭 BRG & 바나힐 명문 CC 럭셔리 골프 3박 5일 (54홀)',
-      regionPreference: '중부',
-      categoryPreference: '골프투어',
-      startDate: '2026-10-02',
-      travelerCount: { adult: 4, child: 0 },
-      message: '성인 4인 골프 36홀 티타임 오전 7시대로 배정 가능한지 확인 부탁드립니다.',
-      status: 'pending',
-      createdAt: new Date(Date.now() - 3600000 * 2).toISOString()
-    }
-  ];
+  return [];
 }
 
 function saveStoredInquiries(inqs: ConsultationRequest[]) {
@@ -157,12 +120,56 @@ function saveStoredInquiries(inqs: ConsultationRequest[]) {
     const dataStr = JSON.stringify(inqs, null, 2);
     fs.writeFileSync(INQUIRIES_FILE_PATH, dataStr, 'utf-8');
   } catch (err) {
-    console.error('[Server] Failed to save inquiries to stored_inquiries.json:', err);
+    console.error('[Server] Failed to save inquiries:', err);
+  }
+}
+
+function loadStoredReviews(): any[] {
+  try {
+    if (fs.existsSync(REVIEWS_FILE_PATH)) {
+      const fileData = fs.readFileSync(REVIEWS_FILE_PATH, 'utf-8');
+      const parsed = JSON.parse(fileData);
+      if (Array.isArray(parsed)) return parsed;
+    }
+  } catch (e) {
+    // ignore
+  }
+  return INITIAL_REVIEWS;
+}
+
+function saveStoredReviews(reviews: any[]) {
+  try {
+    fs.writeFileSync(REVIEWS_FILE_PATH, JSON.stringify(reviews, null, 2), 'utf-8');
+  } catch (e) {
+    console.error('[Server] Failed to save reviews:', e);
+  }
+}
+
+function loadStoredSettings(): any {
+  try {
+    if (fs.existsSync(SETTINGS_FILE_PATH)) {
+      const fileData = fs.readFileSync(SETTINGS_FILE_PATH, 'utf-8');
+      const parsed = JSON.parse(fileData);
+      if (parsed && typeof parsed === 'object') return parsed;
+    }
+  } catch (e) {
+    // ignore
+  }
+  return COMPANY_INFO;
+}
+
+function saveStoredSettings(settings: any) {
+  try {
+    fs.writeFileSync(SETTINGS_FILE_PATH, JSON.stringify(settings, null, 2), 'utf-8');
+  } catch (e) {
+    console.error('[Server] Failed to save settings:', e);
   }
 }
 
 let products: Product[] = loadStoredProducts();
 let inquiries: ConsultationRequest[] = loadStoredInquiries();
+let reviews: any[] = loadStoredReviews();
+let siteSettings: any = loadStoredSettings();
 let lastDataSyncTimestamp = Date.now();
 
 // Lazy Gemini AI setup
@@ -184,7 +191,6 @@ let lastRateFetch = 0;
 
 async function fetchLiveExchangeRates() {
   const now = Date.now();
-  // Refresh cache if older than 10 minutes
   if (now - lastRateFetch < 600000 && lastRateFetch > 0) {
     return cachedRates;
   }
@@ -215,12 +221,10 @@ async function startServer() {
   // Serve static uploaded images
   app.use('/uploads', express.static(UPLOADS_DIR));
 
-  // API Routes
-
-  // 0. Batch Upload Images (Saves Base64 images directly to disk as JPG files)
+  // 0. Batch Upload Images
   app.post('/api/upload-images', (req: Request, res: Response) => {
     try {
-      const { images } = req.body; // array of { name?: string, dataUrl: string } or raw dataUrls
+      const { images } = req.body;
       if (!Array.isArray(images) || images.length === 0) {
         return res.status(400).json({ success: false, error: 'No images provided' });
       }
@@ -232,16 +236,13 @@ async function startServer() {
         const rawData = typeof item === 'string' ? item : item.dataUrl;
         if (!rawData) return;
 
-        // If it's already an external URL or existing /uploads URL, keep as is
         if (rawData.startsWith('http://') || rawData.startsWith('https://') || rawData.startsWith('/uploads/')) {
           savedUrls.push(rawData);
           return;
         }
 
-        // Base64 format: data:image/jpeg;base64,... (case-insensitive)
         const matches = rawData.match(/^data:image\/([a-zA-Z0-9\+\-\.]+);base64,(.+)$/is);
         if (!matches || matches.length < 3) {
-          // If already a URL or unrecognized format
           savedUrls.push(rawData);
           return;
         }
@@ -269,7 +270,24 @@ async function startServer() {
     }
   });
 
-  // 0-B. Live Exchange Rates
+  // 0-B. Delete image
+  app.post('/api/delete-image', (req: Request, res: Response) => {
+    try {
+      const { url } = req.body;
+      if (url && typeof url === 'string' && url.startsWith('/uploads/')) {
+        const filename = path.basename(url);
+        const filePath = path.join(UPLOADS_DIR, filename);
+        if (fs.existsSync(filePath)) {
+          fs.unlinkSync(filePath);
+        }
+      }
+      res.json({ success: true });
+    } catch (e: any) {
+      res.status(500).json({ success: false, error: e.message });
+    }
+  });
+
+  // 0-C. Live Exchange Rates
   app.get('/api/exchange-rates', async (req: Request, res: Response) => {
     const rates = await fetchLiveExchangeRates();
     const nowStr = new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
@@ -282,12 +300,6 @@ async function startServer() {
 
   // 1. Get Products
   app.get('/api/products', (req: Request, res: Response) => {
-    if (products.length === 0) {
-      const reloaded = loadStoredProducts();
-      if (reloaded.length > 0) {
-        products = reloaded;
-      }
-    }
     res.json({ success: true, count: products.length, products, lastUpdated: lastDataSyncTimestamp });
   });
 
@@ -303,52 +315,6 @@ async function startServer() {
     });
   });
 
-  // Cross-Device Session Store (PC ↔ Mobile)
-  const syncSessions: Record<string, { data: any; createdAt: number }> = {};
-
-  // 1-C. Create/Update Cross-Device Sync Session (PC ↔ Mobile)
-  app.post('/api/sync/session', (req: Request, res: Response) => {
-    try {
-      const { code, data } = req.body;
-      const sessionCode = code || Math.floor(100000 + Math.random() * 900000).toString();
-      syncSessions[sessionCode] = {
-        data: data || {},
-        createdAt: Date.now()
-      };
-      
-      // Cleanup old sessions (> 24 hours)
-      const oneDayAgo = Date.now() - 24 * 60 * 60 * 1000;
-      Object.keys(syncSessions).forEach(key => {
-        if (syncSessions[key].createdAt < oneDayAgo) {
-          delete syncSessions[key];
-        }
-      });
-
-      res.json({
-        success: true,
-        code: sessionCode,
-        session: syncSessions[sessionCode]
-      });
-    } catch (err: any) {
-      res.status(500).json({ success: false, error: err.message });
-    }
-  });
-
-  // 1-D. Retrieve Cross-Device Sync Session
-  app.get('/api/sync/session/:code', (req: Request, res: Response) => {
-    const { code } = req.params;
-    const session = syncSessions[code];
-    if (!session) {
-      return res.status(404).json({ success: false, error: '유효하지 않거나 만료된 연동 코드입니다.' });
-    }
-    res.json({
-      success: true,
-      code,
-      data: session.data,
-      createdAt: session.createdAt
-    });
-  });
-
   // 2. Add Product
   app.post('/api/products', (req: Request, res: Response) => {
     try {
@@ -357,7 +323,6 @@ async function startServer() {
         id: req.body.id || `prod-${Date.now()}`,
         createdAt: req.body.createdAt || new Date().toISOString()
       };
-      // Prevent duplicates by ID
       products = [newProduct, ...products.filter(p => p.id !== newProduct.id)];
       saveStoredProducts(products);
       lastDataSyncTimestamp = Date.now();
@@ -426,29 +391,7 @@ async function startServer() {
     res.json({ success: true, count: products.length, products });
   });
 
-  // 4-E. Clean Sample Photos Only (Removes Unsplash/sample demo images, keeps user photos)
-  app.post('/api/products/clean-sample-photos', (req: Request, res: Response) => {
-    products = products.map(p => {
-      const isMainSample = isSamplePhotoUrl(p.imageUrl);
-      const cleanSubs = (p.additionalImages || []).filter(u => Boolean(u) && !isSamplePhotoUrl(u));
-      
-      let newMain = p.imageUrl || '';
-      if (isMainSample) {
-        newMain = cleanSubs.length > 0 ? cleanSubs[0] : '';
-      }
-
-      return {
-        ...p,
-        imageUrl: newMain,
-        additionalImages: isMainSample && cleanSubs.length > 0 ? cleanSubs.slice(1) : cleanSubs
-      };
-    });
-    saveStoredProducts(products);
-    lastDataSyncTimestamp = Date.now();
-    res.json({ success: true, count: products.length, products });
-  });
-
-  // 5. Bulk Reset to Initial Seed Data
+  // 5. Bulk Reset to Initial Seed Data (Admin triggered only)
   app.post('/api/products/reset', (req: Request, res: Response) => {
     products = [...SAMPLE_PRODUCTS];
     saveStoredProducts(products);
@@ -456,36 +399,7 @@ async function startServer() {
     res.json({ success: true, products });
   });
 
-  // 6. Bulk Import Products (JSON)
-  app.post('/api/products/import', (req: Request, res: Response) => {
-    try {
-      const { items, replaceExisting } = req.body;
-      if (!Array.isArray(items)) {
-        return res.status(400).json({ success: false, error: 'Invalid payload: items must be an array' });
-      }
-
-      if (replaceExisting) {
-        products = items.map((item, idx) => ({
-          ...item,
-          id: item.id || `prod-imp-${Date.now()}-${idx}`
-        }));
-      } else {
-        const formatted = items.map((item, idx) => ({
-          ...item,
-          id: item.id || `prod-imp-${Date.now()}-${idx}`
-        }));
-        products = [...formatted, ...products];
-      }
-
-      saveStoredProducts(products);
-      lastDataSyncTimestamp = Date.now();
-      res.json({ success: true, productsCount: products.length, products });
-    } catch (err: any) {
-      res.status(500).json({ success: false, error: err.message });
-    }
-  });
-
-  // 7. Get Inquiries / Consultation Requests
+  // 7. Get Inquiries
   app.get('/api/inquiries', (req: Request, res: Response) => {
     res.json({ success: true, inquiries });
   });
@@ -495,9 +409,9 @@ async function startServer() {
     try {
       const newInquiry: ConsultationRequest = {
         ...req.body,
-        id: `inq-${Date.now()}`,
+        id: req.body.id || `inq-${Date.now()}`,
         status: 'pending',
-        createdAt: new Date().toISOString()
+        createdAt: req.body.createdAt || new Date().toISOString()
       };
       inquiries.unshift(newInquiry);
       saveStoredInquiries(inquiries);
@@ -522,7 +436,44 @@ async function startServer() {
     res.json({ success: true, inquiry: inq });
   });
 
-  // 10. AI Travel Assistant (Gemini)
+  // 9-B. Delete Inquiry
+  app.delete('/api/inquiries/:id', (req: Request, res: Response) => {
+    const { id } = req.params;
+    inquiries = inquiries.filter(i => i.id !== id);
+    saveStoredInquiries(inquiries);
+    res.json({ success: true });
+  });
+
+  // 10. Reviews API
+  app.get('/api/reviews', (req: Request, res: Response) => {
+    res.json({ success: true, reviews });
+  });
+
+  app.post('/api/reviews', (req: Request, res: Response) => {
+    const newRev = { ...req.body, id: req.body.id || `rev-${Date.now()}` };
+    reviews.unshift(newRev);
+    saveStoredReviews(reviews);
+    res.json({ success: true, review: newRev });
+  });
+
+  app.delete('/api/reviews/:id', (req: Request, res: Response) => {
+    reviews = reviews.filter(r => r.id !== req.params.id);
+    saveStoredReviews(reviews);
+    res.json({ success: true });
+  });
+
+  // 11. Settings API
+  app.get('/api/settings', (req: Request, res: Response) => {
+    res.json({ success: true, settings: siteSettings });
+  });
+
+  app.post('/api/settings', (req: Request, res: Response) => {
+    siteSettings = { ...siteSettings, ...req.body.settings };
+    saveStoredSettings(siteSettings);
+    res.json({ success: true, settings: siteSettings });
+  });
+
+  // 12. AI Travel Assistant (Gemini)
   app.post('/api/ai-consult', async (req: Request, res: Response) => {
     const { prompt, userContext } = req.body;
     if (!prompt) {
@@ -532,7 +483,6 @@ async function startServer() {
     try {
       const ai = getGenAIClient();
       if (!ai) {
-        // Smart fallback rule-based response if GEMINI_API_KEY is not set
         return res.json({
           success: true,
           reply: `안녕하세요! 신차오투어 베트남 맞춤 여행 AI 상담원입니다. 😊\n\n문의하신 내용: "${prompt}"\n\n[추천 베트남 여행 정보]\n• **북부 (하노이/하롱베이/사파)**:웅장한 자연 경관, 5성급 럭셔리 크루즈, 사파 산악 트레킹 추천!\n• **중부 (다낭/호이안/나트랑)**: 가족 휴양, 미케비치, 호이안 등불 야경, 명문 BRG 54홀 골프투어 최고 인기!\n• **남부 (푸꾸옥/달랏/호치민)**: 에메랄드 빛 독채 풀빌라 휴양, 6성급 리젠트 리조트, 시원한 달랏 고원 골프!\n\n저희 신차오투어 실시간 상담원(010-5365-6019 또는 카카오톡 '신차오투어')을 통해 1:1 맞춤 견적 및 단독 전용 차량 예약을 바로 받아보실 수 있습니다!`

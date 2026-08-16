@@ -2248,58 +2248,7 @@ export const AdminMode: React.FC<AdminModeProps> = ({
                     </div>
                   </div>
 
-                  {/* 2. Direct URL Inputs (Optional) */}
-                  <div className="bg-slate-950 p-5 rounded-3xl border border-slate-800 space-y-3">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-slate-300 flex items-center gap-1.5">
-                        <ImageIcon className="w-3.5 h-3.5 text-slate-400" />
-                        <span>이미지 웹 URL 직접 입력 (선택사항)</span>
-                      </span>
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      <div className="space-y-1">
-                        <label className="text-[11px] font-bold text-slate-400">대표 썸네일 URL</label>
-                        <input
-                          type="text"
-                          value={editingProduct.imageUrl || ''}
-                          onChange={(e) => setEditingProduct(prev => prev ? { ...prev, imageUrl: e.target.value } : prev)}
-                          placeholder="https://..."
-                          className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-hidden focus:border-amber-400"
-                        />
-                      </div>
-
-                      <div className="space-y-1">
-                        <label className="text-[11px] font-bold text-slate-400">추가 갤러리 URL</label>
-                        <div className="flex gap-1.5">
-                          <input
-                            type="text"
-                            value={customPhotoUrlInput}
-                            onChange={(e) => setCustomPhotoUrlInput(e.target.value)}
-                            placeholder="https://..."
-                            className="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-hidden focus:border-amber-400"
-                          />
-                          <button
-                            type="button"
-                            onClick={() => {
-                              if (customPhotoUrlInput.trim()) {
-                                setEditingProduct(prev => prev ? {
-                                  ...prev,
-                                  additionalImages: [...(prev.additionalImages || []), customPhotoUrlInput.trim()]
-                                } : prev);
-                                setCustomPhotoUrlInput('');
-                              }
-                            }}
-                            className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs shrink-0 cursor-pointer"
-                          >
-                            추가
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* 3. Registered Photos List & Gallery Arrangement */}
+                  {/* 2. Registered Photos List & Gallery Arrangement */}
                   <div className="space-y-3 pt-2">
                     <div className="flex items-center justify-between">
                       <span className="font-bold text-slate-200 text-sm flex items-center gap-2">

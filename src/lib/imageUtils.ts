@@ -3,6 +3,7 @@
  * Automatically compresses, resizes, and optimizes user uploaded photos
  * to ensure ultra-fast loading, lightweight storage, and 100% upload reliability.
  */
+import { imageService } from '../services/imageService';
 
 export interface ProcessedImageResult {
   dataUrl: string;
@@ -24,7 +25,6 @@ export async function optimizeImageFile(
   quality = 0.85
 ): Promise<ProcessedImageResult> {
   return new Promise((resolve, reject) => {
-    // Check if it's an image
     if (!file.type.startsWith('image/')) {
       return reject(new Error('이미지 파일(JPG, PNG, WebP 등)만 업로드 가능합니다.'));
     }
@@ -39,7 +39,6 @@ export async function optimizeImageFile(
       img.onload = () => {
         let { width, height } = img;
 
-        // Calculate aspect ratio scale
         if (width > maxWidth || height > maxHeight) {
           const ratio = Math.min(maxWidth / width, maxHeight / height);
           width = Math.round(width * ratio);
@@ -62,12 +61,10 @@ export async function optimizeImageFile(
           });
         }
 
-        // Draw with high quality interpolation
         ctx.imageSmoothingEnabled = true;
         ctx.imageSmoothingQuality = 'high';
         ctx.drawImage(img, 0, 0, width, height);
 
-        // Convert to WebP if supported, otherwise JPEG
         let mimeType = 'image/jpeg';
         if (file.type === 'image/webp' || file.type === 'image/png') {
           mimeType = file.type === 'image/png' && file.size < 500000 ? 'image/png' : 'image/jpeg';
@@ -94,35 +91,21 @@ export async function optimizeImageFile(
 }
 
 /**
- * Uploads optimized images to backend API or falls back smoothly to Data URLs.
- * Never throws fatal alerts to the user.
+ * Uploads optimized images to Supabase Storage or server API.
  */
 export async function uploadImagesToServer(
   images: { dataUrl: string; name?: string }[]
 ): Promise<string[]> {
   if (!images || images.length === 0) return [];
 
-  const rawDataUrls = images.map(img => img.dataUrl);
-
   try {
-    const response = await fetch('/api/upload-images', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ images: rawDataUrls }),
-    });
-
-    if (response.ok) {
-      const result = await response.json();
-      if (result && Array.isArray(result.urls) && result.urls.length > 0) {
-        return result.urls;
-      }
+    const urls = await imageService.uploadMultipleImages(images.map(img => img.dataUrl));
+    if (urls && urls.length > 0) {
+      return urls;
     }
   } catch (err) {
-    console.warn('[Image Upload] Server API not reachable or failed, falling back to optimized local storage:', err);
+    console.warn('[Image Upload] Image service upload warning:', err);
   }
 
-  // Seamless fallback: return optimized data URLs directly
-  return rawDataUrls;
+  return images.map(img => img.dataUrl);
 }

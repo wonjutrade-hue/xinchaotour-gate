@@ -1,24 +1,15 @@
-import React, { useState } from 'react';
-import { Star, MessageSquare, ThumbsUp, CheckCircle, PlusCircle, X, ShieldCheck, Heart } from 'lucide-react';
-import { INITIAL_REVIEWS, ReviewItem } from '../data/reviews';
+import React, { useState, useEffect } from 'react';
+import { Star, MessageSquare, CheckCircle, PlusCircle, X, ShieldCheck, Heart } from 'lucide-react';
+import { ReviewItem, INITIAL_REVIEWS } from '../data/reviews';
+import { reviewService } from '../services/reviewService';
 
 interface ReviewsPageProps {
   onOpenConsultation?: (productTitle?: string) => void;
 }
 
 export const ReviewsPage: React.FC<ReviewsPageProps> = ({ onOpenConsultation }) => {
-  const [reviews, setReviews] = useState<ReviewItem[]>(() => {
-    try {
-      const saved = localStorage.getItem('xinchao_user_reviews');
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
-      }
-    } catch (e) {
-      console.warn(e);
-    }
-    return INITIAL_REVIEWS;
-  });
+  const [reviews, setReviews] = useState<ReviewItem[]>(INITIAL_REVIEWS);
+  const [isLoading, setIsLoading] = useState(true);
 
   const [isWriteModalOpen, setIsWriteModalOpen] = useState(false);
   const [newUserName, setNewUserName] = useState('');
@@ -27,6 +18,23 @@ export const ReviewsPage: React.FC<ReviewsPageProps> = ({ onOpenConsultation }) 
   const [newRating, setNewRating] = useState(5);
   const [newContent, setNewContent] = useState('');
   const [likedMap, setLikedMap] = useState<Record<string, boolean>>({});
+
+  useEffect(() => {
+    loadReviews();
+  }, []);
+
+  const loadReviews = async () => {
+    try {
+      const list = await reviewService.getReviews();
+      if (Array.isArray(list) && list.length > 0) {
+        setReviews(list);
+      }
+    } catch (e) {
+      console.warn('Failed to load reviews:', e);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleLike = (id: string) => {
     setLikedMap(prev => ({ ...prev, [id]: !prev[id] }));
@@ -44,15 +52,14 @@ export const ReviewsPage: React.FC<ReviewsPageProps> = ({ onOpenConsultation }) 
     );
   };
 
-  const handleSubmitReview = (e: React.FormEvent) => {
+  const handleSubmitReview = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newUserName.trim() || !newContent.trim()) {
       alert('성함과 후기 내용을 입력해주세요.');
       return;
     }
 
-    const newRev: ReviewItem = {
-      id: `rev-${Date.now()}`,
+    const newRev = await reviewService.createReview({
       userName: `${newUserName.trim()} 님`,
       region: newRegion,
       productTitle: newProduct.trim() || '신짜오투어 맞춤 여행',
@@ -61,15 +68,9 @@ export const ReviewsPage: React.FC<ReviewsPageProps> = ({ onOpenConsultation }) 
       content: newContent.trim(),
       likes: 1,
       verified: true
-    };
+    });
 
-    const updated = [newRev, ...reviews];
-    setReviews(updated);
-    try {
-      localStorage.setItem('xinchao_user_reviews', JSON.stringify(updated));
-    } catch (e) {
-      console.warn(e);
-    }
+    setReviews(prev => [newRev, ...prev]);
 
     alert('소중한 여행후기가 성공적으로 등록되었습니다. 감사합니다!');
     setIsWriteModalOpen(false);
@@ -194,7 +195,7 @@ export const ReviewsPage: React.FC<ReviewsPageProps> = ({ onOpenConsultation }) 
               <div className="flex items-center justify-between pt-4 border-t border-slate-100 text-xs text-slate-500">
                 <button
                   onClick={() => handleLike(item.id)}
-                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border transition ${
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border transition cursor-pointer ${
                     likedMap[item.id]
                       ? 'bg-rose-50 text-rose-600 border-rose-200 font-bold'
                       : 'bg-slate-50 hover:bg-slate-100 text-slate-600 border-slate-200'
@@ -206,7 +207,7 @@ export const ReviewsPage: React.FC<ReviewsPageProps> = ({ onOpenConsultation }) 
                 {onOpenConsultation && (
                   <button
                     onClick={() => onOpenConsultation(item.productTitle)}
-                    className="text-emerald-600 hover:text-emerald-700 font-bold hover:underline"
+                    className="text-emerald-600 hover:text-emerald-700 font-bold hover:underline cursor-pointer"
                   >
                     이 상품 문의하기 ➔
                   </button>
@@ -222,7 +223,7 @@ export const ReviewsPage: React.FC<ReviewsPageProps> = ({ onOpenConsultation }) 
             <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto">
               <button
                 onClick={() => setIsWriteModalOpen(false)}
-                className="absolute top-5 right-5 text-slate-400 hover:text-slate-700 p-1.5 rounded-full hover:bg-slate-100 transition"
+                className="absolute top-5 right-5 text-slate-400 hover:text-slate-700 p-1.5 rounded-full hover:bg-slate-100 transition cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>

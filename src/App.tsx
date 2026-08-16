@@ -17,8 +17,11 @@ import { AdminMode } from './components/AdminMode';
 import { AdminLoginModal } from './components/AdminLoginModal';
 import { ReservationPage } from './components/ReservationPage';
 import { TravelInfoPage } from './components/TravelInfoPage';
-import { INITIAL_PRODUCTS } from './data/seedProducts';
+import { ReviewsPage } from './components/ReviewsPage';
+import { CompanyPage } from './components/CompanyPage';
 import { getLiveExchangeRates, ExchangeRates, DEFAULT_RATES } from './lib/exchangeRate';
+import { productService } from './services/productService';
+import { inquiryService } from './services/inquiryService';
 import { 
   SearchX, 
   Palmtree, 
@@ -31,7 +34,9 @@ import {
   FileText,
   Utensils,
   Lightbulb,
-  ArrowRight
+  ArrowRight,
+  Loader2,
+  PackagePlus
 } from 'lucide-react';
 
 import {
@@ -42,7 +47,6 @@ import {
 } from './lib/indexedDb';
 
 const PRODUCTS_CACHE_KEY = 'xinchao_products_cache_master';
-const DB_INITIALIZED_KEY = 'xinchao_db_initialized_master';
 
 function cleanSampleUrls(prodList: Product[]): Product[] {
   if (!Array.isArray(prodList)) return [];
@@ -59,26 +63,10 @@ function cleanSampleUrls(prodList: Product[]): Product[] {
 
 function getStoredJson<T>(key: string, fallback: T): T {
   try {
-    // 1. Try master key
-    let raw = localStorage.getItem(key);
-    
-    // 2. If not found, look for any previous version cache keys
-    if (!raw) {
-      for (let i = 0; i < localStorage.length; i++) {
-        const k = localStorage.key(i);
-        if (k && k.startsWith('xinchao_products_cache_')) {
-          const val = localStorage.getItem(k);
-          if (val && val.length > 50) {
-            raw = val;
-            break;
-          }
-        }
-      }
-    }
-
+    const raw = localStorage.getItem(key);
     if (raw) {
       const parsed = JSON.parse(raw);
-      if (parsed !== null && parsed !== undefined && Array.isArray(parsed) && parsed.length > 0) {
+      if (parsed !== null && parsed !== undefined && Array.isArray(parsed)) {
         return cleanSampleUrls(parsed) as unknown as T;
       }
     }
@@ -94,7 +82,6 @@ function setStoredJson(key: string, data: any) {
     if (jsonStr.length < 5000000) {
       localStorage.setItem(key, jsonStr);
     }
-    localStorage.setItem(DB_INITIALIZED_KEY, 'true');
   } catch (e) {
     console.warn(`LocalStorage quota warning:`, e);
   }
@@ -103,9 +90,7 @@ function setStoredJson(key: string, data: any) {
 export default function App() {
   const [currentPage, setCurrentPage] = useState<NavPage>('home');
   const [products, setProducts] = useState<Product[]>(() => {
-    const cached = getStoredJson<Product[]>(PRODUCTS_CACHE_KEY, []);
-    if (cached && cached.length > 0) return cached;
-    return INITIAL_PRODUCTS;
+    return getStoredJson<Product[]>(PRODUCTS_CACHE_KEY, []);
   });
   const [inquiries, setInquiries] = useState<ConsultationRequest[]>([]);
   const [isLoadingProducts, setIsLoadingProducts] = useState(true);
@@ -114,7 +99,7 @@ export default function App() {
   const lastClientSaveTimestampRef = useRef<number>(0);
   const isSavingToServerRef = useRef<boolean>(false);
 
-  // Sync products state to IndexedDB, localStorage, and server backend
+  // Sync products state to IndexedDB, localStorage, Supabase and server backend
   const persistProducts = async (updatedProducts: Product[]): Promise<boolean> => {
     lastClientSaveTimestampRef.current = Date.now();
     isSavingToServerRef.current = true;
@@ -131,24 +116,11 @@ export default function App() {
       return updatedMatch || prev;
     });
 
-    // 2. Persist to server backend and confirm
+    // 2. Persist to Supabase Database & Server backend
     try {
-      const res = await fetch('/api/products/sync', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ products: updatedProducts })
-      });
-      if (res.ok) {
-        const data = await res.json();
-        if (data.success && Array.isArray(data.products)) {
-          setProducts(data.products);
-          await saveProductsToIndexedDB(data.products);
-          setStoredJson(PRODUCTS_CACHE_KEY, data.products);
-          return true;
-        }
-      }
+      await productService.syncAllProducts(updatedProducts);
     } catch (e) {
-      console.warn('Backend sync warning (offline/local mode active):', e);
+      console.warn('Backend sync warning:', e);
     } finally {
       isSavingToServerRef.current = false;
     }
@@ -243,88 +215,34 @@ export default function App() {
     }
   };
 
-  // Sync Data with Server and Local DB
+  // Sync Data with Database (Supabase / Server)
   const syncAllDataFromServer = async (showLoading: boolean = false) => {
     if (isSavingToServerRef.current || (Date.now() - lastClientSaveTimestampRef.current < 4000)) {
       return;
     }
     if (showLoading) setIsLoadingProducts(true);
     try {
-      const res = await fetch('/api/sync');
-      if (res.ok) {
-        const data = await res.json();
-        if (data.success) {
-          if (Array.isArray(data.products) && data.products.length > 0) {
-            if (!isSavingToServerRef.current && (Date.now() - lastClientSaveTimestampRef.current >= 4000)) {
-              setProducts(data.products);
-              await saveProductsToIndexedDB(data.products);
-              setStoredJson(PRODUCTS_CACHE_KEY, data.products);
-            }
-          }
-          if (Array.isArray(data.inquiries)) {
-            setInquiries(data.inquiries);
-            await saveInquiriesToIndexedDB(data.inquiries);
-          }
-          return data;
+      const [fetchedProducts, fetchedInquiries] = await Promise.all([
+        productService.getProducts({ status: 'published' }),
+        inquiryService.getInquiries()
+      ]);
+
+      if (Array.isArray(fetchedProducts)) {
+        if (!isSavingToServerRef.current && (Date.now() - lastClientSaveTimestampRef.current >= 4000)) {
+          setProducts(fetchedProducts);
+          await saveProductsToIndexedDB(fetchedProducts);
+          setStoredJson(PRODUCTS_CACHE_KEY, fetchedProducts);
         }
       }
+
+      if (Array.isArray(fetchedInquiries)) {
+        setInquiries(fetchedInquiries);
+        await saveInquiriesToIndexedDB(fetchedInquiries);
+      }
     } catch (err) {
-      console.warn('API sync fallback to individual endpoints:', err);
-      await Promise.all([fetchProducts(), fetchInquiries()]);
+      console.warn('Data sync fallback to local cache:', err);
     } finally {
       if (showLoading) setIsLoadingProducts(false);
-    }
-  };
-
-  const fetchProducts = async () => {
-    if (isSavingToServerRef.current || (Date.now() - lastClientSaveTimestampRef.current < 4000)) {
-      return;
-    }
-    try {
-      const res = await fetch('/api/products');
-      if (res.ok) {
-        const data = await res.json();
-        if (data.success && Array.isArray(data.products) && data.products.length > 0) {
-          if (!isSavingToServerRef.current && (Date.now() - lastClientSaveTimestampRef.current >= 4000)) {
-            setProducts(data.products);
-            await saveProductsToIndexedDB(data.products);
-            setStoredJson(PRODUCTS_CACHE_KEY, data.products);
-          }
-          return;
-        }
-      }
-    } catch (err) {
-      console.warn('API fetch fallback to local storage:', err);
-    } finally {
-      setIsLoadingProducts(false);
-    }
-
-    try {
-      const fromIndexed = await loadProductsFromIndexedDB();
-      if (Array.isArray(fromIndexed) && fromIndexed.length > 0) {
-        setProducts(fromIndexed);
-        setStoredJson(PRODUCTS_CACHE_KEY, fromIndexed);
-      }
-    } catch (e) {
-      console.warn('Local DB read error:', e);
-    }
-  };
-
-  const fetchInquiries = async () => {
-    try {
-      const res = await fetch('/api/inquiries');
-      const data = await res.json();
-      if (data.success && Array.isArray(data.inquiries)) {
-        setInquiries(data.inquiries);
-        await saveInquiriesToIndexedDB(data.inquiries);
-        return;
-      }
-    } catch (err) {
-      console.warn('Failed to fetch inquiries, checking local DB:', err);
-    }
-    const localInqs = await loadInquiriesFromIndexedDB();
-    if (localInqs && localInqs.length > 0) {
-      setInquiries(localInqs);
     }
   };
 
@@ -334,7 +252,7 @@ export default function App() {
 
     const pollTimer = setInterval(() => {
       syncAllDataFromServer(false);
-    }, 6000);
+    }, 10000);
 
     const handleReSync = () => {
       syncAllDataFromServer(false);
@@ -358,28 +276,14 @@ export default function App() {
 
   const handleSubmitInquiry = async (payload: any): Promise<boolean> => {
     try {
-      const res = await fetch('/api/inquiries', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      const data = await res.json();
-      if (data.success && data.inquiry) {
-        setInquiries(prev => [data.inquiry, ...prev]);
-        return true;
-      }
+      const created = await inquiryService.createInquiry(payload);
+      setInquiries(prev => [created, ...prev]);
+      await saveInquiriesToIndexedDB([created, ...inquiries]);
+      return true;
     } catch (err) {
-      console.warn('Inquiry submit API fallback to local');
+      console.warn('Inquiry submit API fallback');
+      return false;
     }
-    const localInq: ConsultationRequest = {
-      ...payload,
-      id: `inq-${Date.now()}`,
-      status: 'pending',
-      createdAt: new Date().toISOString()
-    };
-    setInquiries(prev => [localInq, ...prev]);
-    saveInquiriesToIndexedDB([localInq, ...inquiries]);
-    return true;
   };
 
   // Filter & Sort Logic
@@ -436,6 +340,28 @@ export default function App() {
         <TravelInfoPage
           initialTab={travelInfoTab}
           rates={exchangeRates}
+          onOpenConsultation={() => {
+            setConsultationTargetProduct(null);
+            setIsConsultationOpen(true);
+          }}
+        />
+      );
+    }
+
+    if (currentPage === 'reviews') {
+      return (
+        <ReviewsPage
+          onOpenConsultation={(target) => {
+            setConsultationTargetProduct(target || null);
+            setIsConsultationOpen(true);
+          }}
+        />
+      );
+    }
+
+    if (currentPage === 'company') {
+      return (
+        <CompanyPage
           onOpenConsultation={() => {
             setConsultationTargetProduct(null);
             setIsConsultationOpen(true);
@@ -513,15 +439,20 @@ export default function App() {
             )}
           </div>
 
-          {/* Product Cards Grid */}
-          {filteredProducts.length === 0 ? (
+          {/* Loading Indicator */}
+          {isLoadingProducts && products.length === 0 ? (
+            <div className="py-24 text-center space-y-3">
+              <Loader2 className="w-8 h-8 text-emerald-600 animate-spin mx-auto" />
+              <p className="text-sm font-bold text-slate-600">상품 정보를 불러오는 중입니다...</p>
+            </div>
+          ) : filteredProducts.length === 0 ? (
             <div className="py-20 text-center bg-slate-50 rounded-3xl border border-dashed border-slate-200 space-y-4">
               <SearchX className="w-12 h-12 text-slate-400 mx-auto" />
               <h3 className="text-base font-extrabold text-slate-800">
-                해당 조건에 맞는 상품이 없습니다.
+                등록된 여행상품이 없습니다.
               </h3>
               <p className="text-xs text-slate-500 max-w-sm mx-auto">
-                원하시는 지역이나 일정을 1:1 맞춤 상담을 통해 신청해주시면 최적의 견적을 안내해드립니다.
+                관리자 페이지에서 상품을 등록하시거나 1:1 맞춤 상담을 통해 신청해주시면 최적의 견적을 안내해드립니다.
               </p>
               <div className="flex items-center justify-center gap-3">
                 <button
@@ -532,6 +463,13 @@ export default function App() {
                   className="px-5 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-2xl font-bold text-xs cursor-pointer shadow-sm"
                 >
                   💬 1:1 맞춤 여행 견적 문의하기
+                </button>
+                <button
+                  onClick={handleOpenAdmin}
+                  className="px-5 py-2.5 bg-slate-800 hover:bg-slate-900 text-white rounded-2xl font-bold text-xs cursor-pointer shadow-sm flex items-center gap-1.5"
+                >
+                  <PackagePlus className="w-4 h-4" />
+                  <span>관리자 상품 등록하기</span>
                 </button>
               </div>
             </div>
@@ -598,48 +536,53 @@ export default function App() {
           </section>
 
           {/* Trust & Unique Benefits Section */}
-          <section className="bg-gradient-to-br from-slate-950 via-teal-950 to-emerald-950 text-white rounded-3xl p-6 sm:p-10 shadow-xl space-y-8">
-            <div className="text-center max-w-2xl mx-auto space-y-2">
-              <span className="text-emerald-400 font-extrabold text-xs tracking-wider uppercase bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-400/30">
-                Why XinChaoTour
-              </span>
-              <h3 className="text-2xl sm:text-3xl font-black tracking-tight text-white">
-                왜 한국 여행객들은 '신짜오투어'를 선택할까요?
-              </h3>
-              <p className="text-xs sm:text-sm text-slate-300">
-                베트남 현지 직영 운영으로 거품 없는 가격과 24시간 안심 케어를 약속합니다.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-slate-200">
-              <div className="bg-white/5 backdrop-blur-md p-6 rounded-2xl border border-white/10 space-y-3">
-                <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-300 flex items-center justify-center font-bold">
-                  <ShieldCheck className="w-6 h-6 text-emerald-400" />
-                </div>
-                <h4 className="font-extrabold text-white text-base">100% 현지 직영 & 단독 VIP 차량</h4>
-                <p className="text-xs text-slate-300 leading-relaxed">
-                  중개 수수료 제로! 다낭, 하노이, 호치민 현지 지사에서 전용 럭셔리 밴과 검증된 한국어 가이드를 직접 배정합니다.
+          <section className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white rounded-3xl p-8 sm:p-10 relative overflow-hidden shadow-xl">
+            <div className="absolute top-0 right-0 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+            <div className="relative z-10 space-y-6">
+              <div className="max-w-xl space-y-2">
+                <span className="px-3 py-1 bg-emerald-500/20 text-emerald-300 font-bold text-xs rounded-full inline-block border border-emerald-500/30">
+                  Why XinChaoTour?
+                </span>
+                <h3 className="text-xl sm:text-2xl font-black tracking-tight">
+                  왜 한국 여행객들은 신짜오투어를 선택할까요?
+                </h3>
+                <p className="text-xs text-slate-300">
+                  거품 없는 현지 직영 시스템으로 가장 안전하고 완벽한 베트남 여행을 약속합니다.
                 </p>
               </div>
 
-              <div className="bg-white/5 backdrop-blur-md p-6 rounded-2xl border border-white/10 space-y-3">
-                <div className="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-300 flex items-center justify-center font-bold">
-                  <Clock className="w-6 h-6 text-amber-300" />
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="bg-white/5 border border-white/10 p-4 rounded-2xl backdrop-blur-xs space-y-2">
+                  <ShieldCheck className="w-7 h-7 text-emerald-400" />
+                  <h4 className="font-black text-sm text-white">100% 단독 전용 차량</h4>
+                  <p className="text-xs text-slate-400 leading-relaxed">
+                    다른 팀과 합승하지 않는 우리 가족/일행 전용 리무진 밴으로 안락하게 이동합니다.
+                  </p>
                 </div>
-                <h4 className="font-extrabold text-white text-base">24시간 카카오톡 실시간 케어</h4>
-                <p className="text-xs text-slate-300 leading-relaxed">
-                  여행 중 긴급 상황이나 식당 예약, 일정 변경도 카카오톡으로 실시간 신속하게 해결해드립니다.
-                </p>
-              </div>
 
-              <div className="bg-white/5 backdrop-blur-md p-6 rounded-2xl border border-white/10 space-y-3">
-                <div className="w-12 h-12 rounded-2xl bg-rose-500/20 text-rose-300 flex items-center justify-center font-bold">
-                  <ThumbsUp className="w-6 h-6 text-amber-300" />
+                <div className="bg-white/5 border border-white/10 p-4 rounded-2xl backdrop-blur-xs space-y-2">
+                  <ThumbsUp className="w-7 h-7 text-amber-400" />
+                  <h4 className="font-black text-sm text-white">베테랑 한국어 가이드</h4>
+                  <p className="text-xs text-slate-400 leading-relaxed">
+                    불필요한 쇼핑/옵션 강요 없이 현지 역사와 문화를 친절하고 전문적으로 안내합니다.
+                  </p>
                 </div>
-                <h4 className="font-extrabold text-white text-base">NO 강요 쇼핑 · 최저가 보장</h4>
-                <p className="text-xs text-slate-300 leading-relaxed">
-                  불필요한 의무 쇼핑센터 방문 없는 온전한 힐링! 고객 맞춤형 일정으로 감동을 드립니다.
-                </p>
+
+                <div className="bg-white/5 border border-white/10 p-4 rounded-2xl backdrop-blur-xs space-y-2">
+                  <Clock className="w-7 h-7 text-sky-400" />
+                  <h4 className="font-black text-sm text-white">24시간 현지 긴급 지원</h4>
+                  <p className="text-xs text-slate-400 leading-relaxed">
+                    다낭/하노이 현지 지사에서 여행 중 발생하는 모든 상황에 실시간 한국어로 대응합니다.
+                  </p>
+                </div>
+
+                <div className="bg-white/5 border border-white/10 p-4 rounded-2xl backdrop-blur-xs space-y-2">
+                  <Palmtree className="w-7 h-7 text-rose-400" />
+                  <h4 className="font-black text-sm text-white">엄선된 풀빌라 & 명문 골프</h4>
+                  <p className="text-xs text-slate-400 leading-relaxed">
+                    직접 답사하여 검증된 프라이빗 독채 풀빌라와 베트남 최고 명문 CC를 보증합니다.
+                  </p>
+                </div>
               </div>
             </div>
           </section>
@@ -649,131 +592,124 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-white text-slate-900 font-sans flex flex-col">
+    <div className="min-h-screen flex flex-col bg-white text-slate-900 font-sans antialiased selection:bg-emerald-500 selection:text-white">
       {/* Top Navbar */}
       <Navbar
         currentPage={currentPage}
         onNavigate={handleNavigate}
-        onOpenConsultation={() => {
+        onOpenExchangeModal={() => setIsRateModalOpen(true)}
+        onOpenConsultationModal={() => {
           setConsultationTargetProduct(null);
           setIsConsultationOpen(true);
         }}
-        onOpenAiAssistant={() => setIsAiAssistantOpen(true)}
-        onOpenTravelInfo={handleOpenTravelInfo}
         onOpenAdmin={handleOpenAdmin}
-        searchTerm={searchTerm}
-        onSearchChange={setSearchTerm}
         exchangeRates={exchangeRates}
-        onOpenRateCalculator={() => setIsRateModalOpen(true)}
+        totalProductsCount={products.length}
       />
 
-      {/* Dynamic Content */}
+      {/* Main Page Body */}
       {renderPageContent()}
 
       {/* Footer */}
       <Footer
         onNavigate={handleNavigate}
         onOpenAdmin={handleOpenAdmin}
-        onOpenConsultation={() => {
-          setConsultationTargetProduct(null);
-          setIsConsultationOpen(true);
-        }}
-        onOpenTravelInfo={handleOpenTravelInfo}
       />
 
-      {/* Floating Action Buttons */}
+      {/* Floating Speed Dial Widgets */}
       <FloatingChatWidget
+        onOpenAiAssistant={() => setIsAiAssistantOpen(true)}
         onOpenConsultation={() => {
           setConsultationTargetProduct(null);
           setIsConsultationOpen(true);
         }}
+        onOpenKakao={() => setIsKakaoModalOpen(true)}
+        onOpenExchange={() => setIsRateModalOpen(true)}
       />
 
-      {/* Product Detail Modal */}
-      <ProductDetailModal
-        product={selectedProduct}
-        onClose={() => setSelectedProduct(null)}
-        onOpenConsultation={(p) => {
-          setConsultationTargetProduct(p || selectedProduct);
-          setIsConsultationOpen(true);
-        }}
-        exchangeRates={exchangeRates}
-      />
+      {/* Modals */}
+      {selectedProduct && (
+        <ProductDetailModal
+          product={selectedProduct}
+          onClose={() => setSelectedProduct(null)}
+          onBookNow={(prod) => {
+            setConsultationTargetProduct(prod);
+            setIsConsultationOpen(true);
+          }}
+          exchangeRates={exchangeRates}
+        />
+      )}
 
-      {/* Travel Info Modal */}
-      <TravelInfoModal
-        isOpen={isTravelInfoModalOpen}
-        onClose={() => setIsTravelInfoModalOpen(false)}
-        initialTab={travelInfoTab}
-        rates={exchangeRates}
-        onOpenConsultation={() => {
-          setIsTravelInfoModalOpen(false);
-          setConsultationTargetProduct(null);
-          setIsConsultationOpen(true);
-        }}
-      />
+      {isConsultationOpen && (
+        <ConsultationModal
+          isOpen={isConsultationOpen}
+          targetProduct={consultationTargetProduct}
+          onClose={() => {
+            setIsConsultationOpen(false);
+            setConsultationTargetProduct(null);
+          }}
+          onSubmitSuccess={() => {
+            syncAllDataFromServer(false);
+          }}
+        />
+      )}
 
-      {/* AI Travel Assistant Chat Modal */}
-      <AiTravelAssistantModal
-        isOpen={isAiAssistantOpen}
-        onClose={() => setIsAiAssistantOpen(false)}
-        onOpenConsultation={() => {
-          setIsAiAssistantOpen(false);
-          setIsConsultationOpen(true);
-        }}
-      />
+      {isAiAssistantOpen && (
+        <AiTravelAssistantModal
+          isOpen={isAiAssistantOpen}
+          onClose={() => setIsAiAssistantOpen(false)}
+          onSelectProduct={handleSelectProduct}
+          products={products}
+          rates={exchangeRates}
+        />
+      )}
 
-      {/* Real-time Exchange Rate Modal */}
-      <ExchangeRateModal
-        isOpen={isRateModalOpen}
-        onClose={() => setIsRateModalOpen(false)}
-        rates={exchangeRates}
-        onRefresh={loadRates}
-        isRefreshing={isRefreshingRates}
-      />
+      {isQuizOpen && (
+        <TravelQuiz
+          isOpen={isQuizOpen}
+          onClose={() => setIsQuizOpen(false)}
+          products={products}
+          onSelectProduct={handleSelectProduct}
+        />
+      )}
 
-      {/* Admin Login Modal */}
-      <AdminLoginModal
-        isOpen={isAdminLoginOpen}
-        onClose={() => setIsAdminLoginOpen(false)}
-        onSuccess={() => {
-          setIsAdminLoginOpen(false);
-          setIsAdminMode(true);
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }}
-      />
+      {isTravelInfoModalOpen && (
+        <TravelInfoModal
+          isOpen={isTravelInfoModalOpen}
+          initialTab={travelInfoTab}
+          onClose={() => setIsTravelInfoModalOpen(false)}
+          rates={exchangeRates}
+        />
+      )}
 
-      {/* Real-time Consultation Booking Modal */}
-      <ConsultationModal
-        isOpen={isConsultationOpen}
-        product={consultationTargetProduct}
-        onClose={() => {
-          setIsConsultationOpen(false);
-          setConsultationTargetProduct(null);
-        }}
-        onSubmitInquiry={handleSubmitInquiry}
-      />
+      {isRateModalOpen && (
+        <ExchangeRateModal
+          isOpen={isRateModalOpen}
+          onClose={() => setIsRateModalOpen(false)}
+          rates={exchangeRates}
+          onRefreshRates={loadRates}
+          isRefreshing={isRefreshingRates}
+        />
+      )}
 
-      {/* Interactive Travel Quiz */}
-      <TravelQuiz
-        isOpen={isQuizOpen}
-        onClose={() => setIsQuizOpen(false)}
-        onCompleteQuiz={(cat, reg) => {
-          setActiveCategory(cat);
-          setActiveRegion(reg);
-          setActiveCity('전체');
-          const filterSec = document.getElementById('filter-section');
-          if (filterSec) {
-            filterSec.scrollIntoView({ behavior: 'smooth' });
-          }
-        }}
-      />
+      {isKakaoModalOpen && (
+        <KakaoModal
+          isOpen={isKakaoModalOpen}
+          onClose={() => setIsKakaoModalOpen(false)}
+        />
+      )}
 
-      {/* KakaoTalk Direct Connect Modal */}
-      <KakaoModal
-        isOpen={isKakaoModalOpen}
-        onClose={() => setIsKakaoModalOpen(false)}
-      />
+      {isAdminLoginOpen && (
+        <AdminLoginModal
+          isOpen={isAdminLoginOpen}
+          onClose={() => setIsAdminLoginOpen(false)}
+          onSuccess={() => {
+            setIsAdminLoginOpen(false);
+            setIsAdminMode(true);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+        />
+      )}
     </div>
   );
 }
