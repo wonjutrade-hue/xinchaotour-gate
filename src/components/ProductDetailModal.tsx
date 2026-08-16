@@ -21,7 +21,8 @@ import {
   Maximize2,
   Grid,
   Layers,
-  Camera
+  Camera,
+  Smartphone
 } from 'lucide-react';
 import { ExchangeRates, calculateVNDFromKRW, calculateKRWFromVND, calculateUSDFromKRW, formatVND, formatUSD } from '../lib/exchangeRate';
 import { handleOpenKakaoTalkDirect } from '../constants';
@@ -31,6 +32,7 @@ interface ProductDetailModalProps {
   onClose: () => void;
   onOpenConsultation: (prod?: Product) => void;
   exchangeRates?: ExchangeRates;
+  onOpenDeviceSync?: () => void;
 }
 
 export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
@@ -38,6 +40,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   onClose,
   onOpenConsultation,
   exchangeRates,
+  onOpenDeviceSync
 }) => {
   if (!product) return null;
 
@@ -549,6 +552,17 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
           </div>
 
           <div className="flex flex-wrap items-center gap-2.5 w-full sm:w-auto">
+            {onOpenDeviceSync && (
+              <button
+                onClick={onOpenDeviceSync}
+                className="px-3.5 py-3 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-black text-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer border border-slate-300/80"
+                title="스마트폰 카메라로 QR 스캔하여 모바일에서 즉시 열기"
+              >
+                <Smartphone className="w-4 h-4 text-emerald-600" />
+                <span>📱 핸드폰 연동 (QR)</span>
+              </button>
+            )}
+
             {product.externalBookingUrl && (
               <a
                 href={product.externalBookingUrl}

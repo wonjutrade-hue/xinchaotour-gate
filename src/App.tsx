@@ -1,37 +1,38 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Product, Category, Region, City, ConsultationRequest } from './types';
-import { Navbar, MainNavPage } from './components/Navbar';
+import { Navbar, NavPage } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { CategoryNav } from './components/CategoryNav';
 import { ProductCard } from './components/ProductCard';
-import { ProductDetailPage } from './components/ProductDetailPage';
+import { ProductDetailModal } from './components/ProductDetailModal';
 import { ConsultationModal } from './components/ConsultationModal';
 import { AiTravelAssistantModal } from './components/AiTravelAssistantModal';
 import { TravelQuiz } from './components/TravelQuiz';
 import { FloatingChatWidget } from './components/FloatingChatWidget';
 import { Footer } from './components/Footer';
 import { ExchangeRateModal } from './components/ExchangeRateModal';
-import { TravelInfoPage, TravelInfoTab } from './components/TravelInfoPage';
+import { TravelInfoModal, TravelInfoTab } from './components/TravelInfoModal';
 import { KakaoModal } from './components/KakaoModal';
+import { DeviceSyncModal } from './components/DeviceSyncModal';
 import { AdminMode } from './components/AdminMode';
 import { AdminLoginModal } from './components/AdminLoginModal';
-import { ReviewsPage } from './components/ReviewsPage';
-import { CompanyPage } from './components/CompanyPage';
 import { ReservationPage } from './components/ReservationPage';
-import { INITIAL_PRODUCTS, SAMPLE_PRODUCTS } from './data/seedProducts';
+import { TravelInfoPage } from './components/TravelInfoPage';
+import { INITIAL_PRODUCTS } from './data/seedProducts';
 import { getLiveExchangeRates, ExchangeRates, DEFAULT_RATES } from './lib/exchangeRate';
 import { 
-  Sparkles, 
-  MapPin, 
-  ShieldCheck, 
-  PhoneCall, 
   SearchX, 
   Palmtree, 
-  CheckCircle2, 
-  ThumbsUp, 
+  ShieldCheck, 
   Clock, 
-  Heart,
-  Award
+  ThumbsUp, 
+  Sun,
+  Compass,
+  DollarSign,
+  FileText,
+  Utensils,
+  Lightbulb,
+  ArrowRight
 } from 'lucide-react';
 
 import {
@@ -72,6 +73,7 @@ function setStoredJson(key: string, data: any) {
 }
 
 export default function App() {
+  const [currentPage, setCurrentPage] = useState<NavPage>('home');
   const [products, setProducts] = useState<Product[]>(() => {
     const cached = getStoredJson<Product[]>(PRODUCTS_CACHE_KEY, []);
     if (cached && cached.length > 0) return cached;
@@ -83,9 +85,6 @@ export default function App() {
   // Sync locks to avoid race conditions with polling
   const lastClientSaveTimestampRef = useRef<number>(0);
   const isSavingToServerRef = useRef<boolean>(false);
-
-  // Active Main Navigation Page
-  const [currentPage, setCurrentPage] = useState<MainNavPage>('home');
 
   // Sync products state to IndexedDB, localStorage, and server backend
   const persistProducts = async (updatedProducts: Product[]): Promise<boolean> => {
@@ -141,18 +140,37 @@ export default function App() {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState<'popular' | 'price_asc' | 'price_desc' | 'rating'>('popular');
 
-  // Modals & Navigation state
+  // Modals state
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
   const [consultationTargetProduct, setConsultationTargetProduct] = useState<Product | null>(null);
   const [isAiAssistantOpen, setIsAiAssistantOpen] = useState(false);
   const [isQuizOpen, setIsQuizOpen] = useState(false);
-  const [isTravelInfoPageOpen, setIsTravelInfoPageOpen] = useState(false);
-  const [isTravelInfoOpen, setIsTravelInfoOpen] = useState(false);
+  const [isTravelInfoModalOpen, setIsTravelInfoModalOpen] = useState(false);
   const [travelInfoTab, setTravelInfoTab] = useState<TravelInfoTab>('course');
   const [isKakaoModalOpen, setIsKakaoModalOpen] = useState(false);
+  const [isDeviceSyncOpen, setIsDeviceSyncOpen] = useState(false);
   const [isAdminMode, setIsAdminMode] = useState(false);
   const [isAdminLoginOpen, setIsAdminLoginOpen] = useState(false);
+
+  useEffect(() => {
+    const handleOpenSync = () => setIsDeviceSyncOpen(true);
+    window.addEventListener('open-device-sync', handleOpenSync);
+    return () => window.removeEventListener('open-device-sync', handleOpenSync);
+  }, []);
+
+  const handleApplySyncData = (data: any) => {
+    if (!data) return;
+    if (data.page) {
+      handleNavigate(data.page);
+    }
+    if (data.productId) {
+      const target = products.find(p => p.id === data.productId);
+      if (target) {
+        setSelectedProduct(target);
+      }
+    }
+  };
 
   const handleOpenAdmin = () => {
     try {
@@ -173,131 +191,36 @@ export default function App() {
     saveInquiriesToIndexedDB(updatedInquiries);
   };
 
-  // Synchronize Browser History with Product Selection & Navigation
   const handleSelectProduct = (prod: Product) => {
     setSelectedProduct(prod);
-    setIsTravelInfoPageOpen(false);
-    try {
-      window.history.pushState({ productId: prod.id }, '', `#product-${prod.id}`);
-    } catch (e) {
-      console.warn('History pushState error:', e);
-    }
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleOpenTravelInfoPage = (tab?: TravelInfoTab) => {
-    setSelectedProduct(null);
-    setTravelInfoTab(tab || 'course');
-    setIsTravelInfoPageOpen(true);
-    setIsTravelInfoOpen(false);
-    try {
-      window.history.pushState({ view: 'travel-info', tab: tab || 'course' }, '', `#guide-${tab || 'course'}`);
-    } catch (e) {
-      console.warn('History pushState error:', e);
-    }
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  const handleOpenTravelInfo = (tab: TravelInfoTab = 'course') => {
+    setTravelInfoTab(tab);
+    setIsTravelInfoModalOpen(true);
   };
 
-  const handleBackToList = () => {
-    setSelectedProduct(null);
-    setIsTravelInfoPageOpen(false);
-    try {
-      if (window.location.hash.startsWith('#product-') || window.location.hash.startsWith('#guide')) {
-        window.history.back();
-      } else {
-        window.history.pushState(null, '', window.location.pathname);
-      }
-    } catch (e) {
-      console.warn('History back error:', e);
-    }
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const handleNavigate = (page: MainNavPage) => {
-    setSelectedProduct(null);
-    setIsTravelInfoPageOpen(false);
-    setIsTravelInfoOpen(false);
+  const handleNavigate = (page: NavPage) => {
     setCurrentPage(page);
-
     if (page === 'home') {
       setActiveCategory('전체');
-    } else if (page === '자유여행') {
+      setActiveRegion('전체');
+      setActiveCity('전체');
+    } else if (page === 'free_travel') {
       setActiveCategory('자유여행');
-    } else if (page === '풀빌라') {
+      setActiveRegion('전체');
+      setActiveCity('전체');
+    } else if (page === 'villa') {
       setActiveCategory('풀빌라');
-    } else if (page === '골프여행') {
+      setActiveRegion('전체');
+      setActiveCity('전체');
+    } else if (page === 'golf') {
       setActiveCategory('골프투어');
-    }
-
-    try {
-      if (page === 'home') {
-        window.history.pushState(null, '', window.location.pathname);
-      } else {
-        window.history.pushState({ page }, '', `#${page}`);
-      }
-    } catch (e) {
-      console.warn(e);
+      setActiveRegion('전체');
+      setActiveCity('전체');
     }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
-
-  const handleGoHome = () => {
-    handleNavigate('home');
-    setActiveRegion('전체');
-    setActiveCity('전체');
-    setSubFilter('전체');
-    setSearchTerm('');
-    setIsConsultationOpen(false);
-    setIsAiAssistantOpen(false);
-    setIsQuizOpen(false);
-    setIsRateModalOpen(false);
-    setIsKakaoModalOpen(false);
-  };
-
-  useEffect(() => {
-    const handlePopState = (e: PopStateEvent) => {
-      if (!e.state) {
-        if (window.location.hash.startsWith('#guide')) {
-          const tabPart = window.location.hash.replace('#guide-', '') as TravelInfoTab;
-          setSelectedProduct(null);
-          setIsTravelInfoPageOpen(true);
-          if (['course', 'weather', 'exchange', 'visa', 'food', 'tips'].includes(tabPart)) {
-            setTravelInfoTab(tabPart);
-          }
-        } else if (window.location.hash.startsWith('#product-')) {
-          const pid = window.location.hash.replace('#product-', '');
-          const found = products.find(p => p.id === pid);
-          if (found) {
-            setSelectedProduct(found);
-            setIsTravelInfoPageOpen(false);
-          }
-        } else {
-          setSelectedProduct(null);
-          setIsTravelInfoPageOpen(false);
-        }
-      } else if (e.state.productId) {
-        const found = products.find(p => p.id === e.state.productId);
-        if (found) {
-          setSelectedProduct(found);
-          setIsTravelInfoPageOpen(false);
-        }
-      } else if (e.state.view === 'travel-info') {
-        setSelectedProduct(null);
-        setIsTravelInfoPageOpen(true);
-        if (e.state.tab) setTravelInfoTab(e.state.tab);
-      } else if (e.state.page) {
-        setCurrentPage(e.state.page);
-        setSelectedProduct(null);
-        setIsTravelInfoPageOpen(false);
-      } else {
-        setSelectedProduct(null);
-        setIsTravelInfoPageOpen(false);
-      }
-    };
-
-    window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
-  }, [products]);
 
   // Load exchange rate
   const loadRates = async () => {
@@ -499,254 +422,299 @@ export default function App() {
     );
   }
 
+  const renderPageContent = () => {
+    if (currentPage === 'travel_info') {
+      return (
+        <TravelInfoPage
+          initialTab={travelInfoTab}
+          rates={exchangeRates}
+          onOpenConsultation={() => {
+            setConsultationTargetProduct(null);
+            setIsConsultationOpen(true);
+          }}
+        />
+      );
+    }
+
+    if (currentPage === 'reservation') {
+      return (
+        <ReservationPage
+          products={products}
+          onSubmitInquiry={handleSubmitInquiry}
+          onOpenDeviceSync={() => setIsDeviceSyncOpen(true)}
+        />
+      );
+    }
+
+    return (
+      <div className="flex-1 flex flex-col">
+        {/* Hero Carousel (Shown on HOME) */}
+        {currentPage === 'home' && (
+          <Hero
+            onNavigate={handleNavigate}
+            onOpenQuiz={() => setIsQuizOpen(true)}
+            onOpenAiAssistant={() => setIsAiAssistantOpen(true)}
+            onOpenTravelInfo={handleOpenTravelInfo}
+          />
+        )}
+
+        {/* Category Nav & Regional Filter */}
+        <CategoryNav
+          activeCategory={activeCategory}
+          activeRegion={activeRegion}
+          activeCity={activeCity}
+          subFilter={subFilter}
+          sortBy={sortBy}
+          onSelectCategory={setActiveCategory}
+          onSelectRegion={setActiveRegion}
+          onSelectCity={setActiveCity}
+          onSelectSubFilter={setSubFilter}
+          onSortChange={setSortBy}
+          totalProductsCount={filteredProducts.length}
+        />
+
+        {/* Products Grid */}
+        <main id="products-section" className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full space-y-12">
+          {/* Header / Section Title */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
+            <div>
+              <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
+                <Palmtree className="w-6 h-6 text-emerald-700" />
+                <span>
+                  {activeCategory === '전체' ? '베트남 종합 추천 상품' : activeCategory}
+                  {activeRegion !== '전체' && ` (${activeRegion} 권역)`}
+                  {activeCity !== '전체' && ` - ${activeCity}`}
+                </span>
+              </h2>
+              <p className="text-xs font-medium text-slate-500 mt-0.5">
+                엄선된 베트남 단독 전용 차량 및 100% 한국인 전문 가이드 결합 상품
+              </p>
+            </div>
+
+            {(activeCategory !== '전체' || activeRegion !== '전체' || activeCity !== '전체' || searchTerm) && (
+              <button
+                onClick={() => {
+                  setActiveCategory('전체');
+                  setActiveRegion('전체');
+                  setActiveCity('전체');
+                  setSearchTerm('');
+                }}
+                className="text-xs font-bold text-emerald-700 hover:text-emerald-900 bg-emerald-50 px-3 py-1.5 rounded-xl self-start sm:self-auto transition-colors cursor-pointer"
+              >
+                🔄 전체 목록 보기
+              </button>
+            )}
+          </div>
+
+          {/* Product Cards Grid */}
+          {filteredProducts.length === 0 ? (
+            <div className="py-20 text-center bg-slate-50 rounded-3xl border border-dashed border-slate-200 space-y-4">
+              <SearchX className="w-12 h-12 text-slate-400 mx-auto" />
+              <h3 className="text-base font-extrabold text-slate-800">
+                해당 조건에 맞는 상품이 없습니다.
+              </h3>
+              <p className="text-xs text-slate-500 max-w-sm mx-auto">
+                원하시는 지역이나 일정을 1:1 맞춤 상담을 통해 신청해주시면 최적의 견적을 안내해드립니다.
+              </p>
+              <div className="flex items-center justify-center gap-3">
+                <button
+                  onClick={() => {
+                    setConsultationTargetProduct(null);
+                    setIsConsultationOpen(true);
+                  }}
+                  className="px-5 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-2xl font-bold text-xs cursor-pointer shadow-sm"
+                >
+                  💬 1:1 맞춤 여행 견적 문의하기
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {filteredProducts.map((prod) => (
+                <ProductCard
+                  key={prod.id}
+                  product={prod}
+                  onSelectProduct={handleSelectProduct}
+                  onQuickInquire={(p) => {
+                    setConsultationTargetProduct(p);
+                    setIsConsultationOpen(true);
+                  }}
+                  exchangeRates={exchangeRates}
+                />
+              ))}
+            </div>
+          )}
+
+          {/* Vietnam Essential Travel Guides Section */}
+          <section className="bg-slate-50 rounded-3xl p-6 sm:p-8 border border-slate-200/80 space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div>
+                <span className="text-emerald-700 font-extrabold text-xs uppercase tracking-wider">Travel Guide</span>
+                <h3 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
+                  <span>베트남 여행 필수 정보 백과사전</span>
+                </h3>
+              </div>
+              <button
+                onClick={() => handleNavigate('travel_info')}
+                className="text-xs font-bold text-emerald-700 hover:text-emerald-800 flex items-center gap-1 self-start sm:self-auto cursor-pointer"
+              >
+                <span>전체 가이드 보기</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+              {[
+                { tab: 'course' as TravelInfoTab, label: '지역별 코스', icon: <Compass className="w-5 h-5 text-emerald-600" />, desc: '다낭/하노이/나트랑 추천 동선' },
+                { tab: 'weather' as TravelInfoTab, label: '베트남 날씨', icon: <Sun className="w-5 h-5 text-amber-500" />, desc: '도시별 건·우기 & 옷차림' },
+                { tab: 'exchange' as TravelInfoTab, label: '실시간 환율', icon: <DollarSign className="w-5 h-5 text-emerald-600" />, desc: '동(VND) 계산법 & 환전 팁' },
+                { tab: 'visa' as TravelInfoTab, label: '비자 & 입국', icon: <FileText className="w-5 h-5 text-sky-600" />, desc: '45일 무비자 & 여권 유효기간' },
+                { tab: 'food' as TravelInfoTab, label: '대표 먹거리', icon: <Utensils className="w-5 h-5 text-rose-500" />, desc: '쌀국수, 반미, 분짜, 로컬 맛집' },
+                { tab: 'tips' as TravelInfoTab, label: '여행 꿀팁', icon: <Lightbulb className="w-5 h-5 text-amber-500" />, desc: '그랩(Grab), 유심, 팁 문화' },
+              ].map((item) => (
+                <button
+                  key={item.tab}
+                  onClick={() => {
+                    setTravelInfoTab(item.tab);
+                    handleNavigate('travel_info');
+                  }}
+                  className="bg-white p-4 rounded-2xl border border-slate-200 hover:border-emerald-500 hover:shadow-md transition-all text-left group cursor-pointer"
+                >
+                  <div className="mb-2 p-2 rounded-xl bg-slate-50 w-fit group-hover:scale-110 transition-transform">
+                    {item.icon}
+                  </div>
+                  <h4 className="font-extrabold text-slate-900 text-sm">{item.label}</h4>
+                  <p className="text-[11px] text-slate-500 mt-1 line-clamp-2">{item.desc}</p>
+                </button>
+              ))}
+            </div>
+          </section>
+
+          {/* Trust & Unique Benefits Section */}
+          <section className="bg-gradient-to-br from-slate-950 via-teal-950 to-emerald-950 text-white rounded-3xl p-6 sm:p-10 shadow-xl space-y-8">
+            <div className="text-center max-w-2xl mx-auto space-y-2">
+              <span className="text-emerald-400 font-extrabold text-xs tracking-wider uppercase bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-400/30">
+                Why XinChaoTour
+              </span>
+              <h3 className="text-2xl sm:text-3xl font-black tracking-tight text-white">
+                왜 한국 여행객들은 '신짜오투어'를 선택할까요?
+              </h3>
+              <p className="text-xs sm:text-sm text-slate-300">
+                베트남 현지 직영 운영으로 거품 없는 가격과 24시간 안심 케어를 약속합니다.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-slate-200">
+              <div className="bg-white/5 backdrop-blur-md p-6 rounded-2xl border border-white/10 space-y-3">
+                <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-300 flex items-center justify-center font-bold">
+                  <ShieldCheck className="w-6 h-6 text-emerald-400" />
+                </div>
+                <h4 className="font-extrabold text-white text-base">100% 현지 직영 & 단독 VIP 차량</h4>
+                <p className="text-xs text-slate-300 leading-relaxed">
+                  중개 수수료 제로! 다낭, 하노이, 호치민 현지 지사에서 전용 럭셔리 밴과 검증된 한국어 가이드를 직접 배정합니다.
+                </p>
+              </div>
+
+              <div className="bg-white/5 backdrop-blur-md p-6 rounded-2xl border border-white/10 space-y-3">
+                <div className="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-300 flex items-center justify-center font-bold">
+                  <Clock className="w-6 h-6 text-amber-300" />
+                </div>
+                <h4 className="font-extrabold text-white text-base">24시간 카카오톡 실시간 케어</h4>
+                <p className="text-xs text-slate-300 leading-relaxed">
+                  여행 중 긴급 상황이나 식당 예약, 일정 변경도 카카오톡으로 실시간 신속하게 해결해드립니다.
+                </p>
+              </div>
+
+              <div className="bg-white/5 backdrop-blur-md p-6 rounded-2xl border border-white/10 space-y-3">
+                <div className="w-12 h-12 rounded-2xl bg-rose-500/20 text-rose-300 flex items-center justify-center font-bold">
+                  <ThumbsUp className="w-6 h-6 text-amber-300" />
+                </div>
+                <h4 className="font-extrabold text-white text-base">NO 강요 쇼핑 · 최저가 보장</h4>
+                <p className="text-xs text-slate-300 leading-relaxed">
+                  불필요한 의무 쇼핑센터 방문 없는 온전한 힐링! 고객 맞춤형 일정으로 감동을 드립니다.
+                </p>
+              </div>
+            </div>
+          </section>
+        </main>
+      </div>
+    );
+  };
+
   return (
     <div className="min-h-screen bg-white text-slate-900 font-sans flex flex-col">
       {/* Top Navbar */}
       <Navbar
         currentPage={currentPage}
         onNavigate={handleNavigate}
-        activeCategory={activeCategory}
-        onSelectCategory={(cat) => {
-          setActiveCategory(cat);
-          if (cat === '자유여행') setCurrentPage('자유여행');
-          else if (cat === '풀빌라') setCurrentPage('풀빌라');
-          else if (cat === '골프투어') setCurrentPage('골프여행');
-          else setCurrentPage('home');
-        }}
         onOpenConsultation={() => {
           setConsultationTargetProduct(null);
           setIsConsultationOpen(true);
         }}
+        onOpenAiAssistant={() => setIsAiAssistantOpen(true)}
+        onOpenTravelInfo={handleOpenTravelInfo}
         onOpenAdmin={handleOpenAdmin}
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
         exchangeRates={exchangeRates}
         onOpenRateCalculator={() => setIsRateModalOpen(true)}
+        onOpenDeviceSync={() => setIsDeviceSyncOpen(true)}
       />
 
-      {/* Main Content Router */}
-      {selectedProduct ? (
-        <ProductDetailPage
-          product={selectedProduct}
-          onBackToList={handleBackToList}
-          onOpenConsultation={(p) => {
-            setConsultationTargetProduct(p || selectedProduct);
-            setIsConsultationOpen(true);
-          }}
-          exchangeRates={exchangeRates}
-          relatedProducts={products.filter(
-            p => p.id !== selectedProduct.id && (p.city === selectedProduct.city || p.category === selectedProduct.category)
-          )}
-          onSelectProduct={handleSelectProduct}
-        />
-      ) : isTravelInfoPageOpen ? (
-        <TravelInfoPage
-          initialTab={travelInfoTab}
-          rates={exchangeRates}
-          onBackToList={handleBackToList}
-          onOpenConsultation={() => {
-            setConsultationTargetProduct(null);
-            setIsConsultationOpen(true);
-          }}
-        />
-      ) : currentPage === '여행후기' ? (
-        <ReviewsPage
-          onOpenConsultation={(prodTitle) => {
-            const matched = products.find(p => p.title === prodTitle);
-            setConsultationTargetProduct(matched || null);
-            setIsConsultationOpen(true);
-          }}
-        />
-      ) : currentPage === '회사소개' ? (
-        <CompanyPage
-          onOpenConsultation={() => {
-            setConsultationTargetProduct(null);
-            setIsConsultationOpen(true);
-          }}
-        />
-      ) : currentPage === '예약문의' ? (
-        <ReservationPage
-          products={products}
-          onSubmitInquiry={handleSubmitInquiry}
-        />
-      ) : (
-        <>
-          {/* Hero Carousel Section */}
-          {currentPage === 'home' && (
-            <Hero
-              onSelectCategory={(cat) => {
-                setActiveCategory(cat);
-                if (cat === '자유여행') setCurrentPage('자유여행');
-                else if (cat === '풀빌라') setCurrentPage('풀빌라');
-                else if (cat === '골프투어') setCurrentPage('골프여행');
-              }}
-              onOpenQuiz={() => setIsQuizOpen(true)}
-              products={products}
-              onSelectProduct={handleSelectProduct}
-            />
-          )}
-
-          {/* Category Nav & Regional Filter */}
-          <CategoryNav
-            activeCategory={activeCategory}
-            activeRegion={activeRegion}
-            activeCity={activeCity}
-            subFilter={subFilter}
-            sortBy={sortBy}
-            onSelectCategory={(cat) => {
-              setActiveCategory(cat);
-              if (cat === '자유여행') setCurrentPage('자유여행');
-              else if (cat === '풀빌라') setCurrentPage('풀빌라');
-              else if (cat === '골프투어') setCurrentPage('골프여행');
-              else if (cat === '전체') setCurrentPage('home');
-            }}
-            onSelectRegion={setActiveRegion}
-            onSelectCity={setActiveCity}
-            onSelectSubFilter={setSubFilter}
-            onSortChange={setSortBy}
-            totalProductsCount={filteredProducts.length}
-          />
-
-          {/* Products Grid */}
-          <main id="products-section" className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full space-y-8">
-            {/* Header / Section Title */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
-              <div>
-                <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-                  <Palmtree className="w-6 h-6 text-emerald-700" />
-                  <span>
-                    {activeCategory === '전체' ? '베트남 종합 추천 상품' : activeCategory}
-                    {activeRegion !== '전체' && ` (${activeRegion} 권역)`}
-                    {activeCity !== '전체' && ` - ${activeCity}`}
-                  </span>
-                </h2>
-                <p className="text-xs font-medium text-slate-500 mt-0.5">
-                  엄선된 베트남 단독 전용 차량 및 100% 한국인 전문 가이드 결합 상품
-                </p>
-              </div>
-
-              {(activeCategory !== '전체' || activeRegion !== '전체' || activeCity !== '전체' || searchTerm) && (
-                <button
-                  onClick={() => {
-                    setActiveCategory('전체');
-                    setActiveRegion('전체');
-                    setActiveCity('전체');
-                    setSearchTerm('');
-                    setCurrentPage('home');
-                  }}
-                  className="text-xs font-bold text-emerald-700 hover:text-emerald-900 bg-emerald-50 px-3 py-1.5 rounded-xl self-start sm:self-auto transition-colors cursor-pointer"
-                >
-                  🔄 전체 목록 보기
-                </button>
-              )}
-            </div>
-
-            {/* Product Cards Grid */}
-            {filteredProducts.length === 0 ? (
-              <div className="py-20 text-center bg-slate-50 rounded-3xl border border-dashed border-slate-200 space-y-4">
-                <SearchX className="w-12 h-12 text-slate-400 mx-auto" />
-                <h3 className="text-base font-extrabold text-slate-800">
-                  해당 조건에 맞는 상품이 없습니다.
-                </h3>
-                <p className="text-xs text-slate-500 max-w-sm mx-auto">
-                  원하시는 지역이나 일정을 1:1 맞춤 상담을 통해 신청해주시면 최적의 견적을 안내해드립니다.
-                </p>
-                <div className="flex items-center justify-center gap-3">
-                  <button
-                    onClick={() => {
-                      setConsultationTargetProduct(null);
-                      setIsConsultationOpen(true);
-                    }}
-                    className="px-5 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-2xl font-bold text-xs cursor-pointer shadow-sm"
-                  >
-                    💬 1:1 맞춤 여행 견적 문의하기
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {filteredProducts.map((prod) => (
-                  <ProductCard
-                    key={prod.id}
-                    product={prod}
-                    onSelectProduct={handleSelectProduct}
-                    onQuickInquire={(p) => {
-                      setConsultationTargetProduct(p);
-                      setIsConsultationOpen(true);
-                    }}
-                    exchangeRates={exchangeRates}
-                  />
-                ))}
-              </div>
-            )}
-
-            {/* Trust & Unique Benefits Section */}
-            <section className="bg-gradient-to-br from-slate-950 via-teal-950 to-emerald-950 text-white rounded-3xl p-6 sm:p-10 shadow-xl space-y-8">
-              <div className="text-center max-w-2xl mx-auto space-y-2">
-                <span className="text-emerald-400 font-extrabold text-xs tracking-wider uppercase bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-400/30">
-                  Why XinChaoTour
-                </span>
-                <h3 className="text-2xl sm:text-3xl font-black tracking-tight text-white">
-                  왜 한국 여행객들은 '신짜오투어'를 선택할까요?
-                </h3>
-                <p className="text-xs sm:text-sm text-slate-300">
-                  베트남 현지 직영 운영으로 거품 없는 가격과 24시간 안심 케어를 약속합니다.
-                </p>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-slate-200">
-                <div className="bg-white/5 backdrop-blur-md p-6 rounded-2xl border border-white/10 space-y-3">
-                  <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-300 flex items-center justify-center font-bold">
-                    <ShieldCheck className="w-6 h-6 text-emerald-400" />
-                  </div>
-                  <h4 className="font-extrabold text-white text-base">100% 현지 직영 & 단독 VIP 차량</h4>
-                  <p className="text-xs text-slate-300 leading-relaxed">
-                    중개 수수료 제로! 다낭, 하노이, 호치민 현지 지사에서 전용 럭셔리 밴과 검증된 한국어 가이드를 직접 배정합니다.
-                  </p>
-                </div>
-
-                <div className="bg-white/5 backdrop-blur-md p-6 rounded-2xl border border-white/10 space-y-3">
-                  <div className="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-300 flex items-center justify-center font-bold">
-                    <Clock className="w-6 h-6 text-amber-300" />
-                  </div>
-                  <h4 className="font-extrabold text-white text-base">24시간 카카오톡 실시간 케어</h4>
-                  <p className="text-xs text-slate-300 leading-relaxed">
-                    여행 중 긴급 상황이나 식당 예약, 일정 변경도 카카오톡으로 실시간 신속하게 해결해드립니다.
-                  </p>
-                </div>
-
-                <div className="bg-white/5 backdrop-blur-md p-6 rounded-2xl border border-white/10 space-y-3">
-                  <div className="w-12 h-12 rounded-2xl bg-rose-500/20 text-rose-300 flex items-center justify-center font-bold">
-                    <ThumbsUp className="w-6 h-6 text-amber-300" />
-                  </div>
-                  <h4 className="font-extrabold text-white text-base">NO 강요 쇼핑 · 최저가 보장</h4>
-                  <p className="text-xs text-slate-300 leading-relaxed">
-                    불필요한 의무 쇼핑센터 방문 없는 온전한 힐링! 고객 맞춤형 일정으로 감동을 드립니다.
-                  </p>
-                </div>
-              </div>
-            </section>
-          </main>
-        </>
-      )}
+      {/* Dynamic Content */}
+      {renderPageContent()}
 
       {/* Footer */}
       <Footer
         onNavigate={handleNavigate}
-        onSelectCategory={setActiveCategory}
-        onSelectRegion={setActiveRegion}
-        onGoHome={handleGoHome}
         onOpenAdmin={handleOpenAdmin}
         onOpenConsultation={() => {
           setConsultationTargetProduct(null);
           setIsConsultationOpen(true);
         }}
+        onOpenTravelInfo={handleOpenTravelInfo}
       />
 
       {/* Floating Action Buttons */}
       <FloatingChatWidget
         onOpenConsultation={() => {
           setConsultationTargetProduct(null);
+          setIsConsultationOpen(true);
+        }}
+        onOpenDeviceSync={() => setIsDeviceSyncOpen(true)}
+      />
+
+      {/* Product Detail Modal */}
+      <ProductDetailModal
+        product={selectedProduct}
+        onClose={() => setSelectedProduct(null)}
+        onOpenConsultation={(p) => {
+          setConsultationTargetProduct(p || selectedProduct);
+          setIsConsultationOpen(true);
+        }}
+        exchangeRates={exchangeRates}
+        onOpenDeviceSync={() => setIsDeviceSyncOpen(true)}
+      />
+
+      {/* Travel Info Modal */}
+      <TravelInfoModal
+        isOpen={isTravelInfoModalOpen}
+        onClose={() => setIsTravelInfoModalOpen(false)}
+        initialTab={travelInfoTab}
+        rates={exchangeRates}
+        onOpenConsultation={() => {
+          setIsTravelInfoModalOpen(false);
+          setConsultationTargetProduct(null);
+          setIsConsultationOpen(true);
+        }}
+      />
+
+      {/* AI Travel Assistant Chat Modal */}
+      <AiTravelAssistantModal
+        isOpen={isAiAssistantOpen}
+        onClose={() => setIsAiAssistantOpen(false)}
+        onOpenConsultation={() => {
+          setIsAiAssistantOpen(false);
           setIsConsultationOpen(true);
         }}
       />
@@ -790,9 +758,10 @@ export default function App() {
           setActiveCategory(cat);
           setActiveRegion(reg);
           setActiveCity('전체');
-          if (cat === '자유여행') setCurrentPage('자유여행');
-          else if (cat === '풀빌라') setCurrentPage('풀빌라');
-          else if (cat === '골프투어') setCurrentPage('골프여행');
+          const filterSec = document.getElementById('filter-section');
+          if (filterSec) {
+            filterSec.scrollIntoView({ behavior: 'smooth' });
+          }
         }}
       />
 
@@ -800,6 +769,15 @@ export default function App() {
       <KakaoModal
         isOpen={isKakaoModalOpen}
         onClose={() => setIsKakaoModalOpen(false)}
+      />
+
+      {/* PC <-> Mobile Real-time Device Sync Modal */}
+      <DeviceSyncModal
+        isOpen={isDeviceSyncOpen}
+        onClose={() => setIsDeviceSyncOpen(false)}
+        currentPage={currentPage}
+        currentProduct={selectedProduct}
+        onApplySyncData={handleApplySyncData}
       />
     </div>
   );

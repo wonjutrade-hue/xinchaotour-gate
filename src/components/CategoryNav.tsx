@@ -17,13 +17,10 @@ interface CategoryNavProps {
 }
 
 const REGION_CITIES: Record<Exclude<Region, '전체'>, City[]> = {
-  북부: ['하노이', '하롱베이', '닌빈', '사파'],
+  북부: ['하노이', '하롱베이', '닌빈', '사파', '하장'],
   중부: ['다낭', '호이안', '후에', '나트랑'],
-  남부: ['호치민', '푸꾸옥', '달랏', '붕따우'],
+  남부: ['호치민', '푸꾸옥', '달랏', '무이네'],
 };
-
-const VILLA_DESTINATIONS = ['전체', '다낭', '호이안', '나트랑', '푸꾸옥', '기타 지역'];
-const GOLF_COURSES_FILTER = ['전체', 'BRG 다낭', '몽고메리', '바나힐스', '호이아나 쇼어스', '남호이안 빈펄', '90홀 패키지', '54홀 패키지'];
 
 export const CategoryNav: React.FC<CategoryNavProps> = ({
   activeCategory,
@@ -98,41 +95,49 @@ export const CategoryNav: React.FC<CategoryNavProps> = ({
 
             <div className="flex items-center gap-3 self-end md:self-auto">
               {/* Product Count */}
-              <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-600 bg-slate-50 px-3 py-1 rounded-xl border border-slate-200/80 whitespace-nowrap shrink-0">
-                <span className="text-emerald-700 font-extrabold">{totalProductsCount}개</span>
-                <span>의 상품</span>
-              </div>
+              <span className="text-slate-400 font-medium">
+                총 <strong className="text-emerald-600 font-bold">{totalProductsCount}</strong>개 상품
+              </span>
 
-              {/* Sorting selector */}
-              <div className="flex items-center gap-2 font-medium text-slate-600 whitespace-nowrap">
-                <ArrowUpDown className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                <span>정렬:</span>
-                <select
-                  value={sortBy}
-                  onChange={(e) => onSortChange(e.target.value as any)}
-                  className="bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1 text-xs font-bold text-slate-700 focus:outline-hidden focus:ring-1 focus:ring-emerald-500"
-                >
-                  <option value="popular">인기순 추천</option>
-                  <option value="price_asc">가격 낮은 순</option>
-                  <option value="price_desc">가격 높은 순</option>
-                  <option value="rating">평점 높은순</option>
-                </select>
+              {/* Sort Selector */}
+              <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl">
+                <span className="text-[11px] text-slate-400 px-1 font-semibold flex items-center gap-0.5">
+                  <ArrowUpDown className="w-3 h-3 text-slate-400" />
+                </span>
+                {(
+                  [
+                    { key: 'popular', label: '인기순' },
+                    { key: 'rating', label: '평점순' },
+                    { key: 'price_asc', label: '낮은가격순' },
+                    { key: 'price_desc', label: '높은가격순' },
+                  ] as const
+                ).map((opt) => (
+                  <button
+                    key={opt.key}
+                    onClick={() => onSortChange(opt.key)}
+                    className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-colors cursor-pointer ${
+                      sortBy === opt.key
+                        ? 'bg-white text-slate-900 shadow-2xs font-extrabold'
+                        : 'text-slate-500 hover:text-slate-800'
+                    }`}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
               </div>
             </div>
           </div>
 
-          {/* Sub-destination pills */}
-          {activeRegion !== '전체' ? (
-            <div className="pt-2 flex items-center gap-2 flex-wrap border-t border-slate-100 text-xs">
-              <span className="font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded text-[11px] whitespace-nowrap">
-                {activeRegion} 주요 도시:
-              </span>
+          {/* City sub-filters if a region is selected */}
+          {activeRegion !== '전체' && (
+            <div className="flex items-center gap-2 pt-2 border-t border-slate-100 overflow-x-auto pb-1 text-xs">
+              <span className="text-slate-400 font-bold shrink-0">주요 도시:</span>
               <button
                 onClick={() => onSelectCity('전체')}
-                className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors whitespace-nowrap cursor-pointer ${
+                className={`px-2.5 py-1 rounded-md text-xs font-semibold whitespace-nowrap transition cursor-pointer ${
                   activeCity === '전체'
-                    ? 'bg-slate-900 text-white font-bold'
-                    : 'bg-slate-50 text-slate-600 hover:bg-slate-100'
+                    ? 'bg-slate-900 text-white'
+                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                 }`}
               >
                 {activeRegion} 전체
@@ -141,19 +146,15 @@ export const CategoryNav: React.FC<CategoryNavProps> = ({
                 <button
                   key={city}
                   onClick={() => onSelectCity(city)}
-                  className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors whitespace-nowrap cursor-pointer ${
+                  className={`px-2.5 py-1 rounded-md text-xs font-semibold whitespace-nowrap transition cursor-pointer ${
                     activeCity === city
-                      ? 'bg-emerald-600 text-white font-bold'
-                      : 'bg-slate-50 text-slate-600 hover:bg-slate-200'
+                      ? 'bg-emerald-600 text-white'
+                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                   }`}
                 >
                   {city}
                 </button>
               ))}
-            </div>
-          ) : (
-            <div className="pt-2 border-t border-slate-100 text-[11px] font-medium text-slate-500 flex items-center gap-1.5">
-              <span>💡 [북부(하노이·하장·하롱베이·닌빈)], [중부(다낭·호이안·후에)], [남부(호치민·나트랑·푸꾸옥·달랏)] 권역을 클릭하여 지역별 상품을 둘러보세요.</span>
             </div>
           )}
         </div>

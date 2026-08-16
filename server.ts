@@ -311,6 +311,52 @@ async function startServer() {
     });
   });
 
+  // Cross-Device Session Store (PC ↔ Mobile)
+  const syncSessions: Record<string, { data: any; createdAt: number }> = {};
+
+  // 1-C. Create/Update Cross-Device Sync Session (PC ↔ Mobile)
+  app.post('/api/sync/session', (req: Request, res: Response) => {
+    try {
+      const { code, data } = req.body;
+      const sessionCode = code || Math.floor(100000 + Math.random() * 900000).toString();
+      syncSessions[sessionCode] = {
+        data: data || {},
+        createdAt: Date.now()
+      };
+      
+      // Cleanup old sessions (> 24 hours)
+      const oneDayAgo = Date.now() - 24 * 60 * 60 * 1000;
+      Object.keys(syncSessions).forEach(key => {
+        if (syncSessions[key].createdAt < oneDayAgo) {
+          delete syncSessions[key];
+        }
+      });
+
+      res.json({
+        success: true,
+        code: sessionCode,
+        session: syncSessions[sessionCode]
+      });
+    } catch (err: any) {
+      res.status(500).json({ success: false, error: err.message });
+    }
+  });
+
+  // 1-D. Retrieve Cross-Device Sync Session
+  app.get('/api/sync/session/:code', (req: Request, res: Response) => {
+    const { code } = req.params;
+    const session = syncSessions[code];
+    if (!session) {
+      return res.status(404).json({ success: false, error: '유효하지 않거나 만료된 연동 코드입니다.' });
+    }
+    res.json({
+      success: true,
+      code,
+      data: session.data,
+      createdAt: session.createdAt
+    });
+  });
+
   // 2. Add Product
   app.post('/api/products', (req: Request, res: Response) => {
     try {

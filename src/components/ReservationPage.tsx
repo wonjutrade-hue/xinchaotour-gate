@@ -13,7 +13,8 @@ import {
   Sparkles,
   ShieldCheck,
   Clock,
-  Compass
+  Compass,
+  Smartphone
 } from 'lucide-react';
 import { COMPANY_INFO } from '../data/companyInfo';
 import { handleOpenKakaoTalkDirect } from '../constants';
@@ -33,11 +34,13 @@ interface ReservationPageProps {
     travelerCount: { adult: number; child: number };
     message: string;
   }) => Promise<boolean>;
+  onOpenDeviceSync?: () => void;
 }
 
 export const ReservationPage: React.FC<ReservationPageProps> = ({
   products,
-  onSubmitInquiry
+  onSubmitInquiry,
+  onOpenDeviceSync
 }) => {
   const [userName, setUserName] = useState('');
   const [userPhone, setUserPhone] = useState('');
@@ -166,6 +169,36 @@ export const ReservationPage: React.FC<ReservationPageProps> = ({
             <span className="text-[11px] text-slate-400">상세 견적서 발송 요청</span>
           </a>
         </div>
+
+        {/* PC <-> Mobile Sync Action Banner */}
+        {onOpenDeviceSync && (
+          <div className="bg-gradient-to-r from-emerald-900 via-slate-900 to-teal-900 text-white rounded-3xl p-5 sm:p-6 shadow-md border border-emerald-500/30 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-3.5 text-center sm:text-left">
+              <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0 border border-emerald-400/40">
+                <Smartphone className="w-6 h-6 animate-pulse" />
+              </div>
+              <div>
+                <div className="flex items-center justify-center sm:justify-start gap-2">
+                  <h3 className="text-base sm:text-lg font-black text-white">
+                    📱 PC ⇄ 스마트폰 실시간 연동 지원
+                  </h3>
+                  <span className="bg-emerald-500 text-slate-950 text-[10px] font-black px-2 py-0.5 rounded-full">
+                    QR 지원
+                  </span>
+                </div>
+                <p className="text-xs sm:text-sm text-slate-300">
+                  PC 화면을 핸드폰 카메라로 비추면 스마트폰에서 바로 견적을 작성하고 실시간 카톡 알림을 받으실 수 있습니다.
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={onOpenDeviceSync}
+              className="w-full sm:w-auto px-5 py-3 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs sm:text-sm transition shadow-lg shrink-0 cursor-pointer flex items-center justify-center gap-2"
+            >
+              <span>스마트폰으로 연동하기 (QR)</span>
+            </button>
+          </div>
+        )}
 
         {/* Inquiry Form Card */}
         <div className="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200 shadow-lg">

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { X, MessageCircle, Copy, Check, ExternalLink, Phone, ShieldCheck, Sparkles, User, Calendar } from 'lucide-react';
+import { X, MessageCircle, Copy, Check, ExternalLink, Phone, ShieldCheck, Sparkles, User, Calendar, QrCode, Smartphone } from 'lucide-react';
+import { QRCodeSVG } from 'qrcode.react';
 import { COMPANY_PHONE, KAKAO_ID, DEFAULT_KAKAO_LINK, getKakaoDirectLink, setKakaoDirectLink, handleOpenKakaoTalkDirect } from '../constants';
 
 interface KakaoModalProps {
@@ -12,6 +13,7 @@ export const KakaoModal: React.FC<KakaoModalProps> = ({ isOpen, onClose }) => {
   const [copiedType, setCopiedType] = useState<'url' | 'id' | 'phone' | null>(null);
   const [isSavedToast, setIsSavedToast] = useState(false);
   const [showAdminEdit, setShowAdminEdit] = useState(false);
+  const [showQrCode, setShowQrCode] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
@@ -124,6 +126,34 @@ export const KakaoModal: React.FC<KakaoModalProps> = ({ isOpen, onClose }) => {
                 <span>1:1 오픈채팅 참여하기</span>
                 <ExternalLink className="w-4 h-4 ml-0.5 opacity-80 group-hover:translate-x-0.5 transition-transform" />
               </button>
+
+              {/* PC to Mobile QR Code Toggle Button */}
+              <div className="pt-1 text-center">
+                <button
+                  onClick={() => setShowQrCode(!showQrCode)}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/15 text-slate-300 hover:text-white text-xs font-bold transition cursor-pointer border border-white/10"
+                >
+                  <Smartphone className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>{showQrCode ? 'QR코드 숨기기' : '📱 핸드폰으로 카톡 열기 (QR 스캔)'}</span>
+                </button>
+              </div>
+
+              {/* QR Code Container */}
+              {showQrCode && (
+                <div className="p-4 rounded-2xl bg-black/70 border border-amber-500/30 flex flex-col items-center justify-center gap-2.5 animate-fadeIn">
+                  <div className="p-2.5 bg-white rounded-xl shadow-md">
+                    <QRCodeSVG
+                      value={currentLink}
+                      size={140}
+                      level="H"
+                      includeMargin={false}
+                    />
+                  </div>
+                  <p className="text-[11px] text-amber-300 font-bold text-center">
+                    스마트폰 기본 카메라로 QR을 비추면<br />카카오톡 오픈채팅이 즉시 실행됩니다.
+                  </p>
+                </div>
+              )}
 
             </div>
           </div>

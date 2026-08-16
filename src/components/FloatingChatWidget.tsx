@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
-import { MessageCircle, PhoneCall, ChevronUp, X, Send, CalendarCheck } from 'lucide-react';
+import { MessageCircle, PhoneCall, ChevronUp, X, Send, CalendarCheck, Smartphone, QrCode } from 'lucide-react';
 import { COMPANY_PHONE, COMPANY_PHONE_TEL, handleOpenKakaoTalkDirect } from '../constants';
 import { COMPANY_INFO } from '../data/companyInfo';
 
 interface FloatingChatWidgetProps {
   onOpenConsultation: () => void;
+  onOpenDeviceSync?: () => void;
 }
 
 export const FloatingChatWidget: React.FC<FloatingChatWidgetProps> = ({
   onOpenConsultation,
+  onOpenDeviceSync,
 }) => {
   const [expanded, setExpanded] = useState(false);
 
@@ -18,11 +20,33 @@ export const FloatingChatWidget: React.FC<FloatingChatWidgetProps> = ({
       {expanded && (
         <div className="bg-white rounded-3xl p-3 shadow-2xl border border-slate-200 flex flex-col gap-2 min-w-[240px] animate-fadeIn">
           <div className="text-[11px] font-extrabold text-slate-400 px-2 pt-1 uppercase tracking-wider flex items-center justify-between">
-            <span>XinChaoTour 빠른 상담</span>
+            <span>XinChaoTour 빠른 연결</span>
             <button onClick={() => setExpanded(false)} className="text-slate-400 hover:text-slate-600">
               <X className="w-4 h-4" />
             </button>
           </div>
+
+          {/* PC <-> Mobile Sync / QR Code */}
+          {onOpenDeviceSync && (
+            <button
+              onClick={() => {
+                setExpanded(false);
+                onOpenDeviceSync();
+              }}
+              className="flex items-center gap-2.5 p-2.5 rounded-2xl bg-emerald-50 hover:bg-emerald-100 text-emerald-950 text-xs font-bold transition-colors text-left border border-emerald-300/80 cursor-pointer"
+            >
+              <div className="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-xs">
+                <Smartphone className="w-4 h-4" />
+              </div>
+              <div>
+                <p className="font-extrabold text-emerald-950 flex items-center gap-1">
+                  <span>📱 핸드폰으로 연동</span>
+                  <span className="text-[9px] bg-emerald-600 text-white px-1.5 py-0.2 rounded-full font-black">QR</span>
+                </p>
+                <p className="text-[10px] text-emerald-700">스마트폰 카메라로 즉시 연결</p>
+              </div>
+            </button>
+          )}
 
           {/* KakaoTalk Direct Link Button */}
           <button
@@ -64,14 +88,14 @@ export const FloatingChatWidget: React.FC<FloatingChatWidgetProps> = ({
               setExpanded(false);
               onOpenConsultation();
             }}
-            className="flex items-center gap-2.5 p-2.5 rounded-2xl bg-emerald-50 hover:bg-emerald-100 text-emerald-950 text-xs font-bold transition-colors text-left border border-emerald-200/80 cursor-pointer"
+            className="flex items-center gap-2.5 p-2.5 rounded-2xl bg-slate-50 hover:bg-slate-100 text-slate-950 text-xs font-bold transition-colors text-left border border-slate-200 cursor-pointer"
           >
-            <div className="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center shrink-0">
+            <div className="w-8 h-8 rounded-xl bg-slate-800 text-white flex items-center justify-center shrink-0">
               <CalendarCheck className="w-4 h-4" />
             </div>
             <div>
               <p className="font-extrabold text-slate-900">맞춤 견적 및 예약문의</p>
-              <p className="text-[10px] text-emerald-700">무료 견적서 작성 신청</p>
+              <p className="text-[10px] text-slate-500">무료 견적서 작성 신청</p>
             </div>
           </button>
 

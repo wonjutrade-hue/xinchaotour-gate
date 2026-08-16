@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { 
-  Compass, 
   PhoneCall, 
   MessageCircle, 
   ShieldCheck, 
@@ -11,63 +10,63 @@ import {
   X,
   Palmtree,
   DollarSign,
-  Star,
-  Building2,
   CalendarCheck,
-  Send
+  BookOpen,
+  Bot,
+  Smartphone,
+  QrCode
 } from 'lucide-react';
-import { Category, Region, City } from '../types';
 import { COMPANY_PHONE, COMPANY_PHONE_TEL, handleOpenKakaoTalkDirect } from '../constants';
+import { COMPANY_INFO } from '../data/companyInfo';
 import { ExchangeRates } from '../lib/exchangeRate';
 
-export type MainNavPage = 'home' | '자유여행' | '풀빌라' | '골프여행' | '여행후기' | '회사소개' | '예약문의';
+export type NavPage = 'home' | 'free_travel' | 'villa' | 'golf' | 'travel_info' | 'reservation';
 
 interface NavbarProps {
-  currentPage: MainNavPage;
-  onNavigate: (page: MainNavPage) => void;
-  activeCategory: Category | '전체';
-  onSelectCategory: (cat: Category | '전체') => void;
+  currentPage: NavPage;
+  onNavigate: (page: NavPage) => void;
   onOpenConsultation: () => void;
+  onOpenAiAssistant?: () => void;
+  onOpenTravelInfo?: (tab?: any) => void;
   onOpenAdmin?: () => void;
   searchTerm: string;
   onSearchChange: (val: string) => void;
   exchangeRates: ExchangeRates;
   onOpenRateCalculator?: () => void;
+  onOpenDeviceSync?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
   currentPage,
   onNavigate,
-  activeCategory,
-  onSelectCategory,
   onOpenConsultation,
+  onOpenAiAssistant,
+  onOpenTravelInfo,
   onOpenAdmin,
   searchTerm,
   onSearchChange,
   exchangeRates,
-  onOpenRateCalculator
+  onOpenRateCalculator,
+  onOpenDeviceSync
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const navItems: { page: MainNavPage; label: string; icon: string }[] = [
-    { page: 'home', label: 'HOME', icon: '🏠' },
-    { page: '자유여행', label: '자유여행', icon: '🛫' },
-    { page: '풀빌라', label: '풀빌라', icon: '🏰' },
-    { page: '골프여행', label: '골프여행', icon: '⛳' },
-    { page: '여행후기', label: '여행후기', icon: '⭐' },
-    { page: '회사소개', label: '회사소개', icon: '🏢' },
-    { page: '예약문의', label: '예약문의', icon: '📝' }
+  const vndPerThousandKRW = Math.round((1000 / (exchangeRates.KRW || 1350)) * (exchangeRates.VND || 25200));
+
+  const navItems: { key: NavPage; label: string; icon?: string }[] = [
+    { key: 'home', label: 'HOME' },
+    { key: 'free_travel', label: '자유여행' },
+    { key: 'villa', label: '풀빌라' },
+    { key: 'golf', label: '골프여행' },
+    { key: 'travel_info', label: '여행필수정보' },
+    { key: 'reservation', label: '예약문의' },
   ];
 
-  const handleNavClick = (page: MainNavPage) => {
+  const handleItemClick = (page: NavPage) => {
     onNavigate(page);
-    if (page === '자유여행') onSelectCategory('자유여행');
-    else if (page === '풀빌라') onSelectCategory('풀빌라');
-    else if (page === '골프여행') onSelectCategory('골프투어');
     setMobileMenuOpen(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
-
-  const vndPerThousandKRW = Math.round((1000 / (exchangeRates.KRW || 1350)) * (exchangeRates.VND || 25200));
 
   return (
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md shadow-xs border-b border-slate-100">
@@ -92,6 +91,38 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
 
           <div className="flex items-center gap-3 text-xs ml-auto">
+            {/* PC <-> Mobile Sync button */}
+            {onOpenDeviceSync && (
+              <button
+                onClick={onOpenDeviceSync}
+                className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30 hover:text-emerald-200 border border-emerald-400/40 transition cursor-pointer font-bold text-[11px] shadow-xs"
+                title="스마트폰 카메라로 QR 스캔 또는 6자리 코드로 연동"
+              >
+                <Smartphone className="w-3 h-3 text-emerald-400 animate-pulse" />
+                <span>PC ⇄ 핸드폰 연동</span>
+              </button>
+            )}
+
+            {/* Travel info guide trigger */}
+            <button
+              onClick={() => handleItemClick('travel_info')}
+              className="hidden sm:flex items-center gap-1 text-slate-300 hover:text-amber-300 transition cursor-pointer text-xs font-semibold"
+            >
+              <BookOpen className="w-3 h-3 text-amber-400" />
+              <span>여행정보 가이드</span>
+            </button>
+
+            {/* AI Assistant trigger */}
+            {onOpenAiAssistant && (
+              <button
+                onClick={onOpenAiAssistant}
+                className="hidden md:flex items-center gap-1 text-emerald-400 hover:text-emerald-300 transition cursor-pointer text-xs font-bold"
+              >
+                <Bot className="w-3.5 h-3.5" />
+                <span>AI 상담</span>
+              </button>
+            )}
+
             {/* Phone button */}
             <a
               href={COMPANY_PHONE_TEL}
@@ -110,6 +141,16 @@ export const Navbar: React.FC<NavbarProps> = ({
               <span>카카오톡 상담</span>
             </button>
 
+            {/* WhatsApp */}
+            <a
+              href={COMPANY_INFO.whatsAppLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden lg:inline-flex items-center gap-1 text-emerald-400 hover:text-emerald-300 font-bold transition"
+            >
+              <span>WhatsApp</span>
+            </a>
+
             {/* Admin trigger button */}
             {onOpenAdmin && (
               <button
@@ -118,7 +159,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 title="관리자 모드"
               >
                 <Lock className="w-3 h-3" />
-                <span className="hidden md:inline">관리자</span>
+                <span className="hidden lg:inline">관리자</span>
               </button>
             )}
           </div>
@@ -130,7 +171,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         <div className="flex items-center justify-between h-16 sm:h-20 gap-4">
           {/* Logo */}
           <button
-            onClick={() => handleNavClick('home')}
+            onClick={() => handleItemClick('home')}
             className="flex items-center gap-2.5 text-left shrink-0 cursor-pointer group"
           >
             <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-white shadow-md shadow-emerald-500/20 group-hover:scale-105 transition">
@@ -141,8 +182,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <span>XinChao</span>
                 <span className="text-emerald-600">Tour</span>
               </div>
-              <p className="text-[10px] text-slate-500 font-semibold tracking-wider uppercase">
-                베트남 전문 여행 플랫폼 · 신짜오투어
+              <p className="text-[10px] text-slate-500 font-semibold tracking-wider">
+                신짜오투어 | 베트남 맞춤 여행 전문
               </p>
             </div>
           </button>
@@ -150,18 +191,18 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Desktop Navigation Links */}
           <nav className="hidden lg:flex items-center gap-1 xl:gap-2">
             {navItems.map(item => {
-              const isActive = currentPage === item.page;
+              const isActive = currentPage === item.key;
               return (
                 <button
-                  key={item.page}
-                  onClick={() => handleNavClick(item.page)}
-                  className={`px-3.5 py-2 rounded-xl text-sm font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                  key={item.key}
+                  onClick={() => handleItemClick(item.key)}
+                  className={`px-4 py-2.5 rounded-xl text-sm font-extrabold transition-all cursor-pointer ${
                     isActive
-                      ? 'bg-emerald-50 text-emerald-700 font-extrabold shadow-2xs'
+                      ? 'bg-emerald-600 text-white shadow-sm'
                       : 'text-slate-700 hover:text-emerald-600 hover:bg-slate-50'
                   }`}
                 >
-                  <span>{item.label}</span>
+                  {item.label}
                 </button>
               );
             })}
@@ -170,7 +211,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Search bar & Action Button */}
           <div className="flex items-center gap-2 sm:gap-3">
             {/* Quick Search */}
-            <div className="relative hidden md:block w-48 xl:w-56">
+            <div className="relative hidden md:block w-40 xl:w-48">
               <input
                 type="text"
                 placeholder="지역, 풀빌라, 골프 검색"
@@ -188,6 +229,17 @@ export const Navbar: React.FC<NavbarProps> = ({
                 </button>
               )}
             </div>
+
+            {/* AI Advisor button */}
+            {onOpenAiAssistant && (
+              <button
+                onClick={onOpenAiAssistant}
+                className="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition shadow-xs cursor-pointer"
+              >
+                <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+                <span>AI 플래너</span>
+              </button>
+            )}
 
             {/* Top Quick Consultation button */}
             <button
@@ -229,22 +281,57 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Navigation Links */}
           <div className="grid grid-cols-2 gap-2">
             {navItems.map(item => {
-              const isActive = currentPage === item.page;
+              const isActive = currentPage === item.key;
               return (
                 <button
-                  key={item.page}
-                  onClick={() => handleNavClick(item.page)}
-                  className={`p-3 rounded-xl text-sm font-bold transition text-left flex items-center gap-2 cursor-pointer ${
+                  key={item.key}
+                  onClick={() => handleItemClick(item.key)}
+                  className={`p-3 rounded-xl text-sm font-extrabold transition text-left flex items-center justify-between cursor-pointer ${
                     isActive
-                      ? 'bg-emerald-600 text-white'
+                      ? 'bg-emerald-600 text-white shadow-sm'
                       : 'bg-slate-50 text-slate-800 hover:bg-slate-100'
                   }`}
                 >
-                  <span className="text-base">{item.icon}</span>
                   <span>{item.label}</span>
+                  {isActive && <span className="text-xs">●</span>}
                 </button>
               );
             })}
+          </div>
+
+          {/* Quick Tools */}
+          <div className="pt-2 grid grid-cols-3 gap-2">
+            <button
+              onClick={() => handleItemClick('travel_info')}
+              className="p-2.5 rounded-xl bg-amber-50 text-amber-900 border border-amber-200 text-xs font-bold flex flex-col items-center justify-center gap-1 cursor-pointer"
+            >
+              <BookOpen className="w-3.5 h-3.5 text-amber-600" />
+              <span>여행정보</span>
+            </button>
+            {onOpenDeviceSync && (
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  onOpenDeviceSync();
+                }}
+                className="p-2.5 rounded-xl bg-emerald-50 text-emerald-900 border border-emerald-200 text-xs font-bold flex flex-col items-center justify-center gap-1 cursor-pointer"
+              >
+                <Smartphone className="w-3.5 h-3.5 text-emerald-600" />
+                <span>기기연동</span>
+              </button>
+            )}
+            {onOpenAiAssistant && (
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  onOpenAiAssistant();
+                }}
+                className="p-2.5 rounded-xl bg-slate-900 text-white text-xs font-bold flex flex-col items-center justify-center gap-1 cursor-pointer"
+              >
+                <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+                <span>AI 상담</span>
+              </button>
+            )}
           </div>
 
           {/* Mobile Quick Contact buttons */}
