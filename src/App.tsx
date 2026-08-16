@@ -41,16 +41,45 @@ import {
   loadInquiriesFromIndexedDB
 } from './lib/indexedDb';
 
-const PRODUCTS_CACHE_KEY = 'xinchao_products_cache_v14';
-const DB_INITIALIZED_KEY = 'xinchao_db_initialized_v14';
+const PRODUCTS_CACHE_KEY = 'xinchao_products_cache_master';
+const DB_INITIALIZED_KEY = 'xinchao_db_initialized_master';
+
+function cleanSampleUrls(prodList: Product[]): Product[] {
+  if (!Array.isArray(prodList)) return [];
+  return prodList.map(p => {
+    const isSampleMain = p.imageUrl && (p.imageUrl.includes('unsplash.com') || p.imageUrl === 'VILLA_PHOTO_DATA' || p.imageUrl === 'TEST_IMG');
+    const cleanSubs = (p.additionalImages || []).filter(u => u && !u.includes('unsplash.com') && u !== 'VILLA_PHOTO_DATA' && u !== 'TEST_IMG');
+    return {
+      ...p,
+      imageUrl: isSampleMain ? (cleanSubs.length > 0 ? cleanSubs[0] : '') : (p.imageUrl || ''),
+      additionalImages: isSampleMain && cleanSubs.length > 0 ? cleanSubs.slice(1) : cleanSubs
+    };
+  });
+}
 
 function getStoredJson<T>(key: string, fallback: T): T {
   try {
-    const raw = localStorage.getItem(key);
+    // 1. Try master key
+    let raw = localStorage.getItem(key);
+    
+    // 2. If not found, look for any previous version cache keys
+    if (!raw) {
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (k && k.startsWith('xinchao_products_cache_')) {
+          const val = localStorage.getItem(k);
+          if (val && val.length > 50) {
+            raw = val;
+            break;
+          }
+        }
+      }
+    }
+
     if (raw) {
       const parsed = JSON.parse(raw);
       if (parsed !== null && parsed !== undefined && Array.isArray(parsed) && parsed.length > 0) {
-        return parsed as T;
+        return cleanSampleUrls(parsed) as unknown as T;
       }
     }
   } catch (e) {

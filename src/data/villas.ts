@@ -11,11 +11,11 @@ export const VILLAS_DATA: Product[] = [
     priceKRW: 980000,
     priceVND: 18200000,
     duration: '3박 5일',
-    imageUrl: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=1200&q=80',
+    imageUrl: '',
     additionalImages: [
-      'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80'
+      '',
+      '',
+      ''
     ],
     rating: 5.0,
     reviewCount: 94,
@@ -110,11 +110,11 @@ export const VILLAS_DATA: Product[] = [
     priceKRW: 1350000,
     priceVND: 25000000,
     duration: '3박 5일',
-    imageUrl: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80',
+    imageUrl: '',
     additionalImages: [
-      'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80'
+      '',
+      '',
+      ''
     ],
     rating: 5.0,
     reviewCount: 48,
@@ -203,10 +203,10 @@ export const VILLAS_DATA: Product[] = [
     priceKRW: 920000,
     priceVND: 17100000,
     duration: '3박 5일',
-    imageUrl: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80',
+    imageUrl: '',
     additionalImages: [
-      'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=1200&q=80'
+      '',
+      ''
     ],
     rating: 4.9,
     reviewCount: 52,
