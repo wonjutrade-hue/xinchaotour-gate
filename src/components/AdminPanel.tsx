@@ -47,6 +47,7 @@ import {
 import { sampleImages } from '../data/sampleImages';
 
 interface AdminPanelProps {
+  isOpen?: boolean;
   products: Product[];
   inquiries: ConsultationRequest[];
   onAddProduct: (product: Omit<Product, 'id'>) => Promise<any>;
@@ -58,6 +59,8 @@ interface AdminPanelProps {
   onClearAllPhotos?: () => Promise<any>;
   onClose: () => void;
   onSelectProduct?: (product: Product) => void;
+  onImportProducts?: (items: any[], replace: boolean) => Promise<any>;
+  exchangeRates?: any;
 }
 
 const REGIONS: Region[] = ['전체', '북부', '중부', '남부'];
@@ -87,6 +90,7 @@ const POPULAR_VILLA_AMENITIES = [
 ];
 
 export const AdminPanel: React.FC<AdminPanelProps> = ({
+  isOpen = true,
   products,
   inquiries,
   onAddProduct,
@@ -97,8 +101,12 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   onClearAllProducts,
   onClearAllPhotos,
   onClose,
-  onSelectProduct
+  onSelectProduct,
+  onImportProducts,
+  exchangeRates
 }) => {
+  if (!isOpen) return null;
+
   // Tabs: 'list' | 'editor' | 'inquiries' | 'settings'
   const [activeTab, setActiveTab] = useState<'list' | 'editor' | 'inquiries' | 'settings'>('list');
   const [selectedCategoryFilter, setSelectedCategoryFilter] = useState<Category | '전체'>('전체');
@@ -705,9 +713,26 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
       {/* ================= SAVE SUCCESS TOAST ================= */}
       {saveSuccessMsg && (
-        <div className="bg-emerald-500 text-slate-950 px-4 py-2.5 text-center font-black text-sm flex items-center justify-center gap-2 animate-bounce shrink-0 shadow-lg">
-          <CheckCircle className="w-5 h-5" />
-          <span>{saveSuccessMsg}</span>
+        <div className="bg-emerald-500 text-slate-950 px-4 py-3 text-center font-black text-sm flex flex-wrap items-center justify-between gap-3 shrink-0 shadow-lg border-b border-emerald-400">
+          <div className="flex items-center gap-2">
+            <CheckCircle className="w-5 h-5 text-slate-950 shrink-0" />
+            <span className="text-slate-950 font-black">{saveSuccessMsg}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={onClose}
+              className="px-3.5 py-1.5 rounded-lg bg-slate-950 hover:bg-slate-900 text-emerald-400 text-xs font-black flex items-center gap-1.5 cursor-pointer shadow transition-all hover:scale-105"
+            >
+              <Eye className="w-3.5 h-3.5" />
+              <span>손님용 화면 나가기 &rarr;</span>
+            </button>
+            <button
+              onClick={() => setSaveSuccessMsg(null)}
+              className="p-1 rounded bg-emerald-600/50 hover:bg-emerald-600 text-slate-950 cursor-pointer"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
         </div>
       )}
 
