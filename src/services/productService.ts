@@ -7,6 +7,7 @@ import {
   mapProductToDbRow 
 } from '../types/database';
 import { imageService } from './imageService';
+import { INITIAL_PRODUCTS } from '../data/seedProducts';
 
 export interface ProductFilters {
   category?: string;
@@ -43,7 +44,7 @@ export const productService = {
           query = query.eq('status', 'published');
         }
 
-        if (filters?.category) {
+        if (filters?.category && filters.category !== '전체') {
           query = query.eq('category', filters.category);
         }
 
@@ -67,6 +68,10 @@ export const productService = {
 
             return mapDbProductToProduct(row as DbProductRow, galleryImages);
           });
+        } else if ((!data || data.length === 0) && (!filters || Object.keys(filters).length === 0 || (filters.status === 'published' && !filters.category && !filters.region))) {
+          // Supabase is configured but database table is empty -> seed initial products into Supabase!
+          console.log('[ProductService] Supabase is empty, seeding INITIAL_PRODUCTS...');
+          this.syncAllProducts(INITIAL_PRODUCTS).catch(console.warn);
         }
       } catch (supabaseErr) {
         console.warn('[ProductService] Supabase query failed, attempting Server API fallback:', supabaseErr);
@@ -76,18 +81,32 @@ export const productService = {
     // 2. Server API fallback
     try {
       const res = await fetch('/api/products');
-      if (!res.ok) {
-        throw new Error(`Server returned ${res.status}: ${res.statusText}`);
+      if (res.ok) {
+        const json = await res.json();
+        if (json && Array.isArray(json.products) && json.products.length > 0) {
+          let list: Product[] = json.products;
+          if (filters?.category && filters.category !== '전체') {
+            list = list.filter(p => p.category === filters.category);
+          }
+          if (filters?.region && filters.region !== '전체') {
+            list = list.filter(p => p.region === filters.region);
+          }
+          return list;
+        }
       }
-      const json = await res.json();
-      if (json && Array.isArray(json.products) && json.products.length > 0) {
-        return json.products;
-      }
-      return [];
     } catch (serverErr) {
-      console.error('[ProductService] Server products fetch failed:', serverErr);
-      return [];
+      console.warn('[ProductService] Server products fetch failed, using bundled fallback:', serverErr);
     }
+
+    // 3. Bundled INITIAL_PRODUCTS guaranteed fallback
+    let fallbackList = INITIAL_PRODUCTS;
+    if (filters?.category && filters.category !== '전체') {
+      fallbackList = fallbackList.filter(p => p.category === filters.category);
+    }
+    if (filters?.region && filters.region !== '전체') {
+      fallbackList = fallbackList.filter(p => p.region === filters.region);
+    }
+    return fallbackList;
   },
 
   /**

@@ -45,6 +45,7 @@ import {
   saveInquiriesToIndexedDB,
   loadInquiriesFromIndexedDB
 } from './lib/indexedDb';
+import { INITIAL_PRODUCTS } from './data/seedProducts';
 
 const PRODUCTS_CACHE_KEY = 'xinchao_products_cache_master';
 
@@ -90,7 +91,9 @@ function setStoredJson(key: string, data: any) {
 export default function App() {
   const [currentPage, setCurrentPage] = useState<NavPage>('home');
   const [products, setProducts] = useState<Product[]>(() => {
-    return getStoredJson<Product[]>(PRODUCTS_CACHE_KEY, []);
+    const cached = getStoredJson<Product[]>(PRODUCTS_CACHE_KEY, []);
+    if (cached && cached.length > 0) return cached;
+    return INITIAL_PRODUCTS;
   });
   const [inquiries, setInquiries] = useState<ConsultationRequest[]>([]);
   const [isLoadingProducts, setIsLoadingProducts] = useState(true);
@@ -240,18 +243,16 @@ export default function App() {
             await saveProductsToIndexedDB(fetchedProducts);
             setStoredJson(PRODUCTS_CACHE_KEY, fetchedProducts);
           } else {
-            // Server or Supabase returned 0 items. Check if we have valid local products!
+            // Server or Supabase returned 0 items. Check if we have valid local products or INITIAL_PRODUCTS!
             const idbProducts = await loadProductsFromIndexedDB();
             const fallbackLocal = (idbProducts && idbProducts.length > 0)
               ? idbProducts
-              : getStoredJson<Product[]>(PRODUCTS_CACHE_KEY, []);
+              : INITIAL_PRODUCTS;
 
-            if (fallbackLocal && fallbackLocal.length > 0) {
-              // We have registered products locally! NEVER wipe them to 0!
-              // Keep local products and re-sync them up to the server/Supabase
-              setProducts(fallbackLocal);
-              productService.syncAllProducts(fallbackLocal).catch(console.warn);
-            }
+            setProducts(fallbackLocal);
+            await saveProductsToIndexedDB(fallbackLocal);
+            setStoredJson(PRODUCTS_CACHE_KEY, fallbackLocal);
+            productService.syncAllProducts(fallbackLocal).catch(console.warn);
           }
         }
       }
