@@ -48,15 +48,15 @@ import {
 
 const PRODUCTS_CACHE_KEY = 'xinchao_products_cache_master';
 
-function cleanSampleUrls(prodList: Product[]): Product[] {
+function cleanPlaceholderUrls(prodList: Product[]): Product[] {
   if (!Array.isArray(prodList)) return [];
   return prodList.map(p => {
-    const isSampleMain = p.imageUrl && (p.imageUrl.includes('unsplash.com') || p.imageUrl === 'VILLA_PHOTO_DATA' || p.imageUrl === 'TEST_IMG');
-    const cleanSubs = (p.additionalImages || []).filter(u => u && !u.includes('unsplash.com') && u !== 'VILLA_PHOTO_DATA' && u !== 'TEST_IMG');
+    const isDummyMain = p.imageUrl === 'VILLA_PHOTO_DATA' || p.imageUrl === 'TEST_IMG';
+    const cleanSubs = (p.additionalImages || []).filter(u => u && u !== 'VILLA_PHOTO_DATA' && u !== 'TEST_IMG');
     return {
       ...p,
-      imageUrl: isSampleMain ? (cleanSubs.length > 0 ? cleanSubs[0] : '') : (p.imageUrl || ''),
-      additionalImages: isSampleMain && cleanSubs.length > 0 ? cleanSubs.slice(1) : cleanSubs
+      imageUrl: isDummyMain ? (cleanSubs.length > 0 ? cleanSubs[0] : '') : (p.imageUrl || ''),
+      additionalImages: cleanSubs
     };
   });
 }
@@ -67,7 +67,7 @@ function getStoredJson<T>(key: string, fallback: T): T {
     if (raw) {
       const parsed = JSON.parse(raw);
       if (parsed !== null && parsed !== undefined && Array.isArray(parsed)) {
-        return cleanSampleUrls(parsed) as unknown as T;
+        return cleanPlaceholderUrls(parsed) as unknown as T;
       }
     }
   } catch (e) {

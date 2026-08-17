@@ -164,11 +164,279 @@ const VILLA_AMENITIES = [
   '24시간 리조트 보안', '프라이빗 정원 & 테라스'
 ];
 
+// 에어비앤비 하우스 룰 프리셋
+const AIRBNB_HOUSE_RULES_PRESETS = [
+  '실내 절대 금연 (야외 테라스 및 정원에서 흡연 가능)',
+  '심야 정숙 시간 준수 (매너타임 22:00 ~ 08:00)',
+  '파티 및 대규모 모임 시 사전 승인 필수',
+  '반려동물 동반 불가',
+  '야외 바비큐 이용 후 그릴 및 주변 기본 정리',
+  '외출 시 수영장 조명 및 에어컨 전원 소등'
+];
+
 // 골프장 부대시설 프리셋
 const GOLF_FACILITIES_PRESETS = [
   '18홀 챔피언십 코스', '36홀 코스', '54홀 코스', '드라이빙 레인지 (연습장)',
   '클럽하우스 락커룸 & 샤워실', '프로샵 (용품점)', '클럽하우스 VIP 레스토랑',
   'VIP 사우나 & 자쿠지', '카트 페어웨이 진입 가능', '그늘집 스낵바'
+];
+
+// 베트남 지역별 유명 명문 골프장 상세 프리셋 DB
+const FAMOUS_GOLF_COURSES_DB = [
+  {
+    region: '중부',
+    city: '다낭',
+    name: '다낭 BRG 골프 리조트 (BRG Da Nang Golf)',
+    designer: '그렉 노먼 (Greg Norman)',
+    holes: 18,
+    difficulty: '상급',
+    grassType: '버뮤다 그래스 (Bermuda)',
+    facilities: ['18홀 챔피언십 코스', '드라이빙 레인지 (연습장)', '클럽하우스 락커룸 & 샤워실', '프로샵 (용품점)', '클럽하우스 VIP 레스토랑', 'VIP 사우나 & 자쿠지'],
+    description: '백상아리 그렉 노먼이 설계한 해변 듄스 링크스 코스로, 베트남 최고 명문 코스로 꼽힙니다.'
+  },
+  {
+    region: '중부',
+    city: '다낭',
+    name: '몽고메리 링크스 CC (Montgomerie Links)',
+    designer: '콜린 몽고메리 (Colin Montgomerie)',
+    holes: 18,
+    difficulty: '중상급',
+    grassType: '패스팰럼 잔디 (Paspalum)',
+    facilities: ['18홀 챔피언십 코스', '드라이빙 레인지 (연습장)', '클럽하우스 락커룸 & 샤워실', '클럽하우스 VIP 레스토랑'],
+    description: '스코틀랜드 정통 링크스 스타일로 마블마운틴 오행산을 조망하며 라운딩을 즐길 수 있습니다.'
+  },
+  {
+    region: '중부',
+    city: '다낭',
+    name: '바나힐스 골프클럽 (Ba Na Hills Golf Club)',
+    designer: '루크 도널드 (Luke Donald)',
+    holes: 18,
+    difficulty: '상급',
+    grassType: '벤트그래스 & 버뮤다',
+    facilities: ['18홀 챔피언십 코스', '야간 라이트 조명 시설', '드라이빙 레인지 (연습장)', 'VIP 사우나 & 자쿠지'],
+    description: '바나산 기슭 산악형 챔피언십 코스로, 시원한 산바람과 전 홀 나이트 라이트 시설이 완비되어 있습니다.'
+  },
+  {
+    region: '중부',
+    city: '호이안',
+    name: '호이아나 쇼어스 골프클럽 (Hoiana Shores Golf Club)',
+    designer: '로버트 트렌트 존스 Jr (Robert Trent Jones Jr.)',
+    holes: 18,
+    difficulty: '최상급',
+    grassType: '제온 조이시아 (Zeon Zoysia)',
+    facilities: ['18홀 챔피언십 링크스', '최고급 클럽하우스', '드라이빙 레인지', 'VIP 락커 & 다이닝'],
+    description: '세계적인 설계 거장 로버트 트렌트 존스 주니어가 완성한 환상적인 해변 정통 링크스 코스입니다.'
+  },
+  {
+    region: '중부',
+    city: '호이안',
+    name: '빈펄 골프 남호이안 (Vinpearl Golf Nam Hoi An)',
+    designer: 'IMG 디자인 그룹',
+    holes: 18,
+    difficulty: '중상급',
+    grassType: '플래티넘 패스팰럼',
+    facilities: ['18홀 챔피언십 코스', '빈펄 리조트 연계', '드라이빙 레인지', '클럽하우스'],
+    description: '평화로운 해안선과 자연 모래언덕의 벙커가 조화를 이루는 프리미엄 리조트형 골프장입니다.'
+  },
+  {
+    region: '중부',
+    city: '다낭',
+    name: '라구나 랑코 골프클럽 (Laguna Golf Lang Co)',
+    designer: '닉 팔도 경 (Sir Nick Faldo)',
+    holes: 18,
+    difficulty: '상급',
+    grassType: '지온 조이시아 & 버뮤다',
+    facilities: ['18홀 챔피언십 코스', '반얀트리 리조트 연계', '드라이빙 레인지', '프로샵'],
+    description: '산과 바다, 계곡과 논밭을 넘나드는 닉 팔도의 시그니처 챔피언십 코스입니다.'
+  },
+  {
+    region: '중부',
+    city: '나트랑',
+    name: '빈펄 골프 나트랑 (Vinpearl Golf Nha Trang)',
+    designer: 'IMG 디자인 그룹',
+    holes: 18,
+    difficulty: '중상급',
+    grassType: '시쇼어 패스팰럼',
+    facilities: ['18홀 섬 챔피언십 코스', '스피드보트 전용 선착장', '클럽하우스 락커룸', 'VIP 다이닝'],
+    description: '혼째 섬 전체를 감싸는 에메랄드빛 바다 뷰를 자랑하는 베트남 최초의 국제 표준 아일랜드 코스입니다.'
+  },
+  {
+    region: '중부',
+    city: '나트랑',
+    name: 'KN 골프링크스 깜란 (KN Golf Links Cam Ranh)',
+    designer: '그렉 노먼 (Greg Norman)',
+    holes: 27,
+    difficulty: '상급',
+    grassType: '지온 조이시아 & 패스팰럼',
+    facilities: ['27홀 챔피언십 코스', '오아시스 9홀', '더 링크스 18홀', '드라이빙 레인지'],
+    description: '깜란 반도의 거대한 모래언덕과 바다를 배경으로 한 27홀 럭셔리 링크스 명문 골프장입니다.'
+  },
+  {
+    region: '중부',
+    city: '나트랑',
+    name: '다이아몬드 베이 골프 (Diamond Bay Golf)',
+    designer: '앤디 다이 (Andy Dye)',
+    holes: 18,
+    difficulty: '중급',
+    grassType: '버뮤다 그래스',
+    facilities: ['18홀 코스', '바다 드라이빙 레인지', '클럽하우스', '수영장 연계'],
+    description: '바다를 향해 샷을 날리는 드라이빙 레인지와 천혜의 산악/바다 뷰가 어우러진 코스입니다.'
+  },
+  {
+    region: '남부',
+    city: '푸꾸옥',
+    name: '빈펄 골프 푸꾸옥 (Vinpearl Golf Phu Quoc)',
+    designer: 'IMG 디자인 그룹',
+    holes: 18,
+    difficulty: '중상급',
+    grassType: '플래티넘 패스팰럼',
+    facilities: ['18홀 열대 우림 코스', '빈원더스/사파리 연계', '드라이빙 레인지', '클럽하우스'],
+    description: '푸꾸옥 국립공원 원시림과 해안선을 관통하는 친환경 열대 정글 챔피언십 골프장입니다.'
+  },
+  {
+    region: '북부',
+    city: '하노이',
+    name: '스카이 레이크 리조트 & 골프클럽 (Sky Lake Resort & Golf)',
+    designer: 'Bunkers Golf Design',
+    holes: 36,
+    difficulty: '상급',
+    grassType: '패스팰럼 잔디',
+    facilities: ['36홀 코스 (스카이 18홀 / 레이크 18홀)', '드라이빙 레인지', '5성급 클럽하우스'],
+    description: '하노이 인근 최고의 명문으로, 거대한 호수와 자연 숲이 어우러진 한국 골퍼 선호도 1위 골프장입니다.'
+  },
+  {
+    region: '북부',
+    city: '하노이',
+    name: '피닉스 골프 리조트 (Phoenix Golf Resort)',
+    designer: '로널드 프림 & 송호 디자인',
+    holes: 54,
+    difficulty: '중상급',
+    grassType: '버뮤다 그래스',
+    facilities: ['54홀 초대형 골프장 (피닉스/드래곤/챔피언)', '클럽하우스', '사우나'],
+    description: '육지의 하롱베이라 불리는 닌빈 기암괴석을 배경으로 조성된 베트남 최대 규모 54홀 골프장입니다.'
+  },
+  {
+    region: '남부',
+    city: '호치민',
+    name: '트윈도브스 골프클럽 (Twin Doves Golf Club)',
+    designer: 'P+Z 골프 디자인',
+    holes: 27,
+    difficulty: '상급',
+    grassType: '플래티넘 패스팰럼',
+    facilities: ['27홀 회원제 코스 (루나/스텔라/솔레이)', '야간 라이트', '드라이빙 레인지'],
+    description: 'KLPGA 정규 투어가 개최되는 호치민 최고의 명문 국제 규격 27홀 챔피언십 골프장입니다.'
+  },
+  {
+    region: '남부',
+    city: '호치민',
+    name: '탄손녓 골프코스 (Tan Son Nhat Golf Course)',
+    designer: 'Nelson & Haworth Golf Course Architects',
+    holes: 36,
+    difficulty: '중상급',
+    grassType: '패스팰럼 잔디',
+    facilities: ['36홀 도심형 코스', '전 홀 야간 라이트 시설', '초대형 클럽하우스 & 컨벤션'],
+    description: '호치민 공항 인근에 위치하여 접근성이 뛰어나며 야간 라운딩이 완비된 도심형 명문 코스입니다.'
+  }
+];
+
+// 에어비앤비 스타일 풀빌라 단지 위치 및 구조 프리셋
+const FAMOUS_VILLA_LOCATIONS_DB = [
+  {
+    title: '다낭 미케비치 비치프론트 4베드룸 독채 풀빌라',
+    villaName: '다낭 미케비치 비치프론트 4베드룸 럭셔리 독채 풀빌라',
+    structure: '지상 2층 독채 전체 + 전용 인피니티풀 + 넓은 거실 & 풀키친 다이닝룸',
+    address: '베트남 다낭시 응우한선구 보응우옌잡 해안도로 프라이빗 리조트 단지',
+    googleMapUrl: 'https://maps.google.com/?q=My+Khe+Beach+Da+Nang',
+    bedrooms: 4,
+    bathrooms: 4,
+    beds: '킹베드 3개 + 퀸베드 1개 + 싱글베드 2개',
+    areaSqm: 380,
+    areaPyeong: 115,
+    floors: 2,
+    maxOccupancy: 12,
+    standardOccupancy: 8
+  },
+  {
+    title: '다낭 프리미어 빌리지 3베드룸 오션뷰 풀빌라',
+    villaName: '다낭 프리미어 빌리지 3베드룸 가든 & 오션뷰 독채 빌라',
+    structure: '지상 3층 럭셔리 독채 빌라 + 전용 가든 풀 + 루프탑 오션 테라스',
+    address: '베트남 다낭시 응우한선구 미안 프리미어 빌리지 단지',
+    googleMapUrl: 'https://maps.google.com/?q=Premier+Village+Danang+Resort',
+    bedrooms: 3,
+    bathrooms: 3,
+    beds: '킹베드 2개 + 트윈 싱글베드 2개',
+    areaSqm: 330,
+    areaPyeong: 100,
+    floors: 3,
+    maxOccupancy: 8,
+    standardOccupancy: 6
+  },
+  {
+    title: '호이안 안방비치 코코넛 가든 3베드룸 풀빌라',
+    villaName: '호이안 안방비치 코코넛 가든 3베드룸 프라이빗 풀빌라',
+    structure: '단층 프라이빗 휴양 독채 + 전용 코코넛 가든 풀 + 야외 BBQ 키친',
+    address: '베트남 꽝남성 호이안시 안방 해변가 빌라 단지',
+    googleMapUrl: 'https://maps.google.com/?q=An+Bang+Beach+Hoi+An',
+    bedrooms: 3,
+    bathrooms: 3,
+    beds: '킹베드 3개',
+    areaSqm: 260,
+    areaPyeong: 78,
+    floors: 1,
+    maxOccupancy: 8,
+    standardOccupancy: 6
+  },
+  {
+    title: '나트랑 깜란 프라이빗 오션 인피니티 4베드룸 풀빌라',
+    villaName: '나트랑 깜란 프라이빗 오션 인피니티 4베드룸 풀빌라',
+    structure: '지상 2층 모던 럭셔리 독채 + 바다 직망 인피니티풀 + 썬큰 가든',
+    address: '베트남 카인호아성 깜란시 응우옌탓탄 해안대로 리조트 단지',
+    googleMapUrl: 'https://maps.google.com/?q=Cam+Ranh+Resort+Nha+Trang',
+    bedrooms: 4,
+    bathrooms: 4,
+    beds: '킹베드 3개 + 퀸베드 1개',
+    areaSqm: 420,
+    areaPyeong: 127,
+    floors: 2,
+    maxOccupancy: 12,
+    standardOccupancy: 8
+  },
+  {
+    title: '푸꾸옥 선셋타운 & 롱비치 파노라마 5베드룸 풀빌라',
+    villaName: '푸꾸옥 선셋타운 파노라마 5베드룸 럭셔리 풀빌라',
+    structure: '지상 3층 지중해풍 럭셔리 독채 + 프라이빗 루프탑 풀 + 풀오션뷰',
+    address: '베트남 끼엔장성 푸꾸옥시 안토이 선셋타운 단지',
+    googleMapUrl: 'https://maps.google.com/?q=Sunset+Town+Phu+Quoc',
+    bedrooms: 5,
+    bathrooms: 5,
+    beds: '킹베드 4개 + 트윈베드 2개',
+    areaSqm: 450,
+    areaPyeong: 136,
+    floors: 3,
+    maxOccupancy: 14,
+    standardOccupancy: 10
+  }
+];
+
+// 도시별 대표 랜드마크 & 관광지 프리셋
+const CITY_LANDMARK_PRESETS: Record<string, string[]> = {
+  '다낭': ['바나힐 골든브릿지 손동상', '호이안 올드타운 유등 소원배', '미케비치 해안가 카페거리', '링응사 해수관음상', '오행산(마블마운틴)', '선짜 야시장 & 롯데마트 쇼핑', '한강 용다리 야경'],
+  '호이안': ['유네스코 호이안 올드타운', '투본강 소원배 유등 띄우기', '안방 비치', '호이안 메모리즈 쇼', '바구니배(틴퉁) 코코넛숲'],
+  '나트랑': ['포나가르 사원', '나트랑 대성당', '빈원더스 테마파크 & 워터파크', '롱선사 거대 와불상', '아이리조트 프리미엄 머드온천', '담시장 & 야시장 쇼핑'],
+  '푸꾸옥': ['빈원더스 & 빈펄 사파리', '그랜드월드 수상 베니스 분수쇼', '혼똠섬 세계 최장 해상 케이블카', '선셋타운 키스브릿지', '즈엉동 야시장', '사오비치'],
+  '하노이': ['하롱베이 럭셔리 데이크루즈', '호안끼엠 호수 & 구시가지 36거리', '하노이 기찻길 마을', '성요셉 성당 & 콩카페', '닌빈 짱안 유네스코 나룻배 투어', '사파 판시판 케이블카'],
+  '하롱베이': ['하롱베이 럭셔리 1박 크루즈', '승솟 동굴 탐방', '티톱섬 전망대 & 해변', '항루온 카약/밤부보트'],
+  '달랏': ['랑비앙산 지프 투어', '다딴라 폭포 루지', '달랏 기차역 & 린푸억 사원', '달랏 야시장 미식 탐방', '클레이 터널 진흙마을']
+};
+
+// 여행 테마 프리셋
+const TRAVEL_THEMES_PRESETS = [
+  '👪 3대 가족 힐링 & 노쇼핑 단독 투어',
+  '✨ 로맨틱 허니문 & 커플 프라이빗 투어',
+  '👵 부모님 효도 관광 (노쇼핑·노옵션·풀케어)',
+  '🌊 익스트림 액티비티 & 힐링 스파 투어',
+  '📸 인스타 인생샷 & 카페·미식 탐방 투어',
+  '🏢 기업 인센티브 & 단체 단독 맞춤 투어'
 ];
 
 export const AdminMode: React.FC<AdminModeProps> = ({
@@ -244,10 +512,10 @@ export const AdminMode: React.FC<AdminModeProps> = ({
     return matchCat && matchReg && matchSearch;
   });
 
-  // Check if an image URL is a default sample placeholder
+  // Check if an image URL is a dummy test placeholder
   const isSampleUrl = (url: string | undefined): boolean => {
     if (!url) return true;
-    return url.includes('images.unsplash.com') || url === 'VILLA_PHOTO_DATA' || url === 'TEST_IMG';
+    return url === 'VILLA_PHOTO_DATA' || url === 'TEST_IMG';
   };
 
   // Open Editor for Creating New Product
@@ -562,7 +830,15 @@ export const AdminMode: React.FC<AdminModeProps> = ({
   // Open Editor to Edit Existing Product
   const handleEditProduct = (product: Product) => {
     // Deep clone to prevent direct state mutation before saving
-    setEditingProduct(JSON.parse(JSON.stringify(product)));
+    const cloned: Product = JSON.parse(JSON.stringify(product));
+    cloned.additionalImages = Array.isArray(cloned.additionalImages) ? cloned.additionalImages : [];
+    cloned.tags = Array.isArray(cloned.tags) ? cloned.tags : [];
+    cloned.included = Array.isArray(cloned.included) ? cloned.included : [];
+    cloned.excluded = Array.isArray(cloned.excluded) ? cloned.excluded : [];
+    cloned.itinerary = Array.isArray(cloned.itinerary) ? cloned.itinerary : [];
+    cloned.highlights = Array.isArray(cloned.highlights) ? cloned.highlights : [];
+    cloned.departureCities = Array.isArray(cloned.departureCities) ? cloned.departureCities : ['인천', '부산', '대구'];
+    setEditingProduct(cloned);
     setEditorTab('basic');
     setIsEditorOpen(true);
   };
@@ -657,7 +933,7 @@ export const AdminMode: React.FC<AdminModeProps> = ({
           if (!prev) return prev;
           
           const currentMain = prev.imageUrl || '';
-          const hasSampleMain = isSampleUrl(currentMain);
+          const hasDummyMain = !currentMain || currentMain === 'VILLA_PHOTO_DATA' || currentMain === 'TEST_IMG';
 
           if (targetType === 'main') {
             // User explicitly clicked representative/main photo button
@@ -667,22 +943,20 @@ export const AdminMode: React.FC<AdminModeProps> = ({
               imageUrl: finalUrls[0],
               additionalImages: remaining.length > 0
                 ? Array.from(new Set([...(prev.additionalImages || []), ...remaining]))
-                : prev.additionalImages
+                : (prev.additionalImages || [])
             };
           } else {
             // Target is gallery or bulk upload
             const currentSubs = prev.additionalImages || [];
             
-            // If current main image is empty OR is a sample photo, make the 1st uploaded photo the real main image!
-            if (hasSampleMain && finalUrls.length > 0) {
+            // If current main image is empty, make the 1st uploaded photo the representative image!
+            if (hasDummyMain && finalUrls.length > 0) {
               const newMain = finalUrls[0];
               const newSubs = finalUrls.slice(1);
-              // Clean out old sample photos from additional images if any
-              const cleanCurrentSubs = currentSubs.filter(u => !isSampleUrl(u));
               return {
                 ...prev,
                 imageUrl: newMain,
-                additionalImages: Array.from(new Set([...cleanCurrentSubs, ...newSubs]))
+                additionalImages: Array.from(new Set([...currentSubs, ...newSubs]))
               };
             }
 
@@ -2648,7 +2922,7 @@ export const AdminMode: React.FC<AdminModeProps> = ({
                                 setEditingProduct(prev => {
                                   if (!prev) return prev;
                                   const filtered = (prev.additionalImages || []).filter((_, i) => i !== sIdx);
-                                  const newSubs = oldMain && !isSampleUrl(oldMain)
+                                  const newSubs = oldMain && oldMain !== 'VILLA_PHOTO_DATA' && oldMain !== 'TEST_IMG'
                                     ? [oldMain, ...filtered]
                                     : filtered;
                                   return {
@@ -2791,6 +3065,47 @@ export const AdminMode: React.FC<AdminModeProps> = ({
                             <Sparkles className="w-3.5 h-3.5" />
                             <span>풀빌라 표준양식 자동완성</span>
                           </button>
+                        </div>
+
+                        {/* Fast Villa Location & Structure Preset Picker */}
+                        <div className="bg-slate-950 p-3.5 rounded-2xl border border-teal-900/60 space-y-2">
+                          <span className="text-[11px] font-black text-teal-300 block">
+                            ⚡ 베트남 인기 독채 풀빌라 단지 1-클릭 적용 (구조·면적·침실 자동입력):
+                          </span>
+                          <div className="flex flex-wrap gap-1.5">
+                            {FAMOUS_VILLA_LOCATIONS_DB.map((vPreset, vIdx) => (
+                              <button
+                                key={vIdx}
+                                type="button"
+                                onClick={() => {
+                                  setEditingProduct(prev => prev ? {
+                                    ...prev,
+                                    title: prev.title || vPreset.title,
+                                    villaSpecs: {
+                                      ...(prev.villaSpecs || { privatePool: true }),
+                                      villaName: vPreset.villaName,
+                                      structureDescription: vPreset.structure,
+                                      address: vPreset.address,
+                                      googleMapUrl: vPreset.googleMapUrl,
+                                      bedrooms: vPreset.bedrooms,
+                                      bathrooms: vPreset.bathrooms,
+                                      beds: vPreset.beds,
+                                      areaSqm: vPreset.areaSqm,
+                                      areaPyeong: vPreset.areaPyeong,
+                                      floors: vPreset.floors,
+                                      maxOccupancy: vPreset.maxOccupancy,
+                                      standardOccupancy: vPreset.standardOccupancy
+                                    }
+                                  } : prev);
+                                  showNotification(`🏰 '${vPreset.villaName}' 스펙이 적용되었습니다.`);
+                                }}
+                                className="px-2.5 py-1 rounded-xl bg-slate-900 hover:bg-teal-900/40 text-slate-300 hover:text-teal-200 border border-slate-750 hover:border-teal-500/50 text-xs font-bold transition-colors cursor-pointer flex items-center gap-1"
+                              >
+                                <span>🏰</span>
+                                <span>{vPreset.villaName.split(' ')[0]} {vPreset.villaName.split(' ')[1]} ({vPreset.bedrooms}룸·{vPreset.areaPyeong}평)</span>
+                              </button>
+                            ))}
+                          </div>
                         </div>
 
                         {/* Villa Name & Structure */}
@@ -3486,6 +3801,58 @@ export const AdminMode: React.FC<AdminModeProps> = ({
                             </button>
                           </div>
 
+                          {/* Fast Famous Golf Course Presets Picker */}
+                          <div className="bg-slate-950 p-3.5 rounded-2xl border border-emerald-900/60 space-y-2">
+                            <div className="flex items-center justify-between">
+                              <span className="text-[11px] font-black text-emerald-300">
+                                ⚡ 베트남 유명 명문 골프장 1-클릭 추가 (디자이너·홀수·잔디·난이도 자동입력):
+                              </span>
+                            </div>
+                            <div className="flex flex-wrap gap-1.5 max-h-36 overflow-y-auto pr-1">
+                              {FAMOUS_GOLF_COURSES_DB.map((presetCourse, pIdx) => (
+                                <button
+                                  key={pIdx}
+                                  type="button"
+                                  onClick={() => {
+                                    const cur = editingProduct.golfSpecs?.courseDetails || [];
+                                    const exists = cur.some(c => c.name.includes(presetCourse.name) || presetCourse.name.includes(c.name));
+                                    if (exists) {
+                                      showNotification(`ℹ️ '${presetCourse.name}' 코스가 이미 포함되어 있습니다.`);
+                                      return;
+                                    }
+                                    const updatedCourseDetails = [...cur, {
+                                      name: presetCourse.name,
+                                      designer: presetCourse.designer,
+                                      holes: presetCourse.holes,
+                                      difficulty: presetCourse.difficulty,
+                                      grassType: presetCourse.grassType,
+                                      facilities: [...presetCourse.facilities],
+                                      description: presetCourse.description
+                                    }];
+                                    const updatedNames = updatedCourseDetails.map(c => c.name);
+                                    const totalHoles = updatedCourseDetails.reduce((acc, c) => acc + (c.holes || 18), 0);
+                                    setEditingProduct(prev => prev ? {
+                                      ...prev,
+                                      golfSpecs: {
+                                        ...(prev.golfSpecs || { greenFeeIncluded: true }),
+                                        holes: totalHoles > 0 ? totalHoles : 54,
+                                        totalRounds: updatedCourseDetails.length,
+                                        courseDetails: updatedCourseDetails,
+                                        golfCourseNames: updatedNames
+                                      }
+                                    } : prev);
+                                    showNotification(`⛳ '${presetCourse.name}' 상세 코스가 추가되었습니다.`);
+                                  }}
+                                  className="px-2.5 py-1 rounded-xl bg-slate-900 hover:bg-emerald-900/40 text-slate-300 hover:text-emerald-200 border border-slate-750 hover:border-emerald-500/50 text-[11px] font-bold flex items-center gap-1 transition-all cursor-pointer"
+                                >
+                                  <span className="text-emerald-400 font-mono text-[10px]">[{presetCourse.city}]</span>
+                                  <span>{presetCourse.name.split('(')[0].trim()}</span>
+                                  <span className="text-[10px] text-emerald-400 font-bold">+{presetCourse.holes}H</span>
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+
                           {/* Courses Cards */}
                           <div className="space-y-4">
                             {(editingProduct.golfSpecs?.courseDetails || []).map((course, cIdx) => (
@@ -3691,7 +4058,7 @@ export const AdminMode: React.FC<AdminModeProps> = ({
 
                         {/* Theme & Vehicle Details */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                          <div>
+                          <div className="space-y-2">
                             <label className="font-bold text-slate-200 block mb-1">
                               🎯 여행 테마 (Theme)
                             </label>
@@ -3702,6 +4069,19 @@ export const AdminMode: React.FC<AdminModeProps> = ({
                               placeholder="예: 3대 가족 힐링 여행 / 노쇼핑·노옵션 / 럭셔리 효도 관광"
                               className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white font-bold"
                             />
+                            {/* Fast Theme Chips */}
+                            <div className="flex flex-wrap gap-1 pt-1">
+                              {TRAVEL_THEMES_PRESETS.map((th, tIdx) => (
+                                <button
+                                  key={tIdx}
+                                  type="button"
+                                  onClick={() => setEditingProduct(prev => prev ? { ...prev, travelTheme: th } : prev)}
+                                  className="px-2 py-0.5 rounded-lg bg-slate-900 hover:bg-amber-500/20 text-slate-300 hover:text-amber-300 border border-slate-800 text-[10px] font-bold transition-colors cursor-pointer"
+                                >
+                                  {th}
+                                </button>
+                              ))}
+                            </div>
                           </div>
 
                           <div>
@@ -3763,10 +4143,45 @@ export const AdminMode: React.FC<AdminModeProps> = ({
 
                         {/* Highlights List */}
                         <div className="space-y-2 bg-slate-950 p-4 rounded-2xl border border-slate-800">
-                          <label className="font-bold text-amber-300 block text-xs">
-                            🌟 핵심 랜드마크 & 관광지 하이라이트
-                          </label>
-                          <div className="flex flex-wrap gap-1.5">
+                          <div className="flex items-center justify-between">
+                            <label className="font-bold text-amber-300 block text-xs">
+                              🌟 핵심 랜드마크 & 관광지 하이라이트
+                            </label>
+                            <span className="text-[10px] text-slate-400">
+                              도시별 추천 랜드마크를 클릭하면 바로 추가됩니다
+                            </span>
+                          </div>
+
+                          {/* Fast Landmark Chips based on Current City */}
+                          <div className="flex flex-wrap gap-1 pb-1">
+                            {(CITY_LANDMARK_PRESETS[editingProduct.city] || CITY_LANDMARK_PRESETS['다낭'] || []).map((landmark, lIdx) => {
+                              const isAdded = (editingProduct.highlights || []).includes(landmark);
+                              return (
+                                <button
+                                  key={lIdx}
+                                  type="button"
+                                  onClick={() => {
+                                    setEditingProduct(prev => {
+                                      if (!prev) return prev;
+                                      const cur = prev.highlights || [];
+                                      const next = isAdded ? cur.filter(h => h !== landmark) : [...cur, landmark];
+                                      return { ...prev, highlights: next };
+                                    });
+                                  }}
+                                  className={`px-2 py-1 rounded-lg text-[10px] font-bold transition-all cursor-pointer flex items-center gap-1 ${
+                                    isAdded
+                                      ? 'bg-amber-400 text-slate-950 font-black'
+                                      : 'bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-750'
+                                  }`}
+                                >
+                                  <span>+ {landmark}</span>
+                                  {isAdded && <span>✓</span>}
+                                </button>
+                              );
+                            })}
+                          </div>
+
+                          <div className="flex flex-wrap gap-1.5 pt-1">
                             {(editingProduct.highlights || []).map((hl, hIdx) => (
                               <span key={hIdx} className="bg-slate-900 border border-slate-750 text-slate-200 px-3 py-1 rounded-xl text-xs font-bold flex items-center gap-1.5">
                                 <span>📍 {hl}</span>
@@ -3790,7 +4205,7 @@ export const AdminMode: React.FC<AdminModeProps> = ({
                             <input
                               type="text"
                               id="custom-highlight-input"
-                              placeholder="관광지 이름 입력 (예: 바나힐 골든브릿지, 호이안 올드타운)..."
+                              placeholder="관광지 이름 직접 입력 (예: 바나힐 골든브릿지, 호이안 올드타운) 후 Enter..."
                               onKeyDown={(e) => {
                                 if (e.key === 'Enter') {
                                   e.preventDefault();
