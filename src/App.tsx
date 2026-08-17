@@ -105,7 +105,11 @@ export default function App() {
 
   // Sync products state to IndexedDB, localStorage, Supabase and server backend
   const persistProducts = async (updatedProducts: Product[]): Promise<boolean> => {
-    lastClientSaveTimestampRef.current = Date.now();
+    const saveTime = Date.now();
+    lastClientSaveTimestampRef.current = saveTime;
+    try {
+      localStorage.setItem('xinchao_products_last_saved', String(saveTime));
+    } catch (e) {}
     isSavingToServerRef.current = true;
 
     // 1. Instantly update React state & client local stores
@@ -230,25 +234,33 @@ export default function App() {
       return;
     }
 
-    if (showLoading) setIsLoadingProducts(true);
+    if (showLoading && products.length === 0) setIsLoadingProducts(true);
     try {
       const [fetchedProducts, fetchedInquiries] = await Promise.all([
         productService.getProducts({ status: 'published' }),
         inquiryService.getInquiries()
       ]);
 
+      const lastLocalSave = Number(localStorage.getItem('xinchao_products_last_saved') || 0);
+      const isLocalModified = lastLocalSave > 0;
+
       if (Array.isArray(fetchedProducts)) {
         if (!isSavingToServerRef.current && (Date.now() - lastClientSaveTimestampRef.current >= 15000)) {
           if (fetchedProducts.length > 0) {
-            setProducts(fetchedProducts);
-            await saveProductsToIndexedDB(fetchedProducts);
-            setStoredJson(PRODUCTS_CACHE_KEY, fetchedProducts);
+            if (isLocalModified && products.length > 0) {
+              // Local has user-managed products. Ensure server is in sync with latest local products
+              productService.syncAllProducts(products).catch(console.warn);
+            } else {
+              setProducts(fetchedProducts);
+              await saveProductsToIndexedDB(fetchedProducts);
+              setStoredJson(PRODUCTS_CACHE_KEY, fetchedProducts);
+            }
           } else {
-            // Server or Supabase returned 0 items. Check if we have valid local products or INITIAL_PRODUCTS!
+            // Server returned 0 items.
             const idbProducts = await loadProductsFromIndexedDB();
             const fallbackLocal = (idbProducts && idbProducts.length > 0)
               ? idbProducts
-              : INITIAL_PRODUCTS;
+              : (products.length > 0 ? products : INITIAL_PRODUCTS);
 
             setProducts(fallbackLocal);
             await saveProductsToIndexedDB(fallbackLocal);
@@ -272,7 +284,7 @@ export default function App() {
     } catch (err) {
       console.warn('Data sync fallback to local cache:', err);
     } finally {
-      if (showLoading) setIsLoadingProducts(false);
+      setIsLoadingProducts(false);
     }
   };
 
@@ -282,24 +294,27 @@ export default function App() {
       try {
         const idbProducts = await loadProductsFromIndexedDB();
         if (idbProducts && idbProducts.length > 0) {
-          setProducts(prev => (prev.length === 0 ? idbProducts : prev));
+          setProducts(idbProducts);
+          setStoredJson(PRODUCTS_CACHE_KEY, idbProducts);
         }
         const idbInq = await loadInquiriesFromIndexedDB();
         if (idbInq && idbInq.length > 0) {
-          setInquiries(prev => (prev.length === 0 ? idbInq : prev));
+          setInquiries(idbInq);
         }
       } catch (e) {
         console.warn('IndexedDB initial load error:', e);
+      } finally {
+        setIsLoadingProducts(false);
       }
     };
     initLocalData();
 
     loadRates();
-    syncAllDataFromServer(true);
+    syncAllDataFromServer(false);
 
     const pollTimer = setInterval(() => {
       syncAllDataFromServer(false);
-    }, 15000);
+    }, 20000);
 
     const handleReSync = () => {
       syncAllDataFromServer(false);
@@ -319,7 +334,7 @@ export default function App() {
       window.removeEventListener('focus', handleReSync);
       document.removeEventListener('visibilitychange', handleVisibility);
     };
-  }, [isAdminMode]);
+  }, []);
 
   const handleSubmitInquiry = async (payload: any): Promise<boolean> => {
     try {

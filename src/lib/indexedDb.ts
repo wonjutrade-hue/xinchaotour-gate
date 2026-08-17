@@ -122,6 +122,30 @@ export async function loadProductsFromIndexedDB(): Promise<Product[]> {
 }
 
 /**
+ * Get timestamp of when products were last saved to IndexedDB
+ */
+export async function getLastSavedProductsTimestamp(): Promise<number> {
+  try {
+    const db = await openDatabase();
+    return new Promise((resolve) => {
+      const tx = db.transaction([STORE_META], 'readonly');
+      const metaStore = tx.objectStore(STORE_META);
+      const req = metaStore.get('products_last_saved');
+      req.onsuccess = () => {
+        if (req.result && typeof req.result.timestamp === 'number') {
+          resolve(req.result.timestamp);
+        } else {
+          resolve(0);
+        }
+      };
+      req.onerror = () => resolve(0);
+    });
+  } catch (err) {
+    return 0;
+  }
+}
+
+/**
  * Save inquiries to IndexedDB
  */
 export async function saveInquiriesToIndexedDB(inquiries: ConsultationRequest[]): Promise<void> {
