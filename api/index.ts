@@ -42,7 +42,66 @@ app.get('/api/exchange-rates', async (req: Request, res: Response) => {
 });
 
 app.get('/api/products', (req: Request, res: Response) => {
-  res.json({ success: true, products });
+  res.json({ success: true, count: products.length, products });
+});
+
+app.get('/api/sync', (req: Request, res: Response) => {
+  res.json({
+    success: true,
+    productsCount: products.length,
+    products,
+    inquiriesCount: inquiries.length,
+    inquiries
+  });
+});
+
+app.post('/api/products/sync', (req: Request, res: Response) => {
+  try {
+    const { products: newProducts } = req.body;
+    if (Array.isArray(newProducts)) {
+      products = newProducts;
+      res.json({ success: true, count: products.length, products });
+    } else {
+      res.status(400).json({ success: false, error: 'products must be an array' });
+    }
+  } catch (err: any) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.post('/api/upload-images', (req: Request, res: Response) => {
+  try {
+    const { images } = req.body;
+    if (!images || !Array.isArray(images)) {
+      return res.status(400).json({ success: false, error: 'images array required' });
+    }
+    // In serverless environment without writable disk, return compressed base64 / data URLs directly
+    res.json({
+      success: true,
+      count: images.length,
+      urls: images
+    });
+  } catch (err: any) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.post('/api/delete-image', (req: Request, res: Response) => {
+  res.json({ success: true });
+});
+
+app.post('/api/products/clear', (req: Request, res: Response) => {
+  products = [];
+  res.json({ success: true, count: 0, products: [] });
+});
+
+app.post('/api/products/clear-photos', (req: Request, res: Response) => {
+  products = products.map(p => ({
+    ...p,
+    imageUrl: '',
+    additionalImages: []
+  }));
+  res.json({ success: true, count: products.length, products });
 });
 
 app.post('/api/products', (req: Request, res: Response) => {

@@ -217,9 +217,15 @@ export default function App() {
 
   // Sync Data with Database (Supabase / Server)
   const syncAllDataFromServer = async (showLoading: boolean = false) => {
-    if (isSavingToServerRef.current || (Date.now() - lastClientSaveTimestampRef.current < 4000)) {
+    // If saving right now or recently saved within 15 seconds, skip polling fetch
+    if (isSavingToServerRef.current || (Date.now() - lastClientSaveTimestampRef.current < 15000)) {
       return;
     }
+    // If admin is currently managing in AdminMode, prevent background polling from overriding active screen
+    if (isAdminMode) {
+      return;
+    }
+
     if (showLoading) setIsLoadingProducts(true);
     try {
       const [fetchedProducts, fetchedInquiries] = await Promise.all([
@@ -228,16 +234,38 @@ export default function App() {
       ]);
 
       if (Array.isArray(fetchedProducts)) {
-        if (!isSavingToServerRef.current && (Date.now() - lastClientSaveTimestampRef.current >= 4000)) {
-          setProducts(fetchedProducts);
-          await saveProductsToIndexedDB(fetchedProducts);
-          setStoredJson(PRODUCTS_CACHE_KEY, fetchedProducts);
+        if (!isSavingToServerRef.current && (Date.now() - lastClientSaveTimestampRef.current >= 15000)) {
+          if (fetchedProducts.length > 0) {
+            setProducts(fetchedProducts);
+            await saveProductsToIndexedDB(fetchedProducts);
+            setStoredJson(PRODUCTS_CACHE_KEY, fetchedProducts);
+          } else {
+            // Server or Supabase returned 0 items. Check if we have valid local products!
+            const idbProducts = await loadProductsFromIndexedDB();
+            const fallbackLocal = (idbProducts && idbProducts.length > 0)
+              ? idbProducts
+              : getStoredJson<Product[]>(PRODUCTS_CACHE_KEY, []);
+
+            if (fallbackLocal && fallbackLocal.length > 0) {
+              // We have registered products locally! NEVER wipe them to 0!
+              // Keep local products and re-sync them up to the server/Supabase
+              setProducts(fallbackLocal);
+              productService.syncAllProducts(fallbackLocal).catch(console.warn);
+            }
+          }
         }
       }
 
       if (Array.isArray(fetchedInquiries)) {
-        setInquiries(fetchedInquiries);
-        await saveInquiriesToIndexedDB(fetchedInquiries);
+        if (fetchedInquiries.length > 0) {
+          setInquiries(fetchedInquiries);
+          await saveInquiriesToIndexedDB(fetchedInquiries);
+        } else {
+          const localInq = await loadInquiriesFromIndexedDB();
+          if (localInq && localInq.length > 0) {
+            setInquiries(localInq);
+          }
+        }
       }
     } catch (err) {
       console.warn('Data sync fallback to local cache:', err);
@@ -247,12 +275,29 @@ export default function App() {
   };
 
   useEffect(() => {
+    // 1. Initial local load from IndexedDB if current state is empty
+    const initLocalData = async () => {
+      try {
+        const idbProducts = await loadProductsFromIndexedDB();
+        if (idbProducts && idbProducts.length > 0) {
+          setProducts(prev => (prev.length === 0 ? idbProducts : prev));
+        }
+        const idbInq = await loadInquiriesFromIndexedDB();
+        if (idbInq && idbInq.length > 0) {
+          setInquiries(prev => (prev.length === 0 ? idbInq : prev));
+        }
+      } catch (e) {
+        console.warn('IndexedDB initial load error:', e);
+      }
+    };
+    initLocalData();
+
     loadRates();
     syncAllDataFromServer(true);
 
     const pollTimer = setInterval(() => {
       syncAllDataFromServer(false);
-    }, 10000);
+    }, 15000);
 
     const handleReSync = () => {
       syncAllDataFromServer(false);
@@ -272,7 +317,7 @@ export default function App() {
       window.removeEventListener('focus', handleReSync);
       document.removeEventListener('visibilitychange', handleVisibility);
     };
-  }, []);
+  }, [isAdminMode]);
 
   const handleSubmitInquiry = async (payload: any): Promise<boolean> => {
     try {

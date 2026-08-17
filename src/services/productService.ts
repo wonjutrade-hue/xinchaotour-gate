@@ -58,7 +58,7 @@ export const productService = {
           throw error;
         }
 
-        if (data) {
+        if (data && data.length > 0) {
           return data.map((row: any) => {
             const galleryImages: string[] = (row.product_images || [])
               .sort((a: DbProductImageRow, b: DbProductImageRow) => (a.sort_order || 0) - (b.sort_order || 0))
@@ -80,7 +80,7 @@ export const productService = {
         throw new Error(`Server returned ${res.status}: ${res.statusText}`);
       }
       const json = await res.json();
-      if (json && Array.isArray(json.products)) {
+      if (json && Array.isArray(json.products) && json.products.length > 0) {
         return json.products;
       }
       return [];
