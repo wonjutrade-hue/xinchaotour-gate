@@ -81,7 +81,7 @@ function loadStoredProducts(): Product[] {
     console.warn('[Server] Backup read also failed:', bErr);
   }
 
-  return INITIAL_PRODUCTS;
+  return [];
 }
 
 function saveStoredProducts(prods: Product[]) {

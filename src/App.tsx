@@ -54,10 +54,13 @@ function cleanPlaceholderUrls(prodList: Product[]): Product[] {
   if (!Array.isArray(prodList)) return [];
   return prodList.map(p => {
     const cleanSubs = (p.additionalImages || []).filter(u => u && u !== 'VILLA_PHOTO_DATA' && u !== 'TEST_IMG');
-    const validMain = getDisplayProductImage({ ...p, additionalImages: cleanSubs });
+    let mainImg = p.imageUrl || '';
+    if (mainImg === 'VILLA_PHOTO_DATA' || mainImg === 'TEST_IMG') {
+      mainImg = cleanSubs.length > 0 ? cleanSubs[0] : '';
+    }
     return {
       ...p,
-      imageUrl: validMain,
+      imageUrl: mainImg,
       additionalImages: cleanSubs
     };
   });
@@ -94,7 +97,7 @@ export default function App() {
   const [products, setProducts] = useState<Product[]>(() => {
     const cached = getStoredJson<Product[]>(PRODUCTS_CACHE_KEY, []);
     if (cached && cached.length > 0) return cached;
-    return INITIAL_PRODUCTS;
+    return [];
   });
   const [inquiries, setInquiries] = useState<ConsultationRequest[]>([]);
   const [isLoadingProducts, setIsLoadingProducts] = useState(true);

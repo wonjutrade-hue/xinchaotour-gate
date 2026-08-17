@@ -3,24 +3,8 @@ import { GoogleGenAI } from '@google/genai';
 import { INITIAL_PRODUCTS } from '../src/data/seedProducts.js';
 import { Product, ConsultationRequest } from '../src/types.js';
 
-let products: Product[] = [...INITIAL_PRODUCTS];
-let inquiries: ConsultationRequest[] = [
-  {
-    id: 'inq-101',
-    userName: '김철수',
-    userPhone: '010-1234-5678',
-    kakaoId: 'chulsoo_kr',
-    productId: 'prod-101',
-    productTitle: '[북부/하롱베이] 하노이 & 하롱베이 5성급 럭셔리 크루즈 3박 5일',
-    regionPreference: '북부',
-    categoryPreference: '추천패키지',
-    startDate: '2026-09-15',
-    travelerCount: { adult: 2, child: 1 },
-    message: '하롱베이 크루즈 객실 오션뷰 업그레이드 및 7세 아동 침대 추가 문의드립니다.',
-    status: 'in_progress',
-    createdAt: new Date(Date.now() - 3600000 * 5).toISOString()
-  }
-];
+let products: Product[] = [];
+let inquiries: ConsultationRequest[] = [];
 
 const app = express();
 app.use(express.json({ limit: '10mb' }));
@@ -135,8 +119,8 @@ app.delete('/api/products/:id', (req: Request, res: Response) => {
 });
 
 app.post('/api/products/reset', (req: Request, res: Response) => {
-  products = [...INITIAL_PRODUCTS];
-  res.json({ success: true, products });
+  products = [];
+  res.json({ success: true, products: [] });
 });
 
 app.get('/api/inquiries', (req: Request, res: Response) => {
