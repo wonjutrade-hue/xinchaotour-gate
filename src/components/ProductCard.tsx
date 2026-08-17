@@ -3,6 +3,7 @@ import { Product } from '../types';
 import { Star, MapPin, Calendar, CheckCircle2, ArrowRight, MessageCircle, Send, ShieldCheck, Users, Waves, Sparkles } from 'lucide-react';
 import { ExchangeRates, calculateVNDFromKRW, calculateKRWFromVND, calculateUSDFromKRW, formatUSD } from '../lib/exchangeRate';
 import { handleOpenKakaoTalkDirect } from '../constants';
+import { getDisplayProductImage, getProductFallbackImage } from '../lib/imageFallback';
 
 interface ProductCardProps {
   product: Product;
@@ -20,6 +21,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   const displaySubtitle = product.subTitle || product.description || '';
   const subImages = product.additionalImages || [];
   const subImagesCount = subImages.filter(Boolean).length;
+  const cardImageUrl = getDisplayProductImage(product);
+  const fallbackUrl = getProductFallbackImage(product.category, product.city);
 
   // Real-time calculated KRW and VND
   let displayKRW = product.priceKRW || 0;
@@ -48,22 +51,18 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         className="relative aspect-[16/10] overflow-hidden bg-slate-900 cursor-pointer" 
         onClick={() => onSelectProduct(product)}
       >
-        {product.imageUrl ? (
-          <img
-            src={product.imageUrl}
-            alt={product.title}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-            loading="lazy"
-            onError={(e) => {
-              (e.target as HTMLElement).style.display = 'none';
-            }}
-          />
-        ) : (
-          <div className="w-full h-full bg-gradient-to-br from-slate-800 to-slate-950 flex flex-col items-center justify-center p-4 text-center">
-            <MapPin className="w-6 h-6 text-emerald-400 mb-1" />
-            <span className="text-xs font-bold text-emerald-300">{product.city} · {product.category}</span>
-          </div>
-        )}
+        <img
+          src={cardImageUrl}
+          alt={product.title}
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          loading="lazy"
+          onError={(e) => {
+            const target = e.target as HTMLImageElement;
+            if (target.src !== fallbackUrl) {
+              target.src = fallbackUrl;
+            }
+          }}
+        />
         <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent opacity-70 pointer-events-none" />
 
         {/* Region & City Badge */}

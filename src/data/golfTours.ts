@@ -54,11 +54,11 @@ export const GOLF_TOURS_DATA: Product[] = [
     priceKRW: 1590000,
     priceVND: 29500000,
     duration: '4박 6일',
-    imageUrl: '',
+    imageUrl: 'https://images.unsplash.com/photo-1535131749006-b7f58c99034b?auto=format&fit=crop&w=1200&q=80',
     additionalImages: [
-      '',
-      '',
-      ''
+      'https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1592919505780-303950717480?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1593111774240-d529f12cf4bb?auto=format&fit=crop&w=1200&q=80'
     ],
     rating: 5.0,
     reviewCount: 65,
@@ -149,11 +149,10 @@ export const GOLF_TOURS_DATA: Product[] = [
     priceKRW: 1190000,
     priceVND: 22000000,
     duration: '3박 5일',
-    imageUrl: '',
+    imageUrl: 'https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?auto=format&fit=crop&w=1200&q=80',
     additionalImages: [
-      '',
-      '',
-      ''
+      'https://images.unsplash.com/photo-1535131749006-b7f58c99034b?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1592919505780-303950717480?auto=format&fit=crop&w=1200&q=80'
     ],
     rating: 4.9,
     reviewCount: 76,

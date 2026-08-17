@@ -186,10 +186,10 @@ export const TRAVEL_PACKAGES: Product[] = [
     priceKRW: 790000,
     priceVND: 14600000,
     duration: '3박 5일',
-    imageUrl: '',
+    imageUrl: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1200&q=80',
     additionalImages: [
-      '',
-      ''
+      'https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&w=1200&q=80'
     ],
     rating: 4.9,
     reviewCount: 142,
@@ -246,10 +246,10 @@ export const TRAVEL_PACKAGES: Product[] = [
     priceKRW: 650000,
     priceVND: 12000000,
     duration: '3박 5일',
-    imageUrl: '',
+    imageUrl: 'https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?auto=format&fit=crop&w=1200&q=80',
     additionalImages: [
-      '',
-      ''
+      'https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=1200&q=80'
     ],
     rating: 4.9,
     reviewCount: 230,
@@ -307,10 +307,10 @@ export const TRAVEL_PACKAGES: Product[] = [
     priceKRW: 850000,
     priceVND: 15700000,
     duration: '3박 5일',
-    imageUrl: '',
+    imageUrl: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80',
     additionalImages: [
-      '',
-      ''
+      'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80'
     ],
     rating: 4.9,
     reviewCount: 95,
@@ -368,10 +368,10 @@ export const TRAVEL_PACKAGES: Product[] = [
     priceKRW: 750000,
     priceVND: 13900000,
     duration: '4박 5일',
-    imageUrl: '',
+    imageUrl: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1200&q=80',
     additionalImages: [
-      '',
-      ''
+      'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=1200&q=80'
     ],
     rating: 4.8,
     reviewCount: 67,

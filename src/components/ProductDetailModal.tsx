@@ -32,6 +32,7 @@ import {
 import { ExchangeRates, calculateVNDFromKRW, calculateKRWFromVND, calculateUSDFromKRW, formatVND, formatUSD } from '../lib/exchangeRate';
 import { COMPANY_INFO } from '../data/companyInfo';
 import { handleOpenKakaoTalkDirect } from '../constants';
+import { getProductFallbackImage } from '../lib/imageFallback';
 
 interface ProductDetailModalProps {
   product: Product | null;
@@ -77,11 +78,12 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   }, [isLightboxOpen, onClose]);
 
   const subImages = product.additionalImages || (product as any).galleryImages || (product as any).images || [];
-  const rawImages = [product.imageUrl, ...subImages];
-  const allImages = Array.from(new Set(rawImages.filter(Boolean)));
+  const rawImages = [product.imageUrl, ...subImages].filter((img): img is string => Boolean(img && img.trim().length > 0 && img !== 'VILLA_PHOTO_DATA'));
+  const fallbackImg = getProductFallbackImage(product.category, product.city);
+  const allImages = rawImages.length > 0 ? Array.from(new Set(rawImages)) : [fallbackImg];
 
   const validIndex = currentImgIndex >= 0 && currentImgIndex < allImages.length ? currentImgIndex : 0;
-  const currentPhoto = allImages[validIndex] || product.imageUrl || '';
+  const currentPhoto = allImages[validIndex] || fallbackImg;
 
   const handleOpenPhotoTour = (startIndex: number = 0, mode: 'slide' | 'grid' = 'slide') => {
     setCurrentImgIndex(startIndex);

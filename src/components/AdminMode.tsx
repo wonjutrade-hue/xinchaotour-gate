@@ -13,6 +13,7 @@ import {
 import { ExchangeRates, calculateVNDFromKRW, calculateKRWFromVND, formatVND } from '../lib/exchangeRate';
 import { COMPANY_PHONE, COMPANY_PHONE_TEL } from '../constants';
 import { optimizeImageFile, uploadImagesToServer } from '../lib/imageUtils';
+import { getProductFallbackImage, getDisplayProductImage } from '../lib/imageFallback';
 import {
   ShieldCheck,
   Lock,
@@ -796,6 +797,8 @@ export const AdminMode: React.FC<AdminModeProps> = ({
       ];
     }
 
+    const defaultImg = getProductFallbackImage(category, '다낭');
+
     const initialProd: Product = {
       id: newId,
       title: '',
@@ -806,7 +809,7 @@ export const AdminMode: React.FC<AdminModeProps> = ({
       priceKRW: defaultPriceKRW,
       priceVND: Math.round(defaultPriceKRW * (rates.VND / rates.KRW)),
       duration: defaultDuration,
-      imageUrl: '',
+      imageUrl: defaultImg,
       additionalImages: [],
       rating: 5.0,
       reviewCount: 1,
@@ -843,6 +846,9 @@ export const AdminMode: React.FC<AdminModeProps> = ({
     cloned.itinerary = Array.isArray(cloned.itinerary) ? cloned.itinerary : [];
     cloned.highlights = Array.isArray(cloned.highlights) ? cloned.highlights : [];
     cloned.departureCities = Array.isArray(cloned.departureCities) ? cloned.departureCities : ['인천', '부산', '대구'];
+    if (!cloned.imageUrl || cloned.imageUrl === 'VILLA_PHOTO_DATA' || cloned.imageUrl === 'TEST_IMG') {
+      cloned.imageUrl = getDisplayProductImage(cloned);
+    }
     setEditingProduct(cloned);
     setEditorTab('basic');
     setIsEditorOpen(true);
@@ -882,17 +888,24 @@ export const AdminMode: React.FC<AdminModeProps> = ({
 
     setIsSavingProduct(true);
     try {
-      const exists = products.some(p => p.id === editingProduct.id);
+      // Ensure product has a valid display image
+      const validatedProduct: Product = {
+        ...editingProduct,
+        imageUrl: getDisplayProductImage(editingProduct),
+        additionalImages: (editingProduct.additionalImages || []).filter(img => Boolean(img && img !== 'VILLA_PHOTO_DATA' && img !== 'TEST_IMG'))
+      };
+
+      const exists = products.some(p => p.id === validatedProduct.id);
       let updated: Product[];
       if (exists) {
-        updated = products.map(p => p.id === editingProduct.id ? editingProduct : p);
+        updated = products.map(p => p.id === validatedProduct.id ? validatedProduct : p);
       } else {
-        updated = [editingProduct, ...products];
+        updated = [validatedProduct, ...products];
       }
 
       await onSaveProducts(updated);
       setIsEditorOpen(false);
-      const savedTitle = editingProduct.title;
+      const savedTitle = validatedProduct.title;
       setEditingProduct(null);
       showNotification(`💾 "${savedTitle}" 상품과 사진이 성공적으로 저장되었습니다!`);
     } catch (err) {

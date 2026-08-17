@@ -46,17 +46,18 @@ import {
   loadInquiriesFromIndexedDB
 } from './lib/indexedDb';
 import { INITIAL_PRODUCTS } from './data/seedProducts';
+import { getDisplayProductImage } from './lib/imageFallback';
 
 const PRODUCTS_CACHE_KEY = 'xinchao_products_cache_master';
 
 function cleanPlaceholderUrls(prodList: Product[]): Product[] {
   if (!Array.isArray(prodList)) return [];
   return prodList.map(p => {
-    const isDummyMain = p.imageUrl === 'VILLA_PHOTO_DATA' || p.imageUrl === 'TEST_IMG';
     const cleanSubs = (p.additionalImages || []).filter(u => u && u !== 'VILLA_PHOTO_DATA' && u !== 'TEST_IMG');
+    const validMain = getDisplayProductImage({ ...p, additionalImages: cleanSubs });
     return {
       ...p,
-      imageUrl: isDummyMain ? (cleanSubs.length > 0 ? cleanSubs[0] : '') : (p.imageUrl || ''),
+      imageUrl: validMain,
       additionalImages: cleanSubs
     };
   });
