@@ -48,7 +48,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
 }) => {
   if (!product) return null;
 
-  const [activeTab, setActiveTab] = useState<'itinerary' | 'inclusion'>('itinerary');
+  const [activeTab, setActiveTab] = useState<'itinerary' | 'inclusion' | 'terms'>('itinerary');
   const [currentImgIndex, setCurrentImgIndex] = useState<number>(0);
   const [isLightboxOpen, setIsLightboxOpen] = useState<boolean>(false);
   const [lightboxMode, setLightboxMode] = useState<'slide' | 'grid'>('slide');
@@ -679,30 +679,41 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               </div>
             )}
 
-            {/* Interactive Tabs (일정표 / 포함사항 & 불포함) */}
+            {/* Interactive Tabs (일정표 / 포함사항 & 불포함 / 약관 및 유의사항) */}
             <div className="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-xs">
-              <div className="border-b border-slate-200 bg-slate-50/70 p-2 flex items-center gap-2 text-xs sm:text-sm font-black">
+              <div className="border-b border-slate-200 bg-slate-50/70 p-2 flex flex-wrap sm:flex-nowrap items-center gap-2 text-xs sm:text-sm font-black">
                 <button
                   onClick={() => setActiveTab('itinerary')}
-                  className={`flex-1 py-3 px-4 rounded-2xl transition-all cursor-pointer flex items-center justify-center gap-2 ${
+                  className={`flex-1 py-3 px-3 sm:px-4 rounded-2xl transition-all cursor-pointer flex items-center justify-center gap-1.5 shrink-0 ${
                     activeTab === 'itinerary'
                       ? 'bg-teal-700 text-white shadow-md'
                       : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                   }`}
                 >
                   <Calendar className="w-4 h-4" />
-                  <span>일자별 상세 일정표 ({product.itinerary.length}일)</span>
+                  <span>일정표 ({product.itinerary.length}일)</span>
                 </button>
                 <button
                   onClick={() => setActiveTab('inclusion')}
-                  className={`flex-1 py-3 px-4 rounded-2xl transition-all cursor-pointer flex items-center justify-center gap-2 ${
+                  className={`flex-1 py-3 px-3 sm:px-4 rounded-2xl transition-all cursor-pointer flex items-center justify-center gap-1.5 shrink-0 ${
                     activeTab === 'inclusion'
                       ? 'bg-teal-700 text-white shadow-md'
                       : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                   }`}
                 >
                   <CheckCircle2 className="w-4 h-4" />
-                  <span>포함 / 불포함 사항 안내</span>
+                  <span>포함 / 불포함</span>
+                </button>
+                <button
+                  onClick={() => setActiveTab('terms')}
+                  className={`flex-1 py-3 px-3 sm:px-4 rounded-2xl transition-all cursor-pointer flex items-center justify-center gap-1.5 shrink-0 ${
+                    activeTab === 'terms'
+                      ? 'bg-teal-700 text-white shadow-md'
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                  }`}
+                >
+                  <ShieldCheck className="w-4 h-4" />
+                  <span>약관 및 주의사항</span>
                 </button>
               </div>
 
@@ -784,6 +795,124 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                             <span>{exc}</span>
                           </li>
                         ))}
+                      </ul>
+                    </div>
+                  </div>
+                )}
+
+                {/* Tab 3: Terms & Cautions (약관 및 주의사항) */}
+                {activeTab === 'terms' && (
+                  <div className="space-y-6 text-xs sm:text-sm text-slate-700">
+                    {/* 1. Special Cancellation & Refund Policy */}
+                    <div className="bg-amber-50/70 p-6 rounded-3xl border border-amber-200 space-y-3">
+                      <h4 className="font-black text-amber-950 text-base flex items-center gap-2">
+                        <span>📜 신짜오투어 단독 자유여행 취소 및 환불 규정 (특별약관)</span>
+                      </h4>
+                      <p className="text-xs text-amber-900 font-medium leading-relaxed">
+                        본 상품은 고객 맞춤 단독 전용 차량 및 전담 가이드, 5성급 리조트 사전 확약 예약으로 진행되므로 표준약관 외에 아래의 <strong>특별 취소 규정</strong>이 적용됩니다.
+                      </p>
+                      <div className="overflow-x-auto pt-2">
+                        <table className="w-full text-xs text-left border-collapse bg-white rounded-xl overflow-hidden border border-amber-200">
+                          <thead>
+                            <tr className="bg-amber-100/70 text-amber-950 font-black">
+                              <th className="p-2.5 border-b border-amber-200">취소 통보 시점</th>
+                              <th className="p-2.5 border-b border-amber-200">취소 수수료 및 환불 기준</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-amber-100 font-medium">
+                            <tr>
+                              <td className="p-2.5 text-slate-700">여행 출발일 30일 전 취소 시</td>
+                              <td className="p-2.5 font-bold text-teal-700">계약금 전액 100% 환불 (수수료 없음)</td>
+                            </tr>
+                            <tr>
+                              <td className="p-2.5 text-slate-700">여행 출발일 20 ~ 29일 전 취소 시</td>
+                              <td className="p-2.5 text-amber-800">총 상품가의 10% 공제 후 환불</td>
+                            </tr>
+                            <tr>
+                              <td className="p-2.5 text-slate-700">여행 출발일 10 ~ 19일 전 취소 시</td>
+                              <td className="p-2.5 text-amber-800">총 상품가의 20% 공제 후 환불</td>
+                            </tr>
+                            <tr>
+                              <td className="p-2.5 text-slate-700">여행 출발일 8 ~ 9일 전 취소 시</td>
+                              <td className="p-2.5 text-rose-700 font-bold">총 상품가의 30% 공제 후 환불</td>
+                            </tr>
+                            <tr>
+                              <td className="p-2.5 text-slate-700">여행 출발일 1 ~ 7일 전 취소 시</td>
+                              <td className="p-2.5 text-rose-700 font-bold">총 상품가의 50% 공제 후 환불</td>
+                            </tr>
+                            <tr>
+                              <td className="p-2.5 text-slate-700">여행 당일 취소 또는 No-Show</td>
+                              <td className="p-2.5 text-rose-800 font-black">총 상품가의 100% (환불 불가)</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+
+                    {/* 2. Passport & Visa Requirements */}
+                    <div className="bg-slate-50 p-6 rounded-3xl border border-slate-200 space-y-3">
+                      <h4 className="font-black text-slate-900 text-base flex items-center gap-2">
+                        <span>✈️ 여권 및 베트남 입국 규정 안내</span>
+                      </h4>
+                      <ul className="space-y-2 text-xs text-slate-600 font-medium pl-1">
+                        <li className="flex items-start gap-2">
+                          <span className="text-teal-600 font-bold">1.</span>
+                          <span><strong>여권 유효기간:</strong> 베트남 입국일 기준 <strong>최소 6개월 이상</strong> 반드시 남아 있어야 합니다.</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-teal-600 font-bold">2.</span>
+                          <span><strong>무비자 입국:</strong> 대한민국 여권 소지자는 관광 목적 시 <strong>최대 45일간 무비자 입국</strong>이 가능합니다.</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-teal-600 font-bold">3.</span>
+                          <span><strong>미성년자 입국 주의사항:</strong> 만 14세 미만 소아가 부모 미동반(친척, 인솔자 동반) 입국 시 <strong>부모동의서 영문 공증본 및 가족관계증명서</strong>가 필수 지참되어야 합니다.</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-teal-600 font-bold">4.</span>
+                          <span><strong>여권 훼손 주의:</strong> 여권 사증란의 낙서, 오염, 찢김 등이 있을 경우 입국이 거부될 수 있으므로 출발 전 반드시 확인해주세요.</span>
+                        </li>
+                      </ul>
+                    </div>
+
+                    {/* 3. Danang Private Tour Features & Manners */}
+                    <div className="bg-teal-50/60 p-6 rounded-3xl border border-teal-200 space-y-3">
+                      <h4 className="font-black text-teal-950 text-base flex items-center gap-2">
+                        <span>🌟 100% 단독 프라이빗 투어 이용 안내</span>
+                      </h4>
+                      <ul className="space-y-2 text-xs text-teal-950 font-medium pl-1">
+                        <li className="flex items-start gap-2">
+                          <span className="text-teal-700 font-bold">•</span>
+                          <span><strong>NO 강제 쇼핑 / NO 강제 옵션:</strong> 신짜오투어는 강제 쇼핑센터 방문 0건 원칙을 지키며, 손님이 원하시는 경우에만 현지 마트나 전통시장에 방문합니다.</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-teal-700 font-bold">•</span>
+                          <span><strong>자유로운 일정 변경:</strong> 당일 날씨나 일행분들의 컨디션에 따라 가이드와 상의하여 일정 순서나 식사 장소를 유연하게 조율하실 수 있습니다.</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-teal-700 font-bold">•</span>
+                          <span><strong>매너팁 가이드:</strong> 가이드 및 기사 매너팁은 자율이며, 전담 서비스에 만족하셨을 경우 팀당 1일 $10~$20 선에서 감사의 마음으로 전달하시면 됩니다.</span>
+                        </li>
+                      </ul>
+                    </div>
+
+                    {/* 4. Preparation & Safety Rules */}
+                    <div className="bg-slate-50 p-6 rounded-3xl border border-slate-200 space-y-3">
+                      <h4 className="font-black text-slate-900 text-base flex items-center gap-2">
+                        <span>🧳 현지 여행 준비물 및 안전 수칙</span>
+                      </h4>
+                      <ul className="space-y-2 text-xs text-slate-600 font-medium pl-1">
+                        <li className="flex items-start gap-2">
+                          <span className="text-amber-600 font-bold">•</span>
+                          <span><strong>복장:</strong> 바나힐 정상은 해발 1,487m로 다낭 시내보다 3~5도 서늘할 수 있으니 <strong>얇은 바람막이나 가디건</strong>을 챙겨주세요.</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-amber-600 font-bold">•</span>
+                          <span><strong>사원 에티켓:</strong> 손짜 린응사(영흥사) 등 종교 사원 방문 시 무릎 위 반바지나 민소매 탑은 입장이 제한될 수 있으니 단정한 복장을 권장합니다.</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-amber-600 font-bold">•</span>
+                          <span><strong>상비약 및 보험:</strong> 개인 상비약(소화제, 지사제, 모기기피제 등)을 지참해 주시고, 분실 방지를 위해 귀중품 관리에 유의해주세요.</span>
+                        </li>
                       </ul>
                     </div>
                   </div>

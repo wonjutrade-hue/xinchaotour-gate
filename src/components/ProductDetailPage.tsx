@@ -60,7 +60,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   relatedProducts = [],
   onSelectProduct
 }) => {
-  const [activeTab, setActiveTab] = useState<'itinerary' | 'inclusion' | 'specs'>('itinerary');
+  const [activeTab, setActiveTab] = useState<'itinerary' | 'inclusion' | 'terms' | 'specs'>('itinerary');
   const [currentImgIndex, setCurrentImgIndex] = useState<number>(0);
   const [isLightboxOpen, setIsLightboxOpen] = useState<boolean>(false);
   const [lightboxMode, setLightboxMode] = useState<'slide' | 'grid'>('slide');
@@ -661,18 +661,18 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                   )}
                 </div>
 
-                {/* Tabs Navigation: Itinerary / Inclusions for Tours */}
+                {/* Tabs Navigation: Itinerary / Inclusions / Terms for Tours */}
                 <div className="space-y-4">
-                  <div className="flex border-b border-slate-200 gap-2">
+                  <div className="flex border-b border-slate-200 gap-2 flex-wrap sm:flex-nowrap">
                     <button
                       onClick={() => setActiveTab('itinerary')}
-                      className={`pb-3 px-4 font-black text-sm transition-all relative ${
+                      className={`pb-3 px-3 sm:px-4 font-black text-xs sm:text-sm transition-all relative cursor-pointer ${
                         activeTab === 'itinerary'
                           ? 'text-teal-800'
                           : 'text-slate-400 hover:text-slate-600'
                       }`}
                     >
-                      🗓️ 일자별 상세 일정표 ({product.itinerary?.length || 1}일)
+                      🗓️ 상세 일정표 ({product.itinerary?.length || 1}일)
                       {activeTab === 'itinerary' && (
                         <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-teal-700 rounded-full" />
                       )}
@@ -680,14 +680,28 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
 
                     <button
                       onClick={() => setActiveTab('inclusion')}
-                      className={`pb-3 px-4 font-black text-sm transition-all relative ${
+                      className={`pb-3 px-3 sm:px-4 font-black text-xs sm:text-sm transition-all relative cursor-pointer ${
                         activeTab === 'inclusion'
                           ? 'text-teal-800'
                           : 'text-slate-400 hover:text-slate-600'
                       }`}
                     >
-                      ✅ 포함 / 불포함 사항
+                      ✅ 포함 / 불포함
                       {activeTab === 'inclusion' && (
+                        <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-teal-700 rounded-full" />
+                      )}
+                    </button>
+
+                    <button
+                      onClick={() => setActiveTab('terms')}
+                      className={`pb-3 px-3 sm:px-4 font-black text-xs sm:text-sm transition-all relative cursor-pointer ${
+                        activeTab === 'terms'
+                          ? 'text-teal-800'
+                          : 'text-slate-400 hover:text-slate-600'
+                      }`}
+                    >
+                      📜 약관 및 주의사항
+                      {activeTab === 'terms' && (
                         <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-teal-700 rounded-full" />
                       )}
                     </button>
@@ -783,6 +797,77 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                           ) : (
                             <li>개인 경비, 매너팁, 여행자 보험 (선택 사항)</li>
                           )}
+                        </ul>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Tab 3: Terms & Caution */}
+                  {activeTab === 'terms' && (
+                    <div className="space-y-4 text-xs sm:text-sm text-slate-700">
+                      {/* Special Terms */}
+                      <div className="bg-amber-50/60 p-5 rounded-2xl border border-amber-200 space-y-3">
+                        <h4 className="font-black text-amber-950 text-sm flex items-center gap-2">
+                          <span>📜 신짜오투어 단독 자유여행 특별약관 및 취소 규정</span>
+                        </h4>
+                        <p className="text-xs text-amber-900 leading-relaxed">
+                          단독 전용 차량 및 전담 가이드 사전 배차와 5성 호텔 확약으로 아래의 특별 취소 수수료가 적용됩니다.
+                        </p>
+                        <div className="overflow-x-auto">
+                          <table className="w-full text-xs text-left bg-white rounded-xl overflow-hidden border border-amber-200">
+                            <thead className="bg-amber-100/70 text-amber-950 font-bold">
+                              <tr>
+                                <th className="p-2 border-b border-amber-200">취소 시점</th>
+                                <th className="p-2 border-b border-amber-200">취소 수수료</th>
+                              </tr>
+                            </thead>
+                            <tbody className="divide-y divide-amber-100">
+                              <tr>
+                                <td className="p-2">출발 30일 전 취소 시</td>
+                                <td className="p-2 font-bold text-teal-700">전액 100% 환불 (수수료 없음)</td>
+                              </tr>
+                              <tr>
+                                <td className="p-2">출발 20 ~ 29일 전</td>
+                                <td className="p-2 text-amber-800">상품가의 10% 공제</td>
+                              </tr>
+                              <tr>
+                                <td className="p-2">출발 10 ~ 19일 전</td>
+                                <td className="p-2 text-amber-800">상품가의 20% 공제</td>
+                              </tr>
+                              <tr>
+                                <td className="p-2">출발 8 ~ 9일 전</td>
+                                <td className="p-2 text-rose-700 font-bold">상품가의 30% 공제</td>
+                              </tr>
+                              <tr>
+                                <td className="p-2">출발 1 ~ 7일 전</td>
+                                <td className="p-2 text-rose-700 font-bold">상품가의 50% 공제</td>
+                              </tr>
+                              <tr>
+                                <td className="p-2">여행 당일 취소 / No-Show</td>
+                                <td className="p-2 text-rose-800 font-black">환불 불가 (100% 수수료)</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+
+                      {/* Passport & Visa */}
+                      <div className="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-2.5">
+                        <h4 className="font-black text-slate-900 text-sm">✈️ 여권 및 베트남 입국 주의사항</h4>
+                        <ul className="space-y-1.5 text-xs text-slate-600 pl-1">
+                          <li>• 여권 유효기간은 베트남 입국일 기준 <strong>최소 6개월 이상</strong> 필수</li>
+                          <li>• 대한민국 여권 소지자 <strong>45일 무비자 체류</strong> 가능</li>
+                          <li>• 만 14세 미만 미성년자 부모 미동반 입국 시 <strong>영문 부모동의서 및 가족관계증명서</strong> 필요</li>
+                        </ul>
+                      </div>
+
+                      {/* Safety & Tour Manners */}
+                      <div className="bg-teal-50/50 p-5 rounded-2xl border border-teal-200 space-y-2.5">
+                        <h4 className="font-black text-teal-950 text-sm">🌟 단독 투어 편의 및 준비물 안내</h4>
+                        <ul className="space-y-1.5 text-xs text-teal-950 pl-1">
+                          <li>• <strong>NO 쇼핑 / NO 옵션:</strong> 강제 쇼핑센터 방문이 일체 없습니다.</li>
+                          <li>• <strong>바나힐 복장:</strong> 정상 기온이 3~5도 낮으므로 얇은 겉옷을 준비해주세요.</li>
+                          <li>• <strong>일정 자율성:</strong> 당일 날씨와 컨디션에 따라 가이드와 상의하여 일정을 조율할 수 있습니다.</li>
                         </ul>
                       </div>
                     </div>
