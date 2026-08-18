@@ -18,6 +18,7 @@ import {
 import { COMPANY_INFO } from '../data/companyInfo';
 import { handleOpenKakaoTalkDirect } from '../constants';
 import { Product } from '../types';
+import { trackVisitorEvent } from '../lib/analytics';
 
 interface ReservationPageProps {
   products: Product[];
@@ -79,6 +80,10 @@ export const ReservationPage: React.FC<ReservationPageProps> = ({
       });
 
       if (success) {
+        trackVisitorEvent('inquiry_submit', `온라인 견적/예약 신청: ${productTitle}`, {
+          productId: selectedProductId || undefined,
+          productTitle
+        });
         setIsSubmitted(true);
       } else {
         alert('문의 접수 중 문제가 발생했습니다. 잠시 후 다시 시도해주시거나 카카오톡으로 문의해주세요.');

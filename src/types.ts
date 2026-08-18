@@ -146,3 +146,55 @@ export interface TravelQuizAnswers {
   duration: string;
   budgetPerPerson: number;
 }
+
+export type VisitorAction = 'page_view' | 'kakao_click' | 'phone_click' | 'inquiry_submit' | 'product_view' | 'tab_change';
+
+export interface VisitorLog {
+  id: string;
+  timestamp: string;
+  date: string;
+  hour: number;
+  page: string;
+  action: VisitorAction;
+  productId?: string;
+  productTitle?: string;
+  device: 'mobile' | 'desktop' | 'tablet';
+  browser: string;
+  os: string;
+  referrer: string;
+  sessionId: string;
+  ip?: string;
+}
+
+export interface DailyVisitorStat {
+  date: string;
+  uv: number;
+  pv: number;
+  kakaoClicks: number;
+  phoneClicks: number;
+  inquiries: number;
+}
+
+export interface AnalyticsSummary {
+  todayUV: number;
+  todayPV: number;
+  yesterdayUV: number;
+  yesterdayPV: number;
+  thisMonthUV: number;
+  totalUV: number;
+  totalPV: number;
+  totalKakaoClicks: number;
+  totalPhoneClicks: number;
+  totalInquiries: number;
+  dailyStats: DailyVisitorStat[];
+  hourlyDistribution: number[];
+  deviceBreakdown: {
+    mobile: number;
+    desktop: number;
+    tablet: number;
+  };
+  referrerBreakdown: Record<string, number>;
+  popularPages: { page: string; views: number }[];
+  popularProducts: { productId: string; title: string; views: number }[];
+  recentLogs: VisitorLog[];
+}

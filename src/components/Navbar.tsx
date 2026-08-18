@@ -129,11 +129,11 @@ export const Navbar: React.FC<NavbarProps> = ({
             {onOpenAdmin && (
               <button
                 onClick={onOpenAdmin}
-                className="text-[11px] text-slate-400 hover:text-slate-200 flex items-center gap-1 px-1.5 py-0.5 rounded transition cursor-pointer"
-                title="관리자 모드"
+                className="text-[11px] bg-slate-800 hover:bg-slate-700 text-amber-300 hover:text-amber-200 flex items-center gap-1 px-2 py-0.5 rounded-md border border-amber-400/40 transition cursor-pointer font-bold shrink-0"
+                title="관리자 모드 (상품 등록·수정·관리)"
               >
-                <Lock className="w-3 h-3" />
-                <span className="hidden lg:inline">관리자</span>
+                <Lock className="w-3 h-3 text-amber-400" />
+                <span>관리자</span>
               </button>
             )}
           </div>
@@ -310,12 +310,31 @@ export const Navbar: React.FC<NavbarProps> = ({
                 setMobileMenuOpen(false);
                 handleOpenKakaoTalkDirect(e);
               }}
-              className="p-2.5 rounded-xl bg-amber-400 text-slate-950 text-xs font-bold flex items-center justify-center gap-1.5"
+              className="p-2.5 rounded-xl bg-amber-400 text-slate-950 text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
             >
               <MessageCircle className="w-3.5 h-3.5" />
               <span>카카오톡 상담</span>
             </button>
           </div>
+
+          {/* Mobile Admin Mode Entry Button */}
+          {onOpenAdmin && (
+            <div className="pt-2 border-t border-slate-100">
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  onOpenAdmin();
+                }}
+                className="w-full p-3 rounded-xl bg-slate-900 hover:bg-slate-800 active:scale-[0.99] text-amber-300 text-xs font-black flex items-center justify-between shadow-md transition-all cursor-pointer border border-amber-400/30"
+              >
+                <div className="flex items-center gap-2">
+                  <Lock className="w-4 h-4 text-amber-400" />
+                  <span>관리자 모드 (상품 등록·수정·관리)</span>
+                </div>
+                <span className="bg-amber-400 text-slate-950 text-[10px] px-2 py-0.5 rounded-md font-extrabold">ADMIN</span>
+              </button>
+            </div>
+          )}
         </div>
       )}
     </header>

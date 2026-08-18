@@ -12,7 +12,6 @@ import { FloatingChatWidget } from './components/FloatingChatWidget';
 import { Footer } from './components/Footer';
 import { ExchangeRateModal } from './components/ExchangeRateModal';
 import { TravelInfoModal, TravelInfoTab } from './components/TravelInfoModal';
-import { KakaoModal } from './components/KakaoModal';
 import { AdminMode } from './components/AdminMode';
 import { AdminLoginModal } from './components/AdminLoginModal';
 import { ReservationPage } from './components/ReservationPage';
@@ -47,6 +46,7 @@ import {
 } from './lib/indexedDb';
 import { INITIAL_PRODUCTS } from './data/seedProducts';
 import { getDisplayProductImage } from './lib/imageFallback';
+import { trackVisitorEvent } from './lib/analytics';
 
 const PRODUCTS_CACHE_KEY = 'xinchao_products_cache_master';
 
@@ -159,7 +159,6 @@ export default function App() {
   const [isQuizOpen, setIsQuizOpen] = useState(false);
   const [isTravelInfoModalOpen, setIsTravelInfoModalOpen] = useState(false);
   const [travelInfoTab, setTravelInfoTab] = useState<TravelInfoTab>('course');
-  const [isKakaoModalOpen, setIsKakaoModalOpen] = useState(false);
   const [isAdminMode, setIsAdminMode] = useState(false);
   const [isAdminLoginOpen, setIsAdminLoginOpen] = useState(false);
 
@@ -184,15 +183,27 @@ export default function App() {
 
   const handleSelectProduct = (prod: Product) => {
     setSelectedProduct(prod);
+    trackVisitorEvent('product_view', `[상품상세] ${prod.title}`, { productId: prod.id, productTitle: prod.title });
   };
 
   const handleOpenTravelInfo = (tab: TravelInfoTab = 'course') => {
     setTravelInfoTab(tab);
     setIsTravelInfoModalOpen(true);
+    trackVisitorEvent('page_view', `여행정보 모달: ${tab}`);
   };
 
   const handleNavigate = (page: NavPage) => {
     setCurrentPage(page);
+    const navTitles: Record<NavPage, string> = {
+      home: '홈 메인',
+      free_travel: '단독 자유여행',
+      villa: '독채 풀빌라',
+      golf: '골프투어',
+      travel_info: '베트남 여행정보 꿀팁',
+      reservation: '빠른 견적/예약 신청'
+    };
+    trackVisitorEvent('page_view', navTitles[page] || page);
+
     if (page === 'home') {
       setActiveCategory('전체');
       setActiveRegion('전체');
@@ -311,6 +322,7 @@ export default function App() {
       }
     };
     initLocalData();
+    trackVisitorEvent('page_view', '신짜오투어 홈페이지 메인');
 
     loadRates();
     syncAllDataFromServer(false);
@@ -683,13 +695,10 @@ export default function App() {
 
       {/* Floating Speed Dial Widgets */}
       <FloatingChatWidget
-        onOpenAiAssistant={() => setIsAiAssistantOpen(true)}
         onOpenConsultation={() => {
           setConsultationTargetProduct(null);
           setIsConsultationOpen(true);
         }}
-        onOpenKakao={() => setIsKakaoModalOpen(true)}
-        onOpenExchange={() => setIsRateModalOpen(true)}
       />
 
       {/* Modals */}
@@ -754,13 +763,6 @@ export default function App() {
           rates={exchangeRates}
           onRefreshRates={loadRates}
           isRefreshing={isRefreshingRates}
-        />
-      )}
-
-      {isKakaoModalOpen && (
-        <KakaoModal
-          isOpen={isKakaoModalOpen}
-          onClose={() => setIsKakaoModalOpen(false)}
         />
       )}
 

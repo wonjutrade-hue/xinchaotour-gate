@@ -60,8 +60,10 @@ import {
   ArrowDown,
   RefreshCw,
   Loader2,
-  FolderOpen
+  FolderOpen,
+  BarChart3
 } from 'lucide-react';
+import { AdminVisitorAnalytics } from './AdminVisitorAnalytics';
 
 interface AdminModeProps {
   products: Product[];
@@ -457,7 +459,7 @@ export const AdminMode: React.FC<AdminModeProps> = ({
   isSyncing = false,
 }) => {
   // Navigation & Tabs
-  const [adminTab, setAdminTab] = useState<'products' | 'inquiries'>('products');
+  const [adminTab, setAdminTab] = useState<'products' | 'inquiries' | 'analytics'>('products');
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCategory, setFilterCategory] = useState<string>('전체');
   const [filterRegion, setFilterRegion] = useState<string>('전체');
@@ -1238,6 +1240,21 @@ export const AdminMode: React.FC<AdminModeProps> = ({
                 {pendingInquiriesCount}
               </span>
             )}
+          </button>
+
+          <button
+            onClick={() => setAdminTab('analytics')}
+            className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl text-xs sm:text-sm font-black flex items-center gap-1.5 sm:gap-2 whitespace-nowrap transition-all cursor-pointer ${
+              adminTab === 'analytics'
+                ? 'bg-teal-500 text-white shadow-md'
+                : 'text-teal-400 hover:text-teal-200 hover:bg-slate-800'
+            }`}
+          >
+            <BarChart3 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+            <span>방문자 통계 분석 (실시간)</span>
+            <span className="bg-emerald-400/20 text-emerald-300 text-[10px] font-bold px-1.5 py-0.2 rounded-md border border-emerald-400/30">
+              LIVE
+            </span>
           </button>
         </div>
       </header>
@@ -2138,6 +2155,13 @@ export const AdminMode: React.FC<AdminModeProps> = ({
               </div>
             )}
           </div>
+        )}
+
+        {/* =================================================================== */}
+        {/* TAB 3: VISITOR & TRAFFIC ANALYTICS (실시간 방문자 통계)             */}
+        {/* =================================================================== */}
+        {adminTab === 'analytics' && (
+          <AdminVisitorAnalytics onNotify={showNotification} />
         )}
       </main>
 

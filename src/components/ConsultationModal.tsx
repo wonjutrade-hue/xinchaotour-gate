@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Product } from '../types';
 import { X, Send, PhoneCall, MessageCircle, CheckCircle2, ShieldCheck, Calendar, Users } from 'lucide-react';
 import { handleOpenKakaoTalkDirect, COMPANY_PHONE } from '../constants';
+import { trackVisitorEvent } from '../lib/analytics';
 
 interface ConsultationModalProps {
   isOpen: boolean;
@@ -53,6 +54,10 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
     setIsSubmitting(false);
 
     if (success) {
+      trackVisitorEvent('inquiry_submit', `상담 신청: ${payload.productTitle}`, {
+        productId: product?.id,
+        productTitle: product?.title
+      });
       setIsSuccess(true);
     } else {
       alert('상담 제출 중 오류가 발생했습니다. 다시 시도해 주세요.');

@@ -1,8 +1,9 @@
-import React from 'react';
-import { PhoneCall, MessageCircle, Palmtree } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { PhoneCall, MessageCircle, Palmtree, Users, TrendingUp, BarChart2 } from 'lucide-react';
 import { COMPANY_PHONE, COMPANY_PHONE_TEL, handleOpenKakaoTalkDirect } from '../constants';
 import { COMPANY_INFO } from '../data/companyInfo';
 import { NavPage } from './Navbar';
+import { fetchAnalyticsSummary } from '../lib/analytics';
 
 interface FooterProps {
   onNavigate: (page: NavPage) => void;
@@ -17,6 +18,18 @@ export const Footer: React.FC<FooterProps> = ({
   onOpenTravelInfo,
   onOpenAdmin
 }) => {
+  const [visitorStats, setVisitorStats] = useState<{ todayUV: number; totalUV: number } | null>(null);
+
+  useEffect(() => {
+    fetchAnalyticsSummary().then(res => {
+      if (res) {
+        setVisitorStats({
+          todayUV: res.todayUV,
+          totalUV: res.totalUV
+        });
+      }
+    }).catch(() => {});
+  }, []);
   return (
     <footer className="bg-slate-950 text-slate-400 pt-16 pb-12 border-t border-slate-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
@@ -188,7 +201,19 @@ export const Footer: React.FC<FooterProps> = ({
               </p>
             </div>
 
-            <div className="flex items-center gap-4 text-xs">
+            <div className="flex flex-wrap items-center gap-3 text-xs">
+              {/* Visitor Stats Counter Widget */}
+              <div className="flex items-center gap-2 bg-slate-900/90 border border-slate-800 px-3 py-1.5 rounded-xl text-slate-300">
+                <BarChart2 className="w-3.5 h-3.5 text-amber-400" />
+                <span className="text-[11px]">
+                  오늘 방문자: <strong className="text-amber-300 font-bold">{visitorStats ? visitorStats.todayUV.toLocaleString() : '1'}</strong>명
+                </span>
+                <span className="text-slate-600">|</span>
+                <span className="text-[11px]">
+                  전체 누적: <strong className="text-teal-300 font-bold">{visitorStats ? visitorStats.totalUV.toLocaleString() : '1'}</strong>명
+                </span>
+              </div>
+
               {onOpenAdmin && (
                 <button onClick={onOpenAdmin} className="text-slate-400 hover:text-slate-300 text-[11px] cursor-pointer">
                   관리자 모드

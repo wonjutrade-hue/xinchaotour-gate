@@ -4,7 +4,7 @@ import fs from 'fs';
 import { createServer as createViteServer } from 'vite';
 import { GoogleGenAI } from '@google/genai';
 import { INITIAL_PRODUCTS, SAMPLE_PRODUCTS } from './src/data/seedProducts.js';
-import { Product, ConsultationRequest } from './src/types.js';
+import { Product, ConsultationRequest, VisitorLog, DailyVisitorStat, AnalyticsSummary } from './src/types.js';
 import { COMPANY_INFO } from './src/data/companyInfo.js';
 import { INITIAL_REVIEWS } from './src/data/reviews.js';
 
@@ -15,6 +15,7 @@ const PRODUCTS_BACKUP_PATH = path.join(process.cwd(), 'stored_products.backup.js
 const INQUIRIES_FILE_PATH = path.join(process.cwd(), 'stored_inquiries.json');
 const REVIEWS_FILE_PATH = path.join(process.cwd(), 'stored_reviews.json');
 const SETTINGS_FILE_PATH = path.join(process.cwd(), 'stored_settings.json');
+const ANALYTICS_FILE_PATH = path.join(process.cwd(), 'stored_analytics.json');
 const UPLOADS_DIR = path.join(process.cwd(), 'public', 'uploads');
 
 if (!fs.existsSync(UPLOADS_DIR)) {
@@ -166,10 +167,78 @@ function saveStoredSettings(settings: any) {
   }
 }
 
+interface StoredAnalytics {
+  dailyStats: Record<string, DailyVisitorStat>;
+  recentLogs: VisitorLog[];
+  todaySessionIds: Record<string, string[]>;
+  deviceCounts: { mobile: number; desktop: number; tablet: number };
+  referrerCounts: Record<string, number>;
+  pageViews: Record<string, number>;
+  productViews: Record<string, { title: string; views: number }>;
+}
+
+function getInitialAnalytics(): StoredAnalytics {
+  return {
+    dailyStats: {},
+    recentLogs: [],
+    todaySessionIds: {},
+    deviceCounts: { mobile: 0, desktop: 0, tablet: 0 },
+    referrerCounts: {},
+    pageViews: {},
+    productViews: {}
+  };
+}
+
+function loadStoredAnalytics(): StoredAnalytics {
+  try {
+    if (fs.existsSync(ANALYTICS_FILE_PATH)) {
+      const fileData = fs.readFileSync(ANALYTICS_FILE_PATH, 'utf-8');
+      const parsed = JSON.parse(fileData);
+      if (parsed && typeof parsed === 'object' && parsed.dailyStats) {
+        return parsed;
+      }
+    }
+  } catch (e) {
+    console.warn('[Server] Failed to read stored_analytics.json:', e);
+  }
+  return getInitialAnalytics();
+}
+
+function saveStoredAnalytics(data: StoredAnalytics) {
+  try {
+    fs.writeFileSync(ANALYTICS_FILE_PATH, JSON.stringify(data, null, 2), 'utf-8');
+  } catch (e) {
+    console.error('[Server] Failed to save analytics:', e);
+  }
+}
+
+function getKSTDateInfo(d = new Date()): { dateStr: string; hour: number; yearMonth: string } {
+  try {
+    const formatter = new Intl.DateTimeFormat('ko-KR', {
+      timeZone: 'Asia/Seoul',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      hour12: false
+    });
+    const parts = formatter.formatToParts(d);
+    const y = parts.find(p => p.type === 'year')?.value || '2026';
+    const m = parts.find(p => p.type === 'month')?.value || '01';
+    const day = parts.find(p => p.type === 'day')?.value || '01';
+    const h = parseInt(parts.find(p => p.type === 'hour')?.value || '0', 10);
+    return { dateStr: `${y}-${m}-${day}`, hour: h, yearMonth: `${y}-${m}` };
+  } catch (e) {
+    const iso = d.toISOString();
+    return { dateStr: iso.substring(0, 10), hour: d.getUTCHours(), yearMonth: iso.substring(0, 7) };
+  }
+}
+
 let products: Product[] = loadStoredProducts();
 let inquiries: ConsultationRequest[] = loadStoredInquiries();
 let reviews: any[] = loadStoredReviews();
 let siteSettings: any = loadStoredSettings();
+let analyticsData: StoredAnalytics = loadStoredAnalytics();
 let lastDataSyncTimestamp = Date.now();
 
 // Lazy Gemini AI setup
@@ -511,6 +580,209 @@ async function startServer() {
         reply: '안녕하세요! 신차오투어 베트남 전담 상담원입니다. 문의사항을 카카오톡 실시간 상담 또는 상담 신청 폼으로 남겨주시면 즉시 1:1 맞춤 견적을 도와드리겠습니다!'
       });
     }
+  });
+
+  // 13. Visitor Analytics - Record Hit
+  app.post('/api/analytics/record', (req: Request, res: Response) => {
+    try {
+      const {
+        action = 'page_view',
+        page = '홈',
+        productId,
+        productTitle,
+        device = 'desktop',
+        browser = 'Chrome',
+        os = 'Windows',
+        referrer = '직접 접속',
+        sessionId = `ses-${Date.now()}`
+      } = req.body;
+
+      const now = new Date();
+      const { dateStr, hour } = getKSTDateInfo(now);
+
+      // Client IP (masked for privacy)
+      const rawIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress || '127.0.0.1';
+      const ip = typeof rawIp === 'string' ? rawIp.split(',')[0].trim() : '127.0.0.1';
+
+      const logEntry: VisitorLog = {
+        id: `log-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
+        timestamp: now.toISOString(),
+        date: dateStr,
+        hour,
+        page,
+        action,
+        productId,
+        productTitle,
+        device: device === 'mobile' || device === 'tablet' ? device : 'desktop',
+        browser,
+        os,
+        referrer,
+        sessionId,
+        ip: ip.replace(/(\d+)\.(\d+)\.(\d+)\.(\d+)/, '$1.$2.***.$4')
+      };
+
+      // 1. Update Daily Stats
+      if (!analyticsData.dailyStats[dateStr]) {
+        analyticsData.dailyStats[dateStr] = {
+          date: dateStr,
+          uv: 0,
+          pv: 0,
+          kakaoClicks: 0,
+          phoneClicks: 0,
+          inquiries: 0
+        };
+      }
+      const dayStat = analyticsData.dailyStats[dateStr];
+
+      // Check UV (Unique session for the day)
+      if (!analyticsData.todaySessionIds[dateStr]) {
+        analyticsData.todaySessionIds[dateStr] = [];
+      }
+      if (!analyticsData.todaySessionIds[dateStr].includes(sessionId)) {
+        analyticsData.todaySessionIds[dateStr].push(sessionId);
+        dayStat.uv += 1;
+      }
+
+      if (action === 'page_view' || action === 'product_view' || action === 'tab_change') {
+        dayStat.pv += 1;
+      } else if (action === 'kakao_click') {
+        dayStat.kakaoClicks += 1;
+      } else if (action === 'phone_click') {
+        dayStat.phoneClicks += 1;
+      } else if (action === 'inquiry_submit') {
+        dayStat.inquiries += 1;
+      }
+
+      // 2. Device Breakdown
+      const devKey = (device === 'mobile' || device === 'tablet' ? device : 'desktop') as 'mobile' | 'desktop' | 'tablet';
+      analyticsData.deviceCounts[devKey] = (analyticsData.deviceCounts[devKey] || 0) + 1;
+
+      // 3. Referrer Breakdown
+      const refKey = referrer || '직접 접속';
+      analyticsData.referrerCounts[refKey] = (analyticsData.referrerCounts[refKey] || 0) + 1;
+
+      // 4. Page Views
+      if (page) {
+        analyticsData.pageViews[page] = (analyticsData.pageViews[page] || 0) + 1;
+      }
+
+      // 5. Product Views
+      if (productId && productTitle) {
+        if (!analyticsData.productViews[productId]) {
+          analyticsData.productViews[productId] = { title: productTitle, views: 0 };
+        }
+        analyticsData.productViews[productId].views += 1;
+      }
+
+      // 6. Append to Recent Logs (keep last 300)
+      analyticsData.recentLogs.unshift(logEntry);
+      if (analyticsData.recentLogs.length > 300) {
+        analyticsData.recentLogs = analyticsData.recentLogs.slice(0, 300);
+      }
+
+      // Keep only last 60 days of session IDs to save memory
+      const allDateKeys = Object.keys(analyticsData.todaySessionIds);
+      if (allDateKeys.length > 60) {
+        allDateKeys.slice(0, allDateKeys.length - 60).forEach(oldKey => {
+          delete analyticsData.todaySessionIds[oldKey];
+        });
+      }
+
+      saveStoredAnalytics(analyticsData);
+      res.json({ success: true });
+    } catch (e: any) {
+      res.status(500).json({ success: false, error: e.message });
+    }
+  });
+
+  // 14. Visitor Analytics - Get Summary Dashboard Data
+  app.get('/api/analytics/stats', (req: Request, res: Response) => {
+    try {
+      const now = new Date();
+      const { dateStr: todayStr, yearMonth: thisMonthStr } = getKSTDateInfo(now);
+      
+      const yesterday = new Date(now.getTime() - 86400000);
+      const { dateStr: yesterdayStr } = getKSTDateInfo(yesterday);
+
+      const todayStat = analyticsData.dailyStats[todayStr] || { date: todayStr, uv: 0, pv: 0, kakaoClicks: 0, phoneClicks: 0, inquiries: 0 };
+      const yesterdayStat = analyticsData.dailyStats[yesterdayStr] || { date: yesterdayStr, uv: 0, pv: 0, kakaoClicks: 0, phoneClicks: 0, inquiries: 0 };
+
+      // Calculate totals
+      let totalUV = 0;
+      let totalPV = 0;
+      let totalKakaoClicks = 0;
+      let totalPhoneClicks = 0;
+      let totalInquiries = 0;
+      let thisMonthUV = 0;
+
+      Object.entries(analyticsData.dailyStats).forEach(([dStr, stat]) => {
+        totalUV += stat.uv || 0;
+        totalPV += stat.pv || 0;
+        totalKakaoClicks += stat.kakaoClicks || 0;
+        totalPhoneClicks += stat.phoneClicks || 0;
+        totalInquiries += stat.inquiries || 0;
+
+        if (dStr.startsWith(thisMonthStr)) {
+          thisMonthUV += stat.uv || 0;
+        }
+      });
+
+      // Today's hourly distribution (0 - 23)
+      const hourlyDistribution = new Array(24).fill(0);
+      analyticsData.recentLogs.forEach(log => {
+        if (log.date === todayStr && log.hour >= 0 && log.hour < 24) {
+          hourlyDistribution[log.hour] += 1;
+        }
+      });
+
+      // Sort daily stats (last 30 days)
+      const dailyStatsArray: DailyVisitorStat[] = Object.values(analyticsData.dailyStats)
+        .sort((a, b) => a.date.localeCompare(b.date))
+        .slice(-30);
+
+      // Top 10 popular pages
+      const popularPages = Object.entries(analyticsData.pageViews)
+        .map(([page, views]) => ({ page, views }))
+        .sort((a, b) => b.views - a.views)
+        .slice(0, 10);
+
+      // Top 10 popular products
+      const popularProducts = Object.entries(analyticsData.productViews)
+        .map(([productId, info]) => ({ productId, title: info.title, views: info.views }))
+        .sort((a, b) => b.views - a.views)
+        .slice(0, 10);
+
+      const summary: AnalyticsSummary = {
+        todayUV: todayStat.uv,
+        todayPV: todayStat.pv,
+        yesterdayUV: yesterdayStat.uv,
+        yesterdayPV: yesterdayStat.pv,
+        thisMonthUV: thisMonthUV || todayStat.uv,
+        totalUV: Math.max(totalUV, todayStat.uv),
+        totalPV: Math.max(totalPV, todayStat.pv),
+        totalKakaoClicks,
+        totalPhoneClicks,
+        totalInquiries,
+        dailyStats: dailyStatsArray,
+        hourlyDistribution,
+        deviceBreakdown: analyticsData.deviceCounts,
+        referrerBreakdown: analyticsData.referrerCounts,
+        popularPages,
+        popularProducts,
+        recentLogs: analyticsData.recentLogs.slice(0, 50)
+      };
+
+      res.json({ success: true, summary });
+    } catch (err: any) {
+      res.status(500).json({ success: false, error: err.message });
+    }
+  });
+
+  // 15. Reset Analytics (Admin)
+  app.post('/api/analytics/reset', (req: Request, res: Response) => {
+    analyticsData = getInitialAnalytics();
+    saveStoredAnalytics(analyticsData);
+    res.json({ success: true, message: 'Analytics reset successfully' });
   });
 
   // Vite Middleware in Dev, Static serving in Production

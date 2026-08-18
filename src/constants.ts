@@ -1,4 +1,5 @@
 import React from 'react';
+import { trackVisitorEvent } from './lib/analytics';
 
 export const COMPANY_PHONE = '010-5365-6019';
 export const COMPANY_PHONE_TEL = 'tel:010-5365-6019';
@@ -33,6 +34,7 @@ export const handleOpenKakaoTalkDirect = (e?: React.MouseEvent) => {
     if (e.preventDefault) e.preventDefault();
     if (e.stopPropagation) e.stopPropagation();
   }
+  trackVisitorEvent('kakao_click', '카카오톡 실시간 1:1 상담');
   const targetUrl = getKakaoDirectLink() || DEFAULT_KAKAO_LINK;
   
   if (typeof window !== 'undefined') {
