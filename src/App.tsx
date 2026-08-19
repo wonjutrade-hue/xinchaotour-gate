@@ -35,7 +35,8 @@ import {
   Lightbulb,
   ArrowRight,
   Loader2,
-  PackagePlus
+  PackagePlus,
+  BookOpen
 } from 'lucide-react';
 
 import {
@@ -239,11 +240,11 @@ export default function App() {
 
   // Sync Data with Database (Supabase / Server)
   const syncAllDataFromServer = async (showLoading: boolean = false) => {
-    // If saving right now or recently saved within 15 seconds, skip polling fetch
-    if (isSavingToServerRef.current || (Date.now() - lastClientSaveTimestampRef.current < 15000)) {
+    // If saving right now or recently saved within 5 seconds, skip polling fetch
+    if (isSavingToServerRef.current || (Date.now() - lastClientSaveTimestampRef.current < 5000)) {
       return;
     }
-    // If admin is currently managing in AdminMode, prevent background polling from overriding active screen
+    // If admin is actively editing in AdminMode, prevent background polling from overriding active form
     if (isAdminMode) {
       return;
     }
@@ -255,31 +256,25 @@ export default function App() {
         inquiryService.getInquiries()
       ]);
 
-      const lastLocalSave = Number(localStorage.getItem('xinchao_products_last_saved') || 0);
-      const isLocalModified = lastLocalSave > 0;
-
       if (Array.isArray(fetchedProducts)) {
-        if (!isSavingToServerRef.current && (Date.now() - lastClientSaveTimestampRef.current >= 15000)) {
+        if (!isSavingToServerRef.current && (Date.now() - lastClientSaveTimestampRef.current >= 5000)) {
           if (fetchedProducts.length > 0) {
-            if (isLocalModified && products.length > 0) {
-              // Local has user-managed products. Ensure server is in sync with latest local products
-              productService.syncAllProducts(products).catch(console.warn);
-            } else {
-              setProducts(fetchedProducts);
-              await saveProductsToIndexedDB(fetchedProducts);
-              setStoredJson(PRODUCTS_CACHE_KEY, fetchedProducts);
-            }
+            setProducts(fetchedProducts);
+            await saveProductsToIndexedDB(fetchedProducts);
+            setStoredJson(PRODUCTS_CACHE_KEY, fetchedProducts);
           } else {
-            // Server returned 0 items.
+            // Server returned 0 items -> check local backup or seed
             const idbProducts = await loadProductsFromIndexedDB();
             const fallbackLocal = (idbProducts && idbProducts.length > 0)
               ? idbProducts
               : (products.length > 0 ? products : INITIAL_PRODUCTS);
 
-            setProducts(fallbackLocal);
-            await saveProductsToIndexedDB(fallbackLocal);
-            setStoredJson(PRODUCTS_CACHE_KEY, fallbackLocal);
-            productService.syncAllProducts(fallbackLocal).catch(console.warn);
+            if (fallbackLocal.length > 0) {
+              setProducts(fallbackLocal);
+              await saveProductsToIndexedDB(fallbackLocal);
+              setStoredJson(PRODUCTS_CACHE_KEY, fallbackLocal);
+              productService.syncAllProducts(fallbackLocal).catch(console.warn);
+            }
           }
         }
       }
@@ -483,20 +478,344 @@ export default function App() {
           totalProductsCount={filteredProducts.length}
         />
 
+        {/* Quick Tropical Theme Highlights (Shown on HOME) */}
+        {currentPage === 'home' && activeCategory === '전체' && activeRegion === '전체' && !searchTerm && (
+          <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 w-full">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <span className="text-teal-600 font-extrabold text-xs uppercase tracking-wider">XinChao Curated Themes</span>
+                <h3 className="text-lg sm:text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
+                  <span>🌴 시원하고 특별한 베트남 추천 테마</span>
+                </h3>
+              </div>
+              <span className="text-xs text-slate-400 font-medium hidden sm:inline-block">
+                취향에 맞는 테마를 선택해보세요
+              </span>
+            </div>
+
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+              {/* Theme 1: Emerald Pool Villa */}
+              <button
+                onClick={() => {
+                  setActiveCategory('풀빌라');
+                  const el = document.getElementById('products-section');
+                  el?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-teal-500 to-emerald-600 p-4 sm:p-5 text-white text-left shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer border border-teal-300/30"
+              >
+                <div className="absolute -right-4 -bottom-4 w-20 h-20 bg-white/15 rounded-full blur-sm group-hover:scale-125 transition-transform" />
+                <span className="text-2xl sm:text-3xl mb-2 block">🏰</span>
+                <span className="inline-block px-2 py-0.5 rounded-full bg-white/20 text-[10px] font-black text-teal-100 mb-1 backdrop-blur-xs">
+                  오션뷰 · 프라이빗
+                </span>
+                <h4 className="font-black text-sm sm:text-base leading-tight text-white drop-shadow-xs">
+                  독채 럭셔리 풀빌라
+                </h4>
+                <p className="text-[11px] text-teal-100 mt-1 line-clamp-1 font-medium">
+                  다낭 · 나트랑 · 푸꾸옥 전용풀
+                </p>
+              </button>
+
+              {/* Theme 2: 90Holes Championship Golf */}
+              <button
+                onClick={() => {
+                  setActiveCategory('골프투어');
+                  const el = document.getElementById('products-section');
+                  el?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-amber-500 to-orange-500 p-4 sm:p-5 text-white text-left shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer border border-amber-300/30"
+              >
+                <div className="absolute -right-4 -bottom-4 w-20 h-20 bg-white/15 rounded-full blur-sm group-hover:scale-125 transition-transform" />
+                <span className="text-2xl sm:text-3xl mb-2 block">⛳</span>
+                <span className="inline-block px-2 py-0.5 rounded-full bg-slate-950/30 text-[10px] font-black text-amber-200 mb-1 backdrop-blur-xs">
+                  1인1캐디 · 명문CC
+                </span>
+                <h4 className="font-black text-sm sm:text-base leading-tight text-white drop-shadow-xs">
+                  챔피언십 골프투어
+                </h4>
+                <p className="text-[11px] text-amber-100 mt-1 line-clamp-1 font-medium">
+                  바나힐 · BRG · 호이아나 라운딩
+                </p>
+              </button>
+
+              {/* Theme 3: 100% Private Free Travel */}
+              <button
+                onClick={() => {
+                  setActiveCategory('자유여행');
+                  const el = document.getElementById('products-section');
+                  el?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-sky-500 to-blue-600 p-4 sm:p-5 text-white text-left shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer border border-sky-300/30"
+              >
+                <div className="absolute -right-4 -bottom-4 w-20 h-20 bg-white/15 rounded-full blur-sm group-hover:scale-125 transition-transform" />
+                <span className="text-2xl sm:text-3xl mb-2 block">🛫</span>
+                <span className="inline-block px-2 py-0.5 rounded-full bg-white/20 text-[10px] font-black text-sky-100 mb-1 backdrop-blur-xs">
+                  노쇼핑 · 단독 VIP
+                </span>
+                <h4 className="font-black text-sm sm:text-base leading-tight text-white drop-shadow-xs">
+                  우리끼리 단독 자유여행
+                </h4>
+                <p className="text-[11px] text-sky-100 mt-1 line-clamp-1 font-medium">
+                  전용차량 + 한국어 가이드 케어
+                </p>
+              </button>
+
+              {/* Theme 4: Halong Bay & Central Heritage */}
+              <button
+                onClick={() => {
+                  setActiveRegion('북부');
+                  setActiveCategory('전체');
+                  const el = document.getElementById('products-section');
+                  el?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-indigo-500 via-teal-600 to-emerald-500 p-4 sm:p-5 text-white text-left shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer border border-teal-300/30"
+              >
+                <div className="absolute -right-4 -bottom-4 w-20 h-20 bg-white/15 rounded-full blur-sm group-hover:scale-125 transition-transform" />
+                <span className="text-2xl sm:text-3xl mb-2 block">🚢</span>
+                <span className="inline-block px-2 py-0.5 rounded-full bg-white/20 text-[10px] font-black text-teal-100 mb-1 backdrop-blur-xs">
+                  유네스코 5성 크루즈
+                </span>
+                <h4 className="font-black text-sm sm:text-base leading-tight text-white drop-shadow-xs">
+                  하롱베이 & 자연 비경
+                </h4>
+                <p className="text-[11px] text-teal-100 mt-1 line-clamp-1 font-medium">
+                  에메랄드빛 바다 & 카약 힐링
+                </p>
+              </button>
+            </div>
+          </section>
+        )}
+
+        {/* Vietnam Full Destination Encyclopedia Section (From Fansipan & Ban Gioc to Phu Quoc) */}
+        {currentPage === 'home' && (
+          <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 w-full">
+            <div className="bg-gradient-to-br from-slate-900 via-teal-950 to-slate-900 rounded-3xl p-6 sm:p-8 text-white border border-teal-500/30 shadow-xl relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl pointer-events-none" />
+              <div className="relative z-10 space-y-6">
+                
+                {/* Header */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div>
+                    <span className="px-3 py-1 bg-emerald-500/20 text-emerald-300 font-extrabold text-xs rounded-full inline-block border border-emerald-500/30">
+                      🗺️ Vietnam All Destinations Guide
+                    </span>
+                    <h3 className="text-xl sm:text-2xl md:text-3xl font-black text-white mt-1.5 tracking-tight">
+                      베트남 전역 대표 관광지 도감 (판시판·하장·반족폭포 ~ 푸꾸옥)
+                    </h3>
+                    <p className="text-xs sm:text-sm text-teal-200/90 font-medium mt-1">
+                      베트남 전문 여행가가 엄선한 북부 대자연부터 남부 청정 휴양섬까지 베트남 10대 핵심 명소
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => handleNavigate('travel_info')}
+                      className="text-xs font-black bg-white/10 hover:bg-white/20 text-white px-3.5 py-2 rounded-xl border border-white/20 backdrop-blur-md transition-all cursor-pointer flex items-center gap-1.5"
+                    >
+                      <BookOpen className="w-3.5 h-3.5 text-amber-300" />
+                      <span>여행 가이드 백과</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* 14 Representative Destination Cards Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7 gap-3 sm:gap-3.5">
+                  {[
+                    {
+                      name: '사파 (Sapa)',
+                      spot: '판시판 3,143m',
+                      zone: '북부',
+                      zoneBg: 'bg-sky-500/30 text-sky-200 border-sky-400/40',
+                      desc: '인도차이나의 지붕 & 깟깟마을 다랑이논',
+                      tag: '🏔️ 구름바다',
+                      filterRegion: '북부' as Region,
+                      filterCategory: '자유여행' as Category
+                    },
+                    {
+                      name: '하장 (Ha Giang)',
+                      spot: '마피렝 협곡',
+                      zone: '북부',
+                      zoneBg: 'bg-sky-500/30 text-sky-200 border-sky-400/40',
+                      desc: '베트남 4대 고개 & 옥빛 뇨꿰강 보트투어',
+                      tag: '🏞️ 대협곡',
+                      filterRegion: '북부' as Region,
+                      filterCategory: '자유여행' as Category
+                    },
+                    {
+                      name: '까오방 (Cao Bang)',
+                      spot: '반족 폭포',
+                      zone: '북부',
+                      zoneBg: 'bg-sky-500/30 text-sky-200 border-sky-400/40',
+                      desc: '아시아 최대 3단 웅장한 국경 폭포 뗏목',
+                      tag: '🌊 국경폭포',
+                      filterRegion: '북부' as Region,
+                      filterCategory: '자유여행' as Category
+                    },
+                    {
+                      name: '닌빈 (Ninh Binh)',
+                      spot: '짱안 & 땀꼭',
+                      zone: '북부',
+                      zoneBg: 'bg-sky-500/30 text-sky-200 border-sky-400/40',
+                      desc: '육지의 하롱베이 유네스코 나룻배 비경',
+                      tag: '🚣 동굴유람',
+                      filterRegion: '북부' as Region,
+                      filterCategory: '자유여행' as Category
+                    },
+                    {
+                      name: '하롱베이 (Ha Long)',
+                      spot: '5성 럭셔리 크루즈',
+                      zone: '북부',
+                      zoneBg: 'bg-sky-500/30 text-sky-200 border-sky-400/40',
+                      desc: '3천여 개 기암괴석 품은 세계자연유산',
+                      tag: '🚢 5성크루즈',
+                      filterRegion: '북부' as Region,
+                      filterCategory: '자유여행' as Category
+                    },
+                    {
+                      name: '다낭 (Da Nang)',
+                      spot: '바나힐 & 골든브릿지',
+                      zone: '중부',
+                      zoneBg: 'bg-emerald-500/30 text-emerald-200 border-emerald-400/40',
+                      desc: '해발 1,487m 천공의 손 & 미케비치 휴양',
+                      tag: '✨ 자유1위',
+                      filterRegion: '중부' as Region,
+                      filterCategory: '자유여행' as Category
+                    },
+                    {
+                      name: '호이안 (Hoi An)',
+                      spot: '유네스코 올드타운',
+                      zone: '중부',
+                      zoneBg: 'bg-emerald-500/30 text-emerald-200 border-emerald-400/40',
+                      desc: '오색 홍등 야경 & 투본강 소원배 힐링',
+                      tag: '🏮 천년고도',
+                      filterRegion: '중부' as Region,
+                      filterCategory: '자유여행' as Category
+                    },
+                    {
+                      name: '달랏 (Da Lat)',
+                      spot: '봄의 고원 & 호수',
+                      zone: '남중부',
+                      zoneBg: 'bg-teal-500/30 text-teal-200 border-teal-400/40',
+                      desc: '쓰엉흐엉 호수 & 다딴라 알파인코스터',
+                      tag: '🌸 봄의도시',
+                      filterRegion: '남중부' as Region,
+                      filterCategory: '자유여행' as Category
+                    },
+                    {
+                      name: '나트랑 (Nha Trang)',
+                      spot: '에메랄드 비치 & 스파',
+                      zone: '남중부',
+                      zoneBg: 'bg-teal-500/30 text-teal-200 border-teal-400/40',
+                      desc: '300일 햇살의 나폴리 & 머드온천 힐링',
+                      tag: '🏖️ 청정호핑',
+                      filterRegion: '남중부' as Region,
+                      filterCategory: '자유여행' as Category
+                    },
+                    {
+                      name: '무이네 (Mui Ne)',
+                      spot: '화이트 샌드듄 사막',
+                      zone: '남부',
+                      zoneBg: 'bg-amber-500/30 text-amber-200 border-amber-400/40',
+                      desc: '황금빛 사막 일출 지프 사파리 & 요정샘',
+                      tag: '🏜️ 사막지프',
+                      filterRegion: '남부' as Region,
+                      filterCategory: '자유여행' as Category
+                    },
+                    {
+                      name: '푸꾸옥 (Phu Quoc)',
+                      spot: '해상케이블카 & 선셋',
+                      zone: '남부',
+                      zoneBg: 'bg-amber-500/30 text-amber-200 border-amber-400/40',
+                      desc: '세계 최장 7,899m 케이블카 & 사오비치',
+                      tag: '🌅 선셋휴양',
+                      filterRegion: '남부' as Region,
+                      filterCategory: '자유여행' as Category
+                    },
+                    {
+                      name: '명문 골프 (Golf)',
+                      spot: '챔피언십 90홀 라운딩',
+                      zone: '골프',
+                      zoneBg: 'bg-amber-500/30 text-amber-200 border-amber-400/40',
+                      desc: '바나힐CC · 호이아나 · BRG 명문 코스',
+                      tag: '⛳ 1인1캐디',
+                      filterRegion: '전체' as Region,
+                      filterCategory: '골프투어' as Category
+                    },
+                    {
+                      name: '해변 풀빌라 (Beach)',
+                      spot: '오션프론트 독채 수영장',
+                      zone: '풀빌라',
+                      zoneBg: 'bg-teal-500/30 text-teal-200 border-teal-400/40',
+                      desc: '미케비치 바로 앞 인피니티 프라이빗 풀',
+                      tag: '🌊 오션뷰',
+                      filterRegion: '중부' as Region,
+                      filterCategory: '풀빌라' as Category
+                    },
+                    {
+                      name: '도심 풀빌라 (City)',
+                      spot: '시크릿 가든 독채 힐링',
+                      zone: '풀빌라',
+                      zoneBg: 'bg-emerald-500/30 text-emerald-200 border-emerald-400/40',
+                      desc: '시내 중심가 위치 & 야간 조명 수영장',
+                      tag: '🏰 프라이빗',
+                      filterRegion: '중부' as Region,
+                      filterCategory: '풀빌라' as Category
+                    },
+                  ].map((dest, i) => (
+                    <button
+                      key={i}
+                      onClick={() => {
+                        setActiveRegion(dest.filterRegion);
+                        setActiveCategory(dest.filterCategory);
+                        const el = document.getElementById('products-section');
+                        el?.scrollIntoView({ behavior: 'smooth' });
+                      }}
+                      className="bg-white/10 hover:bg-white/20 border border-white/15 hover:border-teal-400/60 p-3 rounded-2xl text-left transition-all group cursor-pointer backdrop-blur-xs flex flex-col justify-between"
+                    >
+                      <div>
+                        <div className="flex items-center justify-between gap-1 mb-1.5">
+                          <span className={`px-2 py-0.5 rounded-full text-[9px] font-black border ${dest.zoneBg}`}>
+                            {dest.zone}
+                          </span>
+                          <span className="text-[10px] text-amber-300 font-extrabold">{dest.tag}</span>
+                        </div>
+                        <h4 className="font-black text-white text-xs group-hover:text-teal-300 transition-colors leading-tight">
+                          {dest.name}
+                        </h4>
+                        <p className="text-[11px] font-bold text-amber-200 mt-0.5 leading-tight">
+                          {dest.spot}
+                        </p>
+                        <p className="text-[10px] text-slate-300 mt-1 line-clamp-2 leading-snug">
+                          {dest.desc}
+                        </p>
+                      </div>
+                      <div className="mt-2.5 pt-1.5 border-t border-white/10 flex items-center justify-between text-[10px] text-teal-300 font-black group-hover:translate-x-0.5 transition-transform">
+                        <span>상품 보기</span>
+                        <ArrowRight className="w-2.5 h-2.5" />
+                      </div>
+                    </button>
+                  ))}
+                </div>
+
+              </div>
+            </div>
+          </section>
+        )}
+
         {/* Products Grid */}
         <main id="products-section" className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full space-y-12">
           {/* Header / Section Title */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-teal-100 pb-4">
             <div>
               <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-                <Palmtree className="w-6 h-6 text-emerald-700" />
+                <Palmtree className="w-6 h-6 text-teal-600" />
                 <span>
                   {activeCategory === '전체' ? '베트남 종합 추천 상품' : activeCategory}
                   {activeRegion !== '전체' && ` (${activeRegion} 권역)`}
                   {activeCity !== '전체' && ` - ${activeCity}`}
                 </span>
               </h2>
-              <p className="text-xs font-medium text-slate-500 mt-0.5">
+              <p className="text-xs font-bold text-teal-800 mt-0.5">
                 엄선된 베트남 단독 전용 차량 및 100% 한국인 전문 가이드 결합 상품
               </p>
             </div>
@@ -509,7 +828,7 @@ export default function App() {
                   setActiveCity('전체');
                   setSearchTerm('');
                 }}
-                className="text-xs font-bold text-emerald-700 hover:text-emerald-900 bg-emerald-50 px-3 py-1.5 rounded-xl self-start sm:self-auto transition-colors cursor-pointer"
+                className="text-xs font-black text-teal-800 hover:text-teal-950 bg-teal-50 hover:bg-teal-100 border border-teal-200 px-3.5 py-1.5 rounded-xl self-start sm:self-auto transition-all cursor-pointer shadow-2xs"
               >
                 🔄 전체 목록 보기
               </button>
@@ -568,26 +887,26 @@ export default function App() {
           )}
 
           {/* Vietnam Essential Travel Guides Section */}
-          <section className="bg-slate-50 rounded-3xl p-6 sm:p-8 border border-slate-200/80 space-y-6">
+          <section className="bg-gradient-to-br from-teal-50/70 via-sky-50/50 to-emerald-50/70 rounded-3xl p-6 sm:p-8 border border-teal-100/90 shadow-sm space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div>
-                <span className="text-emerald-700 font-extrabold text-xs uppercase tracking-wider">Travel Guide</span>
+                <span className="text-teal-700 font-extrabold text-xs uppercase tracking-wider">Vietnam Travel Guide</span>
                 <h3 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-                  <span>베트남 여행 필수 정보 백과사전</span>
+                  <span>📖 베트남 여행 필수 정보 백과사전</span>
                 </h3>
               </div>
               <button
                 onClick={() => handleNavigate('travel_info')}
-                className="text-xs font-bold text-emerald-700 hover:text-emerald-800 flex items-center gap-1 self-start sm:self-auto cursor-pointer"
+                className="text-xs font-black text-teal-700 hover:text-teal-900 flex items-center gap-1 self-start sm:self-auto cursor-pointer bg-white px-3 py-1.5 rounded-xl border border-teal-200 shadow-2xs hover:shadow-xs transition-all"
               >
                 <span>전체 가이드 보기</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </button>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
               {[
-                { tab: 'course' as TravelInfoTab, label: '지역별 코스', icon: <Compass className="w-5 h-5 text-emerald-600" />, desc: '다낭/하노이/나트랑 추천 동선' },
+                { tab: 'course' as TravelInfoTab, label: '지역별 코스', icon: <Compass className="w-5 h-5 text-teal-600" />, desc: '다낭/하노이/나트랑 추천 동선' },
                 { tab: 'weather' as TravelInfoTab, label: '베트남 날씨', icon: <Sun className="w-5 h-5 text-amber-500" />, desc: '도시별 건·우기 & 옷차림' },
                 { tab: 'exchange' as TravelInfoTab, label: '실시간 환율', icon: <DollarSign className="w-5 h-5 text-emerald-600" />, desc: '동(VND) 계산법 & 환전 팁' },
                 { tab: 'visa' as TravelInfoTab, label: '비자 & 입국', icon: <FileText className="w-5 h-5 text-sky-600" />, desc: '45일 무비자 & 여권 유효기간' },
@@ -600,12 +919,12 @@ export default function App() {
                     setTravelInfoTab(item.tab);
                     handleNavigate('travel_info');
                   }}
-                  className="bg-white p-4 rounded-2xl border border-slate-200 hover:border-emerald-500 hover:shadow-md transition-all text-left group cursor-pointer"
+                  className="bg-white p-4 rounded-2xl border border-teal-100 hover:border-teal-400 hover:shadow-lg hover:shadow-teal-500/10 transition-all text-left group cursor-pointer"
                 >
-                  <div className="mb-2 p-2 rounded-xl bg-slate-50 w-fit group-hover:scale-110 transition-transform">
+                  <div className="mb-2 p-2.5 rounded-xl bg-teal-50 w-fit group-hover:scale-110 group-hover:bg-teal-100 transition-transform">
                     {item.icon}
                   </div>
-                  <h4 className="font-extrabold text-slate-900 text-sm">{item.label}</h4>
+                  <h4 className="font-extrabold text-slate-900 text-sm group-hover:text-teal-700 transition-colors">{item.label}</h4>
                   <p className="text-[11px] text-slate-500 mt-1 line-clamp-2">{item.desc}</p>
                 </button>
               ))}
@@ -613,50 +932,51 @@ export default function App() {
           </section>
 
           {/* Trust & Unique Benefits Section */}
-          <section className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white rounded-3xl p-8 sm:p-10 relative overflow-hidden shadow-xl">
-            <div className="absolute top-0 right-0 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+          <section className="bg-gradient-to-br from-teal-950 via-slate-900 to-emerald-950 text-white rounded-3xl p-8 sm:p-10 relative overflow-hidden shadow-xl border border-teal-500/30">
+            <div className="absolute top-0 right-0 w-80 h-80 bg-teal-400/15 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute bottom-0 left-1/3 w-60 h-60 bg-emerald-400/10 rounded-full blur-3xl pointer-events-none" />
             <div className="relative z-10 space-y-6">
               <div className="max-w-xl space-y-2">
-                <span className="px-3 py-1 bg-emerald-500/20 text-emerald-300 font-bold text-xs rounded-full inline-block border border-emerald-500/30">
-                  Why XinChaoTour?
+                <span className="px-3.5 py-1 bg-emerald-500/25 text-emerald-300 font-black text-xs rounded-full inline-block border border-emerald-400/40">
+                  ✨ Why XinChaoTour?
                 </span>
-                <h3 className="text-xl sm:text-2xl font-black tracking-tight">
+                <h3 className="text-xl sm:text-2xl md:text-3xl font-black tracking-tight text-white">
                   왜 한국 여행객들은 신짜오투어를 선택할까요?
                 </h3>
-                <p className="text-xs text-slate-300">
-                  거품 없는 현지 직영 시스템으로 가장 안전하고 완벽한 베트남 여행을 약속합니다.
+                <p className="text-xs sm:text-sm text-teal-100/90 leading-relaxed font-medium">
+                  거품 없는 100% 현지 직영 시스템으로 가장 안전하고 완벽한 베트남 여행을 약속합니다.
                 </p>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="bg-white/5 border border-white/10 p-4 rounded-2xl backdrop-blur-xs space-y-2">
-                  <ShieldCheck className="w-7 h-7 text-emerald-400" />
-                  <h4 className="font-black text-sm text-white">100% 단독 전용 차량</h4>
-                  <p className="text-xs text-slate-400 leading-relaxed">
+                <div className="bg-white/10 border border-white/15 p-4 sm:p-5 rounded-2xl backdrop-blur-md space-y-2 hover:bg-white/15 transition-all">
+                  <ShieldCheck className="w-8 h-8 text-emerald-300" />
+                  <h4 className="font-black text-sm sm:text-base text-white">100% 단독 전용 차량</h4>
+                  <p className="text-xs text-slate-200 leading-relaxed font-medium">
                     다른 팀과 합승하지 않는 우리 가족/일행 전용 리무진 밴으로 안락하게 이동합니다.
                   </p>
                 </div>
 
-                <div className="bg-white/5 border border-white/10 p-4 rounded-2xl backdrop-blur-xs space-y-2">
-                  <ThumbsUp className="w-7 h-7 text-amber-400" />
-                  <h4 className="font-black text-sm text-white">베테랑 한국어 가이드</h4>
-                  <p className="text-xs text-slate-400 leading-relaxed">
+                <div className="bg-white/10 border border-white/15 p-4 sm:p-5 rounded-2xl backdrop-blur-md space-y-2 hover:bg-white/15 transition-all">
+                  <ThumbsUp className="w-8 h-8 text-amber-300" />
+                  <h4 className="font-black text-sm sm:text-base text-white">베테랑 한국어 가이드</h4>
+                  <p className="text-xs text-slate-200 leading-relaxed font-medium">
                     불필요한 쇼핑/옵션 강요 없이 현지 역사와 문화를 친절하고 전문적으로 안내합니다.
                   </p>
                 </div>
 
-                <div className="bg-white/5 border border-white/10 p-4 rounded-2xl backdrop-blur-xs space-y-2">
-                  <Clock className="w-7 h-7 text-sky-400" />
-                  <h4 className="font-black text-sm text-white">24시간 현지 긴급 지원</h4>
-                  <p className="text-xs text-slate-400 leading-relaxed">
+                <div className="bg-white/10 border border-white/15 p-4 sm:p-5 rounded-2xl backdrop-blur-md space-y-2 hover:bg-white/15 transition-all">
+                  <Clock className="w-8 h-8 text-sky-300" />
+                  <h4 className="font-black text-sm sm:text-base text-white">24시간 현지 긴급 지원</h4>
+                  <p className="text-xs text-slate-200 leading-relaxed font-medium">
                     다낭/하노이 현지 지사에서 여행 중 발생하는 모든 상황에 실시간 한국어로 대응합니다.
                   </p>
                 </div>
 
-                <div className="bg-white/5 border border-white/10 p-4 rounded-2xl backdrop-blur-xs space-y-2">
-                  <Palmtree className="w-7 h-7 text-rose-400" />
-                  <h4 className="font-black text-sm text-white">엄선된 풀빌라 & 명문 골프</h4>
-                  <p className="text-xs text-slate-400 leading-relaxed">
+                <div className="bg-white/10 border border-white/15 p-4 sm:p-5 rounded-2xl backdrop-blur-md space-y-2 hover:bg-white/15 transition-all">
+                  <Palmtree className="w-8 h-8 text-rose-300" />
+                  <h4 className="font-black text-sm sm:text-base text-white">엄선된 풀빌라 & 명문 골프</h4>
+                  <p className="text-xs text-slate-200 leading-relaxed font-medium">
                     직접 답사하여 검증된 프라이빗 독채 풀빌라와 베트남 최고 명문 CC를 보증합니다.
                   </p>
                 </div>

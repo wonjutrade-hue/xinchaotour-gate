@@ -67,22 +67,22 @@ export const Navbar: React.FC<NavbarProps> = ({
   return (
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md shadow-xs border-b border-slate-100">
       {/* Top Banner Bar */}
-      <div className="bg-slate-950 text-slate-200 text-xs py-1.5 px-3 sm:px-4">
+      <div className="bg-gradient-to-r from-slate-950 via-teal-950 to-slate-950 text-slate-200 text-xs py-1.5 px-3 sm:px-4 border-b border-teal-900/30">
         <div className="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-x-4 gap-y-1">
           <div className="flex items-center gap-2.5 text-slate-300 text-[11px] sm:text-xs flex-wrap">
-            <span className="flex items-center gap-1.5 font-bold whitespace-nowrap text-emerald-400">
+            <span className="flex items-center gap-1.5 font-black whitespace-nowrap text-emerald-300">
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-              100% 현지 직영 | 한국인 전담 가이드 & 단독 VIP 차량
+              100% 현지 직영 · 한국인 전담 가이드 & 단독 VIP 차량
             </span>
-            <span className="hidden md:inline-block text-slate-700">|</span>
+            <span className="hidden md:inline-block text-teal-800">|</span>
             {/* Live Exchange Rate Indicator */}
             <button
               onClick={onOpenRateCalculator}
-              className="hidden sm:inline-flex items-center gap-1 text-slate-300 hover:text-emerald-400 transition cursor-pointer font-medium"
+              className="hidden sm:inline-flex items-center gap-1 text-slate-300 hover:text-emerald-300 transition cursor-pointer font-bold bg-white/5 px-2 py-0.5 rounded-md border border-white/10"
               title="실시간 베트남 동(VND) 환율 계산기 열기"
             >
-              <DollarSign className="w-3.5 h-3.5 text-emerald-400" />
-              <span>실시간 환율: 1,000원 ≒ <strong>{vndPerThousandKRW.toLocaleString()}동</strong></span>
+              <DollarSign className="w-3.5 h-3.5 text-amber-400" />
+              <span>실시간 환율: 1,000원 ≒ <strong className="text-amber-300">{vndPerThousandKRW.toLocaleString()}동</strong></span>
             </button>
           </div>
 
@@ -90,17 +90,17 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* Travel info guide trigger */}
             <button
               onClick={() => handleItemClick('travel_info')}
-              className="hidden sm:flex items-center gap-1 text-slate-300 hover:text-amber-300 transition cursor-pointer text-xs font-semibold"
+              className="hidden sm:flex items-center gap-1 text-slate-200 hover:text-amber-300 transition cursor-pointer text-xs font-bold"
             >
               <BookOpen className="w-3 h-3 text-amber-400" />
-              <span>여행정보 가이드</span>
+              <span>여행정보 꿀팁</span>
             </button>
 
             {/* AI Assistant trigger */}
             {onOpenAiAssistant && (
               <button
                 onClick={onOpenAiAssistant}
-                className="hidden md:flex items-center gap-1 text-emerald-400 hover:text-emerald-300 transition cursor-pointer text-xs font-bold"
+                className="hidden md:flex items-center gap-1 text-teal-300 hover:text-white transition cursor-pointer text-xs font-bold bg-teal-500/20 px-2 py-0.5 rounded-md border border-teal-400/30"
               >
                 <Bot className="w-3.5 h-3.5" />
                 <span>AI 상담</span>
@@ -110,7 +110,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* Phone button */}
             <a
               href={COMPANY_PHONE_TEL}
-              className="flex items-center gap-1 text-slate-200 hover:text-emerald-400 font-semibold transition"
+              className="flex items-center gap-1 text-slate-200 hover:text-emerald-300 font-bold transition"
             >
               <PhoneCall className="w-3 h-3 text-emerald-400" />
               <span>{COMPANY_PHONE}</span>
@@ -119,17 +119,17 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* Kakao quick chat */}
             <button
               onClick={(e) => handleOpenKakaoTalkDirect(e)}
-              className="inline-flex items-center gap-1 text-amber-300 hover:text-amber-200 font-bold transition cursor-pointer"
+              className="inline-flex items-center gap-1 text-amber-300 hover:text-amber-200 font-black transition cursor-pointer bg-amber-400/20 px-2 py-0.5 rounded-md border border-amber-400/30"
             >
               <MessageCircle className="w-3 h-3 fill-amber-400 text-amber-400" />
-              <span>카카오톡 상담</span>
+              <span>카톡 상담</span>
             </button>
 
             {/* Admin trigger button */}
             {onOpenAdmin && (
               <button
                 onClick={onOpenAdmin}
-                className="text-[11px] bg-slate-800 hover:bg-slate-700 text-amber-300 hover:text-amber-200 flex items-center gap-1 px-2 py-0.5 rounded-md border border-amber-400/40 transition cursor-pointer font-bold shrink-0"
+                className="text-[11px] bg-slate-900 hover:bg-slate-800 text-amber-300 hover:text-amber-200 flex items-center gap-1 px-2 py-0.5 rounded-md border border-amber-400/40 transition cursor-pointer font-bold shrink-0"
                 title="관리자 모드 (상품 등록·수정·관리)"
               >
                 <Lock className="w-3 h-3 text-amber-400" />
