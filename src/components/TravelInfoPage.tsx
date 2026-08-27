@@ -17,7 +17,7 @@ import {
   Sparkles
 } from 'lucide-react';
 import { ExchangeRates, calculateVNDFromKRW, formatVND } from '../lib/exchangeRate';
-import { handleOpenKakaoTalkDirect } from '../constants';
+import { DEFAULT_KAKAO_LINK, handleOpenKakaoTalkDirect } from '../constants';
 
 export type TravelInfoTab = 
   | 'course' 
@@ -543,12 +543,16 @@ export const TravelInfoPage: React.FC<TravelInfoPageProps> = ({
             </p>
           </div>
           <div className="flex items-center gap-3 shrink-0">
-            <button
+            <a
+              href={DEFAULT_KAKAO_LINK}
+              target="_blank"
+              rel="noopener noreferrer"
               onClick={(e) => handleOpenKakaoTalkDirect(e)}
-              className="bg-amber-400 hover:bg-amber-300 text-slate-950 font-black px-4 py-2.5 rounded-xl text-xs transition cursor-pointer shadow-md"
+              className="bg-amber-400 hover:bg-amber-300 text-slate-950 font-black px-4 py-2.5 rounded-xl text-xs transition cursor-pointer shadow-md inline-block text-center"
+              title="카카오톡 1:1 상담 바로가기"
             >
-              카카오톡 실시간 상담
-            </button>
+              카카오톡 1:1 실시간 상담
+            </a>
             {onOpenConsultation && (
               <button
                 onClick={onOpenConsultation}

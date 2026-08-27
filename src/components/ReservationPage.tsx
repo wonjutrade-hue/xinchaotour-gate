@@ -16,7 +16,7 @@ import {
   Compass
 } from 'lucide-react';
 import { COMPANY_INFO } from '../data/companyInfo';
-import { handleOpenKakaoTalkDirect } from '../constants';
+import { DEFAULT_KAKAO_LINK, handleOpenKakaoTalkDirect } from '../constants';
 import { Product } from '../types';
 import { trackVisitorEvent } from '../lib/analytics';
 
@@ -131,17 +131,21 @@ export const ReservationPage: React.FC<ReservationPageProps> = ({
           </a>
 
           {/* Kakao */}
-          <button
+          <a
+            href={DEFAULT_KAKAO_LINK}
+            target="_blank"
+            rel="noopener noreferrer"
             onClick={(e) => handleOpenKakaoTalkDirect(e)}
             className="bg-amber-400/10 border border-amber-300 p-5 rounded-2xl shadow-xs hover:bg-amber-400/20 hover:shadow-md transition flex flex-col items-center text-center group cursor-pointer"
+            title="카카오톡 1:1 상담 바로가기"
           >
             <div className="w-12 h-12 rounded-2xl bg-amber-400 text-slate-950 flex items-center justify-center mb-3 group-hover:scale-110 transition">
-              <MessageCircle className="w-6 h-6" />
+              <MessageCircle className="w-6 h-6 fill-slate-950" />
             </div>
             <h3 className="font-bold text-slate-900 text-sm mb-1">카카오톡 상담</h3>
-            <p className="text-amber-900 font-extrabold text-base mb-1">1:1 실시간 채팅</p>
+            <p className="text-amber-900 font-extrabold text-base mb-1">1:1 실시간 바로연결</p>
             <span className="text-[11px] text-amber-800">ID: {COMPANY_INFO.kakaoId}</span>
-          </button>
+          </a>
 
           {/* Email */}
           <a
@@ -175,12 +179,17 @@ export const ReservationPage: React.FC<ReservationPageProps> = ({
                 >
                   추가 문의 작성하기
                 </button>
-                <button
+                <a
+                  href={DEFAULT_KAKAO_LINK}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   onClick={(e) => handleOpenKakaoTalkDirect(e)}
-                  className="bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold px-5 py-2.5 rounded-xl text-sm transition"
+                  className="bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold px-5 py-2.5 rounded-xl text-sm transition inline-flex items-center gap-1.5"
+                  title="카카오톡 1:1 상담 바로가기"
                 >
+                  <MessageCircle className="w-4 h-4 fill-slate-950" />
                   카카오톡 즉시 연결
-                </button>
+                </a>
               </div>
             </div>
           ) : (

@@ -23,35 +23,28 @@ export const setKakaoDirectLink = (url: string) => {
   }
 };
 
-export const openKakaoModal = () => {
-  if (typeof window !== 'undefined') {
-    window.dispatchEvent(new CustomEvent('open-kakao-modal'));
-  }
-};
-
-export const handleOpenKakaoTalkDirect = (e?: React.MouseEvent) => {
-  if (e) {
-    if (e.preventDefault) e.preventDefault();
-    if (e.stopPropagation) e.stopPropagation();
-  }
+export const handleOpenKakaoTalkDirect = (e?: React.MouseEvent | React.TouchEvent | any) => {
   trackVisitorEvent('kakao_click', '카카오톡 실시간 1:1 상담');
   const targetUrl = getKakaoDirectLink() || DEFAULT_KAKAO_LINK;
   
   if (typeof window !== 'undefined') {
-    // Open KakaoTalk open chat link directly in new tab/window
     try {
-      const a = document.createElement('a');
-      a.href = targetUrl;
-      a.target = '_blank';
-      a.rel = 'noopener noreferrer';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
+      const opened = window.open(targetUrl, '_blank', 'noopener,noreferrer');
+      if (!opened || opened.closed || typeof opened.closed === 'undefined') {
+        const a = document.createElement('a');
+        a.href = targetUrl;
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      }
     } catch (err) {
-      window.open(targetUrl, '_blank', 'noopener,noreferrer');
+      window.location.href = targetUrl;
     }
   }
 };
+
 
 
 

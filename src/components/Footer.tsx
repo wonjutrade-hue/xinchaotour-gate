@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { PhoneCall, MessageCircle, Palmtree, Users, TrendingUp, BarChart2 } from 'lucide-react';
-import { COMPANY_PHONE, COMPANY_PHONE_TEL, handleOpenKakaoTalkDirect } from '../constants';
+import { COMPANY_PHONE, COMPANY_PHONE_TEL, DEFAULT_KAKAO_LINK, handleOpenKakaoTalkDirect } from '../constants';
 import { COMPANY_INFO } from '../data/companyInfo';
 import { NavPage } from './Navbar';
 import { fetchAnalyticsSummary } from '../lib/analytics';
@@ -171,13 +171,17 @@ export const Footer: React.FC<FooterProps> = ({
                 {COMPANY_PHONE}
               </a>
 
-              <button
+              <a
+                href={DEFAULT_KAKAO_LINK}
+                target="_blank"
+                rel="noopener noreferrer"
                 onClick={(e) => handleOpenKakaoTalkDirect(e)}
-                className="w-full bg-amber-400 hover:bg-amber-300 text-slate-950 font-extrabold py-2 px-3 rounded-xl transition flex items-center justify-center gap-1.5 text-xs cursor-pointer shadow-xs"
+                className="w-full bg-amber-400 hover:bg-amber-300 text-slate-950 font-black py-2 px-3 rounded-xl transition flex items-center justify-center gap-1.5 text-xs cursor-pointer shadow-xs"
+                title="카카오톡 1:1 상담 바로가기"
               >
-                <MessageCircle className="w-3.5 h-3.5" />
-                카카오톡 실시간 상담
-              </button>
+                <MessageCircle className="w-3.5 h-3.5 fill-slate-950" />
+                카카오톡 1:1 상담 바로연결
+              </a>
 
               <p className="text-[11px] text-slate-400 pt-1">
                 {COMPANY_INFO.workingHours}

@@ -14,7 +14,7 @@ import {
   BookOpen, 
   Bot 
 } from 'lucide-react';
-import { COMPANY_PHONE, COMPANY_PHONE_TEL, handleOpenKakaoTalkDirect } from '../constants';
+import { COMPANY_PHONE, COMPANY_PHONE_TEL, DEFAULT_KAKAO_LINK, handleOpenKakaoTalkDirect } from '../constants';
 import { COMPANY_INFO } from '../data/companyInfo';
 import { ExchangeRates } from '../lib/exchangeRate';
 
@@ -117,13 +117,17 @@ export const Navbar: React.FC<NavbarProps> = ({
             </a>
 
             {/* Kakao quick chat */}
-            <button
+            <a
+              href={DEFAULT_KAKAO_LINK}
+              target="_blank"
+              rel="noopener noreferrer"
               onClick={(e) => handleOpenKakaoTalkDirect(e)}
               className="inline-flex items-center gap-1 text-amber-300 hover:text-amber-200 font-black transition cursor-pointer bg-amber-400/20 px-2 py-0.5 rounded-md border border-amber-400/30"
+              title="카카오톡 1:1 오픈채팅으로 바로 연결"
             >
               <MessageCircle className="w-3 h-3 fill-amber-400 text-amber-400" />
               <span>카톡 상담</span>
-            </button>
+            </a>
 
             {/* Admin trigger button */}
             {onOpenAdmin && (
@@ -305,16 +309,19 @@ export const Navbar: React.FC<NavbarProps> = ({
               <PhoneCall className="w-3.5 h-3.5 text-emerald-600" />
               <span>전화 상담</span>
             </a>
-            <button
+            <a
+              href={DEFAULT_KAKAO_LINK}
+              target="_blank"
+              rel="noopener noreferrer"
               onClick={(e) => {
                 setMobileMenuOpen(false);
                 handleOpenKakaoTalkDirect(e);
               }}
-              className="p-2.5 rounded-xl bg-amber-400 text-slate-950 text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
+              className="p-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-black flex items-center justify-center gap-1.5 cursor-pointer shadow-xs transition-colors"
             >
-              <MessageCircle className="w-3.5 h-3.5" />
-              <span>카카오톡 상담</span>
-            </button>
+              <MessageCircle className="w-3.5 h-3.5 fill-slate-950" />
+              <span>카카오톡 1:1 상담</span>
+            </a>
           </div>
 
           {/* Mobile Admin Mode Entry Button */}

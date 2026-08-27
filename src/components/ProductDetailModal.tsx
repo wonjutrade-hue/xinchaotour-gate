@@ -31,7 +31,7 @@ import {
 } from 'lucide-react';
 import { ExchangeRates, calculateVNDFromKRW, calculateKRWFromVND, calculateUSDFromKRW, formatVND, formatUSD } from '../lib/exchangeRate';
 import { COMPANY_INFO } from '../data/companyInfo';
-import { handleOpenKakaoTalkDirect } from '../constants';
+import { DEFAULT_KAKAO_LINK, handleOpenKakaoTalkDirect } from '../constants';
 import { getProductFallbackImage } from '../lib/imageFallback';
 
 interface ProductDetailModalProps {
@@ -172,13 +172,17 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               <span>{copyFeedback ? '링크 복사됨!' : '공유'}</span>
             </button>
 
-            <button
+            <a
+              href={DEFAULT_KAKAO_LINK}
+              target="_blank"
+              rel="noopener noreferrer"
               onClick={handleOpenKakaoTalkDirect}
               className="hidden sm:flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-black transition-all cursor-pointer shadow-md"
+              title="카카오톡 1:1 상담 바로가기"
             >
               <MessageCircle className="w-3.5 h-3.5 fill-slate-950" />
               <span>카톡 상담</span>
-            </button>
+            </a>
 
             <button
               onClick={() => onOpenConsultation(product)}
@@ -989,14 +993,17 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
 
               {/* Action Buttons */}
               <div className="space-y-2.5 pt-2">
-                <button
+                <a
+                  href={DEFAULT_KAKAO_LINK}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   onClick={handleOpenKakaoTalkDirect}
                   className="w-full py-3.5 px-4 rounded-2xl bg-amber-400 hover:bg-amber-300 active:scale-98 text-slate-950 font-black text-sm shadow-lg shadow-amber-400/20 transition-all flex items-center justify-center gap-2 cursor-pointer"
                   title="클릭 시 바로 카카오톡 실시간 상담 연결"
                 >
                   <MessageCircle className="w-5 h-5 fill-slate-950" />
                   <span>카카오톡 1:1 바로 상담</span>
-                </button>
+                </a>
 
                 <button
                   onClick={() => onOpenConsultation(product)}
@@ -1043,13 +1050,17 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
         </div>
 
         <div className="flex items-center gap-2">
-          <button
+          <a
+            href={DEFAULT_KAKAO_LINK}
+            target="_blank"
+            rel="noopener noreferrer"
             onClick={handleOpenKakaoTalkDirect}
-            className="px-3.5 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs shadow-md flex items-center gap-1.5 active:scale-95"
+            className="px-3.5 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs shadow-md flex items-center gap-1.5 active:scale-95 cursor-pointer"
+            title="카카오톡 1:1 바로 상담"
           >
             <MessageCircle className="w-4 h-4 fill-slate-950" />
             <span>카톡상담</span>
-          </button>
+          </a>
 
           <button
             onClick={() => onOpenConsultation(product)}

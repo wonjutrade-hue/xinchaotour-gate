@@ -17,7 +17,7 @@ import {
   CalendarCheck
 } from 'lucide-react';
 import { COMPANY_INFO } from '../data/companyInfo';
-import { handleOpenKakaoTalkDirect } from '../constants';
+import { DEFAULT_KAKAO_LINK, handleOpenKakaoTalkDirect } from '../constants';
 
 interface CompanyPageProps {
   onOpenConsultation?: () => void;
@@ -53,13 +53,17 @@ export const CompanyPage: React.FC<CompanyPageProps> = ({ onOpenConsultation }) 
                 <CalendarCheck className="w-4 h-4" />
                 1:1 맞춤 여행 상담 신청
               </button>
-              <button
+              <a
+                href={DEFAULT_KAKAO_LINK}
+                target="_blank"
+                rel="noopener noreferrer"
                 onClick={(e) => handleOpenKakaoTalkDirect(e)}
                 className="bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold px-6 py-3.5 rounded-xl shadow-lg transition text-sm cursor-pointer inline-flex items-center gap-2"
+                title="카카오톡 1:1 상담 바로가기"
               >
-                <MessageCircle className="w-4 h-4" />
-                카카오톡 실시간 상담
-              </button>
+                <MessageCircle className="w-4 h-4 fill-slate-950" />
+                카카오톡 1:1 상담 바로연결
+              </a>
             </div>
           </div>
         </div>

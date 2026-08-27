@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { X, Sparkles, Send, Bot, User, MessageCircle } from 'lucide-react';
-import { handleOpenKakaoTalkDirect } from '../constants';
+import { DEFAULT_KAKAO_LINK, handleOpenKakaoTalkDirect } from '../constants';
 
 interface AiTravelAssistantModalProps {
   isOpen: boolean;
@@ -166,14 +166,17 @@ export const AiTravelAssistantModal: React.FC<AiTravelAssistantModalProps> = ({
           >
             <Send className="w-4 h-4" />
           </button>
-          <button
+          <a
+            href={DEFAULT_KAKAO_LINK}
+            target="_blank"
+            rel="noopener noreferrer"
             onClick={handleOpenKakaoTalkDirect}
-            className="bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-black px-3 py-2.5 rounded-xl flex items-center gap-1 shrink-0"
+            className="bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-black px-3 py-2.5 rounded-xl flex items-center gap-1 shrink-0 cursor-pointer"
             title="2단계 없이 카카오톡 개인/직영 1:1 바로 연결"
           >
             <MessageCircle className="w-3.5 h-3.5 fill-slate-950" />
             <span className="hidden sm:inline">카톡 바로연결</span>
-          </button>
+          </a>
           <button
             onClick={() => {
               onClose();

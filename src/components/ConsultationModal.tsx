@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Product } from '../types';
 import { X, Send, PhoneCall, MessageCircle, CheckCircle2, ShieldCheck, Calendar, Users } from 'lucide-react';
-import { handleOpenKakaoTalkDirect, COMPANY_PHONE } from '../constants';
+import { handleOpenKakaoTalkDirect, COMPANY_PHONE, DEFAULT_KAKAO_LINK } from '../constants';
 import { trackVisitorEvent } from '../lib/analytics';
 
 interface ConsultationModalProps {
@@ -111,14 +111,17 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
                   <ShieldCheck className="w-4 h-4 text-amber-600" />
                   2단계 없는 카카오톡 즉시 1:1 연결
                 </p>
-                <button
-                  type="button"
+                <a
+                  href={DEFAULT_KAKAO_LINK}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   onClick={handleOpenKakaoTalkDirect}
-                  className="px-2.5 py-1 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-[11px] shadow-xs flex items-center gap-1"
+                  className="px-2.5 py-1 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-[11px] shadow-xs flex items-center gap-1 cursor-pointer"
+                  title="카카오톡 1:1 상담 바로가기"
                 >
                   <MessageCircle className="w-3.5 h-3.5 fill-slate-950" />
-                  <span>바로 연결</span>
-                </button>
+                  <span>카톡 바로 연결</span>
+                </a>
               </div>
               <p className="text-[11px] text-amber-900 leading-relaxed">
                 전화 연결이 어려우신 경우 카카오톡 1:1 상담을 이용하시면 24시간 언제나 담당자와 실시간 소통이 가능합니다. (고객센터: {COMPANY_PHONE})

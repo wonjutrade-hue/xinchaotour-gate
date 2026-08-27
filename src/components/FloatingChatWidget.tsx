@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
-import { MessageCircle, PhoneCall, ChevronUp, X, Send, CalendarCheck } from 'lucide-react';
-import { COMPANY_PHONE, COMPANY_PHONE_TEL, handleOpenKakaoTalkDirect } from '../constants';
-import { COMPANY_INFO } from '../data/companyInfo';
+import React from 'react';
+import { MessageCircle, PhoneCall, CalendarCheck } from 'lucide-react';
+import { COMPANY_PHONE, COMPANY_PHONE_TEL, DEFAULT_KAKAO_LINK, handleOpenKakaoTalkDirect } from '../constants';
 
 interface FloatingChatWidgetProps {
   onOpenConsultation: () => void;
@@ -10,92 +9,50 @@ interface FloatingChatWidgetProps {
 export const FloatingChatWidget: React.FC<FloatingChatWidgetProps> = ({
   onOpenConsultation,
 }) => {
-  const [expanded, setExpanded] = useState(false);
-
   return (
-    <div className="fixed bottom-6 right-5 z-40 flex flex-col items-end gap-2">
-      {/* Expanded Quick Options Menu */}
-      {expanded && (
-        <div className="bg-white rounded-3xl p-3 shadow-2xl border border-slate-200 flex flex-col gap-2 min-w-[240px] animate-fadeIn">
-          <div className="text-[11px] font-extrabold text-slate-400 px-2 pt-1 uppercase tracking-wider flex items-center justify-between">
-            <span>XinChaoTour 빠른 연결</span>
-            <button onClick={() => setExpanded(false)} className="text-slate-400 hover:text-slate-600 cursor-pointer">
-              <X className="w-4 h-4" />
-            </button>
-          </div>
-
-          {/* KakaoTalk Direct Link Button */}
-          <button
-            onClick={() => {
-              setExpanded(false);
-              handleOpenKakaoTalkDirect();
-            }}
-            className="flex items-center gap-2.5 p-2.5 rounded-2xl bg-amber-400/15 hover:bg-amber-400/25 text-amber-950 text-xs font-bold transition-colors text-left border border-amber-300/80 cursor-pointer"
-          >
-            <div className="w-8 h-8 rounded-xl bg-amber-400 text-slate-950 flex items-center justify-center shrink-0 shadow-xs">
-              <MessageCircle className="w-4 h-4 fill-slate-950" />
-            </div>
-            <div>
-              <p className="font-extrabold text-slate-950">카카오톡 1:1 상담</p>
-              <p className="text-[10px] text-amber-800">한국어 전담 실시간 연결</p>
-            </div>
-          </button>
-
-          {/* 1:1 Consultation Form Button */}
-          <button
-            onClick={() => {
-              setExpanded(false);
-              onOpenConsultation();
-            }}
-            className="flex items-center gap-2.5 p-2.5 rounded-2xl bg-slate-50 hover:bg-slate-100 text-slate-950 text-xs font-bold transition-colors text-left border border-slate-200 cursor-pointer"
-          >
-            <div className="w-8 h-8 rounded-xl bg-slate-800 text-white flex items-center justify-center shrink-0">
-              <CalendarCheck className="w-4 h-4" />
-            </div>
-            <div>
-              <p className="font-extrabold text-slate-900">맞춤 견적 및 예약문의</p>
-              <p className="text-[10px] text-slate-500">무료 견적서 작성 신청</p>
-            </div>
-          </button>
-
-          {/* Phone Call */}
-          <a
-            href={COMPANY_PHONE_TEL}
-            className="flex items-center gap-2.5 p-2.5 rounded-2xl bg-slate-50 hover:bg-slate-100 text-slate-800 text-xs font-bold transition-colors"
-          >
-            <div className="w-8 h-8 rounded-xl bg-slate-900 text-white flex items-center justify-center shrink-0">
-              <PhoneCall className="w-4 h-4 text-emerald-400" />
-            </div>
-            <div>
-              <p className="font-extrabold text-slate-900">전화 빠른 상담</p>
-              <p className="text-[10px] text-slate-500">{COMPANY_PHONE}</p>
-            </div>
-          </a>
+    <div className="fixed bottom-6 right-5 z-40 flex flex-col items-end gap-2.5">
+      {/* 1. Direct KakaoTalk 1:1 Open Chat Button */}
+      <a
+        href={DEFAULT_KAKAO_LINK}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={(e) => {
+          handleOpenKakaoTalkDirect(e);
+        }}
+        className="group flex items-center gap-2.5 px-4 py-3 bg-[#FEE500] hover:bg-[#FDD800] text-[#191919] font-black text-xs sm:text-sm rounded-full shadow-2xl border-2 border-amber-300 transition-all transform hover:scale-105 active:scale-95 cursor-pointer"
+        title="카카오톡 1:1 오픈채팅으로 바로 연결됩니다."
+      >
+        <div className="relative flex items-center justify-center">
+          <MessageCircle className="w-5 h-5 fill-[#191919] text-[#191919]" />
+          <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-rose-500 animate-ping" />
         </div>
-      )}
+        <div className="flex flex-col text-left">
+          <span className="font-black text-[#191919] tracking-tight leading-tight">카카오톡 1:1 상담</span>
+          <span className="text-[10px] text-amber-900/80 font-bold leading-none hidden sm:block">신차오투어 직영 실시간 응대</span>
+        </div>
+      </a>
 
-      {/* Main Trigger Button - Direct KakaoTalk Action Button + Expand Toggle */}
-      <div className="flex items-center gap-1.5 bg-gradient-to-r from-amber-400 via-amber-300 to-amber-400 p-1 rounded-full shadow-2xl border-2 border-amber-200">
+      {/* 2. Secondary Mini Quick Action Bar */}
+      <div className="flex items-center gap-2 bg-slate-950/80 backdrop-blur-md p-1.5 rounded-full border border-slate-700/80 shadow-lg">
         <button
-          onClick={handleOpenKakaoTalkDirect}
-          className="px-4 py-3 rounded-full bg-slate-950 text-white font-extrabold text-xs hover:bg-slate-900 transition-all flex items-center gap-2 cursor-pointer"
-          title="클릭 시 카카오톡 1:1 실시간 상담으로 바로 연결됩니다."
+          onClick={onOpenConsultation}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-teal-600/90 hover:bg-teal-500 text-white text-[11px] font-bold transition-all cursor-pointer"
+          title="맞춤 견적서 신청"
         >
-          <div className="relative">
-            <MessageCircle className="w-5 h-5 text-amber-300 fill-amber-300" />
-            <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-rose-500 animate-ping" />
-          </div>
-          <span className="text-amber-300 font-extrabold">카카오톡 상담</span>
+          <CalendarCheck className="w-3.5 h-3.5" />
+          <span>견적문의</span>
         </button>
 
-        <button
-          onClick={() => setExpanded(!expanded)}
-          className="w-10 h-10 rounded-full bg-amber-500 text-slate-950 hover:bg-amber-600 flex items-center justify-center transition-all cursor-pointer"
-          title="상담 옵션 더보기"
+        <a
+          href={COMPANY_PHONE_TEL}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white text-[11px] font-bold transition-all"
+          title={`전화 상담: ${COMPANY_PHONE}`}
         >
-          {expanded ? <X className="w-5 h-5" /> : <ChevronUp className="w-5 h-5 font-black" />}
-        </button>
+          <PhoneCall className="w-3.5 h-3.5 text-emerald-400" />
+          <span>{COMPANY_PHONE}</span>
+        </a>
       </div>
     </div>
   );
 };
+

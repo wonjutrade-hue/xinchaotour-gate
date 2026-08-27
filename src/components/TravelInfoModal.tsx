@@ -23,7 +23,7 @@ import {
   MessageCircle
 } from 'lucide-react';
 import { ExchangeRates, calculateVNDFromKRW, formatVND } from '../lib/exchangeRate';
-import { handleOpenKakaoTalkDirect } from '../constants';
+import { DEFAULT_KAKAO_LINK, handleOpenKakaoTalkDirect } from '../constants';
 
 export type TravelInfoTab = 
   | 'course' 
@@ -559,13 +559,17 @@ export const TravelInfoModal: React.FC<TravelInfoModalProps> = ({
           </div>
 
           <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
-            <button
+            <a
+              href={DEFAULT_KAKAO_LINK}
+              target="_blank"
+              rel="noopener noreferrer"
               onClick={handleOpenKakaoTalkDirect}
-              className="px-3.5 py-2.5 bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs rounded-xl shadow-xs flex items-center gap-1.5 transition-all"
+              className="px-3.5 py-2.5 bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs rounded-xl shadow-xs flex items-center gap-1.5 transition-all cursor-pointer"
+              title="카카오톡 1:1 상담 바로가기"
             >
               <MessageCircle className="w-4 h-4 fill-slate-950" />
               <span>카카오톡 바로 연결</span>
-            </button>
+            </a>
 
             {onOpenConsultation && (
               <button
