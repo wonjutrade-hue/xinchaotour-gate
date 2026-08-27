@@ -902,10 +902,12 @@ export const AdminMode: React.FC<AdminModeProps> = ({
 
   // 1-Click Duplicate Product
   const handleDuplicateProduct = (product: Product) => {
+    const nowIso = new Date().toISOString();
     const cloned: Product = JSON.parse(JSON.stringify(product));
     cloned.id = `prod-${Date.now()}`;
     cloned.title = `[복사본] ${cloned.title}`;
-    cloned.createdAt = new Date().toISOString();
+    cloned.createdAt = nowIso;
+    cloned.updatedAt = nowIso;
     
     const updated = [cloned, ...products];
     onSaveProducts(updated);
@@ -934,11 +936,13 @@ export const AdminMode: React.FC<AdminModeProps> = ({
 
     setIsSavingProduct(true);
     try {
-      // Ensure product has a valid display image
+      // Ensure product has a valid display image and update timestamp
+      const nowIso = new Date().toISOString();
       const validatedProduct: Product = {
         ...editingProduct,
         imageUrl: getDisplayProductImage(editingProduct),
-        additionalImages: (editingProduct.additionalImages || []).filter(img => Boolean(img && img !== 'VILLA_PHOTO_DATA' && img !== 'TEST_IMG'))
+        additionalImages: (editingProduct.additionalImages || []).filter(img => Boolean(img && img !== 'VILLA_PHOTO_DATA' && img !== 'TEST_IMG')),
+        updatedAt: nowIso
       };
 
       const exists = products.some(p => p.id === validatedProduct.id);

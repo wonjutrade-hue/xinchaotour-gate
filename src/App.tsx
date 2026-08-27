@@ -51,6 +51,46 @@ import { trackVisitorEvent } from './lib/analytics';
 
 const PRODUCTS_CACHE_KEY = 'xinchao_products_cache_master';
 
+function mergeProductsPreservingLocal(localList: Product[], incomingList: Product[]): { merged: Product[]; localWasNewer: boolean } {
+  if (!incomingList || incomingList.length === 0) return { merged: localList, localWasNewer: false };
+  if (!localList || localList.length === 0) return { merged: incomingList, localWasNewer: false };
+
+  const localMap = new Map<string, Product>();
+  localList.forEach(p => { if (p && p.id) localMap.set(p.id, p); });
+
+  const mergedMap = new Map<string, Product>();
+  let localWasNewer = false;
+
+  // Process incoming from server
+  incomingList.forEach(serverProd => {
+    if (!serverProd || !serverProd.id) return;
+    const localProd = localMap.get(serverProd.id);
+    if (!localProd) {
+      mergedMap.set(serverProd.id, serverProd);
+    } else {
+      const serverTime = serverProd.updatedAt ? new Date(serverProd.updatedAt).getTime() : 0;
+      const localTime = localProd.updatedAt ? new Date(localProd.updatedAt).getTime() : 0;
+
+      if (localTime > serverTime) {
+        mergedMap.set(localProd.id, localProd);
+        localWasNewer = true;
+      } else {
+        mergedMap.set(serverProd.id, serverProd);
+      }
+    }
+  });
+
+  // Preserve any local products newly added
+  localList.forEach(localProd => {
+    if (localProd && localProd.id && !mergedMap.has(localProd.id)) {
+      mergedMap.set(localProd.id, localProd);
+      localWasNewer = true;
+    }
+  });
+
+  return { merged: Array.from(mergedMap.values()), localWasNewer };
+}
+
 function cleanPlaceholderUrls(prodList: Product[]): Product[] {
   if (!Array.isArray(prodList)) return [];
   return prodList.map(p => {
@@ -259,9 +299,16 @@ export default function App() {
       if (Array.isArray(fetchedProducts)) {
         if (!isSavingToServerRef.current && (Date.now() - lastClientSaveTimestampRef.current >= 5000)) {
           if (fetchedProducts.length > 0) {
-            setProducts(fetchedProducts);
-            await saveProductsToIndexedDB(fetchedProducts);
-            setStoredJson(PRODUCTS_CACHE_KEY, fetchedProducts);
+            setProducts(currentProducts => {
+              const { merged, localWasNewer } = mergeProductsPreservingLocal(currentProducts, fetchedProducts);
+              saveProductsToIndexedDB(merged).catch(console.warn);
+              setStoredJson(PRODUCTS_CACHE_KEY, merged);
+              if (localWasNewer) {
+                // If local had newer edits, sync them back to server immediately
+                productService.syncAllProducts(merged).catch(console.warn);
+              }
+              return merged;
+            });
           } else {
             // Server returned 0 items -> check local backup or seed
             const idbProducts = await loadProductsFromIndexedDB();
@@ -303,8 +350,11 @@ export default function App() {
       try {
         const idbProducts = await loadProductsFromIndexedDB();
         if (idbProducts && idbProducts.length > 0) {
-          setProducts(idbProducts);
-          setStoredJson(PRODUCTS_CACHE_KEY, idbProducts);
+          setProducts(prev => {
+            const { merged } = mergeProductsPreservingLocal(prev, idbProducts);
+            setStoredJson(PRODUCTS_CACHE_KEY, merged);
+            return merged;
+          });
         }
         const idbInq = await loadInquiriesFromIndexedDB();
         if (idbInq && idbInq.length > 0) {

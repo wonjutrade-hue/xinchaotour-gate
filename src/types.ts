@@ -118,6 +118,7 @@ export interface Product {
   airbnbUrl?: string;
   externalBookingUrl?: string;
   createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface ConsultationRequest {
