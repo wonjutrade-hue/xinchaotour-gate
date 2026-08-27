@@ -68,14 +68,31 @@ function mergeProductsPreservingLocal(localList: Product[], incomingList: Produc
     if (!localProd) {
       mergedMap.set(serverProd.id, serverProd);
     } else {
-      const serverTime = serverProd.updatedAt ? new Date(serverProd.updatedAt).getTime() : 0;
-      const localTime = localProd.updatedAt ? new Date(localProd.updatedAt).getTime() : 0;
+      const serverTime = serverProd.updatedAt ? new Date(serverProd.updatedAt).getTime() : (serverProd.createdAt ? new Date(serverProd.createdAt).getTime() : 0);
+      const localTime = localProd.updatedAt ? new Date(localProd.updatedAt).getTime() : (localProd.createdAt ? new Date(localProd.createdAt).getTime() : 0);
 
-      if (localTime > serverTime) {
+      // If local has a timestamp and is >= server -> ALWAYS keep local
+      if (localTime > 0 && localTime >= serverTime) {
         mergedMap.set(localProd.id, localProd);
-        localWasNewer = true;
+        if (localTime > serverTime) localWasNewer = true;
+      } else if (serverTime > localTime) {
+        // Server is explicitly newer, but preserve local rich content if server payload missed it
+        const robustServerProd: Product = {
+          ...serverProd,
+          imageUrl: serverProd.imageUrl || localProd.imageUrl || '',
+          additionalImages: (serverProd.additionalImages && serverProd.additionalImages.length > 0)
+            ? serverProd.additionalImages
+            : (localProd.additionalImages || []),
+          villaSpecs: serverProd.villaSpecs || localProd.villaSpecs,
+          golfSpecs: serverProd.golfSpecs || localProd.golfSpecs,
+          highlights: (serverProd.highlights && serverProd.highlights.length > 0)
+            ? serverProd.highlights
+            : localProd.highlights
+        };
+        mergedMap.set(serverProd.id, robustServerProd);
       } else {
-        mergedMap.set(serverProd.id, serverProd);
+        // Default to local to strictly prevent reverts on identical timestamps
+        mergedMap.set(localProd.id, localProd);
       }
     }
   });
@@ -1074,7 +1091,7 @@ export default function App() {
       {/* Modals */}
       {selectedProduct && (
         <ProductDetailModal
-          product={selectedProduct}
+          product={products.find(p => p.id === selectedProduct.id) || selectedProduct}
           onClose={() => setSelectedProduct(null)}
           onBookNow={(prod) => {
             setConsultationTargetProduct(prod);

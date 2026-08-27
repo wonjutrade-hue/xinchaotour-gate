@@ -161,7 +161,8 @@ export function mapDbProductToProduct(row: DbProductRow, galleryImages: string[]
     googleMapUrl: row.google_map_url || undefined,
     airbnbUrl: row.airbnb_url || undefined,
     externalBookingUrl: row.external_booking_url || undefined,
-    createdAt: row.created_at
+    createdAt: row.created_at,
+    updatedAt: row.updated_at
   };
 }
 

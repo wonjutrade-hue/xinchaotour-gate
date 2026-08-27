@@ -94,8 +94,13 @@ function saveStoredProducts(prods: Product[]) {
   try {
     const dataStr = JSON.stringify(prods, null, 2);
     fs.writeFileSync(PRODUCTS_FILE_PATH, dataStr, 'utf-8');
+    try {
+      fs.writeFileSync(PRODUCTS_DATA_DIR_PATH, dataStr, 'utf-8');
+    } catch (dErr) {
+      // Ignore if dir doesn't exist
+    }
     fs.writeFileSync(PRODUCTS_BACKUP_PATH, dataStr, 'utf-8');
-    console.log(`[Server] Persisted ${prods.length} products to stored_products.json & backup`);
+    console.log(`[Server] Persisted ${prods.length} products to stored_products.json, src/data, & backup`);
   } catch (err) {
     console.error('[Server] Failed to save products to stored_products.json:', err);
   }

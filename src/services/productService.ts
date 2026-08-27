@@ -90,7 +90,6 @@ export const productService = {
 
             return mapDbProductToProduct(row as DbProductRow, galleryImages);
           });
-          saveLocalProducts(list);
           return list;
         }
       } catch (supabaseErr) {
@@ -105,7 +104,6 @@ export const productService = {
         const json = await res.json();
         if (json && Array.isArray(json.products) && json.products.length > 0) {
           let list: Product[] = json.products;
-          saveLocalProducts(list);
           if (filters?.category && filters.category !== '전체') {
             list = list.filter(p => p.category === filters.category);
           }
