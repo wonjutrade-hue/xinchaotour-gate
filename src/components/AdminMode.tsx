@@ -61,9 +61,12 @@ import {
   RefreshCw,
   Loader2,
   FolderOpen,
-  BarChart3
+  BarChart3,
+  BookOpen
 } from 'lucide-react';
 import { AdminVisitorAnalytics } from './AdminVisitorAnalytics';
+import { AdminProductGuide } from './AdminProductGuide';
+import { ALL_COMPREHENSIVE_PRODUCTS } from '../data/seedProducts';
 
 interface AdminModeProps {
   products: Product[];
@@ -459,7 +462,7 @@ export const AdminMode: React.FC<AdminModeProps> = ({
   isSyncing = false,
 }) => {
   // Navigation & Tabs
-  const [adminTab, setAdminTab] = useState<'products' | 'inquiries' | 'analytics'>('products');
+  const [adminTab, setAdminTab] = useState<'products' | 'inquiries' | 'analytics' | 'guide'>('products');
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCategory, setFilterCategory] = useState<string>('전체');
   const [filterRegion, setFilterRegion] = useState<string>('전체');
@@ -835,6 +838,47 @@ export const AdminMode: React.FC<AdminModeProps> = ({
     setEditingProduct(initialProd);
     setEditorTab('basic');
     setIsEditorOpen(true);
+  };
+
+  // Load standard template from catalog for quick product creation
+  const handleLoadTemplate = (category: Category, city?: City) => {
+    // 1. Try to find a high quality seed product
+    const match = ALL_COMPREHENSIVE_PRODUCTS.find(p => p.category === category && (!city || p.city === city)) 
+      || ALL_COMPREHENSIVE_PRODUCTS.find(p => p.category === category)
+      || products.find(p => p.category === category);
+
+    if (match) {
+      const cloned: Product = JSON.parse(JSON.stringify(match));
+      cloned.id = `prod-${Date.now()}`;
+      cloned.title = `[새등록] ${cloned.title}`;
+      cloned.createdAt = new Date().toISOString();
+      if (!cloned.imageUrl || isSampleUrl(cloned.imageUrl)) {
+        cloned.imageUrl = getDisplayProductImage(cloned);
+      }
+      setEditingProduct(cloned);
+      setEditorTab('basic');
+      setIsEditorOpen(true);
+      showNotification(`✨ ${category} 표준 템플릿이 에디터에 로드되었습니다! 수정 후 저장하세요.`);
+    } else {
+      handleCreateNewProduct(category);
+    }
+  };
+
+  // Select preset photo for current editing product or start new product
+  const handleSelectPresetPhoto = (photoUrl: string) => {
+    if (editingProduct && isEditorOpen) {
+      setEditingProduct({
+        ...editingProduct,
+        imageUrl: photoUrl
+      });
+      showNotification('📸 대표 사진이 성공적으로 적용되었습니다.');
+    } else {
+      handleCreateNewProduct('추천패키지');
+      setTimeout(() => {
+        setEditingProduct(prev => prev ? { ...prev, imageUrl: photoUrl } : null);
+      }, 50);
+      showNotification('📸 선택한 고화질 사진으로 새 상품 등록을 시작합니다.');
+    }
   };
 
   // Open Editor to Edit Existing Product
@@ -1256,6 +1300,21 @@ export const AdminMode: React.FC<AdminModeProps> = ({
               LIVE
             </span>
           </button>
+
+          <button
+            onClick={() => setAdminTab('guide')}
+            className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl text-xs sm:text-sm font-black flex items-center gap-1.5 sm:gap-2 whitespace-nowrap transition-all cursor-pointer ${
+              adminTab === 'guide'
+                ? 'bg-amber-400 text-slate-950 shadow-md'
+                : 'text-amber-300 hover:text-white hover:bg-slate-800'
+            }`}
+          >
+            <BookOpen className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+            <span>📖 상품 등록 가이드 & 마법사</span>
+            <span className="bg-amber-400/20 text-amber-300 text-[10px] font-black px-1.5 py-0.2 rounded-md border border-amber-400/30">
+              추천
+            </span>
+          </button>
         </div>
       </header>
 
@@ -1294,8 +1353,17 @@ export const AdminMode: React.FC<AdminModeProps> = ({
 
                 <div className="flex flex-wrap items-center gap-2">
                   <button
+                    onClick={() => setAdminTab('guide')}
+                    className="px-3.5 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 active:scale-95 text-slate-950 font-black text-xs sm:text-sm flex items-center gap-1.5 shadow-lg transition-all cursor-pointer shrink-0"
+                    title="초보자를 위한 카테고리별 상품 등록 가이드 및 원클릭 템플릿 마법사"
+                  >
+                    <BookOpen className="w-4 h-4" />
+                    <span>📖 상품 등록 가이드</span>
+                  </button>
+
+                  <button
                     onClick={() => handleCreateNewProduct('추천패키지')}
-                    className="px-4 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 active:scale-95 text-slate-950 font-black text-xs sm:text-sm flex items-center gap-1.5 shadow-lg transition-all cursor-pointer shrink-0"
+                    className="px-4 py-2.5 rounded-xl bg-teal-500 hover:bg-teal-400 active:scale-95 text-white font-black text-xs sm:text-sm flex items-center gap-1.5 shadow-lg transition-all cursor-pointer shrink-0"
                   >
                     <Plus className="w-4 h-4 stroke-[3]" />
                     <span>+ 새 여행상품 등록</span>
@@ -2162,6 +2230,16 @@ export const AdminMode: React.FC<AdminModeProps> = ({
         {/* =================================================================== */}
         {adminTab === 'analytics' && (
           <AdminVisitorAnalytics onNotify={showNotification} />
+        )}
+
+        {/* =================================================================== */}
+        {/* TAB 4: PRODUCT REGISTRATION GUIDE & TEMPLATE WIZARD                 */}
+        {/* =================================================================== */}
+        {adminTab === 'guide' && (
+          <AdminProductGuide
+            onLoadTemplate={handleLoadTemplate}
+            onSelectPresetPhoto={handleSelectPresetPhoto}
+          />
         )}
       </main>
 

@@ -82,6 +82,11 @@ function loadStoredProducts(): Product[] {
     console.warn('[Server] Backup read also failed:', bErr);
   }
 
+  if (SAMPLE_PRODUCTS && SAMPLE_PRODUCTS.length > 0) {
+    console.log(`[Server] Initializing with default sample catalog (${SAMPLE_PRODUCTS.length} products)`);
+    return SAMPLE_PRODUCTS.map((p) => sanitizeProduct(p));
+  }
+
   return [];
 }
 

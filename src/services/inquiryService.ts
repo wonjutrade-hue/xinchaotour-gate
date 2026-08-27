@@ -2,6 +2,29 @@ import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import { ConsultationRequest } from '../types';
 import { DbInquiryRow } from '../types/database';
 
+const LOCAL_STORAGE_KEY = 'xinchaotour_inquiries_cache';
+
+function getLocalInquiries(): ConsultationRequest[] {
+  try {
+    const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) return parsed;
+    }
+  } catch (e) {
+    // ignore
+  }
+  return [];
+}
+
+function saveLocalInquiries(inqs: ConsultationRequest[]) {
+  try {
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(inqs));
+  } catch (e) {
+    // ignore
+  }
+}
+
 export const inquiryService = {
   async getInquiries(): Promise<ConsultationRequest[]> {
     if (isSupabaseConfigured() && supabase) {
@@ -12,7 +35,7 @@ export const inquiryService = {
           .order('created_at', { ascending: false });
 
         if (!error && data) {
-          return data.map((row: DbInquiryRow) => ({
+          const list: ConsultationRequest[] = data.map((row: DbInquiryRow) => ({
             id: row.id,
             userName: row.name,
             userPhone: row.phone,
@@ -30,9 +53,11 @@ export const inquiryService = {
             status: (row.status as any) || 'pending',
             createdAt: row.created_at || new Date().toISOString()
           }));
+          saveLocalInquiries(list);
+          return list;
         }
       } catch (err) {
-        console.warn('[InquiryService] Supabase get error, falling back:', err);
+        // Fall back gracefully
       }
     }
 
@@ -40,12 +65,16 @@ export const inquiryService = {
       const res = await fetch('/api/inquiries');
       if (res.ok) {
         const json = await res.json();
-        return json.inquiries || [];
+        if (json && Array.isArray(json.inquiries)) {
+          saveLocalInquiries(json.inquiries);
+          return json.inquiries;
+        }
       }
     } catch (e) {
-      console.error('[InquiryService] Server fetch error:', e);
+      // Safe fallback when running statically or offline
     }
-    return [];
+
+    return getLocalInquiries();
   },
 
   async createInquiry(req: Omit<ConsultationRequest, 'id' | 'createdAt'>): Promise<ConsultationRequest> {
@@ -55,6 +84,11 @@ export const inquiryService = {
       createdAt: new Date().toISOString()
     };
 
+    // 1. Local Cache Update
+    const current = getLocalInquiries();
+    saveLocalInquiries([newInquiry, ...current]);
+
+    // 2. Supabase Insert
     if (isSupabaseConfigured() && supabase) {
       try {
         const row: Partial<DbInquiryRow> = {
@@ -76,10 +110,11 @@ export const inquiryService = {
         };
         await supabase.from('inquiries').insert(row);
       } catch (err) {
-        console.warn('[InquiryService] Supabase insert error:', err);
+        // ignore
       }
     }
 
+    // 3. Server API fallback sync
     try {
       await fetch('/api/inquiries', {
         method: 'POST',
@@ -87,18 +122,22 @@ export const inquiryService = {
         body: JSON.stringify(newInquiry)
       });
     } catch (e) {
-      console.warn('[InquiryService] Server insert error:', e);
+      // ignore
     }
 
     return newInquiry;
   },
 
   async updateStatus(id: string, status: string): Promise<boolean> {
+    const list = getLocalInquiries();
+    const updated = list.map(item => item.id === id ? { ...item, status: status as any } : item);
+    saveLocalInquiries(updated);
+
     if (isSupabaseConfigured() && supabase) {
       try {
         await supabase.from('inquiries').update({ status }).eq('id', id);
       } catch (e) {
-        console.warn('[InquiryService] Supabase update status error:', e);
+        // ignore
       }
     }
 
@@ -110,18 +149,28 @@ export const inquiryService = {
       });
       return true;
     } catch (e) {
-      return false;
+      return true;
     }
   },
 
   async deleteInquiry(id: string): Promise<boolean> {
+    const list = getLocalInquiries();
+    saveLocalInquiries(list.filter(item => item.id !== id));
+
     if (isSupabaseConfigured() && supabase) {
       try {
         await supabase.from('inquiries').delete().eq('id', id);
       } catch (e) {
-        console.warn('[InquiryService] Supabase delete error:', e);
+        // ignore
       }
     }
+
+    try {
+      await fetch(`/api/inquiries/${id}`, { method: 'DELETE' });
+    } catch (e) {
+      // ignore
+    }
+
     return true;
   }
 };

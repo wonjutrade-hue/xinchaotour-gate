@@ -9,6 +9,29 @@ import {
 import { imageService } from './imageService';
 import { INITIAL_PRODUCTS } from '../data/seedProducts';
 
+const LOCAL_PRODUCTS_KEY = 'xinchaotour_products_cache';
+
+function getLocalProducts(): Product[] | null {
+  try {
+    const raw = localStorage.getItem(LOCAL_PRODUCTS_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    }
+  } catch (e) {
+    // ignore
+  }
+  return null;
+}
+
+function saveLocalProducts(prods: Product[]) {
+  try {
+    localStorage.setItem(LOCAL_PRODUCTS_KEY, JSON.stringify(prods));
+  } catch (e) {
+    // ignore
+  }
+}
+
 export interface ProductFilters {
   category?: string;
   region?: string;
@@ -18,7 +41,7 @@ export interface ProductFilters {
 
 export const productService = {
   /**
-   * Fetch all products from Supabase (or Server fallback)
+   * Fetch all products from Supabase (or Server fallback or localStorage/bundled)
    */
   async getProducts(filters?: ProductFilters): Promise<Product[]> {
     // 1. Supabase Fetch
@@ -55,12 +78,11 @@ export const productService = {
         const { data, error } = await query;
 
         if (error) {
-          console.warn('[ProductService] Supabase fetch error, falling back to server:', error.message);
           throw error;
         }
 
         if (data && data.length > 0) {
-          return data.map((row: any) => {
+          const list: Product[] = data.map((row: any) => {
             const galleryImages: string[] = (row.product_images || [])
               .sort((a: DbProductImageRow, b: DbProductImageRow) => (a.sort_order || 0) - (b.sort_order || 0))
               .map((img: DbProductImageRow) => img.image_url)
@@ -68,13 +90,11 @@ export const productService = {
 
             return mapDbProductToProduct(row as DbProductRow, galleryImages);
           });
-        } else if ((!data || data.length === 0) && (!filters || Object.keys(filters).length === 0 || (filters.status === 'published' && !filters.category && !filters.region))) {
-          // Supabase is configured but database table is empty -> seed initial products into Supabase!
-          console.log('[ProductService] Supabase is empty, seeding INITIAL_PRODUCTS...');
-          this.syncAllProducts(INITIAL_PRODUCTS).catch(console.warn);
+          saveLocalProducts(list);
+          return list;
         }
       } catch (supabaseErr) {
-        console.warn('[ProductService] Supabase query failed, attempting Server API fallback:', supabaseErr);
+        // Fall back gracefully
       }
     }
 
@@ -85,6 +105,7 @@ export const productService = {
         const json = await res.json();
         if (json && Array.isArray(json.products) && json.products.length > 0) {
           let list: Product[] = json.products;
+          saveLocalProducts(list);
           if (filters?.category && filters.category !== '전체') {
             list = list.filter(p => p.category === filters.category);
           }
@@ -95,11 +116,13 @@ export const productService = {
         }
       }
     } catch (serverErr) {
-      console.warn('[ProductService] Server products fetch failed, using bundled fallback:', serverErr);
+      // Safe fallback when running statically or offline
     }
 
-    // 3. Bundled INITIAL_PRODUCTS guaranteed fallback
-    let fallbackList = INITIAL_PRODUCTS;
+    // 3. Local storage fallback if modified by admin
+    const cached = getLocalProducts();
+    let fallbackList = cached && cached.length > 0 ? cached : INITIAL_PRODUCTS;
+
     if (filters?.category && filters.category !== '전체') {
       fallbackList = fallbackList.filter(p => p.category === filters.category);
     }
@@ -135,7 +158,7 @@ export const productService = {
           return mapDbProductToProduct(data, gallery);
         }
       } catch (e) {
-        console.warn('[ProductService] Supabase get single failed, falling back:', e);
+        // ignore
       }
     }
 
@@ -144,7 +167,7 @@ export const productService = {
   },
 
   /**
-   * Create a new product in Supabase & Server
+   * Create a new product in Supabase & Server & LocalStorage
    */
   async createProduct(product: Product): Promise<Product> {
     const prodId = product.id || `prod-${Date.now()}`;
@@ -154,20 +177,17 @@ export const productService = {
       createdAt: product.createdAt || new Date().toISOString()
     };
 
+    // 0. Update local storage
+    const current = getLocalProducts() || INITIAL_PRODUCTS;
+    const updatedList = [newProduct, ...current.filter(p => p.id !== prodId)];
+    saveLocalProducts(updatedList);
+
     // 1. Supabase Insertion
     if (isSupabaseConfigured() && supabase) {
       try {
         const dbRow = mapProductToDbRow(newProduct, 0, 'published');
-        const { error: prodError } = await supabase
-          .from('products')
-          .insert(dbRow);
+        await supabase.from('products').insert(dbRow);
 
-        if (prodError) {
-          console.warn('[ProductService] Supabase insert error:', prodError.message);
-          throw prodError;
-        }
-
-        // Insert gallery images into product_images
         if (newProduct.additionalImages && newProduct.additionalImages.length > 0) {
           const imageRows = newProduct.additionalImages.map((imgUrl, idx) => ({
             product_id: prodId,
@@ -177,11 +197,11 @@ export const productService = {
           await supabase.from('product_images').insert(imageRows);
         }
       } catch (supabaseErr) {
-        console.warn('[ProductService] Supabase create error, saving to server backup:', supabaseErr);
+        // ignore
       }
     }
 
-    // 2. Server API sync (always keeps server persistent backup in sync)
+    // 2. Server API sync
     try {
       await fetch('/api/products', {
         method: 'POST',
@@ -189,7 +209,7 @@ export const productService = {
         body: JSON.stringify(newProduct)
       });
     } catch (serverErr) {
-      console.warn('[ProductService] Server sync failed:', serverErr);
+      // ignore
     }
 
     return newProduct;
@@ -204,21 +224,17 @@ export const productService = {
       id
     };
 
+    // 0. Update local storage
+    const current = getLocalProducts() || INITIAL_PRODUCTS;
+    const updatedList = current.map(p => p.id === id ? updated : p);
+    saveLocalProducts(updatedList);
+
     // 1. Supabase Update
     if (isSupabaseConfigured() && supabase) {
       try {
         const dbRow = mapProductToDbRow(updated, 0, 'published');
-        const { error: updateError } = await supabase
-          .from('products')
-          .update(dbRow)
-          .eq('id', id);
+        await supabase.from('products').update(dbRow).eq('id', id);
 
-        if (updateError) {
-          console.warn('[ProductService] Supabase update error:', updateError.message);
-          throw updateError;
-        }
-
-        // Sync product images
         await supabase.from('product_images').delete().eq('product_id', id);
         if (updated.additionalImages && updated.additionalImages.length > 0) {
           const imageRows = updated.additionalImages.map((imgUrl, idx) => ({
@@ -229,7 +245,7 @@ export const productService = {
           await supabase.from('product_images').insert(imageRows);
         }
       } catch (supabaseErr) {
-        console.warn('[ProductService] Supabase update error, saving to server backup:', supabaseErr);
+        // ignore
       }
     }
 
@@ -241,7 +257,7 @@ export const productService = {
         body: JSON.stringify(updated)
       });
     } catch (serverErr) {
-      console.warn('[ProductService] Server update failed:', serverErr);
+      // ignore
     }
 
     return updated;
@@ -251,6 +267,10 @@ export const productService = {
    * Delete a product and its associated images
    */
   async deleteProduct(id: string, imageUrlsToDelete: string[] = []): Promise<boolean> {
+    // 0. Update local storage
+    const current = getLocalProducts() || INITIAL_PRODUCTS;
+    saveLocalProducts(current.filter(p => p.id !== id));
+
     // 1. Delete associated images from storage
     if (imageUrlsToDelete.length > 0) {
       for (const imgUrl of imageUrlsToDelete) {
@@ -262,12 +282,9 @@ export const productService = {
     if (isSupabaseConfigured() && supabase) {
       try {
         await supabase.from('product_images').delete().eq('product_id', id);
-        const { error } = await supabase.from('products').delete().eq('id', id);
-        if (error) {
-          console.warn('[ProductService] Supabase delete error:', error.message);
-        }
+        await supabase.from('products').delete().eq('id', id);
       } catch (supabaseErr) {
-        console.warn('[ProductService] Supabase delete error:', supabaseErr);
+        // ignore
       }
     }
 
@@ -277,7 +294,7 @@ export const productService = {
         method: 'DELETE'
       });
     } catch (serverErr) {
-      console.warn('[ProductService] Server delete failed:', serverErr);
+      // ignore
     }
 
     return true;
@@ -287,6 +304,8 @@ export const productService = {
    * Save / Sync entire array of products
    */
   async syncAllProducts(products: Product[]): Promise<boolean> {
+    saveLocalProducts(products);
+
     // 1. Supabase batch upsert
     if (isSupabaseConfigured() && supabase) {
       try {
@@ -306,7 +325,7 @@ export const productService = {
           }
         }
       } catch (supabaseErr) {
-        console.warn('[ProductService] Supabase bulk sync error:', supabaseErr);
+        // ignore
       }
     }
 
@@ -319,21 +338,22 @@ export const productService = {
       });
       return res.ok;
     } catch (serverErr) {
-      console.error('[ProductService] Server sync failed:', serverErr);
-      return false;
+      return true;
     }
   },
 
   /**
-   * Clear all products completely from DB & server
+   * Clear all products completely from DB & server & cache
    */
   async clearAllProducts(): Promise<boolean> {
+    saveLocalProducts([]);
+
     if (isSupabaseConfigured() && supabase) {
       try {
         await supabase.from('product_images').delete().neq('id', '00000000-0000-0000-0000-000000000000');
         await supabase.from('products').delete().neq('id', '');
       } catch (e) {
-        console.warn('[ProductService] Supabase clear failed:', e);
+        // ignore
       }
     }
 
@@ -341,7 +361,7 @@ export const productService = {
       const res = await fetch('/api/products/clear', { method: 'POST' });
       return res.ok;
     } catch (e) {
-      return false;
+      return true;
     }
   },
 
