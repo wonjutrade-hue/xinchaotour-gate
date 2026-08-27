@@ -305,18 +305,18 @@ export const AdminProductGuide: React.FC<AdminProductGuideProps> = ({
             </div>
 
             <div className="bg-slate-900/80 rounded-xl p-3.5 border border-slate-700/60 space-y-2 text-xs">
-              <p className="font-bold text-amber-300">✅ 필수 입력 항목 (체크리스트):</p>
+              <p className="font-bold text-amber-300">✅ 필수 입력 항목 & 추천 구성 (체크리스트):</p>
               <ul className="space-y-1 text-slate-300 list-disc list-inside">
-                <li><strong className="text-white">총 홀수:</strong> 36홀, 54홀, 72홀, 90홀 등 총 라운딩 규모</li>
-                <li><strong className="text-white">골프장 리스트:</strong> BRG 다낭, 몽고메리, 바나힐스, 빈펄 등 실제 코스명</li>
+                <li><strong className="text-white">1일 18홀 단독 투어:</strong> 다낭/호이안 모든 골프장(BRG, 몽고메리, 바나힐스, 호이아나 쇼어스, 빈펄 남호이안, 라구나 랑코) 및 나트랑/하노이/호치민/달랏/푸꾸옥 18홀 데이투어</li>
+                <li><strong className="text-white">3개 골프장 연계 54홀 3박 5일:</strong> 1일차 심야 도착 ➔ 2일차 18홀 ➔ 3일차 18홀 ➔ 4일차 18홀+스파+심야 공항 샌딩 ➔ 5일차 아침 한국 귀국</li>
                 <li><strong className="text-white">포함 내역:</strong> 그린피 + 2인 1카트 + 1인 1캐디피 100% 포함 여부 체크</li>
                 <li><strong className="text-white">현장 지불팁:</strong> 캐디팁($15~$20/18홀 기준) 명확히 명시</li>
-                <li><strong className="text-white">차량 지원:</strong> 골프백 수납 전용 단독 리무진 밴 지원 여부</li>
+                <li><strong className="text-white">차량 지원:</strong> 골프백 수납 전용 단독 리무진 밴 지원</li>
               </ul>
             </div>
 
             <p className="text-xs text-slate-400 leading-relaxed">
-              💡 <strong>등록 팁:</strong> 골퍼들은 "그린피/카트/캐디피 올포함 여부"와 "골프장 이동 차량의 편안함"을 중시합니다. 1인 1캐디와 클럽하우스 중식 포함을 강조하세요.
+              💡 <strong>등록 팁:</strong> 한국 골퍼들은 "심야 도착 후 3일 연속 18홀(총 54홀) 라운딩"과 "마지막 날 라운딩 후 샤워 및 마사지를 받고 심야 비행기를 타는 완벽 동선"을 가장 선호합니다.
             </p>
           </div>
 
@@ -365,8 +365,8 @@ export const AdminProductGuide: React.FC<AdminProductGuideProps> = ({
                   <Zap className="w-5 h-5" />
                 </span>
                 <div>
-                  <h3 className="font-black text-white text-base">🏝️ 자유여행 & 1일 단독 투어</h3>
-                  <p className="text-xs text-teal-300">렌터카 1일 대절, 단독 호핑, 사막 지프 투어</p>
+                  <h3 className="font-black text-white text-base">🏝️ 자유여행 (인근 도시 연계 3박5일 & 4박6일)</h3>
+                  <p className="text-xs text-teal-300">한국인 심야 항공 패턴 맞춤 + 인근 도시 묶음 단독 렌터카</p>
                 </div>
               </div>
               <button
@@ -381,15 +381,15 @@ export const AdminProductGuide: React.FC<AdminProductGuideProps> = ({
             <div className="bg-slate-900/80 rounded-xl p-3.5 border border-slate-700/60 space-y-2 text-xs">
               <p className="font-bold text-amber-300">✅ 필수 입력 항목 (체크리스트):</p>
               <ul className="space-y-1 text-slate-300 list-disc list-inside">
-                <li><strong className="text-white">투어 소요시간:</strong> 당일 투어(10시간 대절) 또는 반나절(4~6시간)</li>
-                <li><strong className="text-white">픽업/샌딩:</strong> 고객 숙소 로비 왕복 픽업 서비스 포함 안내</li>
-                <li><strong className="text-white">포함 경비:</strong> 전담 기사비, 유류비, 톨게이트비, 주차비 일체 포함</li>
-                <li><strong className="text-white">맞춤 코스:</strong> 가고 싶은 명소/맛집을 고객이 자유롭게 선택 가능</li>
+                <li><strong className="text-white">인근 도시 연계:</strong> 다낭+호이안+후에, 나트랑+달랏+판랑, 하노이+하롱베이+닌빈, 호치민+무이네 등</li>
+                <li><strong className="text-white">한국인 심야 항공 패턴:</strong> 1일차 늦은 밤(21~01시) 도착 픽업 + 마지막 날 체크아웃 투어 후 심야(22~02시) 공항 샌딩</li>
+                <li><strong className="text-white">포함 경비:</strong> 5성급 숙소 + 전 일정 단독 렌터카 & 기사, 유류비, 톨게이트비, 주차비 일체 포함</li>
+                <li><strong className="text-white">자유도:</strong> 명소, 맛집, 카페를 자유롭게 조율 가능한 프라이빗 맞춤 투어</li>
               </ul>
             </div>
 
             <p className="text-xs text-slate-400 leading-relaxed">
-              💡 <strong>등록 팁:</strong> 2030 자유여행객과 소규모 가족은 "내 마음대로 짜는 1일 맞춤 렌터카"와 "사막 지프 인생샷 투어"를 가장 많이 찾습니다.
+              💡 <strong>등록 팁:</strong> 한국 여행객의 90% 이상이 저녁 비행기로 출발하여 심야에 도착하고, 마지막 날 체크아웃 후 자정 무렵 비행기를 탑니다. "심야 픽업 + 체크아웃 후 샌딩"을 기본 포함으로 구성하면 만족도가 매우 높습니다.
             </p>
           </div>
 
