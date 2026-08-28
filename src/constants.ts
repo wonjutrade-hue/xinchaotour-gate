@@ -29,6 +29,11 @@ export const setKakaoDirectLink = (url: string) => {
 };
 
 export const handleOpenKakaoTalkDirect = (e?: React.MouseEvent | React.TouchEvent | any) => {
+  if (e) {
+    if (typeof e.preventDefault === 'function') e.preventDefault();
+    if (typeof e.stopPropagation === 'function') e.stopPropagation();
+  }
+
   trackVisitorEvent('kakao_click', '카카오톡 실시간 1:1 상담');
   const targetUrl = getKakaoDirectLink() || DEFAULT_KAKAO_LINK;
   
@@ -51,7 +56,7 @@ export const handleOpenKakaoTalkDirect = (e?: React.MouseEvent | React.TouchEven
       window.location.href = appScheme;
       setTimeout(() => {
         window.location.href = channelChatUrl;
-      }, 1200);
+      }, 1500);
     } else {
       // Direct 1:1 OpenChat on Mobile
       const openChatScheme = `kakaotalk://openchat?url=${encodeURIComponent(targetUrl)}`;
@@ -59,17 +64,21 @@ export const handleOpenKakaoTalkDirect = (e?: React.MouseEvent | React.TouchEven
         window.location.href = openChatScheme;
         setTimeout(() => {
           window.location.href = targetUrl;
-        }, 1000);
+        }, 1200);
       } else {
         window.location.href = targetUrl;
       }
     }
   } else {
-    // PC Environment: Open the OpenChat URL directly in a new window/tab and trigger app protocol
-    try {
-      window.open(targetUrl, '_blank', 'noopener,noreferrer');
-    } catch {
-      window.location.href = targetUrl;
+    // PC Environment (Windows / Mac)
+    // Directly launch KakaoTalk Desktop App without opening the intermediate web page
+    if (isChannel && channelId) {
+      const channelChatScheme = `kakaoplus://plusfriend/chat/${channelId}`;
+      window.location.href = channelChatScheme;
+    } else {
+      const openChatScheme = `kakaotalk://openchat?url=${encodeURIComponent(targetUrl)}`;
+      // Direct protocol navigation opens the PC KakaoTalk 1:1 chat window immediately
+      window.location.href = openChatScheme;
     }
   }
 };
