@@ -121,7 +121,7 @@ export const KakaoModal: React.FC<KakaoModalProps> = ({ isOpen, onClose }) => {
                 className="w-full py-3.5 px-4 rounded-full bg-[#FEE500] hover:bg-[#FADA00] active:scale-[0.99] text-[#191919] font-black text-sm sm:text-base shadow-lg shadow-amber-500/10 transition-all flex items-center justify-center gap-2 group cursor-pointer"
               >
                 <MessageCircle className="w-5 h-5 fill-[#191919] text-[#191919]" />
-                <span>1:1 오픈채팅 참여하기</span>
+                <span>1:1 카카오톡 채팅 바로 연결</span>
                 <ExternalLink className="w-4 h-4 ml-0.5 opacity-80 group-hover:translate-x-0.5 transition-transform" />
               </button>
 

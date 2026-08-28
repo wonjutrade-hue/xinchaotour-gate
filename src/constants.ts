@@ -36,59 +36,60 @@ export const handleOpenKakaoTalkDirect = (e?: React.MouseEvent | React.TouchEven
   
   if (typeof window === 'undefined') return;
 
-  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-  const isAndroid = /Android/i.test(navigator.userAgent);
-  const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+  const userAgent = navigator.userAgent || '';
+  const isMobile = /Android|iPhone|iPad|iPod/i.test(userAgent);
+  const isAndroid = /Android/i.test(userAgent);
+  const isIOS = /iPhone|iPad|iPod/i.test(userAgent);
 
-  // Extract openchat key (e.g. sxeekUBi from https://open.kakao.com/o/sxeekUBi)
-  const openChatMatch = targetUrl.match(/open\.kakao\.com\/o\/([a-zA-Z0-9_-]+)/);
-  const chatKey = openChatMatch ? openChatMatch[1] : '';
+  // Check if target is Kakao Channel (pf.kakao.com) or OpenChat (open.kakao.com)
+  const isChannel = targetUrl.includes('pf.kakao.com');
+  const channelMatch = targetUrl.match(/pf\.kakao\.com\/([_a-zA-Z0-9-]+)/);
+  const channelId = channelMatch ? channelMatch[1].replace('/chat', '') : '';
 
   if (isMobile) {
-    if (isAndroid) {
-      // Android direct intent to KakaoTalk App
-      window.location.href = `intent://open.kakao.com/o/${chatKey}#Intent;scheme=kakaotalk;package=com.kakao.talk;end`;
-    } else if (isIOS) {
-      // iOS custom scheme to KakaoTalk App
-      window.location.href = `kakaotalk://openchat?url=${encodeURIComponent(targetUrl)}`;
+    if (isChannel && channelId) {
+      // Direct 1:1 Chat with Kakao Channel
+      const channelChatUrl = `https://pf.kakao.com/${channelId}/chat`;
+      const appScheme = `kakaoplus://plusfriend/chat/${channelId}`;
+      window.location.href = appScheme;
       setTimeout(() => {
-        window.location.href = targetUrl;
+        window.location.href = channelChatUrl;
       }, 1200);
     } else {
-      window.location.href = targetUrl;
+      // Direct 1:1 OpenChat on Mobile (Android & iOS)
+      // Open directly via App Link / Custom Scheme without opening Play Store
+      const openChatScheme = `kakaotalk://openchat?url=${encodeURIComponent(targetUrl)}`;
+      
+      if (isAndroid) {
+        // Direct browser navigation to open.kakao.com opens KakaoTalk app immediately via Android App Links
+        // We trigger both the scheme and standard web link as fallback
+        window.location.href = openChatScheme;
+        setTimeout(() => {
+          window.location.href = targetUrl;
+        }, 1000);
+      } else if (isIOS) {
+        window.location.href = openChatScheme;
+        setTimeout(() => {
+          window.location.href = targetUrl;
+        }, 1200);
+      } else {
+        window.location.href = targetUrl;
+      }
     }
   } else {
-    // PC Environment: Direct KakaoTalk PC App Protocol Trigger + Focused Messenger Popup
-    // 1. Try launching KakaoTalk Desktop App directly via hidden iframe
-    try {
-      const appProtocolUrl = `kakaotalk://openchat?url=${encodeURIComponent(targetUrl)}`;
-      const iframe = document.createElement('iframe');
-      iframe.style.display = 'none';
-      iframe.src = appProtocolUrl;
-      document.body.appendChild(iframe);
+    // PC Environment (Windows / Mac)
+    // Directly launch KakaoTalk Desktop App into the 1:1 chat room
+    if (isChannel && channelId) {
+      const channelChatScheme = `kakaoplus://plusfriend/chat/${channelId}`;
+      window.location.href = channelChatScheme;
       setTimeout(() => {
-        try {
-          document.body.removeChild(iframe);
-        } catch {}
+        // Only open web tab if desktop app was not launched
+        window.open(`https://pf.kakao.com/${channelId}/chat`, '_blank', 'noopener,noreferrer');
       }, 2000);
-    } catch {}
-
-    // 2. Open dedicated messenger-sized popup window (matching KakaoTalk 1:1 modal dimensions: 480x700)
-    const width = 480;
-    const height = 720;
-    const left = window.screenX + (window.outerWidth - width) / 2;
-    const top = window.screenY + (window.outerHeight - height) / 2;
-    const windowFeatures = `width=${width},height=${height},left=${left},top=${top},status=no,resizable=yes,scrollbars=yes`;
-
-    try {
-      const popup = window.open(targetUrl, 'KakaoTalkDirectChat', windowFeatures);
-      if (popup) {
-        popup.focus();
-      } else {
-        window.open(targetUrl, '_blank', 'noopener,noreferrer');
-      }
-    } catch {
-      window.open(targetUrl, '_blank', 'noopener,noreferrer');
+    } else {
+      const openChatScheme = `kakaotalk://openchat?url=${encodeURIComponent(targetUrl)}`;
+      // Direct protocol navigation opens the PC KakaoTalk 1:1 chat window immediately
+      window.location.href = openChatScheme;
     }
   }
 };
