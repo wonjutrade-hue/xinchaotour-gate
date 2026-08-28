@@ -234,7 +234,7 @@ export const KakaoModal: React.FC<KakaoModalProps> = ({ isOpen, onClose }) => {
                   type="url"
                   value={kakaoUrl}
                   onChange={(e) => setKakaoUrl(e.target.value)}
-                  placeholder="https://open.kakao.com/o/sxeekUBi"
+                  placeholder="https://open.kakao.com/o/s7OOoshf"
                   className="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg font-mono text-amber-300 text-xs focus:outline-none focus:ring-1 focus:ring-amber-400"
                 />
                 <div className="flex items-center gap-2">

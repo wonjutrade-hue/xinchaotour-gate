@@ -3,7 +3,7 @@ import { trackVisitorEvent } from './lib/analytics';
 
 export const COMPANY_PHONE = '010-5365-6019';
 export const COMPANY_PHONE_TEL = 'tel:010-5365-6019';
-export const DEFAULT_KAKAO_LINK = 'https://open.kakao.com/o/sxeekUBi';
+export const DEFAULT_KAKAO_LINK = 'https://open.kakao.com/o/s7OOoshf';
 export const DEFAULT_KAKAO_CHANNEL = 'https://pf.kakao.com/_xincaotour';
 export const KAKAO_ID = 'wonjutrade';
 
@@ -11,6 +11,11 @@ export const getKakaoDirectLink = (): string => {
   if (typeof window !== 'undefined') {
     const saved = localStorage.getItem('kakao_direct_link');
     if (saved && saved.trim().startsWith('http')) {
+      // If old default is cached, migrate to new link
+      if (saved.includes('sxeekUBi')) {
+        localStorage.setItem('kakao_direct_link', DEFAULT_KAKAO_LINK);
+        return DEFAULT_KAKAO_LINK;
+      }
       return saved.trim();
     }
   }
@@ -24,13 +29,6 @@ export const setKakaoDirectLink = (url: string) => {
 };
 
 export const handleOpenKakaoTalkDirect = (e?: React.MouseEvent | React.TouchEvent | any) => {
-  if (e && e.preventDefault) {
-    try {
-      e.preventDefault();
-      e.stopPropagation();
-    } catch {}
-  }
-
   trackVisitorEvent('kakao_click', '카카오톡 실시간 1:1 상담');
   const targetUrl = getKakaoDirectLink() || DEFAULT_KAKAO_LINK;
   
@@ -48,7 +46,6 @@ export const handleOpenKakaoTalkDirect = (e?: React.MouseEvent | React.TouchEven
 
   if (isMobile) {
     if (isChannel && channelId) {
-      // Direct 1:1 Chat with Kakao Channel
       const channelChatUrl = `https://pf.kakao.com/${channelId}/chat`;
       const appScheme = `kakaoplus://plusfriend/chat/${channelId}`;
       window.location.href = appScheme;
@@ -56,40 +53,23 @@ export const handleOpenKakaoTalkDirect = (e?: React.MouseEvent | React.TouchEven
         window.location.href = channelChatUrl;
       }, 1200);
     } else {
-      // Direct 1:1 OpenChat on Mobile (Android & iOS)
-      // Open directly via App Link / Custom Scheme without opening Play Store
+      // Direct 1:1 OpenChat on Mobile
       const openChatScheme = `kakaotalk://openchat?url=${encodeURIComponent(targetUrl)}`;
-      
-      if (isAndroid) {
-        // Direct browser navigation to open.kakao.com opens KakaoTalk app immediately via Android App Links
-        // We trigger both the scheme and standard web link as fallback
+      if (isAndroid || isIOS) {
         window.location.href = openChatScheme;
         setTimeout(() => {
           window.location.href = targetUrl;
         }, 1000);
-      } else if (isIOS) {
-        window.location.href = openChatScheme;
-        setTimeout(() => {
-          window.location.href = targetUrl;
-        }, 1200);
       } else {
         window.location.href = targetUrl;
       }
     }
   } else {
-    // PC Environment (Windows / Mac)
-    // Directly launch KakaoTalk Desktop App into the 1:1 chat room
-    if (isChannel && channelId) {
-      const channelChatScheme = `kakaoplus://plusfriend/chat/${channelId}`;
-      window.location.href = channelChatScheme;
-      setTimeout(() => {
-        // Only open web tab if desktop app was not launched
-        window.open(`https://pf.kakao.com/${channelId}/chat`, '_blank', 'noopener,noreferrer');
-      }, 2000);
-    } else {
-      const openChatScheme = `kakaotalk://openchat?url=${encodeURIComponent(targetUrl)}`;
-      // Direct protocol navigation opens the PC KakaoTalk 1:1 chat window immediately
-      window.location.href = openChatScheme;
+    // PC Environment: Open the OpenChat URL directly in a new window/tab and trigger app protocol
+    try {
+      window.open(targetUrl, '_blank', 'noopener,noreferrer');
+    } catch {
+      window.location.href = targetUrl;
     }
   }
 };

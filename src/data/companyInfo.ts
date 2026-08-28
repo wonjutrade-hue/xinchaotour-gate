@@ -34,7 +34,7 @@ export const COMPANY_INFO: CompanyInfo = {
   phoneTel: 'tel:010-5365-6019',
   email: 'wonjutrade@hanmail.net',
   kakaoId: 'wonjutrade',
-  kakaoLink: 'https://open.kakao.com/o/sxeekUBi',
+  kakaoLink: 'https://open.kakao.com/o/s7OOoshf',
   kakaoChannel: 'https://pf.kakao.com/_xincaotour',
   address: '강원도 원주시 / 베트남 다낭시 손짜구 현지 직영 라운지',
   vietnamOffice: 'Da Nang, Son Tra / Hanoi, Hoan Kiem Local Branch',
