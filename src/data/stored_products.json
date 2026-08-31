@@ -1,5 +1,140 @@
 [
   {
+    "id": "prod-danang-hanatour-benchmark-vip-3n5d",
+    "title": "[다낭/VIP 단독 품격] 5성급 오션뷰 & 바나힐·호이안 올인원 3박 5일 (NO쇼핑/NO옵션)",
+    "subTitle": "하나투어 AVP 다낭 패키지 완벽 업그레이드! 단독 16인승 밴 + 전담 한국어가이드 + 바나힐 골든브릿지 + 호이안 소원배·바구니배 + 랍스터 씨푸드 + 90분 VIP 스파",
+    "category": "추천패키지",
+    "region": "중부",
+    "city": "다낭",
+    "priceKRW": 750000,
+    "priceVND": 13900000,
+    "duration": "3박 5일",
+    "imageUrl": "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&w=1200&q=80",
+    "additionalImages": [
+      "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=1200&q=80"
+    ],
+    "rating": 5,
+    "reviewCount": 384,
+    "isPopular": true,
+    "isHotDeal": true,
+    "discountPercent": 18,
+    "departureCities": [
+      "인천",
+      "부산",
+      "대구",
+      "청주",
+      "무안"
+    ],
+    "tags": [
+      "#다낭3박5일",
+      "#바나힐골든브릿지",
+      "#호이안올드타운",
+      "#소원배바구니배",
+      "#미케비치5성급",
+      "#NO쇼핑NO옵션",
+      "#VIP단독투어",
+      "#해산물BBQ"
+    ],
+    "description": "대형 패키지 여행사의 20~30인 단체 합승 버스와 3~4회 강제 쇼핑센터 방문의 불편함을 완벽히 해결했습니다. 신짜오투어는 오직 우리 일행만을 위한 최신형 16인승 전용 차량과 한국어 가이드가 동행하며, 바나힐·호이안·미케비치 핵심 명소와 프리미엄 미식, 90분 VIP 스파까지 전 일정 올포함으로 케어해 드립니다.",
+    "included": [
+      "다낭 미케비치 5성급 인터내셔널 오션뷰 호텔 3박 (2인 1실, 조식 포함)",
+      "우리 일행만을 위한 16인승 단독 전용 차량 및 베테랑 전담 기사 (전 일정)",
+      "신짜오투어 현지 베트남 공인 한국어 1급 전담 가이드 풀케어",
+      "바나힐 썬월드 국립공원 케이블카 왕복 + 골든브릿지 + 프랑스마을 테마파크 + 정상 뷔페 중식",
+      "호이안 유네스코 올드타운 입장권 + 투본강 소원배(야간 유등 포함) + 깜딴 코코넛 바구니배 체험",
+      "오행산(마블마운틴) 동굴 & 손짜반도 영흥사(해수관음상) 입장료",
+      "4대 프리미엄 특식: ① 미케비치 랍스터/크랩 씨푸드 BBQ, ② 호이안 전통 반쎄오&화이트로즈, ③ 미슐랭 분짜&스프링롤, ④ 프리미엄 한정식",
+      "여행의 피로를 풀어주는 90분 VIP 천연 허브 핫스톤 스파 전원 포함 (1회)",
+      "기사/가이드 팁, 차량 유류비, 도로비, 주차비 일체 포함"
+    ],
+    "excluded": [
+      "국제선 왕복 항공권 (최저가 실시간 발권 지원)",
+      "개인 쇼핑 경비 및 주류/음료",
+      "호텔 1인실 싱글룸 사용 시 싱글 차지"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "인천/지방공항 출발 ➔ 다낭 국제공항 도착 ➔ VIP 전담 피켓 미팅 ➔ 5성급 호텔 체크인",
+        "description": "다낭 공항 도착 후 입국장을 나오시면 신짜오투어 전담 가이드가 고객님 성함 피켓으로 반갑게 맞이합니다. 우리 일행 전용 리무진 밴에 탑승하여 5성급 오션뷰 호텔로 안전하게 이동 후 체크인 및 환영 야식(전통 쌀국수) 제공.",
+        "meal": "조식: 기내식 | 중식: 자유식 | 석식: 다낭 전통 쌀국수 특식",
+        "hotel": "포포인츠 바이 쉐라톤 다낭 / 신라 모노그램 (또는 동급 5성급 오션뷰)",
+        "vehicle": "16인승 최신형 단독 전용 밴",
+        "attractions": [
+          "다낭 국제공항",
+          "미케비치 해안도로",
+          "5성급 호텔 체크인"
+        ]
+      },
+      {
+        "day": 2,
+        "title": "오행산(마블마운틴) 탐방 ➔ 호이안 코코넛 바구니배 ➔ 유네스코 호이안 올드타운 & 투본강 소원배 야경",
+        "description": "대리석과 동굴의 비경을 간직한 오행산(암푸동굴)을 관람한 후, 깜딴 야자수 숲에서 신나는 코코넛 바구니배 체험을 즐깁니다. 오후에는 유네스코 세계문화유산 호이안 올드타운(내원교, 쩐가사당)을 여유롭게 산책하고, 해질녘 투본강에서 소원등을 띄우며 낭만적인 야경을 만끽합니다.",
+        "meal": "조식: 호텔 뷔페식 | 중식: 호이안 전통 명물식 (반쎄오, 화이트로즈, 까오라우) | 석식: 호이안 강변 프리미엄 로컬 만찬",
+        "hotel": "다낭 5성급 오션뷰 호텔",
+        "vehicle": "16인승 최신형 단독 전용 밴",
+        "attractions": [
+          "오행산 마블마운틴",
+          "깜딴 코코넛 바구니배",
+          "호이안 올드타운",
+          "투본강 소원배 야경"
+        ]
+      },
+      {
+        "day": 3,
+        "title": "구름 위의 테마파크 [바나힐 썬월드] & 골든브릿지 ➔ 90분 VIP 핫스톤 스파 ➔ 미케비치 씨푸드 BBQ 만찬",
+        "description": "해발 1,487m 고원에 위치한 프랑스풍 테마파크 바나힐로 이동하여 기네스북 등재 케이블카와 신의 손 골든브릿지에서 인생 사진을 남깁니다. 정상 인터내셔널 뷔페 중식 후 판타지 파크를 즐기고, 다낭 시내로 귀환하여 90분 VIP 천연 핫스톤 마사지로 피로를 싹 풀어드립니다. 저녁에는 미케비치 바다를 바라보며 싱싱한 랍스터/크랩 해산물 BBQ 만찬을 즐깁니다.",
+        "meal": "조식: 호텔 뷔페식 | 중식: 바나힐 정상 아라팡 인터내셔널 뷔페 | 석식: 미케비치 프리미엄 랍스터 & 씨푸드 BBQ",
+        "hotel": "다낭 5성급 오션뷰 호텔",
+        "vehicle": "16인승 최신형 단독 전용 밴",
+        "attractions": [
+          "바나힐 케이블카",
+          "골든브릿지(신의 손)",
+          "프랑스마을",
+          "90분 VIP 스파",
+          "미케비치"
+        ]
+      },
+      {
+        "day": 4,
+        "title": "손짜반도 영흥사(비밀의 사원) ➔ 다낭 핑크성당 & 한시장 쇼핑 ➔ 롯데마트 ➔ 레이트 체크아웃 & 공항 샌딩",
+        "description": "67m 거대 해수관음상이 바다를 내려다보는 영흥사와 프랑스 식민지 시절의 건축미를 간직한 핑크성당을 관람합니다. 이어 다낭의 명물 한시장과 롯데마트에서 가족/지인 선물을 알뜰하게 쇼핑하고, 맛있는 저녁 식사 후 공항으로 여유롭게 이동합니다.",
+        "meal": "조식: 호텔 뷔페식 | 중식: 미슐랭 분짜 & 모닝글로리 특식 | 석식: 다낭 프리미엄 한정식 특식",
+        "hotel": "기내박 (귀국편)",
+        "vehicle": "16인승 최신형 단독 전용 밴",
+        "attractions": [
+          "손짜 영흥사(해수관음상)",
+          "다낭 대성당(핑크성당)",
+          "한시장",
+          "용다리",
+          "롯데마트"
+        ]
+      },
+      {
+        "day": 5,
+        "title": "인천/지방 국제공항 도착 ➔ 개별 해산 및 소중한 추억 간직",
+        "description": "다낭을 출발하여 한국 국제공항에 안전하게 도착. 모든 일정을 마치고 편안한 귀가.",
+        "meal": "조식: 기내식",
+        "hotel": "귀국",
+        "vehicle": "개별 귀가"
+      }
+    ],
+    "highlights": [
+      "하나투어 AVP 다낭/바나힐/호이안 3박5일 정통 코스를 100% 프라이빗 VIP 단독 투어로 업그레이드",
+      "NO 쇼핑 / NO 옵션 강요 / NO 팁 강요 (3대 안심 보장제)",
+      "다낭 미케비치 5성급 특급 오션뷰 호텔 3박 숙박",
+      "기네스북 케이블카 & 골든브릿지 바나힐 썬월드 + 정상 뷔페 올포함",
+      "유네스코 호이안 올드타운 + 투본강 야간 소원배 + 코코넛 바구니배 풀코스",
+      "미케비치 랍스터 씨푸드 BBQ 포함 4대 미식 특식 제공",
+      "여행의 피로를 말끔히 씻어주는 90분 VIP 천연 핫스톤 스파 전원 포함"
+    ],
+    "vehicleInfo": "우리 일행 단독 최신형 16인승 리무진 밴 (베테랑 전담 기사)",
+    "guideInfo": "신짜오투어 베트남 현지 공인 한국어 1급 전담 가이드 풀케어",
+    "travelTheme": "가족/부모님/연인/친구를 위한 NO쇼핑 VIP 단독 힐링 품격 패키지"
+  },
+  {
     "id": "prod-free-danang-hoian-3n5d",
     "title": "[다낭+호이안/자유3박5일] 다낭 오션뷰 호텔 3박 & 호이안 올드타운 + 바나힐 단독 차량 팩",
     "subTitle": "심야 도착 전용 픽업 + 바나힐 1일 렌터카 + 호이안 야경 소원배 렌터카 + 마지막 날 체크아웃 후 공항 샌딩 올인원",
@@ -553,7 +688,8 @@
         "title": "이른 아침 한국 공항 도착",
         "description": "한국 도착."
       }
-    ]
+    ],
+    "additionalImages": []
   },
   {
     "id": "prod-golf-18h-brg-danang",
@@ -609,7 +745,8 @@
         "description": "티오프 1시간 전 호텔 로비에서 전용 리무진 탑승 후 BRG 다낭으로 이동. 락커 배정 후 18홀 명품 라운딩 진행. 라운딩 및 샤워 후 숙소로 편안하게 복귀합니다.",
         "vehicle": "왕복 단독 전용 차량"
       }
-    ]
+    ],
+    "additionalImages": []
   },
   {
     "id": "prod-golf-18h-montgomerie-danang",
@@ -663,7 +800,8 @@
         "description": "티오프 시간에 맞춰 단독 차량으로 이동 후 18홀 라운딩.",
         "vehicle": "왕복 단독 차량"
       }
-    ]
+    ],
+    "additionalImages": []
   },
   {
     "id": "prod-golf-18h-banahills",
@@ -716,7 +854,8 @@
         "description": "바나힐 산맥의 상쾌한 바람 속에서 즐기는 18홀 라운딩.",
         "vehicle": "왕복 단독 차량"
       }
-    ]
+    ],
+    "additionalImages": []
   },
   {
     "id": "prod-golf-18h-hoiana-shores",
@@ -769,7 +908,8 @@
         "description": "환상적인 해변 듄스 링크스에서 인생 최고의 라운딩.",
         "vehicle": "왕복 단독 차량"
       }
-    ]
+    ],
+    "additionalImages": []
   },
   {
     "id": "prod-golf-18h-vinpearl-namhoian",
@@ -820,7 +960,8 @@
         "description": "아름다운 남호이안 리조트 단지 내 코스에서 라운딩.",
         "vehicle": "왕복 단독 차량"
       }
-    ]
+    ],
+    "additionalImages": []
   },
   {
     "id": "prod-golf-18h-laguna-langco",
@@ -872,7 +1013,8 @@
         "description": "천혜의 자연 속에서 도전적인 18홀 플레이.",
         "vehicle": "왕복 단독 차량"
       }
-    ]
+    ],
+    "additionalImages": []
   },
   {
     "id": "prod-golf-18h-kn-links-nhatrang",
@@ -925,7 +1067,8 @@
         "description": "환상적인 해변 듄스 코스에서 플레이.",
         "vehicle": "왕복 단독 차량"
       }
-    ]
+    ],
+    "additionalImages": []
   },
   {
     "id": "prod-golf-18h-skylake-hanoi",
@@ -978,7 +1121,8 @@
         "description": "천혜의 호수를 낀 명문 코스 라운딩.",
         "vehicle": "왕복 단독 차량"
       }
-    ]
+    ],
+    "additionalImages": []
   },
   {
     "id": "prod-golf-18h-tansonnhat-hochiminh",
@@ -1030,7 +1174,8 @@
         "description": "도심 속 럭셔리 36홀 코스 라운딩.",
         "vehicle": "왕복 단독 차량"
       }
-    ]
+    ],
+    "additionalImages": []
   },
   {
     "id": "prod-golf-18h-dalat-palace",
@@ -1083,7 +1228,8 @@
         "description": "100년 역사의 유서 깊은 황실 코스에서 라운딩.",
         "vehicle": "왕복 단독 차량"
       }
-    ]
+    ],
+    "additionalImages": []
   },
   {
     "id": "prod-golf-18h-vinpearl-phuquoc",
@@ -1135,7 +1281,8 @@
         "description": "울창한 열대 원시림 속에서 펼쳐지는 상쾌한 라운딩.",
         "vehicle": "왕복 단독 차량"
       }
-    ]
+    ],
+    "additionalImages": []
   },
   {
     "id": "prod-golf-54h-danang-3n5d",
@@ -1411,7 +1558,8 @@
         "title": "이른 아침 한국 공항 도착",
         "description": "한국 도착."
       }
-    ]
+    ],
+    "additionalImages": []
   },
   {
     "id": "prod-golf-54h-hanoi-3n5d",
@@ -1496,7 +1644,8 @@
         "title": "이른 아침 한국 공항 도착",
         "description": "한국 도착."
       }
-    ]
+    ],
+    "additionalImages": []
   },
   {
     "id": "prod-golf-54h-hochiminh-3n5d",
@@ -1579,7 +1728,8 @@
         "title": "이른 아침 한국 공항 도착",
         "description": "한국 도착."
       }
-    ]
+    ],
+    "additionalImages": []
   },
   {
     "id": "prod-golf-54h-dalat-3n5d",
@@ -1662,7 +1812,8 @@
         "title": "이른 아침 한국 공항 도착",
         "description": "한국 도착."
       }
-    ]
+    ],
+    "additionalImages": []
   },
   {
     "id": "prod-golf-54h-phuquoc-3n5d",
@@ -1745,7 +1896,8 @@
         "title": "이른 아침 한국 공항 도착",
         "description": "한국 도착."
       }
-    ]
+    ],
+    "additionalImages": []
   },
   {
     "id": "prod-danang-pkg-01",
@@ -5942,5 +6094,123 @@
         "hotel": "개별 숙소"
       }
     ]
+  },
+  {
+    "id": "prod-1787849206215",
+    "title": "[새등록] [다낭/독채풀빌라] 미케비치1111111",
+    "subTitle": "전용 대형 프라이빗 수영장 + 24시간 버틀러 + 매일 전신 마사지 90분 + 단독 차량 & 가이드 올포함",
+    "category": "풀빌라",
+    "region": "중부",
+    "city": "다낭",
+    "priceKRW": 315000,
+    "priceVND": 5929185,
+    "duration": "",
+    "imageUrl": "/uploads/photo_1787849366639_0_lnvubr.jpg",
+    "additionalImages": [
+      "/uploads/photo_1787849384457_0_zizfqg.jpg",
+      "/uploads/photo_1787849384522_0_rxp2ok.jpg",
+      "/uploads/photo_1787849384701_0_b07ob1.jpg",
+      "/uploads/photo_1787849384703_0_xlaevv.jpg",
+      "/uploads/photo_1787849384471_0_l1yz7u.jpg",
+      "/uploads/photo_1787849384564_0_s6vxsd.jpg",
+      "/uploads/photo_1787849385514_0_czarst.jpg",
+      "/uploads/photo_1787849385510_0_fhfgio.jpg",
+      "/uploads/photo_1787849385554_0_j054nl.jpg",
+      "/uploads/photo_1787849385544_0_w1m3gs.jpg",
+      "/uploads/photo_1787849385528_0_9ng4d7.jpg",
+      "/uploads/photo_1787849384714_0_aw52zm.jpg",
+      "/uploads/photo_1787849385281_0_mgxoek.jpg",
+      "/uploads/photo_1787849384438_0_70e6f2.jpg",
+      "/uploads/photo_1787849384650_0_9uo3e6.jpg",
+      "/uploads/photo_1787849384773_0_twyv4m.jpg",
+      "/uploads/photo_1787849384605_0_kikk6q.jpg",
+      "/uploads/photo_1787849384602_0_mwu40r.jpg",
+      "/uploads/photo_1787849384607_0_6laioh.jpg",
+      "/uploads/photo_1787849384665_0_8l9ayp.jpg",
+      "/uploads/photo_1787849384385_0_rkekcd.jpg",
+      "/uploads/photo_1787849384667_0_ux2oc6.jpg",
+      "/uploads/photo_1787849384670_0_zj0dsb.jpg",
+      "/uploads/photo_1787849384611_0_e1tcqj.jpg",
+      "/uploads/photo_1787849384482_0_fsnuul.jpg",
+      "/uploads/photo_1787849384674_0_076sxr.jpg",
+      "/uploads/photo_1787849384875_0_h9yx81.jpg",
+      "/uploads/photo_1787849384678_0_2ntv9h.jpg",
+      "/uploads/photo_1787849384860_0_1bpeg1.jpg",
+      "/uploads/photo_1787849384681_0_0m0l00.jpg",
+      "/uploads/photo_1787849384630_0_yd4mw2.jpg",
+      "/uploads/photo_1787849385573_0_on41h5.jpg",
+      "/uploads/photo_1787849384687_0_jjlizo.jpg",
+      "/uploads/photo_1787849384867_0_5nyoqb.jpg"
+    ],
+    "rating": 5,
+    "reviewCount": 94,
+    "isPopular": true,
+    "isHotDeal": true,
+    "discountPercent": 15,
+    "departureCities": [
+      "인천",
+      "부산",
+      "대구",
+      "청주"
+    ],
+    "tags": [
+      "#다낭풀빌라",
+      "#독채풀빌라",
+      "#오션뷰",
+      "#가족여행",
+      "#프라이빗수영장",
+      "#바비큐파티"
+    ],
+    "description": "다낭 최고급 미케비치 해변가에 위치한 2222222222222222222베드룸 럭셔리 단독 풀빌라입니다. 다른 투숙객 없이 오직 우리 가족과 일행만을 위한 넓은 정원, 프라이빗 인피니티 풀, 풀사이드 바베큐 파티를 누려보세요.44444444444",
+    "included": [
+      "미케비치 6베드룸 럭셔리 독채 풀빌라  (단독 사용)"
+    ],
+    "excluded": [
+      "개인 경비 및 매너팁",
+      "항공권"
+    ],
+    "villaSpecs": {
+      "villaName": "다낭 미케비치 시그니처22222222",
+      "structureDescription": "마스터룸 2실 + 패밀리룸 1실 + 트윈룸 1실 (총 4객실 / 독립 욕실 4개 + 대형 거실 + 키친)",
+      "bedrooms": 4,
+      "bathrooms": 4,
+      "beds": "킹베드 3개 + 싱글베드 2개",
+      "maxOccupancy": 10,
+      "standardOccupancy": 8,
+      "privatePool": true,
+      "oceanView": false,
+      "areaSqm": 420,
+      "floors": 2,
+      "address": "",
+      "googleMapUrl": "23 Chế Lan Viên, Ngũ Hành Sơn, Đà Nẵng 550000 베트남",
+      "amenities": [
+        "프라이빗 수영장",
+        "넓은 거실 & 소파",
+        "풀옵션 주방 & 다이닝 룸",
+        "프라이빗 잔디 정원",
+        "야외 바비큐(BBQ) 그릴 시설",
+        "스마트 TV & 넷플릭스",
+        "24시간 전담 버틀러",
+        "초고속 Wi-Fi",
+        "프라이빗 전용 수영장",
+        "야외 바비큐(BBQ) 시설",
+        "세탁기 & 건조기",
+        "프라이빗 정원 & 테라스",
+        "풀 키친 (주방 조리시설)",
+        "초고속 무료 Wi-Fi",
+        "대형 냉장고 & 전자레인지",
+        "스마트 TV (넷플릭스)"
+      ],
+      "checkInTime": "14:00",
+      "checkOutTime": "11:00",
+      "breakfastIncluded": false,
+      "airbnbUrl": "https://www.airbnb.co.kr/rooms/1596807485988738548?adults=8&search_mode=regular_search&source_impression_id=p3_1773058617_P3xK6pEU9aoIJDMS&previous_page_section_name=1000&federated_search_id=a2420d66-c7ca-4754-98c4-1f72afdd15e6&guests=1&check_in=2026-10-13&check_out=2026-10-14",
+      "hostLanguage": " 베트남어 지원 (24시간 카카오톡 실시간 응대)"
+    },
+    "itinerary": [],
+    "createdAt": "2026-08-27T16:46:46.215Z",
+    "airbnbUrl": "https://www.airbnb.co.kr/rooms/1596807485988738548?adults=8&search_mode=regular_search&source_impression_id=p3_1773058617_P3xK6pEU9aoIJDMS&previous_page_section_name=1000&federated_search_id=a2420d66-c7ca-4754-98c4-1f72afdd15e6&guests=1&check_in=2026-10-13&check_out=2026-10-14",
+    "googleMapUrl": "23 Chế Lan Viên, Ngũ Hành Sơn, Đà Nẵng 550000 베트남",
+    "address": ""
   }
 ]
