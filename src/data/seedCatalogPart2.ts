@@ -14,7 +14,7 @@ export const COMPREHENSIVE_CATALOG_PART2: Product[] = [
     priceKRW: 850000,
     priceVND: 15700000,
     duration: '3박 5일',
-    imageUrl: "/images/phuquoc_sunset.jpg",
+    imageUrl: "/images/phuquoc_cablecar.jpg",
     additionalImages: [
       'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1200&q=80'
     ],
@@ -75,7 +75,7 @@ export const COMPREHENSIVE_CATALOG_PART2: Product[] = [
     priceKRW: 890000,
     priceVND: 16500000,
     duration: '4박 5일',
-    imageUrl: "/images/phuquoc_sunset.jpg",
+    imageUrl: "/images/phuquoc_island_hopping.jpg",
     additionalImages: [
       'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80'
     ],
@@ -134,7 +134,7 @@ export const COMPREHENSIVE_CATALOG_PART2: Product[] = [
     priceKRW: 1150000,
     priceVND: 21300000,
     duration: '3박 5일',
-    imageUrl: "/images/vietnam_golf_resort.jpg",
+    imageUrl: "/images/vietnam_city_villa_1787099231914.jpg",
     additionalImages: [
       'https://images.unsplash.com/photo-1535131749006-b7f58c99034b?auto=format&fit=crop&w=1200&q=80'
     ],
@@ -200,7 +200,7 @@ export const COMPREHENSIVE_CATALOG_PART2: Product[] = [
     priceKRW: 1450000,
     priceVND: 27000000,
     duration: '4박 5일',
-    imageUrl: "/images/vietnam_golf_resort.jpg",
+    imageUrl: "/images/bangioc.jpg",
     additionalImages: [
       'https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?auto=format&fit=crop&w=1200&q=80'
     ],
@@ -274,7 +274,7 @@ export const COMPREHENSIVE_CATALOG_PART2: Product[] = [
     priceKRW: 990000,
     priceVND: 18400000,
     duration: '3박 5일',
-    imageUrl: "/images/vietnam_beach_villa.jpg",
+    imageUrl: "/images/villa_phuquoc_saobeach.jpg",
     additionalImages: [
       'https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=1200&q=80'
     ],
@@ -348,7 +348,7 @@ export const COMPREHENSIVE_CATALOG_PART2: Product[] = [
     priceKRW: 1200000,
     priceVND: 22300000,
     duration: '3박 5일',
-    imageUrl: "/images/vietnam_beach_villa.jpg",
+    imageUrl: "/images/villa_phuquoc_longbeach.jpg",
     additionalImages: [
       'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80'
     ],
@@ -421,7 +421,7 @@ export const COMPREHENSIVE_CATALOG_PART2: Product[] = [
     priceKRW: 95000,
     priceVND: 1760000,
     duration: '1일 데이투어',
-    imageUrl: "/images/phuquoc_sunset.jpg",
+    imageUrl: "/images/phuquoc_sunset_cablecar_1787098424693.jpg",
     additionalImages: [
       'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80'
     ],
@@ -460,7 +460,7 @@ export const COMPREHENSIVE_CATALOG_PART2: Product[] = [
     priceKRW: 180000,
     priceVND: 3350000,
     duration: '1일 (10시간)',
-    imageUrl: "/images/phuquoc_sunset.jpg",
+    imageUrl: "/images/phuquoc_starfish_beach.jpg",
     additionalImages: [
       'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80'
     ],
@@ -562,7 +562,7 @@ export const COMPREHENSIVE_CATALOG_PART2: Product[] = [
     priceKRW: 720000,
     priceVND: 13400000,
     duration: '4박 5일',
-    imageUrl: "/images/halong_cruise.jpg",
+    imageUrl: "/images/halong_kayak_bay.jpg",
     additionalImages: [
       'https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1200&q=80'
     ],
@@ -621,7 +621,7 @@ export const COMPREHENSIVE_CATALOG_PART2: Product[] = [
     priceKRW: 1250000,
     priceVND: 23200000,
     duration: '3박 5일',
-    imageUrl: "/images/vietnam_golf_resort.jpg",
+    imageUrl: "/images/ha_giang_mapileng_1787098378307.jpg",
     additionalImages: [
       'https://images.unsplash.com/photo-1535131749006-b7f58c99034b?auto=format&fit=crop&w=1200&q=80'
     ],
@@ -687,7 +687,7 @@ export const COMPREHENSIVE_CATALOG_PART2: Product[] = [
     priceKRW: 1120000,
     priceVND: 20800000,
     duration: '3박 4일',
-    imageUrl: "/images/vietnam_golf_resort.jpg",
+    imageUrl: "/images/golf_halong_flc.jpg",
     additionalImages: [
       'https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?auto=format&fit=crop&w=1200&q=80'
     ],
@@ -754,7 +754,7 @@ export const COMPREHENSIVE_CATALOG_PART2: Product[] = [
     priceKRW: 780000,
     priceVND: 14500000,
     duration: '3박 4일',
-    imageUrl: "/images/vietnam_city_villa.jpg",
+    imageUrl: "/images/villa_hanoi_bavi.jpg",
     additionalImages: [
       'https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=1200&q=80'
     ],
@@ -827,7 +827,7 @@ export const COMPREHENSIVE_CATALOG_PART2: Product[] = [
     priceKRW: 880000,
     priceVND: 16400000,
     duration: '3박 4일',
-    imageUrl: "/images/vietnam_city_villa.jpg",
+    imageUrl: "/images/villa_halong_flamingo.jpg",
     additionalImages: [
       'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=1200&q=80'
     ],
@@ -900,7 +900,7 @@ export const COMPREHENSIVE_CATALOG_PART2: Product[] = [
     priceKRW: 99000,
     priceVND: 1840000,
     duration: '당일 투어 (약 10시간)',
-    imageUrl: "/images/halong_cruise.jpg",
+    imageUrl: "/images/halong_emerald_cruise_1787097807698.jpg",
     additionalImages: [
       'https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=1200&q=80'
     ],
@@ -940,7 +940,7 @@ export const COMPREHENSIVE_CATALOG_PART2: Product[] = [
     priceKRW: 85000,
     priceVND: 1580000,
     duration: '당일 투어',
-    imageUrl: "/images/ninhbinh_trangan.jpg",
+    imageUrl: "/images/ninh_binh_trangan_1787098412494.jpg",
     additionalImages: [
       'https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&w=1200&q=80'
     ],
