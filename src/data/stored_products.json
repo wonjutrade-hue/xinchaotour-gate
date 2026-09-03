@@ -2658,9 +2658,11 @@
     "priceKRW": 980000,
     "priceVND": 18200000,
     "duration": "3박 5일",
-    "imageUrl": "/images/villa_danang_mykhe.jpg",
+    "imageUrl": "/images/vietnam_beach_villa.jpg",
     "additionalImages": [
-      "/images/villa_danang_mykhe.jpg"
+      "/images/vietnam_beach_villa.jpg",
+      "/images/villa_danang_mykhe.jpg",
+      "https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 5,
     "reviewCount": 94,
@@ -2705,8 +2707,8 @@
       "oceanView": true,
       "areaSqm": 420,
       "floors": 2,
-      "address": "Vo Nguyen Giap, Son Tra, Da Nang, Vietnam",
-      "googleMapUrl": "https://maps.google.com/?q=My+Khe+Beach+Da+Nang",
+      "address": "23 Chế Lan Viên, Ngũ Hành Sơn, Đà Nẵng 550000 베트남",
+      "googleMapUrl": "https://maps.google.com/?q=23+Che+Lan+Vien+Ngu+Hanh+Son+Da+Nang",
       "amenities": [
         "프라이빗 수영장",
         "넓은 거실 & 소파",
@@ -2718,7 +2720,8 @@
         "초고속 Wi-Fi"
       ],
       "checkInTime": "15:00",
-      "checkOutTime": "11:00"
+      "checkOutTime": "11:00",
+      "airbnbUrl": "https://www.airbnb.co.kr/rooms/1596807485988738548"
     },
     "itinerary": [
       {
@@ -2763,9 +2766,11 @@
     "priceKRW": 1350000,
     "priceVND": 25000000,
     "duration": "3박 5일",
-    "imageUrl": "/images/villa_danang_mansion.jpg",
+    "imageUrl": "/images/vietnam_city_villa.jpg",
     "additionalImages": [
-      "/images/villa_danang_mansion.jpg"
+      "/images/vietnam_city_villa.jpg",
+      "/images/villa_danang_mansion.jpg",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 5,
     "reviewCount": 48,
@@ -6610,7 +6615,7 @@
   },
   {
     "id": "prod-1787849206215",
-    "title": "[새등록] [다낭/독채풀빌라] 미케비치1111111",
+    "title": "[다낭/독채풀빌라] 미케비치 시그니처 4베드룸 럭셔리 풀빌라",
     "subTitle": "전용 대형 프라이빗 수영장 + 24시간 버틀러 + 매일 전신 마사지 90분 + 단독 차량 & 가이드 올포함",
     "category": "풀빌라",
     "region": "중부",

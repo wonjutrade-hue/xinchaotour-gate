@@ -399,10 +399,11 @@ export const COMPREHENSIVE_CATALOG: Product[] = [
     priceKRW: 980000,
     priceVND: 18200000,
     duration: '3박 5일',
-    imageUrl: "/images/villa_danang_mykhe.jpg",
+    imageUrl: "/images/vietnam_beach_villa.jpg",
     additionalImages: [
-      'https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80'
+      '/images/vietnam_beach_villa.jpg',
+      '/images/villa_danang_mykhe.jpg',
+      'https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=1200&q=80'
     ],
     rating: 5.0,
     reviewCount: 94,
@@ -432,8 +433,9 @@ export const COMPREHENSIVE_CATALOG: Product[] = [
       oceanView: true,
       areaSqm: 420,
       floors: 2,
-      address: 'Vo Nguyen Giap, Son Tra, Da Nang, Vietnam',
-      googleMapUrl: 'https://maps.google.com/?q=My+Khe+Beach+Da+Nang',
+      address: '23 Chế Lan Viên, Ngũ Hành Sơn, Đà Nẵng 550000 베트남',
+      googleMapUrl: 'https://maps.google.com/?q=23+Che+Lan+Vien+Ngu+Hanh+Son+Da+Nang',
+      airbnbUrl: 'https://www.airbnb.co.kr/rooms/1596807485988738548',
       amenities: [
         '프라이빗 수영장', '넓은 거실 & 소파', '풀옵션 주방 & 다이닝 룸',
         '프라이빗 잔디 정원', '야외 바비큐(BBQ) 그릴 시설', '스마트 TV & 넷플릭스',
@@ -483,8 +485,10 @@ export const COMPREHENSIVE_CATALOG: Product[] = [
     priceKRW: 1350000,
     priceVND: 25000000,
     duration: '3박 5일',
-    imageUrl: "/images/villa_danang_mansion.jpg",
+    imageUrl: "/images/vietnam_city_villa.jpg",
     additionalImages: [
+      '/images/vietnam_city_villa.jpg',
+      '/images/villa_danang_mansion.jpg',
       'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80'
     ],
     rating: 5.0,

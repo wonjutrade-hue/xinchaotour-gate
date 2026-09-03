@@ -48,9 +48,9 @@ export const MASTER_UNIQUE_PRODUCT_IMAGES: Record<string, string> = {
   "prod-saigon-free-01": "/images/mekong_river_boat_1788400683530.jpg",
   "prod-saigon-free-02": "/images/muine_sand_dunes_1787098437757.jpg",
 
-  // 4. VILLAS (EACH 100% UNIQUE)
-  "prod-danang-villa-01": "/images/villa_danang_mykhe.jpg",
-  "prod-danang-villa-02": "/images/villa_danang_mansion.jpg",
+  // 4. VILLAS (EACH 100% UNIQUE - ORIGINAL USER PHOTOS RESTORED)
+  "prod-danang-villa-01": "/images/vietnam_beach_villa.jpg", // Original User Danang Beach Villa
+  "prod-danang-villa-02": "/images/vietnam_city_villa.jpg", // Original User Danang City/Mansion Villa
   "prod-nhatrang-villa-01": "/images/villa_nhatrang_bay.jpg",
   "prod-nhatrang-villa-02": "/images/villa_camranh_ocean.jpg",
   "prod-phuquoc-villa-01": "/images/villa_phuquoc_saobeach.jpg",
@@ -98,17 +98,42 @@ export const MASTER_UNIQUE_PRODUCT_IMAGES: Record<string, string> = {
   "prod-hanoi-golf-02": "/images/golf_halong_flc.jpg",
   "prod-dalat-golf-01": "/images/hagiang.jpg",
   "prod-dalat-golf-02": "/images/cao_bang_bangioc_1787098400108.jpg",
-  "prod-sapa-golf-01": "/images/vietnam_city_villa.jpg",
+  "prod-sapa-golf-01": "/images/sapa_fansipan.jpg",
   "prod-sapa-golf-02": "/images/hue_imperial_citadel_1788400737935.jpg",
   "prod-saigon-golf-01": "/images/danang_city_dragon_1788400718422.jpg",
   "prod-saigon-golf-02": "/images/golf_muine_pga.jpg"
 };
 
 export function getProductFallbackImage(category?: string, city?: string): string {
+  // 1. POOL VILLA MUST ALWAYS HAVE REAL POOL VILLA PHOTO
+  if (category === '풀빌라') {
+    if (city?.includes('다낭')) return '/images/vietnam_beach_villa.jpg';
+    if (city?.includes('나트랑')) return '/images/villa_nhatrang_bay.jpg';
+    if (city?.includes('푸꾸옥')) return '/images/villa_phuquoc_saobeach.jpg';
+    if (city?.includes('달랏')) return '/images/villa_dalat_tuyenlam.jpg';
+    if (city?.includes('하노이')) return '/images/villa_hanoi_bavi.jpg';
+    if (city?.includes('사파')) return '/images/villa_sapa_topas.jpg';
+    if (city?.includes('호치민') || city?.includes('사이공')) return '/images/villa_saigon_river.jpg';
+    return '/images/vietnam_beach_villa.jpg';
+  }
+
+  // 2. GOLF TOUR MUST ALWAYS HAVE REAL GOLF PHOTO
+  if (category === '골프투어') {
+    if (city?.includes('다낭')) return '/images/golf_brg_danang.jpg';
+    if (city?.includes('호이안')) return '/images/golf_hoiana_shores.jpg';
+    if (city?.includes('하노이')) return '/images/golf_skylake_hanoi.jpg';
+    if (city?.includes('나트랑')) return '/images/golf_kn_links_camranh.jpg';
+    if (city?.includes('호치민')) return '/images/golf_tansonnhat_saigon.jpg';
+    if (city?.includes('달랏')) return '/images/golf_dalat_palace.jpg';
+    if (city?.includes('푸꾸옥')) return '/images/golf_vinpearl_phuquoc.jpg';
+    return '/images/golf_brg_danang.jpg';
+  }
+
+  // 3. City-specific scenic spots for packages and free tours
   if (city) {
     if (city.includes('나트랑')) return '/images/nhatrang_bay.jpg';
     if (city.includes('달랏')) return '/images/dalat.jpg';
-    if (city.includes('다낭')) return '/images/danang_golden_bridge.jpg';
+    if (city.includes('다낭')) return '/images/danang_city_dragon.jpg';
     if (city.includes('호이안')) return '/images/hoian_lantern.jpg';
     if (city.includes('푸꾸옥')) return '/images/phuquoc_sunset.jpg';
     if (city.includes('사파')) return '/images/sapa_fansipan.jpg';
@@ -117,8 +142,6 @@ export function getProductFallbackImage(category?: string, city?: string): strin
     if (city.includes('무이네')) return '/images/muine_sand.jpg';
     if (city.includes('호치민')) return '/images/saigon_skyline_city.jpg';
   }
-  if (category === '골프투어') return '/images/golf_brg_danang.jpg';
-  if (category === '풀빌라') return '/images/villa_danang_mykhe.jpg';
   return '/images/danang_golden_bridge.jpg';
 }
 

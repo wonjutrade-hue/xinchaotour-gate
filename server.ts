@@ -292,8 +292,9 @@ async function startServer() {
   app.use(express.json({ limit: '100mb' }));
   app.use(express.urlencoded({ limit: '100mb', extended: true }));
 
-  // Serve static uploaded images
+  // Serve static uploaded images and public images
   app.use('/uploads', express.static(UPLOADS_DIR));
+  app.use('/images', express.static(path.join(process.cwd(), 'public/images')));
 
   // 0. Batch Upload Images
   app.post('/api/upload-images', (req: Request, res: Response) => {
