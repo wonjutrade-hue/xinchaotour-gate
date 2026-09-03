@@ -374,11 +374,20 @@ async function startServer() {
 
   // 1. Get Products
   app.get('/api/products', (req: Request, res: Response) => {
+    if (req.query.fresh === 'true' || req.query.reload === '1' || products.length === 0) {
+      products = loadStoredProducts();
+      lastDataSyncTimestamp = Date.now();
+    }
     res.json({ success: true, count: products.length, products, lastUpdated: lastDataSyncTimestamp });
   });
 
   // 1-B. Unified Cross-Device Sync Endpoint (PC ↔ Mobile)
   app.get('/api/sync', (req: Request, res: Response) => {
+    if (req.query.fresh === 'true' || req.query.reload === '1' || products.length === 0) {
+      products = loadStoredProducts();
+      inquiries = loadStoredInquiries();
+      lastDataSyncTimestamp = Date.now();
+    }
     res.json({
       success: true,
       timestamp: lastDataSyncTimestamp,

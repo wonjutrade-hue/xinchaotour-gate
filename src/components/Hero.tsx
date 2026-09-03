@@ -278,29 +278,30 @@ export const Hero: React.FC<HeroProps> = ({
 
   return (
     <div 
-      className="relative overflow-hidden min-h-[560px] sm:min-h-[620px] lg:min-h-[670px] flex flex-col justify-between select-none bg-slate-950"
+      className="relative overflow-hidden min-h-[560px] sm:min-h-[620px] lg:min-h-[670px] flex flex-col justify-between select-none bg-slate-900"
       onMouseEnter={() => setIsAutoPlay(false)}
       onMouseLeave={() => setIsAutoPlay(true)}
     >
-      {/* Background Image with Luminous Tropical Overlays */}
+      {/* Background Image with Bright Luminous Tropical Overlays */}
       <div className="absolute inset-0 z-0">
         <img
           key={currentBg.id}
           src={currentBg.image}
           alt={currentBg.title}
           referrerPolicy="no-referrer"
-          className="w-full h-full object-cover transition-all duration-1000 transform scale-105"
+          className="w-full h-full object-cover transition-all duration-1000 transform scale-105 filter brightness-110 contrast-[1.03] saturate-110"
           onError={(e) => {
             (e.target as HTMLImageElement).src = goldenBridgeImg;
           }}
         />
-        {/* Crisp multi-gradient overlay preserving vivid natural lighting & readability */}
-        <div className="absolute inset-0 bg-gradient-to-r from-slate-950/90 via-slate-950/50 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-sky-950/30" />
+        {/* Bright, balanced gradient overlays that keep the background photo vivid and sunny */}
+        <div className="absolute inset-0 bg-gradient-to-r from-slate-950/65 via-slate-950/25 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-black/10" />
         
-        {/* Soft tropical ambient highlights */}
-        <div className="absolute top-10 right-1/4 w-96 h-96 bg-amber-400/15 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-10 right-10 w-80 h-80 bg-teal-400/20 rounded-full blur-3xl pointer-events-none" />
+        {/* Warm sunny tropical ambient highlights */}
+        <div className="absolute -top-10 right-1/4 w-[550px] h-[550px] bg-amber-300/25 rounded-full blur-3xl pointer-events-none mix-blend-screen" />
+        <div className="absolute bottom-4 right-8 w-96 h-96 bg-sky-300/20 rounded-full blur-3xl pointer-events-none mix-blend-screen" />
+        <div className="absolute top-1/3 left-1/3 w-80 h-80 bg-teal-300/15 rounded-full blur-3xl pointer-events-none mix-blend-screen" />
       </div>
 
       {/* Prev / Next Quick Nav Arrows for Desktop */}
@@ -343,16 +344,16 @@ export const Hero: React.FC<HeroProps> = ({
           </div>
 
           {/* Meaningful Headline & Destination Slogan */}
-          <div className="space-y-2">
-            <h1 className="text-2xl sm:text-3xl md:text-5xl font-black text-white tracking-tight leading-[1.2] drop-shadow-xl">
+          <div className="space-y-2.5 p-4 sm:p-6 rounded-3xl bg-slate-950/35 backdrop-blur-md border border-white/10 shadow-2xl max-w-2xl">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white tracking-tight leading-[1.25] drop-shadow-[0_2px_8px_rgba(0,0,0,0.7)]">
               {currentBg.title}
             </h1>
             
-            <div className="text-sm sm:text-lg font-extrabold text-amber-300 leading-snug drop-shadow-md flex items-center gap-1.5">
+            <div className="text-sm sm:text-base md:text-lg font-extrabold text-amber-300 leading-snug drop-shadow-md flex items-center gap-1.5">
               <span>{currentBg.slogan}</span>
             </div>
 
-            <p className="text-xs sm:text-base text-slate-100 font-medium leading-relaxed drop-shadow-sm max-w-2xl">
+            <p className="text-xs sm:text-sm md:text-base text-slate-100 font-medium leading-relaxed drop-shadow-xs">
               {currentBg.subDescription}
             </p>
           </div>

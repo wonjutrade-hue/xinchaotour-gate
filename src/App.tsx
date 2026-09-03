@@ -50,7 +50,7 @@ import { getDisplayProductImage } from './lib/imageFallback';
 import { trackVisitorEvent } from './lib/analytics';
 
 const PRODUCTS_CACHE_KEY = 'xinchao_products_cache_master';
-const CURRENT_CATALOG_REVISION = '2026_09_03_v8';
+const CURRENT_CATALOG_REVISION = '2026_09_03_v9';
 
 function mergeProductsPreservingLocal(localList: Product[], incomingList: Product[]): { merged: Product[]; localWasNewer: boolean } {
   if (!incomingList || incomingList.length === 0) return { merged: localList, localWasNewer: false };
