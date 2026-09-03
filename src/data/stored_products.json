@@ -12,8 +12,7 @@
     "imageUrl": "/images/nhatrang_bay.jpg",
     "additionalImages": [
       "/images/dalat.jpg",
-      "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?auto=format&fit=crop&w=1200&q=80"
+      "/images/dalat_flower_garden.jpg"
     ],
     "rating": 5,
     "reviewCount": 296,
@@ -142,7 +141,7 @@
     "vehicleInfo": "우리 일행 단독 최신형 16인승 리무진 밴 (베테랑 전담 기사)",
     "guideInfo": "신짜오투어 현지 베트남 공인 한국어 1급 전담 가이드 풀케어",
     "travelTheme": "바다 휴양과 시원한 숲속 힐링을 한 번에 즐기는 NO쇼핑 VIP 단독 품격 콤보 패키지",
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -155,11 +154,10 @@
     "priceKRW": 950000,
     "priceVND": 17800000,
     "duration": "4박 6일",
-    "imageUrl": "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=1200&q=80",
+    "imageUrl": "/images/dalat.jpg",
     "additionalImages": [
-      "/images/dalat.jpg",
       "/images/nhatrang_bay.jpg",
-      "https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?auto=format&fit=crop&w=1200&q=80"
+      "/images/phanrang_desert_jeep.jpg"
     ],
     "rating": 5,
     "reviewCount": 312,
@@ -307,7 +305,7 @@
     "vehicleInfo": "우리 일행 단독 최신형 16인승 리무진 밴 (베테랑 전담 기사)",
     "guideInfo": "신짜오투어 현지 베트남 공인 한국어 1급 전담 가이드 풀케어",
     "travelTheme": "바다 호핑 레저와 고원 숲속 감성을 여유롭게 모두 정복하는 NO쇼핑 프리미엄 힐링 패키지",
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -323,8 +321,7 @@
     "imageUrl": "/images/danang_golden_bridge.jpg",
     "additionalImages": [
       "/images/hoian_lantern.jpg",
-      "/images/mykhe_beach.jpg",
-      "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&w=1200&q=80"
+      "/images/mykhe_beach.jpg"
     ],
     "rating": 5,
     "reviewCount": 384,
@@ -446,7 +443,7 @@
     "vehicleInfo": "우리 일행 단독 최신형 16인승 리무진 밴 (베테랑 전담 기사)",
     "guideInfo": "신짜오투어 베트남 현지 공인 한국어 1급 전담 가이드 풀케어",
     "travelTheme": "가족/부모님/연인/친구를 위한 NO쇼핑 VIP 단독 힐링 품격 패키지",
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -462,8 +459,7 @@
     "imageUrl": "/images/mykhe_beach.jpg",
     "additionalImages": [
       "/images/danang_golden_bridge.jpg",
-      "/images/hoian_lantern.jpg",
-      "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1200&q=80"
+      "/images/hoian_lantern.jpg"
     ],
     "rating": 4.9,
     "reviewCount": 278,
@@ -538,7 +534,7 @@
         "meal": "기내식"
       }
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -551,11 +547,10 @@
     "priceKRW": 490000,
     "priceVND": 9100000,
     "duration": "4박 6일",
-    "imageUrl": "https://images.unsplash.com/photo-1569154941061-e231b4725ef1?auto=format&fit=crop&w=1200&q=80",
+    "imageUrl": "/images/hue_imperial_citadel.jpg",
     "additionalImages": [
-      "/images/hoian_lantern.jpg",
       "/images/danang_golden_bridge.jpg",
-      "/images/mykhe_beach.jpg"
+      "/images/hoian_lantern.jpg"
     ],
     "rating": 5,
     "reviewCount": 142,
@@ -626,7 +621,7 @@
         "description": "한국 도착 후 안전하게 귀가합니다."
       }
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -642,8 +637,7 @@
     "imageUrl": "/images/dalat.jpg",
     "additionalImages": [
       "/images/nhatrang_bay.jpg",
-      "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?auto=format&fit=crop&w=1200&q=80"
+      "/images/dalat_flower_garden.jpg"
     ],
     "rating": 5,
     "reviewCount": 198,
@@ -715,7 +709,7 @@
         "description": "인천/지방 공항 도착."
       }
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -728,11 +722,10 @@
     "priceKRW": 590000,
     "priceVND": 11000000,
     "duration": "4박 6일",
-    "imageUrl": "/images/muine_sand.jpg",
+    "imageUrl": "/images/phanrang_desert_jeep.jpg",
     "additionalImages": [
       "/images/dalat.jpg",
-      "/images/nhatrang_bay.jpg",
-      "https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&w=1200&q=80"
+      "/images/nhatrang_bay.jpg"
     ],
     "rating": 5,
     "reviewCount": 165,
@@ -805,7 +798,7 @@
         "description": "한국 도착 후 안전 귀가."
       }
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -820,9 +813,8 @@
     "duration": "3박 5일",
     "imageUrl": "/images/halong_cruise.jpg",
     "additionalImages": [
-      "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80",
-      "/images/ninhbinh_trangan.jpg"
+      "/images/ninhbinh_trangan.jpg",
+      "/images/bangioc.jpg"
     ],
     "rating": 4.9,
     "reviewCount": 210,
@@ -886,7 +878,7 @@
         "description": "한국 도착."
       }
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -901,9 +893,8 @@
     "duration": "3박 5일",
     "imageUrl": "/images/muine_sand.jpg",
     "additionalImages": [
-      "https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=1200&q=80",
-      "/images/vietnam_beach_villa.jpg"
+      "/images/vietnam_city_villa.jpg",
+      "/images/mekong_river_boat.jpg"
     ],
     "rating": 4.9,
     "reviewCount": 184,
@@ -963,7 +954,7 @@
         "description": "한국 도착."
       }
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -976,7 +967,7 @@
     "priceKRW": 460000,
     "priceVND": 8500000,
     "duration": "3박 5일",
-    "imageUrl": "/images/sapa_fansipan.jpg",
+    "imageUrl": "/images/phuquoc_sunset.jpg",
     "rating": 5,
     "reviewCount": 230,
     "isPopular": true,
@@ -1037,11 +1028,10 @@
       }
     ],
     "additionalImages": [
-      "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1200&q=80"
+      "/images/vietnam_beach_villa.jpg",
+      "/images/nhatrang_bay.jpg"
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -1054,7 +1044,7 @@
     "priceKRW": 240000,
     "priceVND": 4500000,
     "duration": "1일 (18홀)",
-    "imageUrl": "https://images.unsplash.com/photo-1535131749006-b7f58c99034b?auto=format&fit=crop&w=1200&q=80",
+    "imageUrl": "/images/vietnam_golf_resort.jpg",
     "rating": 5,
     "reviewCount": 320,
     "isPopular": true,
@@ -1100,11 +1090,10 @@
       }
     ],
     "additionalImages": [
-      "/images/vietnam_golf_resort.jpg",
-      "/images/danang_golden_bridge.jpg",
-      "/images/mykhe_beach.jpg"
+      "/images/mykhe_beach.jpg",
+      "/images/danang_city_dragon.jpg"
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -1117,7 +1106,7 @@
     "priceKRW": 235000,
     "priceVND": 4400000,
     "duration": "1일 (18홀)",
-    "imageUrl": "https://images.unsplash.com/photo-1592919505780-303950717480?auto=format&fit=crop&w=1200&q=80",
+    "imageUrl": "/images/vietnam_golf_resort.jpg",
     "rating": 4.9,
     "reviewCount": 285,
     "isPopular": true,
@@ -1161,11 +1150,10 @@
       }
     ],
     "additionalImages": [
-      "/images/vietnam_golf_resort.jpg",
-      "/images/danang_golden_bridge.jpg",
-      "/images/mykhe_beach.jpg"
+      "/images/mykhe_beach.jpg",
+      "/images/danang_city_dragon.jpg"
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -1178,7 +1166,7 @@
     "priceKRW": 250000,
     "priceVND": 4650000,
     "duration": "1일 (18홀)",
-    "imageUrl": "https://images.unsplash.com/photo-1593111774240-d529f12cf4bb?auto=format&fit=crop&w=1200&q=80",
+    "imageUrl": "/images/vietnam_golf_resort.jpg",
     "rating": 5,
     "reviewCount": 310,
     "isPopular": true,
@@ -1221,11 +1209,10 @@
       }
     ],
     "additionalImages": [
-      "/images/vietnam_golf_resort.jpg",
-      "/images/danang_golden_bridge.jpg",
-      "/images/mykhe_beach.jpg"
+      "/images/mykhe_beach.jpg",
+      "/images/danang_city_dragon.jpg"
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -1238,7 +1225,7 @@
     "priceKRW": 270000,
     "priceVND": 5000000,
     "duration": "1일 (18홀)",
-    "imageUrl": "https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?auto=format&fit=crop&w=1200&q=80",
+    "imageUrl": "/images/vietnam_golf_resort.jpg",
     "rating": 5,
     "reviewCount": 260,
     "isPopular": true,
@@ -1281,11 +1268,10 @@
       }
     ],
     "additionalImages": [
-      "/images/vietnam_golf_resort.jpg",
-      "/images/danang_golden_bridge.jpg",
-      "/images/mykhe_beach.jpg"
+      "/images/mykhe_beach.jpg",
+      "/images/danang_city_dragon.jpg"
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -1298,7 +1284,7 @@
     "priceKRW": 220000,
     "priceVND": 4100000,
     "duration": "1일 (18홀)",
-    "imageUrl": "https://images.unsplash.com/photo-1596727366428-1b6c00d43a6d?auto=format&fit=crop&w=1200&q=80",
+    "imageUrl": "/images/vietnam_golf_resort.jpg",
     "rating": 4.9,
     "reviewCount": 215,
     "departureCities": [
@@ -1339,11 +1325,10 @@
       }
     ],
     "additionalImages": [
-      "/images/vietnam_golf_resort.jpg",
-      "/images/danang_golden_bridge.jpg",
-      "/images/mykhe_beach.jpg"
+      "/images/mykhe_beach.jpg",
+      "/images/danang_city_dragon.jpg"
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -1356,7 +1341,7 @@
     "priceKRW": 245000,
     "priceVND": 4550000,
     "duration": "1일 (18홀)",
-    "imageUrl": "https://images.unsplash.com/photo-1569154941061-e231b4725ef1?auto=format&fit=crop&w=1200&q=80",
+    "imageUrl": "/images/vietnam_golf_resort.jpg",
     "rating": 5,
     "reviewCount": 190,
     "departureCities": [
@@ -1398,11 +1383,10 @@
       }
     ],
     "additionalImages": [
-      "/images/hoian_lantern.jpg",
-      "/images/danang_golden_bridge.jpg",
-      "/images/mykhe_beach.jpg"
+      "/images/mykhe_beach.jpg",
+      "/images/danang_city_dragon.jpg"
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -1415,7 +1399,7 @@
     "priceKRW": 245000,
     "priceVND": 4550000,
     "duration": "1일 (18홀)",
-    "imageUrl": "https://images.unsplash.com/photo-1535131749006-b7f58c99034b?auto=format&fit=crop&w=1200&q=80",
+    "imageUrl": "/images/vietnam_golf_resort.jpg",
     "rating": 5,
     "reviewCount": 275,
     "isPopular": true,
@@ -1458,11 +1442,10 @@
       }
     ],
     "additionalImages": [
-      "/images/vietnam_golf_resort.jpg",
       "/images/nhatrang_bay.jpg",
-      "https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?auto=format&fit=crop&w=1200&q=80"
+      "/images/danang_city_dragon.jpg"
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -1475,7 +1458,7 @@
     "priceKRW": 240000,
     "priceVND": 4500000,
     "duration": "1일 (18홀)",
-    "imageUrl": "https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?auto=format&fit=crop&w=1200&q=80",
+    "imageUrl": "/images/vietnam_golf_resort.jpg",
     "rating": 5,
     "reviewCount": 290,
     "isPopular": true,
@@ -1518,11 +1501,10 @@
       }
     ],
     "additionalImages": [
-      "https://images.unsplash.com/photo-1592919505780-303950717480?auto=format&fit=crop&w=1200&q=80",
-      "/images/vietnam_golf_resort.jpg",
-      "/images/halong_cruise.jpg"
+      "/images/halong_cruise.jpg",
+      "/images/danang_city_dragon.jpg"
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -1535,7 +1517,7 @@
     "priceKRW": 230000,
     "priceVND": 4300000,
     "duration": "1일 (18홀)",
-    "imageUrl": "https://images.unsplash.com/photo-1592919505780-303950717480?auto=format&fit=crop&w=1200&q=80",
+    "imageUrl": "/images/vietnam_golf_resort.jpg",
     "rating": 4.9,
     "reviewCount": 240,
     "departureCities": [
@@ -1577,11 +1559,10 @@
       }
     ],
     "additionalImages": [
-      "/images/vietnam_golf_resort.jpg",
-      "https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?auto=format&fit=crop&w=1200&q=80",
-      "/images/vietnam_city_villa.jpg"
+      "/images/vietnam_city_villa.jpg",
+      "/images/danang_city_dragon.jpg"
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -1594,7 +1575,7 @@
     "priceKRW": 235000,
     "priceVND": 4400000,
     "duration": "1일 (18홀)",
-    "imageUrl": "https://images.unsplash.com/photo-1593111774240-d529f12cf4bb?auto=format&fit=crop&w=1200&q=80",
+    "imageUrl": "/images/vietnam_golf_resort.jpg",
     "rating": 5,
     "reviewCount": 220,
     "isPopular": true,
@@ -1638,10 +1619,9 @@
     ],
     "additionalImages": [
       "/images/dalat.jpg",
-      "/images/vietnam_golf_resort.jpg",
-      "https://images.unsplash.com/photo-1592919505780-303950717480?auto=format&fit=crop&w=1200&q=80"
+      "/images/danang_city_dragon.jpg"
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -1654,7 +1634,7 @@
     "priceKRW": 240000,
     "priceVND": 4500000,
     "duration": "1일 (18홀)",
-    "imageUrl": "https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?auto=format&fit=crop&w=1200&q=80",
+    "imageUrl": "/images/vietnam_golf_resort.jpg",
     "rating": 4.9,
     "reviewCount": 205,
     "departureCities": [
@@ -1696,11 +1676,10 @@
       }
     ],
     "additionalImages": [
-      "/images/vietnam_golf_resort.jpg",
       "/images/phuquoc_sunset.jpg",
-      "https://images.unsplash.com/photo-1535131749006-b7f58c99034b?auto=format&fit=crop&w=1200&q=80"
+      "/images/danang_city_dragon.jpg"
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -1713,11 +1692,10 @@
     "priceKRW": 990000,
     "priceVND": 18400000,
     "duration": "3박 5일",
-    "imageUrl": "https://images.unsplash.com/photo-1592919505780-303950717480?auto=format&fit=crop&w=1200&q=80",
+    "imageUrl": "/images/vietnam_golf_resort.jpg",
     "additionalImages": [
-      "/images/vietnam_golf_resort.jpg",
-      "/images/danang_golden_bridge.jpg",
-      "/images/mykhe_beach.jpg"
+      "/images/mykhe_beach.jpg",
+      "/images/danang_city_dragon.jpg"
     ],
     "rating": 5,
     "reviewCount": 380,
@@ -1806,7 +1784,7 @@
         "description": "오전 한국 공항 도착 후 귀가."
       }
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -1819,11 +1797,10 @@
     "priceKRW": 970000,
     "priceVND": 18000000,
     "duration": "3박 5일",
-    "imageUrl": "https://images.unsplash.com/photo-1592919505780-303950717480?auto=format&fit=crop&w=1200&q=80",
+    "imageUrl": "/images/vietnam_golf_resort.jpg",
     "additionalImages": [
-      "/images/vietnam_golf_resort.jpg",
-      "/images/danang_golden_bridge.jpg",
-      "/images/mykhe_beach.jpg"
+      "/images/mykhe_beach.jpg",
+      "/images/danang_city_dragon.jpg"
     ],
     "rating": 4.9,
     "reviewCount": 245,
@@ -1897,7 +1874,7 @@
         "description": "한국 도착."
       }
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -1910,7 +1887,7 @@
     "priceKRW": 980000,
     "priceVND": 18200000,
     "duration": "3박 5일",
-    "imageUrl": "https://images.unsplash.com/photo-1535131749006-b7f58c99034b?auto=format&fit=crop&w=1200&q=80",
+    "imageUrl": "/images/vietnam_golf_resort.jpg",
     "rating": 5,
     "reviewCount": 260,
     "isPopular": true,
@@ -1986,11 +1963,10 @@
       }
     ],
     "additionalImages": [
-      "/images/vietnam_golf_resort.jpg",
       "/images/nhatrang_bay.jpg",
-      "https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?auto=format&fit=crop&w=1200&q=80"
+      "/images/danang_city_dragon.jpg"
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -2003,7 +1979,7 @@
     "priceKRW": 990000,
     "priceVND": 18400000,
     "duration": "3박 5일",
-    "imageUrl": "https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?auto=format&fit=crop&w=1200&q=80",
+    "imageUrl": "/images/vietnam_golf_resort.jpg",
     "rating": 4.9,
     "reviewCount": 230,
     "isPopular": true,
@@ -2078,11 +2054,10 @@
       }
     ],
     "additionalImages": [
-      "https://images.unsplash.com/photo-1592919505780-303950717480?auto=format&fit=crop&w=1200&q=80",
-      "/images/vietnam_golf_resort.jpg",
-      "/images/halong_cruise.jpg"
+      "/images/halong_cruise.jpg",
+      "/images/danang_city_dragon.jpg"
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -2095,7 +2070,7 @@
     "priceKRW": 960000,
     "priceVND": 17800000,
     "duration": "3박 5일",
-    "imageUrl": "https://images.unsplash.com/photo-1592919505780-303950717480?auto=format&fit=crop&w=1200&q=80",
+    "imageUrl": "/images/vietnam_golf_resort.jpg",
     "rating": 4.9,
     "reviewCount": 210,
     "isPopular": true,
@@ -2168,11 +2143,10 @@
       }
     ],
     "additionalImages": [
-      "/images/vietnam_golf_resort.jpg",
-      "https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?auto=format&fit=crop&w=1200&q=80",
-      "/images/vietnam_city_villa.jpg"
+      "/images/vietnam_city_villa.jpg",
+      "/images/danang_city_dragon.jpg"
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -2185,7 +2159,7 @@
     "priceKRW": 980000,
     "priceVND": 18200000,
     "duration": "3박 5일",
-    "imageUrl": "https://images.unsplash.com/photo-1593111774240-d529f12cf4bb?auto=format&fit=crop&w=1200&q=80",
+    "imageUrl": "/images/vietnam_golf_resort.jpg",
     "rating": 5,
     "reviewCount": 195,
     "isPopular": true,
@@ -2259,10 +2233,9 @@
     ],
     "additionalImages": [
       "/images/dalat.jpg",
-      "/images/vietnam_golf_resort.jpg",
-      "https://images.unsplash.com/photo-1592919505780-303950717480?auto=format&fit=crop&w=1200&q=80"
+      "/images/danang_city_dragon.jpg"
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -2275,7 +2248,7 @@
     "priceKRW": 990000,
     "priceVND": 18400000,
     "duration": "3박 5일",
-    "imageUrl": "https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?auto=format&fit=crop&w=1200&q=80",
+    "imageUrl": "/images/vietnam_golf_resort.jpg",
     "rating": 5,
     "reviewCount": 180,
     "isPopular": true,
@@ -2348,11 +2321,10 @@
       }
     ],
     "additionalImages": [
-      "/images/vietnam_golf_resort.jpg",
       "/images/phuquoc_sunset.jpg",
-      "https://images.unsplash.com/photo-1535131749006-b7f58c99034b?auto=format&fit=crop&w=1200&q=80"
+      "/images/danang_city_dragon.jpg"
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -2368,8 +2340,7 @@
     "imageUrl": "/images/danang_golden_bridge.jpg",
     "additionalImages": [
       "/images/hoian_lantern.jpg",
-      "/images/mykhe_beach.jpg",
-      "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&w=1200&q=80"
+      "/images/mykhe_beach.jpg"
     ],
     "rating": 5,
     "reviewCount": 312,
@@ -2439,7 +2410,7 @@
         "vehicle": "16인승 단독 전용 차량"
       }
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -2452,11 +2423,10 @@
     "priceKRW": 780000,
     "priceVND": 14500000,
     "duration": "4박 5일",
-    "imageUrl": "https://images.unsplash.com/photo-1569154941061-e231b4725ef1?auto=format&fit=crop&w=1200&q=80",
+    "imageUrl": "/images/hue_imperial_citadel.jpg",
     "additionalImages": [
-      "/images/hoian_lantern.jpg",
       "/images/danang_golden_bridge.jpg",
-      "/images/mykhe_beach.jpg"
+      "/images/hoian_lantern.jpg"
     ],
     "rating": 4.9,
     "reviewCount": 128,
@@ -2516,7 +2486,7 @@
         "hotel": "기내박"
       }
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -2529,11 +2499,10 @@
     "priceKRW": 1190000,
     "priceVND": 22000000,
     "duration": "3박 5일",
-    "imageUrl": "https://images.unsplash.com/photo-1592919505780-303950717480?auto=format&fit=crop&w=1200&q=80",
+    "imageUrl": "/images/vietnam_golf_resort.jpg",
     "additionalImages": [
-      "/images/vietnam_golf_resort.jpg",
-      "/images/danang_golden_bridge.jpg",
-      "/images/mykhe_beach.jpg"
+      "/images/mykhe_beach.jpg",
+      "/images/danang_city_dragon.jpg"
     ],
     "rating": 4.9,
     "reviewCount": 154,
@@ -2604,7 +2573,7 @@
         "hotel": "기내박"
       }
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -2617,11 +2586,10 @@
     "priceKRW": 1590000,
     "priceVND": 29500000,
     "duration": "4박 6일",
-    "imageUrl": "https://images.unsplash.com/photo-1592919505780-303950717480?auto=format&fit=crop&w=1200&q=80",
+    "imageUrl": "/images/vietnam_golf_resort.jpg",
     "additionalImages": [
-      "/images/vietnam_golf_resort.jpg",
-      "/images/danang_golden_bridge.jpg",
-      "/images/mykhe_beach.jpg"
+      "/images/mykhe_beach.jpg",
+      "/images/danang_city_dragon.jpg"
     ],
     "rating": 5,
     "reviewCount": 86,
@@ -2709,7 +2677,7 @@
         "hotel": "기내박"
       }
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -2724,9 +2692,8 @@
     "duration": "3박 5일",
     "imageUrl": "/images/vietnam_beach_villa.jpg",
     "additionalImages": [
-      "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80",
-      "/images/mykhe_beach.jpg"
+      "/images/mykhe_beach.jpg",
+      "/images/danang_city_dragon.jpg"
     ],
     "rating": 5,
     "reviewCount": 94,
@@ -2816,7 +2783,7 @@
         "hotel": "기내박"
       }
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -2831,9 +2798,8 @@
     "duration": "3박 5일",
     "imageUrl": "/images/vietnam_beach_villa.jpg",
     "additionalImages": [
-      "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80",
-      "/images/mykhe_beach.jpg"
+      "/images/mykhe_beach.jpg",
+      "/images/danang_city_dragon.jpg"
     ],
     "rating": 5,
     "reviewCount": 48,
@@ -2917,7 +2883,7 @@
         "hotel": "기내박"
       }
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -2930,11 +2896,10 @@
     "priceKRW": 190000,
     "priceVND": 3500000,
     "duration": "당일 투어",
-    "imageUrl": "/images/danang_golden_bridge.jpg",
+    "imageUrl": "/images/danang_city_dragon.jpg",
     "additionalImages": [
-      "/images/hoian_lantern.jpg",
-      "/images/mykhe_beach.jpg",
-      "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&w=1200&q=80"
+      "/images/danang_golden_bridge.jpg",
+      "/images/mykhe_beach.jpg"
     ],
     "rating": 4.9,
     "reviewCount": 420,
@@ -2970,7 +2935,7 @@
         "hotel": "고객 개별 숙소"
       }
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -2985,8 +2950,7 @@
     "duration": "반나절 (약 6시간)",
     "imageUrl": "/images/hoian_lantern.jpg",
     "additionalImages": [
-      "https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=1200&q=80",
+      "/images/danang_city_dragon.jpg",
       "/images/mykhe_beach.jpg"
     ],
     "rating": 5,
@@ -3024,7 +2988,7 @@
         "hotel": "개별 숙소"
       }
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -3039,9 +3003,8 @@
     "duration": "3박 5일",
     "imageUrl": "/images/nhatrang_bay.jpg",
     "additionalImages": [
-      "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?auto=format&fit=crop&w=1200&q=80"
+      "/images/vietnam_beach_villa.jpg",
+      "/images/phanrang_desert_jeep.jpg"
     ],
     "rating": 4.9,
     "reviewCount": 215,
@@ -3105,7 +3068,7 @@
         "hotel": "기내박"
       }
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -3118,11 +3081,10 @@
     "priceKRW": 750000,
     "priceVND": 13900000,
     "duration": "4박 5일",
-    "imageUrl": "/images/muine_sand.jpg",
+    "imageUrl": "/images/phanrang_desert_jeep.jpg",
     "additionalImages": [
-      "/images/dalat.jpg",
       "/images/nhatrang_bay.jpg",
-      "https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&w=1200&q=80"
+      "/images/muine_sand.jpg"
     ],
     "rating": 4.9,
     "reviewCount": 168,
@@ -3181,7 +3143,7 @@
         "hotel": "기내박"
       }
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -3194,11 +3156,10 @@
     "priceKRW": 1080000,
     "priceVND": 20000000,
     "duration": "3박 5일",
-    "imageUrl": "https://images.unsplash.com/photo-1535131749006-b7f58c99034b?auto=format&fit=crop&w=1200&q=80",
+    "imageUrl": "/images/vietnam_golf_resort.jpg",
     "additionalImages": [
-      "/images/vietnam_golf_resort.jpg",
       "/images/nhatrang_bay.jpg",
-      "https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?auto=format&fit=crop&w=1200&q=80"
+      "/images/danang_city_dragon.jpg"
     ],
     "rating": 4.9,
     "reviewCount": 98,
@@ -3266,7 +3227,7 @@
         "hotel": "기내박"
       }
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -3279,11 +3240,10 @@
     "priceKRW": 1350000,
     "priceVND": 25000000,
     "duration": "4박 5일",
-    "imageUrl": "https://images.unsplash.com/photo-1535131749006-b7f58c99034b?auto=format&fit=crop&w=1200&q=80",
+    "imageUrl": "/images/vietnam_golf_resort.jpg",
     "additionalImages": [
-      "/images/vietnam_golf_resort.jpg",
       "/images/nhatrang_bay.jpg",
-      "https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?auto=format&fit=crop&w=1200&q=80"
+      "/images/danang_city_dragon.jpg"
     ],
     "rating": 5,
     "reviewCount": 72,
@@ -3360,7 +3320,7 @@
         "hotel": "기내박"
       }
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -3373,11 +3333,10 @@
     "priceKRW": 920000,
     "priceVND": 17100000,
     "duration": "3박 5일",
-    "imageUrl": "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80",
+    "imageUrl": "/images/vietnam_beach_villa.jpg",
     "additionalImages": [
       "/images/nhatrang_bay.jpg",
-      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80",
-      "/images/vietnam_beach_villa.jpg"
+      "/images/danang_city_dragon.jpg"
     ],
     "rating": 4.9,
     "reviewCount": 52,
@@ -3456,7 +3415,7 @@
         "hotel": "기내박"
       }
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -3469,11 +3428,10 @@
     "priceKRW": 1250000,
     "priceVND": 23200000,
     "duration": "3박 5일",
-    "imageUrl": "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80",
+    "imageUrl": "/images/vietnam_beach_villa.jpg",
     "additionalImages": [
       "/images/nhatrang_bay.jpg",
-      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80",
-      "/images/vietnam_beach_villa.jpg"
+      "/images/danang_city_dragon.jpg"
     ],
     "rating": 5,
     "reviewCount": 38,
@@ -3553,7 +3511,7 @@
         "hotel": "기내박"
       }
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -3566,11 +3524,10 @@
     "priceKRW": 150000,
     "priceVND": 2800000,
     "duration": "반나절 (약 4시간)",
-    "imageUrl": "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=1200&q=80",
+    "imageUrl": "/images/nhatrang_bay.jpg",
     "additionalImages": [
-      "/images/nhatrang_bay.jpg",
-      "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80"
+      "/images/vietnam_beach_villa.jpg",
+      "/images/phanrang_desert_jeep.jpg"
     ],
     "rating": 5,
     "reviewCount": 190,
@@ -3606,7 +3563,7 @@
         "hotel": "개별 숙소"
       }
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -3619,11 +3576,10 @@
     "priceKRW": 85000,
     "priceVND": 1580000,
     "duration": "1일 데이투어",
-    "imageUrl": "/images/muine_sand.jpg",
+    "imageUrl": "/images/phanrang_desert_jeep.jpg",
     "additionalImages": [
-      "/images/dalat.jpg",
-      "/images/nhatrang_bay.jpg",
-      "https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&w=1200&q=80"
+      "/images/muine_sand.jpg",
+      "/images/nhatrang_bay.jpg"
     ],
     "rating": 4.9,
     "reviewCount": 340,
@@ -3659,7 +3615,7 @@
         "hotel": "개별 숙소"
       }
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -3672,11 +3628,10 @@
     "priceKRW": 850000,
     "priceVND": 15700000,
     "duration": "3박 5일",
-    "imageUrl": "/images/sapa_fansipan.jpg",
+    "imageUrl": "/images/phuquoc_sunset.jpg",
     "additionalImages": [
-      "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1200&q=80"
+      "/images/vietnam_beach_villa.jpg",
+      "/images/nhatrang_bay.jpg"
     ],
     "rating": 4.9,
     "reviewCount": 185,
@@ -3739,7 +3694,7 @@
         "hotel": "기내박"
       }
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -3754,9 +3709,8 @@
     "duration": "4박 5일",
     "imageUrl": "/images/phuquoc_sunset.jpg",
     "additionalImages": [
-      "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=1200&q=80"
+      "/images/vietnam_beach_villa.jpg",
+      "/images/nhatrang_bay.jpg"
     ],
     "rating": 4.9,
     "reviewCount": 96,
@@ -3815,7 +3769,7 @@
         "hotel": "기내박"
       }
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -3828,11 +3782,10 @@
     "priceKRW": 1150000,
     "priceVND": 21300000,
     "duration": "3박 5일",
-    "imageUrl": "https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?auto=format&fit=crop&w=1200&q=80",
+    "imageUrl": "/images/vietnam_golf_resort.jpg",
     "additionalImages": [
-      "/images/vietnam_golf_resort.jpg",
       "/images/phuquoc_sunset.jpg",
-      "https://images.unsplash.com/photo-1535131749006-b7f58c99034b?auto=format&fit=crop&w=1200&q=80"
+      "/images/danang_city_dragon.jpg"
     ],
     "rating": 4.9,
     "reviewCount": 64,
@@ -3899,7 +3852,7 @@
         "hotel": "기내박"
       }
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -3912,11 +3865,10 @@
     "priceKRW": 1450000,
     "priceVND": 27000000,
     "duration": "4박 5일",
-    "imageUrl": "https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?auto=format&fit=crop&w=1200&q=80",
+    "imageUrl": "/images/vietnam_golf_resort.jpg",
     "additionalImages": [
-      "/images/vietnam_golf_resort.jpg",
       "/images/phuquoc_sunset.jpg",
-      "https://images.unsplash.com/photo-1535131749006-b7f58c99034b?auto=format&fit=crop&w=1200&q=80"
+      "/images/danang_city_dragon.jpg"
     ],
     "rating": 5,
     "reviewCount": 42,
@@ -3992,7 +3944,7 @@
         "hotel": "기내박"
       }
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -4005,11 +3957,10 @@
     "priceKRW": 990000,
     "priceVND": 18400000,
     "duration": "3박 5일",
-    "imageUrl": "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1200&q=80",
+    "imageUrl": "/images/vietnam_beach_villa.jpg",
     "additionalImages": [
       "/images/phuquoc_sunset.jpg",
-      "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=80",
-      "/images/vietnam_beach_villa.jpg"
+      "/images/danang_city_dragon.jpg"
     ],
     "rating": 5,
     "reviewCount": 45,
@@ -4088,7 +4039,7 @@
         "hotel": "기내박"
       }
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -4101,11 +4052,10 @@
     "priceKRW": 1200000,
     "priceVND": 22300000,
     "duration": "3박 5일",
-    "imageUrl": "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1200&q=80",
+    "imageUrl": "/images/vietnam_beach_villa.jpg",
     "additionalImages": [
       "/images/phuquoc_sunset.jpg",
-      "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=80",
-      "/images/vietnam_beach_villa.jpg"
+      "/images/danang_city_dragon.jpg"
     ],
     "rating": 5,
     "reviewCount": 39,
@@ -4182,7 +4132,7 @@
         "hotel": "기내박"
       }
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -4197,9 +4147,8 @@
     "duration": "1일 데이투어",
     "imageUrl": "/images/phuquoc_sunset.jpg",
     "additionalImages": [
-      "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=1200&q=80"
+      "/images/vietnam_beach_villa.jpg",
+      "/images/nhatrang_bay.jpg"
     ],
     "rating": 5,
     "reviewCount": 310,
@@ -4236,7 +4185,7 @@
         "hotel": "개별 숙소"
       }
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -4249,11 +4198,10 @@
     "priceKRW": 180000,
     "priceVND": 3350000,
     "duration": "1일 (10시간)",
-    "imageUrl": "/images/sapa_fansipan.jpg",
+    "imageUrl": "/images/phuquoc_sunset.jpg",
     "additionalImages": [
-      "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1200&q=80"
+      "/images/vietnam_beach_villa.jpg",
+      "/images/nhatrang_bay.jpg"
     ],
     "rating": 4.9,
     "reviewCount": 220,
@@ -4288,7 +4236,7 @@
         "hotel": "개별 숙소"
       }
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -4303,9 +4251,8 @@
     "duration": "3박 5일",
     "imageUrl": "/images/halong_cruise.jpg",
     "additionalImages": [
-      "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80",
-      "/images/ninhbinh_trangan.jpg"
+      "/images/ninhbinh_trangan.jpg",
+      "/images/bangioc.jpg"
     ],
     "rating": 5,
     "reviewCount": 260,
@@ -4369,7 +4316,7 @@
         "hotel": "기내박"
       }
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -4384,9 +4331,8 @@
     "duration": "4박 5일",
     "imageUrl": "/images/halong_cruise.jpg",
     "additionalImages": [
-      "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80",
-      "/images/ninhbinh_trangan.jpg"
+      "/images/ninhbinh_trangan.jpg",
+      "/images/bangioc.jpg"
     ],
     "rating": 4.9,
     "reviewCount": 140,
@@ -4446,7 +4392,7 @@
         "hotel": "기내박"
       }
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -4459,11 +4405,10 @@
     "priceKRW": 1250000,
     "priceVND": 23200000,
     "duration": "3박 5일",
-    "imageUrl": "https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?auto=format&fit=crop&w=1200&q=80",
+    "imageUrl": "/images/vietnam_golf_resort.jpg",
     "additionalImages": [
-      "https://images.unsplash.com/photo-1592919505780-303950717480?auto=format&fit=crop&w=1200&q=80",
-      "/images/vietnam_golf_resort.jpg",
-      "/images/halong_cruise.jpg"
+      "/images/halong_cruise.jpg",
+      "/images/danang_city_dragon.jpg"
     ],
     "rating": 4.9,
     "reviewCount": 88,
@@ -4533,7 +4478,7 @@
         "hotel": "기내박"
       }
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -4546,11 +4491,10 @@
     "priceKRW": 1120000,
     "priceVND": 20800000,
     "duration": "3박 4일",
-    "imageUrl": "/images/halong_cruise.jpg",
+    "imageUrl": "/images/vietnam_golf_resort.jpg",
     "additionalImages": [
-      "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80",
-      "/images/ninhbinh_trangan.jpg"
+      "/images/halong_cruise.jpg",
+      "/images/danang_city_dragon.jpg"
     ],
     "rating": 5,
     "reviewCount": 56,
@@ -4618,7 +4562,7 @@
         "hotel": "기내박"
       }
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -4631,11 +4575,10 @@
     "priceKRW": 780000,
     "priceVND": 14500000,
     "duration": "3박 4일",
-    "imageUrl": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
+    "imageUrl": "/images/vietnam_city_villa.jpg",
     "additionalImages": [
-      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=80",
-      "/images/vietnam_city_villa.jpg",
-      "/images/halong_cruise.jpg"
+      "/images/vietnam_beach_villa.jpg",
+      "/images/danang_city_dragon.jpg"
     ],
     "rating": 4.9,
     "reviewCount": 38,
@@ -4712,7 +4655,7 @@
         "hotel": "기내박"
       }
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -4725,11 +4668,10 @@
     "priceKRW": 880000,
     "priceVND": 16400000,
     "duration": "3박 4일",
-    "imageUrl": "/images/halong_cruise.jpg",
+    "imageUrl": "/images/vietnam_city_villa.jpg",
     "additionalImages": [
-      "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80",
-      "/images/ninhbinh_trangan.jpg"
+      "/images/vietnam_beach_villa.jpg",
+      "/images/danang_city_dragon.jpg"
     ],
     "rating": 4.9,
     "reviewCount": 41,
@@ -4805,7 +4747,7 @@
         "hotel": "기내박"
       }
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -4820,9 +4762,8 @@
     "duration": "당일 투어 (약 10시간)",
     "imageUrl": "/images/halong_cruise.jpg",
     "additionalImages": [
-      "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80",
-      "/images/ninhbinh_trangan.jpg"
+      "/images/ninhbinh_trangan.jpg",
+      "/images/danang_city_dragon.jpg"
     ],
     "rating": 5,
     "reviewCount": 520,
@@ -4860,7 +4801,7 @@
         "hotel": "개별 숙소"
       }
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -4873,11 +4814,10 @@
     "priceKRW": 85000,
     "priceVND": 1580000,
     "duration": "당일 투어",
-    "imageUrl": "/images/halong_cruise.jpg",
+    "imageUrl": "/images/ninhbinh_trangan.jpg",
     "additionalImages": [
-      "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80",
-      "/images/ninhbinh_trangan.jpg"
+      "/images/halong_cruise.jpg",
+      "/images/bangioc.jpg"
     ],
     "rating": 4.9,
     "reviewCount": 380,
@@ -4913,7 +4853,7 @@
         "hotel": "개별 숙소"
       }
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -4928,9 +4868,8 @@
     "duration": "3박 5일",
     "imageUrl": "/images/dalat.jpg",
     "additionalImages": [
-      "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=80"
+      "/images/dalat_flower_garden.jpg",
+      "/images/vietnam_city_villa.jpg"
     ],
     "rating": 5,
     "reviewCount": 165,
@@ -4992,7 +4931,7 @@
         "hotel": "기내박"
       }
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -5005,11 +4944,10 @@
     "priceKRW": 820000,
     "priceVND": 15200000,
     "duration": "4박 5일",
-    "imageUrl": "/images/dalat.jpg",
+    "imageUrl": "/images/dalat_flower_garden.jpg",
     "additionalImages": [
-      "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=80"
+      "/images/nhatrang_bay.jpg",
+      "/images/dalat.jpg"
     ],
     "rating": 4.9,
     "reviewCount": 110,
@@ -5069,7 +5007,7 @@
         "hotel": "기내박"
       }
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -5082,11 +5020,10 @@
     "priceKRW": 1190000,
     "priceVND": 22000000,
     "duration": "3박 5일",
-    "imageUrl": "https://images.unsplash.com/photo-1593111774240-d529f12cf4bb?auto=format&fit=crop&w=1200&q=80",
+    "imageUrl": "/images/vietnam_golf_resort.jpg",
     "additionalImages": [
       "/images/dalat.jpg",
-      "/images/vietnam_golf_resort.jpg",
-      "https://images.unsplash.com/photo-1592919505780-303950717480?auto=format&fit=crop&w=1200&q=80"
+      "/images/danang_city_dragon.jpg"
     ],
     "rating": 4.9,
     "reviewCount": 95,
@@ -5155,7 +5092,7 @@
         "hotel": "기내박"
       }
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -5168,11 +5105,10 @@
     "priceKRW": 1050000,
     "priceVND": 19500000,
     "duration": "3박 4일",
-    "imageUrl": "https://images.unsplash.com/photo-1593111774240-d529f12cf4bb?auto=format&fit=crop&w=1200&q=80",
+    "imageUrl": "/images/vietnam_golf_resort.jpg",
     "additionalImages": [
       "/images/dalat.jpg",
-      "/images/vietnam_golf_resort.jpg",
-      "https://images.unsplash.com/photo-1592919505780-303950717480?auto=format&fit=crop&w=1200&q=80"
+      "/images/danang_city_dragon.jpg"
     ],
     "rating": 5,
     "reviewCount": 62,
@@ -5241,7 +5177,7 @@
         "hotel": "기내박"
       }
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -5254,11 +5190,10 @@
     "priceKRW": 850000,
     "priceVND": 15700000,
     "duration": "3박 4일",
-    "imageUrl": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
+    "imageUrl": "/images/vietnam_city_villa.jpg",
     "additionalImages": [
       "/images/dalat.jpg",
-      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80",
-      "/images/vietnam_city_villa.jpg"
+      "/images/danang_city_dragon.jpg"
     ],
     "rating": 5,
     "reviewCount": 35,
@@ -5335,7 +5270,7 @@
         "hotel": "기내박"
       }
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -5348,11 +5283,10 @@
     "priceKRW": 1100000,
     "priceVND": 20400000,
     "duration": "3박 4일",
-    "imageUrl": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
+    "imageUrl": "/images/vietnam_city_villa.jpg",
     "additionalImages": [
       "/images/dalat.jpg",
-      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80",
-      "/images/vietnam_city_villa.jpg"
+      "/images/danang_city_dragon.jpg"
     ],
     "rating": 5,
     "reviewCount": 28,
@@ -5430,7 +5364,7 @@
         "hotel": "기내박"
       }
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -5443,11 +5377,10 @@
     "priceKRW": 79000,
     "priceVND": 1470000,
     "duration": "1일 데이투어",
-    "imageUrl": "/images/dalat.jpg",
+    "imageUrl": "/images/dalat_flower_garden.jpg",
     "additionalImages": [
-      "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=80"
+      "/images/dalat.jpg",
+      "/images/vietnam_city_villa.jpg"
     ],
     "rating": 5,
     "reviewCount": 240,
@@ -5483,7 +5416,7 @@
         "hotel": "개별 숙소"
       }
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -5498,9 +5431,8 @@
     "duration": "1일 (10시간)",
     "imageUrl": "/images/dalat.jpg",
     "additionalImages": [
-      "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=80"
+      "/images/dalat_flower_garden.jpg",
+      "/images/vietnam_golf_resort.jpg"
     ],
     "rating": 4.9,
     "reviewCount": 180,
@@ -5534,7 +5466,7 @@
         "hotel": "개별 숙소"
       }
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -5549,9 +5481,8 @@
     "duration": "3박 5일",
     "imageUrl": "/images/sapa_fansipan.jpg",
     "additionalImages": [
-      "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1200&q=80"
+      "/images/hagiang.jpg",
+      "/images/bangioc.jpg"
     ],
     "rating": 5,
     "reviewCount": 142,
@@ -5613,7 +5544,7 @@
         "hotel": "기내박"
       }
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -5628,9 +5559,8 @@
     "duration": "4박 5일",
     "imageUrl": "/images/sapa_fansipan.jpg",
     "additionalImages": [
-      "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1200&q=80"
+      "/images/hagiang.jpg",
+      "/images/bangioc.jpg"
     ],
     "rating": 4.9,
     "reviewCount": 98,
@@ -5688,7 +5618,7 @@
         "hotel": "기내박"
       }
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -5701,11 +5631,10 @@
     "priceKRW": 1080000,
     "priceVND": 20000000,
     "duration": "3박 4일",
-    "imageUrl": "https://images.unsplash.com/photo-1593111774240-d529f12cf4bb?auto=format&fit=crop&w=1200&q=80",
+    "imageUrl": "/images/vietnam_golf_resort.jpg",
     "additionalImages": [
       "/images/sapa_fansipan.jpg",
-      "/images/vietnam_golf_resort.jpg",
-      "https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?auto=format&fit=crop&w=1200&q=80"
+      "/images/danang_city_dragon.jpg"
     ],
     "rating": 4.9,
     "reviewCount": 45,
@@ -5772,7 +5701,7 @@
         "hotel": "기내박"
       }
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -5785,11 +5714,10 @@
     "priceKRW": 1290000,
     "priceVND": 24000000,
     "duration": "4박 5일",
-    "imageUrl": "https://images.unsplash.com/photo-1593111774240-d529f12cf4bb?auto=format&fit=crop&w=1200&q=80",
+    "imageUrl": "/images/vietnam_golf_resort.jpg",
     "additionalImages": [
       "/images/sapa_fansipan.jpg",
-      "/images/vietnam_golf_resort.jpg",
-      "https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?auto=format&fit=crop&w=1200&q=80"
+      "/images/danang_city_dragon.jpg"
     ],
     "rating": 5,
     "reviewCount": 38,
@@ -5864,7 +5792,7 @@
         "hotel": "기내박"
       }
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -5877,11 +5805,10 @@
     "priceKRW": 950000,
     "priceVND": 17600000,
     "duration": "3박 4일",
-    "imageUrl": "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=1200&q=80",
+    "imageUrl": "/images/vietnam_city_villa.jpg",
     "additionalImages": [
       "/images/sapa_fansipan.jpg",
-      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1200&q=80"
+      "/images/danang_city_dragon.jpg"
     ],
     "rating": 5,
     "reviewCount": 82,
@@ -5959,7 +5886,7 @@
         "hotel": "기내박"
       }
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -5972,11 +5899,10 @@
     "priceKRW": 880000,
     "priceVND": 16400000,
     "duration": "3박 4일",
-    "imageUrl": "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=1200&q=80",
+    "imageUrl": "/images/vietnam_city_villa.jpg",
     "additionalImages": [
       "/images/sapa_fansipan.jpg",
-      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1200&q=80"
+      "/images/danang_city_dragon.jpg"
     ],
     "rating": 4.9,
     "reviewCount": 36,
@@ -6052,7 +5978,7 @@
         "hotel": "기내박"
       }
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -6067,9 +5993,8 @@
     "duration": "반나절 (약 5시간)",
     "imageUrl": "/images/sapa_fansipan.jpg",
     "additionalImages": [
-      "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1200&q=80"
+      "/images/bangioc.jpg",
+      "/images/hagiang.jpg"
     ],
     "rating": 5,
     "reviewCount": 410,
@@ -6103,7 +6028,7 @@
         "hotel": "개별 숙소"
       }
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -6118,9 +6043,8 @@
     "duration": "1일 (8시간)",
     "imageUrl": "/images/sapa_fansipan.jpg",
     "additionalImages": [
-      "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1200&q=80"
+      "/images/hagiang.jpg",
+      "/images/bangioc.jpg"
     ],
     "rating": 4.9,
     "reviewCount": 160,
@@ -6152,7 +6076,7 @@
         "hotel": "개별 숙소"
       }
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -6165,11 +6089,10 @@
     "priceKRW": 720000,
     "priceVND": 13400000,
     "duration": "3박 5일",
-    "imageUrl": "https://images.unsplash.com/photo-1598899134739-24c46f58b8c0?auto=format&fit=crop&w=1200&q=80",
+    "imageUrl": "/images/muine_sand.jpg",
     "additionalImages": [
       "/images/vietnam_city_villa.jpg",
-      "https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=1200&q=80",
-      "/images/muine_sand.jpg"
+      "/images/mekong_river_boat.jpg"
     ],
     "rating": 4.9,
     "reviewCount": 198,
@@ -6233,7 +6156,7 @@
         "hotel": "기내박"
       }
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -6246,10 +6169,9 @@
     "priceKRW": 690000,
     "priceVND": 12800000,
     "duration": "4박 5일",
-    "imageUrl": "https://images.unsplash.com/photo-1598899134739-24c46f58b8c0?auto=format&fit=crop&w=1200&q=80",
+    "imageUrl": "/images/mekong_river_boat.jpg",
     "additionalImages": [
       "/images/vietnam_city_villa.jpg",
-      "https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=1200&q=80",
       "/images/muine_sand.jpg"
     ],
     "rating": 4.8,
@@ -6309,7 +6231,7 @@
         "hotel": "기내박"
       }
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -6322,11 +6244,10 @@
     "priceKRW": 1190000,
     "priceVND": 22000000,
     "duration": "3박 5일",
-    "imageUrl": "https://images.unsplash.com/photo-1592919505780-303950717480?auto=format&fit=crop&w=1200&q=80",
+    "imageUrl": "/images/vietnam_golf_resort.jpg",
     "additionalImages": [
-      "/images/vietnam_golf_resort.jpg",
-      "https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?auto=format&fit=crop&w=1200&q=80",
-      "/images/vietnam_city_villa.jpg"
+      "/images/vietnam_city_villa.jpg",
+      "/images/danang_city_dragon.jpg"
     ],
     "rating": 4.9,
     "reviewCount": 112,
@@ -6396,7 +6317,7 @@
         "hotel": "기내박"
       }
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -6409,11 +6330,10 @@
     "priceKRW": 1150000,
     "priceVND": 21300000,
     "duration": "3박 4일",
-    "imageUrl": "/images/muine_sand.jpg",
+    "imageUrl": "/images/vietnam_golf_resort.jpg",
     "additionalImages": [
-      "https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=1200&q=80",
-      "/images/vietnam_beach_villa.jpg"
+      "/images/vietnam_city_villa.jpg",
+      "/images/danang_city_dragon.jpg"
     ],
     "rating": 5,
     "reviewCount": 58,
@@ -6482,7 +6402,7 @@
         "hotel": "기내박"
       }
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -6497,9 +6417,8 @@
     "duration": "3박 4일",
     "imageUrl": "/images/vietnam_city_villa.jpg",
     "additionalImages": [
-      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=1200&q=80",
-      "/images/vietnam_beach_villa.jpg"
+      "/images/vietnam_beach_villa.jpg",
+      "/images/danang_city_dragon.jpg"
     ],
     "rating": 4.9,
     "reviewCount": 44,
@@ -6576,7 +6495,7 @@
         "hotel": "기내박"
       }
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -6589,11 +6508,10 @@
     "priceKRW": 980000,
     "priceVND": 18200000,
     "duration": "3박 4일",
-    "imageUrl": "/images/muine_sand.jpg",
+    "imageUrl": "/images/vietnam_city_villa.jpg",
     "additionalImages": [
-      "https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=1200&q=80",
-      "/images/vietnam_beach_villa.jpg"
+      "/images/vietnam_beach_villa.jpg",
+      "/images/danang_city_dragon.jpg"
     ],
     "rating": 5,
     "reviewCount": 39,
@@ -6671,7 +6589,7 @@
         "hotel": "기내박"
       }
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -6684,10 +6602,9 @@
     "priceKRW": 65000,
     "priceVND": 1200000,
     "duration": "1일 데이투어",
-    "imageUrl": "https://images.unsplash.com/photo-1598899134739-24c46f58b8c0?auto=format&fit=crop&w=1200&q=80",
+    "imageUrl": "/images/mekong_river_boat.jpg",
     "additionalImages": [
       "/images/vietnam_city_villa.jpg",
-      "https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=1200&q=80",
       "/images/muine_sand.jpg"
     ],
     "rating": 4.9,
@@ -6723,7 +6640,7 @@
         "hotel": "개별 숙소"
       }
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -6738,8 +6655,7 @@
     "duration": "반나절 (새벽 04:30~09:00)",
     "imageUrl": "/images/muine_sand.jpg",
     "additionalImages": [
-      "https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=1200&q=80",
+      "/images/phanrang_desert_jeep.jpg",
       "/images/vietnam_beach_villa.jpg"
     ],
     "rating": 5,
@@ -6773,7 +6689,7 @@
         "hotel": "개별 숙소"
       }
     ],
-    "updatedAt": "2026-09-03T01:46:05.731Z",
+    "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
@@ -6788,9 +6704,8 @@
     "duration": "",
     "imageUrl": "/images/vietnam_beach_villa.jpg",
     "additionalImages": [
-      "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80",
-      "/images/mykhe_beach.jpg"
+      "/images/mykhe_beach.jpg",
+      "/images/danang_city_dragon.jpg"
     ],
     "rating": 5,
     "reviewCount": 94,
@@ -6862,6 +6777,6 @@
     "airbnbUrl": "https://www.airbnb.co.kr/rooms/1596807485988738548?adults=8&search_mode=regular_search&source_impression_id=p3_1773058617_P3xK6pEU9aoIJDMS&previous_page_section_name=1000&federated_search_id=a2420d66-c7ca-4754-98c4-1f72afdd15e6&guests=1&check_in=2026-10-13&check_out=2026-10-14",
     "googleMapUrl": "23 Chế Lan Viên, Ngũ Hành Sơn, Đà Nẵng 550000 베트남",
     "address": "",
-    "updatedAt": "2026-09-03T01:46:05.731Z"
+    "updatedAt": "2026-09-03T01:59:45.021Z"
   }
 ]

@@ -14,7 +14,7 @@ export const COMPREHENSIVE_CATALOG: Product[] = [
     priceKRW: 750000,
     priceVND: 13900000,
     duration: '3박 5일',
-    imageUrl: "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&w=1200&q=80",
+    imageUrl: "/images/danang_golden_bridge.jpg",
     additionalImages: [
       'https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=1200&q=80',
       'https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=1200&q=80',
@@ -122,7 +122,7 @@ export const COMPREHENSIVE_CATALOG: Product[] = [
     priceKRW: 690000,
     priceVND: 12800000,
     duration: '3박 5일',
-    imageUrl: "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&w=1200&q=80",
+    imageUrl: "/images/danang_golden_bridge.jpg",
     additionalImages: [
       'https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=1200&q=80',
       'https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=1200&q=80'
@@ -193,7 +193,7 @@ export const COMPREHENSIVE_CATALOG: Product[] = [
     priceKRW: 780000,
     priceVND: 14500000,
     duration: '4박 5일',
-    imageUrl: "https://images.unsplash.com/photo-1569154941061-e231b4725ef1?auto=format&fit=crop&w=1200&q=80",
+    imageUrl: "/images/hue_imperial_citadel.jpg",
     additionalImages: [
       'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=1200&q=80'
     ],
@@ -252,7 +252,7 @@ export const COMPREHENSIVE_CATALOG: Product[] = [
     priceKRW: 1190000,
     priceVND: 22000000,
     duration: '3박 5일',
-    imageUrl: "https://images.unsplash.com/photo-1535131749006-b7f58c99034b?auto=format&fit=crop&w=1200&q=80",
+    imageUrl: "/images/vietnam_golf_resort.jpg",
     additionalImages: [
       'https://images.unsplash.com/photo-1535131749006-b7f58c99034b?auto=format&fit=crop&w=1200&q=80'
     ],
@@ -318,7 +318,7 @@ export const COMPREHENSIVE_CATALOG: Product[] = [
     priceKRW: 1590000,
     priceVND: 29500000,
     duration: '4박 6일',
-    imageUrl: "https://images.unsplash.com/photo-1535131749006-b7f58c99034b?auto=format&fit=crop&w=1200&q=80",
+    imageUrl: "/images/vietnam_golf_resort.jpg",
     additionalImages: [
       'https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?auto=format&fit=crop&w=1200&q=80'
     ],
@@ -399,7 +399,7 @@ export const COMPREHENSIVE_CATALOG: Product[] = [
     priceKRW: 980000,
     priceVND: 18200000,
     duration: '3박 5일',
-    imageUrl: "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=1200&q=80",
+    imageUrl: "/images/vietnam_beach_villa.jpg",
     additionalImages: [
       'https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=1200&q=80',
       'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80'
@@ -483,7 +483,7 @@ export const COMPREHENSIVE_CATALOG: Product[] = [
     priceKRW: 1350000,
     priceVND: 25000000,
     duration: '3박 5일',
-    imageUrl: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=80",
+    imageUrl: "/images/vietnam_beach_villa.jpg",
     additionalImages: [
       'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80'
     ],
@@ -562,7 +562,7 @@ export const COMPREHENSIVE_CATALOG: Product[] = [
     priceKRW: 190000,
     priceVND: 3500000,
     duration: '당일 투어',
-    imageUrl: "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&w=1200&q=80",
+    imageUrl: "/images/danang_city_dragon.jpg",
     additionalImages: [
       'https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=1200&q=80'
     ],
@@ -599,7 +599,7 @@ export const COMPREHENSIVE_CATALOG: Product[] = [
     priceKRW: 65000,
     priceVND: 1200000,
     duration: '반나절 (약 6시간)',
-    imageUrl: "https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?auto=format&fit=crop&w=1200&q=80",
+    imageUrl: "/images/hoian_lantern.jpg",
     additionalImages: [
       'https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&w=1200&q=80'
     ],
@@ -642,7 +642,7 @@ export const COMPREHENSIVE_CATALOG: Product[] = [
     priceKRW: 790000,
     priceVND: 14800000,
     duration: '3박 5일',
-    imageUrl: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
+    imageUrl: "/images/nhatrang_bay.jpg",
     additionalImages: [
       'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80',
       'https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=1200&q=80',
@@ -758,7 +758,7 @@ export const COMPREHENSIVE_CATALOG: Product[] = [
     priceKRW: 950000,
     priceVND: 17700000,
     duration: '4박 6일',
-    imageUrl: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80",
+    imageUrl: "/images/dalat.jpg",
     additionalImages: [
       'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80',
       'https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=1200&q=80',
@@ -886,7 +886,7 @@ export const COMPREHENSIVE_CATALOG: Product[] = [
     priceKRW: 690000,
     priceVND: 12800000,
     duration: '3박 5일',
-    imageUrl: "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?auto=format&fit=crop&w=1200&q=80",
+    imageUrl: "/images/nhatrang_bay.jpg",
     additionalImages: [
       'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80'
     ],
@@ -947,7 +947,7 @@ export const COMPREHENSIVE_CATALOG: Product[] = [
     priceKRW: 750000,
     priceVND: 13900000,
     duration: '4박 5일',
-    imageUrl: "https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&w=1200&q=80",
+    imageUrl: "/images/phanrang_desert_jeep.jpg",
     additionalImages: [
       'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80'
     ],
@@ -1006,7 +1006,7 @@ export const COMPREHENSIVE_CATALOG: Product[] = [
     priceKRW: 1080000,
     priceVND: 20000000,
     duration: '3박 5일',
-    imageUrl: "https://images.unsplash.com/photo-1535131749006-b7f58c99034b?auto=format&fit=crop&w=1200&q=80",
+    imageUrl: "/images/vietnam_golf_resort.jpg",
     additionalImages: [
       'https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?auto=format&fit=crop&w=1200&q=80'
     ],
@@ -1072,7 +1072,7 @@ export const COMPREHENSIVE_CATALOG: Product[] = [
     priceKRW: 1350000,
     priceVND: 25000000,
     duration: '4박 5일',
-    imageUrl: "https://images.unsplash.com/photo-1535131749006-b7f58c99034b?auto=format&fit=crop&w=1200&q=80",
+    imageUrl: "/images/vietnam_golf_resort.jpg",
     additionalImages: [
       'https://images.unsplash.com/photo-1535131749006-b7f58c99034b?auto=format&fit=crop&w=1200&q=80'
     ],
@@ -1146,7 +1146,7 @@ export const COMPREHENSIVE_CATALOG: Product[] = [
     priceKRW: 920000,
     priceVND: 17100000,
     duration: '3박 5일',
-    imageUrl: "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=1200&q=80",
+    imageUrl: "/images/vietnam_beach_villa.jpg",
     additionalImages: [
       'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=1200&q=80'
     ],
@@ -1221,7 +1221,7 @@ export const COMPREHENSIVE_CATALOG: Product[] = [
     priceKRW: 1250000,
     priceVND: 23200000,
     duration: '3박 5일',
-    imageUrl: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=80",
+    imageUrl: "/images/vietnam_beach_villa.jpg",
     additionalImages: [
       'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80'
     ],
@@ -1296,7 +1296,7 @@ export const COMPREHENSIVE_CATALOG: Product[] = [
     priceKRW: 150000,
     priceVND: 2800000,
     duration: '반나절 (약 4시간)',
-    imageUrl: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80",
+    imageUrl: "/images/nhatrang_bay.jpg",
     additionalImages: [
       'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80'
     ],
@@ -1335,7 +1335,7 @@ export const COMPREHENSIVE_CATALOG: Product[] = [
     priceKRW: 85000,
     priceVND: 1580000,
     duration: '1일 데이투어',
-    imageUrl: "https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&w=1200&q=80",
+    imageUrl: "/images/phanrang_desert_jeep.jpg",
     additionalImages: [
       'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80'
     ],
