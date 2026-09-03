@@ -14,7 +14,7 @@ export const COMPREHENSIVE_CATALOG_PART3: Product[] = [
     priceKRW: 750000,
     priceVND: 13900000,
     duration: '3박 5일',
-    imageUrl: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80',
+    imageUrl: "https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?auto=format&fit=crop&w=1200&q=80",
     additionalImages: [
       'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80'
     ],
@@ -75,7 +75,7 @@ export const COMPREHENSIVE_CATALOG_PART3: Product[] = [
     priceKRW: 820000,
     priceVND: 15200000,
     duration: '4박 5일',
-    imageUrl: 'https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&w=1200&q=80',
+    imageUrl: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80",
     additionalImages: [
       'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80'
     ],
@@ -133,7 +133,7 @@ export const COMPREHENSIVE_CATALOG_PART3: Product[] = [
     priceKRW: 1190000,
     priceVND: 22000000,
     duration: '3박 5일',
-    imageUrl: 'https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?auto=format&fit=crop&w=1200&q=80',
+    imageUrl: "https://images.unsplash.com/photo-1593111774240-d529f12cf4bb?auto=format&fit=crop&w=1200&q=80",
     additionalImages: [
       'https://images.unsplash.com/photo-1535131749006-b7f58c99034b?auto=format&fit=crop&w=1200&q=80'
     ],
@@ -199,7 +199,7 @@ export const COMPREHENSIVE_CATALOG_PART3: Product[] = [
     priceKRW: 1050000,
     priceVND: 19500000,
     duration: '3박 4일',
-    imageUrl: 'https://images.unsplash.com/photo-1535131749006-b7f58c99034b?auto=format&fit=crop&w=1200&q=80',
+    imageUrl: "https://images.unsplash.com/photo-1593111774240-d529f12cf4bb?auto=format&fit=crop&w=1200&q=80",
     additionalImages: [
       'https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?auto=format&fit=crop&w=1200&q=80'
     ],
@@ -266,7 +266,7 @@ export const COMPREHENSIVE_CATALOG_PART3: Product[] = [
     priceKRW: 850000,
     priceVND: 15700000,
     duration: '3박 4일',
-    imageUrl: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=1200&q=80',
+    imageUrl: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
     additionalImages: [
       'https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=1200&q=80'
     ],
@@ -339,7 +339,7 @@ export const COMPREHENSIVE_CATALOG_PART3: Product[] = [
     priceKRW: 1100000,
     priceVND: 20400000,
     duration: '3박 4일',
-    imageUrl: 'https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=1200&q=80',
+    imageUrl: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=80",
     additionalImages: [
       'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80'
     ],
@@ -412,7 +412,7 @@ export const COMPREHENSIVE_CATALOG_PART3: Product[] = [
     priceKRW: 79000,
     priceVND: 1470000,
     duration: '1일 데이투어',
-    imageUrl: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80',
+    imageUrl: "https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?auto=format&fit=crop&w=1200&q=80",
     additionalImages: [
       'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80'
     ],
@@ -450,7 +450,7 @@ export const COMPREHENSIVE_CATALOG_PART3: Product[] = [
     priceKRW: 160000,
     priceVND: 2980000,
     duration: '1일 (10시간)',
-    imageUrl: 'https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&w=1200&q=80',
+    imageUrl: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80",
     additionalImages: [
       'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80'
     ],
@@ -490,7 +490,7 @@ export const COMPREHENSIVE_CATALOG_PART3: Product[] = [
     priceKRW: 820000,
     priceVND: 15200000,
     duration: '3박 5일',
-    imageUrl: 'https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=1200&q=80',
+    imageUrl: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=80",
     additionalImages: [
       'https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1200&q=80'
     ],
@@ -551,7 +551,7 @@ export const COMPREHENSIVE_CATALOG_PART3: Product[] = [
     priceKRW: 790000,
     priceVND: 14700000,
     duration: '4박 5일',
-    imageUrl: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1200&q=80',
+    imageUrl: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=80",
     additionalImages: [
       'https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=1200&q=80'
     ],
@@ -609,7 +609,7 @@ export const COMPREHENSIVE_CATALOG_PART3: Product[] = [
     priceKRW: 1080000,
     priceVND: 20000000,
     duration: '3박 4일',
-    imageUrl: 'https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?auto=format&fit=crop&w=1200&q=80',
+    imageUrl: "https://images.unsplash.com/photo-1593111774240-d529f12cf4bb?auto=format&fit=crop&w=1200&q=80",
     additionalImages: [
       'https://images.unsplash.com/photo-1535131749006-b7f58c99034b?auto=format&fit=crop&w=1200&q=80'
     ],
@@ -675,7 +675,7 @@ export const COMPREHENSIVE_CATALOG_PART3: Product[] = [
     priceKRW: 1290000,
     priceVND: 24000000,
     duration: '4박 5일',
-    imageUrl: 'https://images.unsplash.com/photo-1535131749006-b7f58c99034b?auto=format&fit=crop&w=1200&q=80',
+    imageUrl: "https://images.unsplash.com/photo-1593111774240-d529f12cf4bb?auto=format&fit=crop&w=1200&q=80",
     additionalImages: [
       'https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?auto=format&fit=crop&w=1200&q=80'
     ],
@@ -748,7 +748,7 @@ export const COMPREHENSIVE_CATALOG_PART3: Product[] = [
     priceKRW: 950000,
     priceVND: 17600000,
     duration: '3박 4일',
-    imageUrl: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=1200&q=80',
+    imageUrl: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
     additionalImages: [
       'https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=1200&q=80'
     ],
@@ -822,7 +822,7 @@ export const COMPREHENSIVE_CATALOG_PART3: Product[] = [
     priceKRW: 880000,
     priceVND: 16400000,
     duration: '3박 4일',
-    imageUrl: 'https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=1200&q=80',
+    imageUrl: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=80",
     additionalImages: [
       'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80'
     ],
@@ -894,7 +894,7 @@ export const COMPREHENSIVE_CATALOG_PART3: Product[] = [
     priceKRW: 68000,
     priceVND: 1260000,
     duration: '반나절 (약 5시간)',
-    imageUrl: 'https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=1200&q=80',
+    imageUrl: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=80",
     additionalImages: [
       'https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1200&q=80'
     ],
@@ -932,7 +932,7 @@ export const COMPREHENSIVE_CATALOG_PART3: Product[] = [
     priceKRW: 140000,
     priceVND: 2600000,
     duration: '1일 (8시간)',
-    imageUrl: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1200&q=80',
+    imageUrl: "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1200&q=80",
     additionalImages: [
       'https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=1200&q=80'
     ],
@@ -969,7 +969,7 @@ export const COMPREHENSIVE_CATALOG_PART3: Product[] = [
     priceKRW: 720000,
     priceVND: 13400000,
     duration: '3박 5일',
-    imageUrl: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1200&q=80',
+    imageUrl: "https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&w=1200&q=80",
     additionalImages: [
       'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80'
     ],
@@ -1030,7 +1030,7 @@ export const COMPREHENSIVE_CATALOG_PART3: Product[] = [
     priceKRW: 690000,
     priceVND: 12800000,
     duration: '4박 5일',
-    imageUrl: 'https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&w=1200&q=80',
+    imageUrl: "https://images.unsplash.com/photo-1598899134739-24c46f58b8c0?auto=format&fit=crop&w=1200&q=80",
     additionalImages: [
       'https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=1200&q=80'
     ],
@@ -1089,7 +1089,7 @@ export const COMPREHENSIVE_CATALOG_PART3: Product[] = [
     priceKRW: 1190000,
     priceVND: 22000000,
     duration: '3박 5일',
-    imageUrl: 'https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?auto=format&fit=crop&w=1200&q=80',
+    imageUrl: "https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?auto=format&fit=crop&w=1200&q=80",
     additionalImages: [
       'https://images.unsplash.com/photo-1535131749006-b7f58c99034b?auto=format&fit=crop&w=1200&q=80'
     ],
@@ -1155,7 +1155,7 @@ export const COMPREHENSIVE_CATALOG_PART3: Product[] = [
     priceKRW: 1150000,
     priceVND: 21300000,
     duration: '3박 4일',
-    imageUrl: 'https://images.unsplash.com/photo-1535131749006-b7f58c99034b?auto=format&fit=crop&w=1200&q=80',
+    imageUrl: "https://images.unsplash.com/photo-1535131749006-b7f58c99034b?auto=format&fit=crop&w=1200&q=80",
     additionalImages: [
       'https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?auto=format&fit=crop&w=1200&q=80'
     ],
@@ -1222,7 +1222,7 @@ export const COMPREHENSIVE_CATALOG_PART3: Product[] = [
     priceKRW: 890000,
     priceVND: 16500000,
     duration: '3박 4일',
-    imageUrl: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=1200&q=80',
+    imageUrl: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
     additionalImages: [
       'https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=1200&q=80'
     ],
@@ -1295,7 +1295,7 @@ export const COMPREHENSIVE_CATALOG_PART3: Product[] = [
     priceKRW: 980000,
     priceVND: 18200000,
     duration: '3박 4일',
-    imageUrl: 'https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?auto=format&fit=crop&w=1200&q=80',
+    imageUrl: "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=1200&q=80",
     additionalImages: [
       'https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=1200&q=80'
     ],
@@ -1369,7 +1369,7 @@ export const COMPREHENSIVE_CATALOG_PART3: Product[] = [
     priceKRW: 65000,
     priceVND: 1200000,
     duration: '1일 데이투어',
-    imageUrl: 'https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&w=1200&q=80',
+    imageUrl: "https://images.unsplash.com/photo-1598899134739-24c46f58b8c0?auto=format&fit=crop&w=1200&q=80",
     additionalImages: [
       'https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=1200&q=80'
     ],
@@ -1407,7 +1407,7 @@ export const COMPREHENSIVE_CATALOG_PART3: Product[] = [
     priceKRW: 45000,
     priceVND: 840000,
     duration: '반나절 (새벽 04:30~09:00)',
-    imageUrl: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1200&q=80',
+    imageUrl: "https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&w=1200&q=80",
     additionalImages: [
       'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80'
     ],

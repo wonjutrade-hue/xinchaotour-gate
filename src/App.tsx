@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Product, Category, Region, City, ConsultationRequest } from './types';
 import { Navbar, NavPage } from './components/Navbar';
 import { Hero } from './components/Hero';
-import { CategoryNav } from './components/CategoryNav';
+import { CategoryNav, REGION_CITIES } from './components/CategoryNav';
 import { ProductCard } from './components/ProductCard';
 import { ProductDetailModal } from './components/ProductDetailModal';
 import { ConsultationModal } from './components/ConsultationModal';
@@ -50,6 +50,7 @@ import { getDisplayProductImage } from './lib/imageFallback';
 import { trackVisitorEvent } from './lib/analytics';
 
 const PRODUCTS_CACHE_KEY = 'xinchao_products_cache_master';
+const CURRENT_CATALOG_REVISION = '2026_09_03_v8';
 
 function mergeProductsPreservingLocal(localList: Product[], incomingList: Product[]): { merged: Product[]; localWasNewer: boolean } {
   if (!incomingList || incomingList.length === 0) return { merged: localList, localWasNewer: false };
@@ -71,33 +72,20 @@ function mergeProductsPreservingLocal(localList: Product[], incomingList: Produc
       const serverTime = serverProd.updatedAt ? new Date(serverProd.updatedAt).getTime() : (serverProd.createdAt ? new Date(serverProd.createdAt).getTime() : 0);
       const localTime = localProd.updatedAt ? new Date(localProd.updatedAt).getTime() : (localProd.createdAt ? new Date(localProd.createdAt).getTime() : 0);
 
-      // If local has a timestamp and is >= server -> ALWAYS keep local
-      if (localTime > 0 && localTime >= serverTime) {
+      if (serverTime > localTime) {
+        // Server has fresher data (e.g. fine-tuned catalog photos, descriptions)
+        mergedMap.set(serverProd.id, serverProd);
+      } else if (localTime > serverTime) {
         mergedMap.set(localProd.id, localProd);
-        if (localTime > serverTime) localWasNewer = true;
-      } else if (serverTime > localTime) {
-        // Server is explicitly newer, but preserve local rich content if server payload missed it
-        const robustServerProd: Product = {
-          ...serverProd,
-          imageUrl: serverProd.imageUrl || localProd.imageUrl || '',
-          additionalImages: (serverProd.additionalImages && serverProd.additionalImages.length > 0)
-            ? serverProd.additionalImages
-            : (localProd.additionalImages || []),
-          villaSpecs: serverProd.villaSpecs || localProd.villaSpecs,
-          golfSpecs: serverProd.golfSpecs || localProd.golfSpecs,
-          highlights: (serverProd.highlights && serverProd.highlights.length > 0)
-            ? serverProd.highlights
-            : localProd.highlights
-        };
-        mergedMap.set(serverProd.id, robustServerProd);
+        localWasNewer = true;
       } else {
-        // Default to local to strictly prevent reverts on identical timestamps
-        mergedMap.set(localProd.id, localProd);
+        // Equal timestamps: prefer server canonical definitions
+        mergedMap.set(serverProd.id, serverProd);
       }
     }
   });
 
-  // Preserve any local products newly added
+  // Preserve any local custom products newly added in admin mode
   localList.forEach(localProd => {
     if (localProd && localProd.id && !mergedMap.has(localProd.id)) {
       mergedMap.set(localProd.id, localProd);
@@ -362,16 +350,27 @@ export default function App() {
   };
 
   useEffect(() => {
-    // 1. Initial local load from IndexedDB if current state is empty
+    // 1. Initial local load with Revision-based auto cache update
     const initLocalData = async () => {
       try {
+        const storedRevision = localStorage.getItem('xinchao_catalog_revision');
         const idbProducts = await loadProductsFromIndexedDB();
-        if (idbProducts && idbProducts.length > 0) {
-          setProducts(prev => {
-            const { merged } = mergeProductsPreservingLocal(prev, idbProducts);
-            setStoredJson(PRODUCTS_CACHE_KEY, merged);
-            return merged;
-          });
+        const hasLatestNhaTrangDalat = idbProducts && idbProducts.some(p => p.id === 'prod-nhatrang-dalat-vip-3n5d');
+        const isOutdated = storedRevision !== CURRENT_CATALOG_REVISION || !hasLatestNhaTrangDalat || (idbProducts && idbProducts.length < 80);
+
+        if (isOutdated) {
+          localStorage.setItem('xinchao_catalog_revision', CURRENT_CATALOG_REVISION);
+          try { localStorage.removeItem(PRODUCTS_CACHE_KEY); } catch (e) {}
+          // Fetch fresh server catalog immediately on new version or missing items
+          await syncAllDataFromServer(true);
+        } else {
+          if (idbProducts && idbProducts.length > 0) {
+            setProducts(prev => {
+              const { merged } = mergeProductsPreservingLocal(prev, idbProducts);
+              setStoredJson(PRODUCTS_CACHE_KEY, merged);
+              return merged;
+            });
+          }
         }
         const idbInq = await loadInquiriesFromIndexedDB();
         if (idbInq && idbInq.length > 0) {
@@ -413,6 +412,13 @@ export default function App() {
     };
   }, []);
 
+  // Safe Guard: If activeRegion is '중부' while activeCity is '나트랑' (which was moved to 남부), automatically switch region to '남부'
+  useEffect(() => {
+    if (activeRegion === '중부' && (activeCity === '나트랑' as any)) {
+      setActiveRegion('남부');
+    }
+  }, [activeRegion, activeCity]);
+
   const handleSubmitInquiry = async (payload: any): Promise<boolean> => {
     try {
       const created = await inquiryService.createInquiry(payload);
@@ -427,15 +433,72 @@ export default function App() {
 
   // Filter & Sort Logic
   const filteredProducts = products.filter((p) => {
-    if (activeCategory !== '전체' && p.category !== activeCategory) {
-      return false;
+    // 1. Category Filter
+    if (activeCategory !== '전체') {
+      if (activeCategory === '자유여행') {
+        // 단독 자유여행 탭: 자유여행 상품뿐 아니라 단독/올인원/투어/콤보팩 및 나트랑·달랏 연계 투어도 모두 포함
+        const isFree =
+          p.category === '자유여행' ||
+          p.category === '추천패키지' ||
+          (p.tags && p.tags.some(t => t.includes('자유') || t.includes('단독') || t.includes('올인원') || t.includes('투어') || t.includes('콤보'))) ||
+          p.title.includes('자유') || p.title.includes('단독') || p.title.includes('올인원') || p.title.includes('투어') || p.title.includes('콤보');
+        if (!isFree) return false;
+      } else if (activeCategory === '추천패키지') {
+        const isPkg =
+          p.category === '추천패키지' ||
+          (p.tags && p.tags.some(t => t.includes('패키지') || t.includes('올인원') || t.includes('투어') || t.includes('3박') || t.includes('4박'))) ||
+          p.title.includes('패키지') || p.title.includes('올인원') || p.title.includes('3박') || p.title.includes('4박');
+        if (!isPkg) return false;
+      } else if (p.category !== activeCategory) {
+        return false;
+      }
     }
-    if (activeRegion !== '전체' && p.region !== activeRegion) {
-      return false;
+
+    // 2. City Filter (Direct Match - cross-cutting for multi-city combo tours)
+    if (activeCity !== '전체') {
+      const isNhaTrang =
+        activeCity === '나트랑' &&
+        (p.city === '나트랑' ||
+          p.title.includes('나트랑') ||
+          p.title.includes('나짱') ||
+          (p.subTitle && (p.subTitle.includes('나트랑') || p.subTitle.includes('나짱'))) ||
+          (p.tags && p.tags.some(t => t.includes('나트랑') || t.includes('나짱'))));
+
+      const isDalat =
+        activeCity === '달랏' &&
+        (p.city === '달랏' ||
+          p.title.includes('달랏') ||
+          (p.subTitle && p.subTitle.includes('달랏')) ||
+          (p.tags && p.tags.some(t => t.includes('달랏'))));
+
+      const isDaNang =
+        activeCity === '다낭' &&
+        (p.city === '다낭' ||
+          p.title.includes('다낭') ||
+          p.title.includes('호이안') ||
+          (p.tags && p.tags.some(t => t.includes('다낭') || t.includes('호이안'))));
+
+      const defaultCityMatch =
+        p.city === activeCity ||
+        p.title.includes(activeCity) ||
+        (p.subTitle && p.subTitle.includes(activeCity)) ||
+        (p.tags && p.tags.some(t => t.includes(activeCity)));
+
+      if (!isNhaTrang && !isDalat && !isDaNang && !defaultCityMatch) {
+        return false;
+      }
+    } else if (activeRegion !== '전체') {
+      // 3. Region Filter (When specific city is '전체')
+      const regionCities = REGION_CITIES[activeRegion] || [];
+      const regionMatches =
+        p.region === activeRegion ||
+        regionCities.includes(p.city as City) ||
+        (activeRegion === '중부' && (p.city === '다낭' || p.city === '호이안' || p.city === '후에' || p.title.includes('다낭') || p.title.includes('호이안') || p.title.includes('후에'))) ||
+        (activeRegion === '남부' && (p.city === '나트랑' || p.city === '달랏' || p.city === '푸꾸옥' || p.city === '호치민' || p.city === '무이네' || p.title.includes('달랏') || p.title.includes('푸꾸옥') || p.title.includes('나트랑') || p.title.includes('나짱') || p.title.includes('호치민') || p.title.includes('무이네')));
+      if (!regionMatches) return false;
     }
-    if (activeCity !== '전체' && p.city !== activeCity) {
-      return false;
-    }
+
+    // 4. Search Filter
     if (searchTerm.trim()) {
       const kw = searchTerm.toLowerCase();
       const matchTitle = p.title.toLowerCase().includes(kw);

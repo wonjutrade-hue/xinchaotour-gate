@@ -1459,8 +1459,8 @@ export const AdminMode: React.FC<AdminModeProps> = ({
                   {[
                     { id: '전체', label: '전체 지역', count: products.length, desc: '베트남 전역' },
                     { id: '북부', label: '🏔️ 북부', count: products.filter(p => p.region === '북부').length, desc: '하노이·사파·하롱베이·하장' },
-                    { id: '중부', label: '🌊 중부', count: products.filter(p => p.region === '중부').length, desc: '다낭·호이안·나트랑·후에' },
-                    { id: '남부', label: '🌴 남부', count: products.filter(p => p.region === '남부').length, desc: '푸꾸옥·달랏·호치민·붕따우' },
+                    { id: '중부', label: '🌊 중부', count: products.filter(p => p.region === '중부').length, desc: '다낭·호이안·후에' },
+                    { id: '남부', label: '🌴 남부', count: products.filter(p => p.region === '남부').length, desc: '나트랑·달랏·푸꾸옥·호치민·무이네' },
                   ].map(reg => {
                     const isSelected = filterRegion === reg.id;
                     return (
@@ -1746,10 +1746,10 @@ export const AdminMode: React.FC<AdminModeProps> = ({
                   };
 
                   const regCities: Record<string, string[]> = {
-                    '전체': ['다낭', '하노이', '푸꾸옥', '나트랑'],
+                    '전체': ['다낭', '하노이', '푸꾸옥', '나트랑', '달랏'],
                     '북부': ['하노이', '사파', '하롱베이', '하장', '닌빈'],
-                    '중부': ['다낭', '호이안', '나트랑', '후에'],
-                    '남부': ['푸꾸옥', '달랏', '호치민', '붕따우']
+                    '중부': ['다낭', '호이안', '후에'],
+                    '남부': ['나트랑', '달랏', '호치민', '푸꾸옥', '무이네']
                   };
 
                   return (
@@ -2441,9 +2441,9 @@ export const AdminMode: React.FC<AdminModeProps> = ({
                         🏙️ 3. 대표 도시 선택 *
                       </label>
                       <div className="flex flex-wrap gap-1.5">
-                        {(editingProduct.region === '중부' ? ['다낭', '호이안', '나트랑', '후에'] :
+                        {(editingProduct.region === '중부' ? ['다낭', '호이안', '후에'] :
                           editingProduct.region === '북부' ? ['하노이', '하롱베이', '사파', '닌빈'] :
-                          ['푸꾸옥', '달랏', '호치민', '붕따우']
+                          ['나트랑', '달랏', '호치민', '푸꾸옥', '무이네']
                         ).map((cityName) => {
                           const isSelected = editingProduct.city === cityName;
                           return (

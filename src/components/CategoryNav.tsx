@@ -16,10 +16,10 @@ interface CategoryNavProps {
   totalProductsCount: number;
 }
 
-const REGION_CITIES: Record<Exclude<Region, '전체'>, City[]> = {
+export const REGION_CITIES: Record<Exclude<Region, '전체'>, City[]> = {
   북부: ['하노이', '하롱베이', '닌빈', '사파', '하장'],
-  중부: ['다낭', '호이안', '후에', '나트랑'],
-  남부: ['호치민', '푸꾸옥', '달랏', '무이네'],
+  중부: ['다낭', '호이안', '후에'],
+  남부: ['나트랑', '달랏', '호치민', '푸꾸옥', '무이네'],
 };
 
 export const CategoryNav: React.FC<CategoryNavProps> = ({
