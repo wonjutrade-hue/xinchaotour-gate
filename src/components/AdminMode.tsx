@@ -582,6 +582,38 @@ export const AdminMode: React.FC<AdminModeProps> = ({
     }
   };
 
+  // Promote any image to representative main image with instant auto-save to product catalog
+  const handlePromoteToRepresentativePhoto = async (newUrl: string) => {
+    if (!newUrl || !editingProduct) return;
+    const nowIso = new Date().toISOString();
+    const oldMain = editingProduct.imageUrl;
+    const currentSubs = editingProduct.additionalImages || [];
+
+    // Keep old main in additionalImages if it was different and not dummy
+    const keepOld = oldMain && oldMain !== newUrl && !currentSubs.includes(oldMain) && !isSampleUrl(oldMain);
+    const nextSubs = keepOld ? [oldMain, ...currentSubs] : currentSubs;
+    const cleanedSubs = nextSubs.filter(img => img !== newUrl && Boolean(img));
+
+    const updatedProduct: Product = {
+      ...editingProduct,
+      imageUrl: newUrl,
+      additionalImages: cleanedSubs,
+      updatedAt: nowIso
+    };
+
+    setEditingProduct(updatedProduct);
+
+    // If product exists in catalog, immediately persist to storage and server!
+    const exists = products.some(p => p.id === updatedProduct.id);
+    if (exists) {
+      const updatedList = products.map(p => p.id === updatedProduct.id ? updatedProduct : p);
+      await onSaveProducts(updatedList);
+      showNotification(`👑 "${updatedProduct.title}" 상품의 대표 사진이 즉시 변경 및 저장되었습니다!`);
+    } else {
+      showNotification(`👑 대표 메인 사진으로 지정되었습니다.`);
+    }
+  };
+
   const handleManualSync = async () => {
     setIsManualSyncing(true);
     try {
@@ -1099,29 +1131,23 @@ export const AdminMode: React.FC<AdminModeProps> = ({
       const finalUrls = await uploadImagesToServer(optimizedResults);
 
       if (finalUrls.length > 0) {
-        setEditingProduct(prev => {
-          if (!prev) return prev;
-          
-          const currentMain = prev.imageUrl || '';
-          const hasDummyMain = !currentMain || isSampleUrl(currentMain);
-
-          if (targetType === 'main') {
-            // User explicitly clicked representative/main photo button
-            const newMain = finalUrls[0];
-            const oldMain = prev.imageUrl;
-            const subs = prev.additionalImages || [];
-            // Preserve the old main photo in the gallery if it was a real photo
-            const keepOld = oldMain && !isSampleUrl(oldMain) && oldMain !== newMain && !subs.includes(oldMain);
-            const nextSubs = keepOld ? [oldMain, ...subs] : [...subs];
-            const remaining = finalUrls.slice(1);
-            return {
+        if (targetType === 'main') {
+          // Immediately set as representative photo and auto-save!
+          await handlePromoteToRepresentativePhoto(finalUrls[0]);
+          if (finalUrls.length > 1) {
+            const extra = finalUrls.slice(1);
+            setEditingProduct(prev => prev ? {
               ...prev,
-              imageUrl: newMain,
-              additionalImages: Array.from(new Set([...nextSubs, ...remaining]))
-            };
-          } else {
-            // Target is gallery or bulk upload
+              additionalImages: Array.from(new Set([...(prev.additionalImages || []), ...extra]))
+            } : prev);
+          }
+        } else {
+          // Target is gallery or bulk upload
+          setEditingProduct(prev => {
+            if (!prev) return prev;
             const currentSubs = prev.additionalImages || [];
+            const currentMain = prev.imageUrl || '';
+            const hasDummyMain = !currentMain || isSampleUrl(currentMain);
             
             // If current main image is empty, make the 1st uploaded photo the representative image!
             if (hasDummyMain && finalUrls.length > 0) {
@@ -1138,10 +1164,10 @@ export const AdminMode: React.FC<AdminModeProps> = ({
               ...prev,
               additionalImages: Array.from(new Set([...currentSubs, ...finalUrls]))
             };
-          }
-        });
+          });
 
-        showNotification(`📸 ${finalUrls.length}장의 사진이 성공적으로 등록되었습니다!`);
+          showNotification(`📸 ${finalUrls.length}장의 사진이 성공적으로 등록되었습니다!`);
+        }
       }
     } catch (err) {
       console.error('Image upload failed:', err);
@@ -3437,23 +3463,10 @@ export const AdminMode: React.FC<AdminModeProps> = ({
                             type="button"
                             onClick={(e) => {
                               e.stopPropagation();
-                              const oldMain = editingProduct.imageUrl;
-                              setEditingProduct(prev => {
-                                if (!prev) return prev;
-                                const filtered = (prev.additionalImages || []).filter((_, i) => i !== sIdx);
-                                const newSubs = oldMain && !isSampleUrl(oldMain) && oldMain !== url
-                                  ? [oldMain, ...filtered]
-                                  : filtered;
-                                return {
-                                  ...prev,
-                                  imageUrl: url,
-                                  additionalImages: newSubs.filter(Boolean)
-                                };
-                              });
-                              showNotification(`👑 "${sIdx + 1}번 사진"이 대표 메인 사진으로 지정되었습니다! 하단 [상품 저장 완료]를 누르면 저장됩니다.`);
+                              handlePromoteToRepresentativePhoto(url);
                             }}
                             className="absolute bottom-1.5 left-1.5 bg-amber-400 hover:bg-amber-300 active:scale-95 text-slate-950 text-[10px] font-black px-2.5 py-1 rounded-lg shadow-md border border-amber-300 flex items-center gap-1 transition-all cursor-pointer z-10"
-                            title="이 사진을 대표 사진으로 즉시 지정"
+                            title="이 사진을 대표 사진으로 즉시 지정 & 저장"
                           >
                             <Star className="w-3 h-3 fill-slate-950" />
                             <span>대표로 지정</span>
@@ -3503,23 +3516,8 @@ export const AdminMode: React.FC<AdminModeProps> = ({
                             {/* Bottom action: Promote to Main */}
                             <button
                               type="button"
-                              onClick={() => {
-                                const oldMain = editingProduct.imageUrl;
-                                setEditingProduct(prev => {
-                                  if (!prev) return prev;
-                                  const filtered = (prev.additionalImages || []).filter((_, i) => i !== sIdx);
-                                  const newSubs = oldMain && oldMain !== 'VILLA_PHOTO_DATA' && oldMain !== 'TEST_IMG'
-                                    ? [oldMain, ...filtered]
-                                    : filtered;
-                                  return {
-                                    ...prev,
-                                    imageUrl: url,
-                                    additionalImages: newSubs.filter(Boolean)
-                                  };
-                                });
-                                showNotification('👑 대표 메인 사진으로 지정되었습니다.');
-                              }}
-                              className="w-full py-1.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 text-[10px] font-black flex items-center justify-center gap-1 cursor-pointer transition-colors"
+                              onClick={() => handlePromoteToRepresentativePhoto(url)}
+                              className="w-full py-1.5 rounded-xl bg-amber-400 hover:bg-amber-300 active:scale-95 text-slate-950 text-[10px] font-black flex items-center justify-center gap-1 cursor-pointer transition-colors"
                             >
                               <Star className="w-3 h-3 fill-slate-950" />
                               <span>대표로 지정</span>

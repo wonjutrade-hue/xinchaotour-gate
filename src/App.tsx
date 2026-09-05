@@ -72,28 +72,22 @@ function mergeProductsPreservingLocal(localList: Product[], incomingList: Produc
       const serverTime = serverProd.updatedAt ? new Date(serverProd.updatedAt).getTime() : (serverProd.createdAt ? new Date(serverProd.createdAt).getTime() : 0);
       const localTime = localProd.updatedAt ? new Date(localProd.updatedAt).getTime() : (localProd.createdAt ? new Date(localProd.createdAt).getTime() : 0);
 
-      // Check if local has custom uploaded photos or custom title that should not be wiped by stale server
+      // Check if local has custom uploaded photos, modified representative image, or custom title
       const localHasMorePhotos = (localProd.additionalImages?.length || 0) > (serverProd.additionalImages?.length || 0);
+      const isDummyImage = (url: string | undefined) => !url || url === 'VILLA_PHOTO_DATA' || url === 'TEST_IMG';
       const localHasCustomImage = Boolean(
         localProd.imageUrl && 
         localProd.imageUrl !== serverProd.imageUrl && 
-        (localProd.imageUrl.startsWith('data:') || localProd.imageUrl.startsWith('/uploads/') || localProd.imageUrl.includes('villa_danang_mykhe_6bed'))
+        !isDummyImage(localProd.imageUrl)
       );
 
-      if (localTime > serverTime || localHasMorePhotos || localHasCustomImage) {
-        // User edited locally or has richer gallery photos
+      if (localHasCustomImage || localTime >= serverTime || localHasMorePhotos) {
+        // User edited locally, set custom image, or has fresher timestamp
         mergedMap.set(localProd.id, localProd);
         localWasNewer = true;
-      } else if (serverTime > localTime) {
-        // Server has fresher data
-        mergedMap.set(serverProd.id, serverProd);
       } else {
-        // Equal timestamps: preserve local if it has custom image or more gallery photos
-        if (localProd.imageUrl && localProd.imageUrl !== '/images/vietnam_beach_villa.jpg') {
-          mergedMap.set(localProd.id, localProd);
-        } else {
-          mergedMap.set(serverProd.id, serverProd);
-        }
+        // Server has fresher data and local has no custom overrides
+        mergedMap.set(serverProd.id, serverProd);
       }
     }
   });
