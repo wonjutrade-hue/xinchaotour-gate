@@ -72,15 +72,28 @@ function mergeProductsPreservingLocal(localList: Product[], incomingList: Produc
       const serverTime = serverProd.updatedAt ? new Date(serverProd.updatedAt).getTime() : (serverProd.createdAt ? new Date(serverProd.createdAt).getTime() : 0);
       const localTime = localProd.updatedAt ? new Date(localProd.updatedAt).getTime() : (localProd.createdAt ? new Date(localProd.createdAt).getTime() : 0);
 
-      if (serverTime > localTime) {
-        // Server has fresher data (e.g. fine-tuned catalog photos, descriptions)
-        mergedMap.set(serverProd.id, serverProd);
-      } else if (localTime > serverTime) {
+      // Check if local has custom uploaded photos or custom title that should not be wiped by stale server
+      const localHasMorePhotos = (localProd.additionalImages?.length || 0) > (serverProd.additionalImages?.length || 0);
+      const localHasCustomImage = Boolean(
+        localProd.imageUrl && 
+        localProd.imageUrl !== serverProd.imageUrl && 
+        (localProd.imageUrl.startsWith('data:') || localProd.imageUrl.startsWith('/uploads/') || localProd.imageUrl.includes('villa_danang_mykhe_6bed'))
+      );
+
+      if (localTime > serverTime || localHasMorePhotos || localHasCustomImage) {
+        // User edited locally or has richer gallery photos
         mergedMap.set(localProd.id, localProd);
         localWasNewer = true;
-      } else {
-        // Equal timestamps: prefer server canonical definitions
+      } else if (serverTime > localTime) {
+        // Server has fresher data
         mergedMap.set(serverProd.id, serverProd);
+      } else {
+        // Equal timestamps: preserve local if it has custom image or more gallery photos
+        if (localProd.imageUrl && localProd.imageUrl !== '/images/vietnam_beach_villa.jpg') {
+          mergedMap.set(localProd.id, localProd);
+        } else {
+          mergedMap.set(serverProd.id, serverProd);
+        }
       }
     }
   });

@@ -517,6 +517,71 @@ export const AdminMode: React.FC<AdminModeProps> = ({
     }, 3500);
   };
 
+  // Quick Main Photo Changer Modal State (1-Click Change from Product List)
+  const [quickPhotoProduct, setQuickPhotoProduct] = useState<Product | null>(null);
+  const [isQuickPhotoSaving, setIsQuickPhotoSaving] = useState(false);
+  const quickPhotoUploadRef = useRef<HTMLInputElement>(null);
+
+  // Quick Set Main Photo from any gallery image or new upload
+  const handleQuickSetMainPhoto = async (targetProduct: Product, newImageUrl: string) => {
+    if (!newImageUrl || !targetProduct) return;
+    setIsQuickPhotoSaving(true);
+    try {
+      const nowIso = new Date().toISOString();
+      const oldMain = targetProduct.imageUrl;
+      const currentSubs = targetProduct.additionalImages || [];
+      
+      // Keep old main in additionalImages if it was different and not dummy
+      const keepOld = oldMain && oldMain !== newImageUrl && !currentSubs.includes(oldMain) && !isSampleUrl(oldMain);
+      const nextSubs = keepOld ? [oldMain, ...currentSubs] : currentSubs;
+      // Filter out the new main from additionalImages
+      const cleanedSubs = nextSubs.filter(img => img !== newImageUrl && Boolean(img));
+
+      const updatedProduct: Product = {
+        ...targetProduct,
+        imageUrl: newImageUrl,
+        additionalImages: cleanedSubs,
+        updatedAt: nowIso
+      };
+
+      const updatedList = products.map(p => p.id === updatedProduct.id ? updatedProduct : p);
+      await onSaveProducts(updatedList);
+      
+      // Update quickPhotoProduct if still open
+      setQuickPhotoProduct(updatedProduct);
+      showNotification(`👑 "${targetProduct.title}" 대표 사진이 즉시 변경 & 저장되었습니다!`);
+    } catch (err) {
+      console.error('Quick set main photo failed:', err);
+      showNotification('⚠️ 대표 사진 변경 중 오류가 발생했습니다.');
+    } finally {
+      setIsQuickPhotoSaving(false);
+    }
+  };
+
+  // Quick upload from user device directly as new main photo
+  const handleQuickUploadMainPhoto = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0 || !quickPhotoProduct) return;
+    
+    setIsQuickPhotoSaving(true);
+    try {
+      setUploadProgressText('⚡ 대표 사진 최적화 중...');
+      const opt = await optimizeImageFile(files[0], 1920, 1440, 0.85);
+      setUploadProgressText('💾 대표 사진 서버 등록 중...');
+      const finalUrls = await uploadImagesToServer([opt]);
+      if (finalUrls.length > 0) {
+        await handleQuickSetMainPhoto(quickPhotoProduct, finalUrls[0]);
+      }
+    } catch (err) {
+      console.error('Quick upload main photo failed:', err);
+      showNotification('⚠️ 사진 업로드 중 오류가 발생했습니다.');
+    } finally {
+      setIsQuickPhotoSaving(false);
+      setUploadProgressText(null);
+      if (e.target) e.target.value = '';
+    }
+  };
+
   const handleManualSync = async () => {
     setIsManualSyncing(true);
     try {
@@ -959,14 +1024,26 @@ export const AdminMode: React.FC<AdminModeProps> = ({
       // Ensure product has a valid display image and update timestamp
       const nowIso = new Date().toISOString();
       const currentMain = editingProduct.imageUrl?.trim() || '';
-      const validMain = currentMain && !isSampleUrl(currentMain)
-        ? currentMain
-        : getDisplayProductImage(editingProduct);
+      
+      // Determine the valid representative image with top priority to user selection
+      let validMain = currentMain;
+      if (!validMain || isSampleUrl(validMain)) {
+        if (editingProduct.additionalImages && editingProduct.additionalImages.length > 0) {
+          validMain = editingProduct.additionalImages[0];
+        } else {
+          validMain = getDisplayProductImage(editingProduct);
+        }
+      }
+
+      // Ensure gallery images do not duplicate the valid main image
+      const cleanedSubs = (editingProduct.additionalImages || []).filter(
+        img => Boolean(img && !isSampleUrl(img) && img !== validMain)
+      );
 
       const validatedProduct: Product = {
         ...editingProduct,
         imageUrl: validMain,
-        additionalImages: (editingProduct.additionalImages || []).filter(img => Boolean(img && !isSampleUrl(img))),
+        additionalImages: cleanedSubs,
         updatedAt: nowIso
       };
 
@@ -2045,34 +2122,42 @@ export const AdminMode: React.FC<AdminModeProps> = ({
                       >
                         {/* Left: Thumbnail & Info */}
                         <div className="flex items-start gap-4 min-w-0 flex-1">
-                          <div 
-                            onClick={() => {
-                              handleEditProduct(prod);
-                              setEditorTab('photos');
-                            }}
-                            className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-slate-900 overflow-hidden shrink-0 border border-slate-700 hover:border-amber-400 relative group flex items-center justify-center cursor-pointer shadow-md transition-all"
-                            title="클릭하여 대표 메인 사진 및 갤러리 변경"
-                          >
-                            {prod.imageUrl ? (
-                              <>
-                                <img
-                                  src={prod.imageUrl}
-                                  alt={prod.title}
-                                  className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                                />
-                                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                  <Camera className="w-5 h-5 text-amber-300 drop-shadow" />
+                          <div className="flex flex-col items-center shrink-0">
+                            <div 
+                              onClick={() => setQuickPhotoProduct(prod)}
+                              className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-slate-900 overflow-hidden shrink-0 border-2 border-slate-700 hover:border-amber-400 relative group flex items-center justify-center cursor-pointer shadow-md transition-all"
+                              title="클릭하여 대표 메인 사진 즉시 변경 및 갤러리 관리"
+                            >
+                              {getDisplayProductImage(prod) ? (
+                                <>
+                                  <img
+                                    src={getDisplayProductImage(prod)}
+                                    alt={prod.title}
+                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                                  />
+                                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1 p-1 text-center">
+                                    <Camera className="w-5 h-5 text-amber-300 drop-shadow" />
+                                    <span className="text-[10px] font-black text-amber-300 leading-tight">대표사진<br/>빠른변경</span>
+                                  </div>
+                                </>
+                              ) : (
+                                <div className="w-full h-full bg-slate-850 flex flex-col items-center justify-center text-slate-500 gap-1 p-2 text-center">
+                                  <ImageIcon className="w-5 h-5 text-slate-600" />
+                                  <span className="text-[10px] font-bold">사진 없음</span>
                                 </div>
-                              </>
-                            ) : (
-                              <div className="w-full h-full bg-slate-850 flex flex-col items-center justify-center text-slate-500 gap-1 p-2 text-center">
-                                <ImageIcon className="w-5 h-5 text-slate-600" />
-                                <span className="text-[10px] font-bold">사진 없음</span>
-                              </div>
-                            )}
-                            <span className="absolute bottom-1 right-1 bg-slate-950/80 text-[10px] text-white font-bold px-1.5 py-0.2 rounded-md backdrop-blur-xs">
-                              📸 {subPhotosCount}
-                            </span>
+                              )}
+                              <span className="absolute bottom-1 right-1 bg-slate-950/80 text-[10px] text-white font-bold px-1.5 py-0.2 rounded-md backdrop-blur-xs">
+                                📸 {subPhotosCount}
+                              </span>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => setQuickPhotoProduct(prod)}
+                              className="mt-1.5 w-full text-[10px] font-black text-amber-400 hover:text-amber-300 bg-amber-400/10 hover:bg-amber-400/20 border border-amber-400/30 rounded-lg py-1 px-1.5 flex items-center justify-center gap-1 cursor-pointer transition-colors"
+                            >
+                              <Camera className="w-3 h-3" />
+                              <span>사진 교체</span>
+                            </button>
                           </div>
 
                           <div className="space-y-1.5 min-w-0 flex-1">
@@ -3347,7 +3432,7 @@ export const AdminMode: React.FC<AdminModeProps> = ({
                             #{sIdx + 1}
                           </span>
 
-                          {/* Quick Set as Main Badge (Always clickable) */}
+                          {/* Quick Set as Main Badge (Always clearly visible and clickable) */}
                           <button
                             type="button"
                             onClick={(e) => {
@@ -3356,7 +3441,7 @@ export const AdminMode: React.FC<AdminModeProps> = ({
                               setEditingProduct(prev => {
                                 if (!prev) return prev;
                                 const filtered = (prev.additionalImages || []).filter((_, i) => i !== sIdx);
-                                const newSubs = oldMain && oldMain !== 'VILLA_PHOTO_DATA' && oldMain !== 'TEST_IMG'
+                                const newSubs = oldMain && !isSampleUrl(oldMain) && oldMain !== url
                                   ? [oldMain, ...filtered]
                                   : filtered;
                                 return {
@@ -3365,13 +3450,13 @@ export const AdminMode: React.FC<AdminModeProps> = ({
                                   additionalImages: newSubs.filter(Boolean)
                                 };
                               });
-                              showNotification('👑 대표 메인 사진으로 지정되었습니다.');
+                              showNotification(`👑 "${sIdx + 1}번 사진"이 대표 메인 사진으로 지정되었습니다! 하단 [상품 저장 완료]를 누르면 저장됩니다.`);
                             }}
-                            className="absolute bottom-1.5 left-1.5 bg-slate-900/90 hover:bg-amber-400 text-amber-300 hover:text-slate-950 text-[10px] font-black px-2 py-0.5 rounded-md border border-amber-400/40 flex items-center gap-1 shadow transition-all cursor-pointer z-10"
-                            title="대표 사진으로 지정"
+                            className="absolute bottom-1.5 left-1.5 bg-amber-400 hover:bg-amber-300 active:scale-95 text-slate-950 text-[10px] font-black px-2.5 py-1 rounded-lg shadow-md border border-amber-300 flex items-center gap-1 transition-all cursor-pointer z-10"
+                            title="이 사진을 대표 사진으로 즉시 지정"
                           >
-                            <Star className="w-2.5 h-2.5 fill-current" />
-                            <span>대표지정</span>
+                            <Star className="w-3 h-3 fill-slate-950" />
+                            <span>대표로 지정</span>
                           </button>
 
                           <div className="absolute inset-0 bg-slate-950/80 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-between p-2">
@@ -5296,6 +5381,166 @@ export const AdminMode: React.FC<AdminModeProps> = ({
                   )}
                 </button>
               </div>
+            </div>
+
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================================= */}
+      {/* QUICK MAIN PHOTO SELECTOR & UPLOAD MODAL (1-Click Change from List)     */}
+      {/* ========================================================================= */}
+      {quickPhotoProduct && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/85 backdrop-blur-md animate-fadeIn">
+          <div className="bg-slate-900 border-2 border-amber-400/80 rounded-3xl w-full max-w-4xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-scaleUp">
+            
+            {/* Modal Header */}
+            <div className="bg-gradient-to-r from-amber-500/20 via-slate-900 to-slate-950 px-5 py-4 border-b border-slate-800 flex items-center justify-between shrink-0">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <div className="w-9 h-9 rounded-xl bg-amber-400 text-slate-950 flex items-center justify-center font-black shrink-0 shadow">
+                  <Camera className="w-5 h-5" />
+                </div>
+                <div className="min-w-0">
+                  <h3 className="font-black text-white text-base truncate flex items-center gap-2">
+                    <span>👑 대표 메인 사진 즉시 교체</span>
+                    <span className="text-xs text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded-full border border-amber-400/30">
+                      총 {(quickPhotoProduct.additionalImages?.length || 0) + (quickPhotoProduct.imageUrl ? 1 : 0)}장
+                    </span>
+                  </h3>
+                  <p className="text-xs text-slate-400 truncate">
+                    상품: <span className="text-slate-200 font-bold">{quickPhotoProduct.title}</span>
+                  </p>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setQuickPhotoProduct(null)}
+                className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition-colors cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-5 overflow-y-auto space-y-6 flex-1 text-xs sm:text-sm">
+              
+              {/* Top Banner: Instructions & Direct Upload */}
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-slate-950/80 p-4 rounded-2xl border border-slate-800">
+                <div>
+                  <h4 className="font-black text-amber-300 text-sm flex items-center gap-1.5">
+                    <Sparkles className="w-4 h-4" />
+                    <span>원하는 사진을 클릭하면 1초 만에 대표 사진으로 교체 & 저장됩니다!</span>
+                  </h4>
+                  <p className="text-xs text-slate-400 mt-0.5">
+                    기기에 있는 새로운 사진을 즉시 올려서 대표 사진으로 지정할 수도 있습니다.
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-2 shrink-0">
+                  <input
+                    type="file"
+                    ref={quickPhotoUploadRef}
+                    onChange={handleQuickUploadMainPhoto}
+                    accept="image/*"
+                    className="hidden"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => quickPhotoUploadRef.current?.click()}
+                    disabled={isQuickPhotoSaving}
+                    className="px-4 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-black text-xs flex items-center gap-2 shadow-lg cursor-pointer transition-all disabled:opacity-50"
+                  >
+                    <Upload className="w-4 h-4" />
+                    <span>📁 내 기기에서 새 대표 사진 올리기</span>
+                  </button>
+                </div>
+              </div>
+
+              {isQuickPhotoSaving && (
+                <div className="p-3 bg-amber-400/10 border border-amber-400/40 rounded-2xl flex items-center justify-center gap-2 animate-pulse">
+                  <Loader2 className="w-4 h-4 animate-spin text-amber-400" />
+                  <span className="text-xs font-black text-amber-300">
+                    {uploadProgressText || '대표 사진을 교체하고 영구 저장하는 중입니다...'}
+                  </span>
+                </div>
+              )}
+
+              {/* Photos Grid */}
+              <div className="space-y-3">
+                <span className="font-bold text-slate-300 block text-xs">
+                  📸 아래 등록된 사진 목록에서 대표 사진으로 사용할 사진을 클릭하세요:
+                </span>
+
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3.5">
+                  {/* Current Main Photo */}
+                  {quickPhotoProduct.imageUrl && (
+                    <div className="relative rounded-2xl overflow-hidden bg-slate-950 border-3 border-amber-400 aspect-video shadow-xl ring-2 ring-amber-400/30">
+                      <img
+                        src={quickPhotoProduct.imageUrl}
+                        alt="현재 대표 사진"
+                        className="w-full h-full object-cover"
+                      />
+                      <div className="absolute top-2 left-2 bg-amber-400 text-slate-950 text-[10px] font-black px-2.5 py-0.5 rounded-full shadow flex items-center gap-1">
+                        <Star className="w-3 h-3 fill-slate-950" />
+                        <span>👑 현재 대표 사진</span>
+                      </div>
+                      <div className="absolute bottom-2 inset-x-2 bg-slate-950/90 text-amber-300 text-[11px] font-black py-1 px-2 rounded-lg text-center backdrop-blur-xs border border-amber-400/30">
+                        ✓ 메인에 노출 중
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Registered Additional Images */}
+                  {(quickPhotoProduct.additionalImages || []).map((imgUrl, idx) => {
+                    const isSelected = quickPhotoProduct.imageUrl === imgUrl;
+                    if (isSelected) return null;
+
+                    return (
+                      <div
+                        key={idx}
+                        onClick={() => handleQuickSetMainPhoto(quickPhotoProduct, imgUrl)}
+                        className="relative rounded-2xl overflow-hidden bg-slate-950 border border-slate-700 hover:border-amber-400 aspect-video group cursor-pointer shadow-md transition-all hover:scale-[1.02]"
+                      >
+                        <img
+                          src={imgUrl}
+                          alt={`사진 ${idx + 1}`}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                        />
+                        <span className="absolute top-2 right-2 bg-black/70 text-slate-300 text-[10px] font-bold px-1.5 py-0.5 rounded">
+                          #{idx + 1}
+                        </span>
+
+                        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1.5 p-2 text-center">
+                          <button
+                            type="button"
+                            disabled={isQuickPhotoSaving}
+                            className="px-3 py-1.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs flex items-center gap-1 shadow-lg cursor-pointer"
+                          >
+                            <Star className="w-3.5 h-3.5 fill-slate-950" />
+                            <span>대표 사진으로 지정</span>
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+            </div>
+
+            {/* Modal Footer */}
+            <div className="bg-slate-950 px-5 py-3 border-t border-slate-800 flex items-center justify-between shrink-0">
+              <span className="text-xs text-slate-400">
+                선택한 즉시 화면과 데이터베이스에 저장됩니다.
+              </span>
+              <button
+                type="button"
+                onClick={() => setQuickPhotoProduct(null)}
+                className="px-5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs transition-colors cursor-pointer"
+              >
+                닫기
+              </button>
             </div>
 
           </div>
