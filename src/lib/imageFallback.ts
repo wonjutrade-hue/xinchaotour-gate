@@ -63,7 +63,7 @@ export const MASTER_UNIQUE_PRODUCT_IMAGES: Record<string, string> = {
   "prod-sapa-villa-02": "/images/villa_sapa_jadehill.jpg",
   "prod-saigon-villa-01": "/images/villa_saigon_river.jpg",
   "prod-saigon-villa-02": "/images/villa_muine_beach.jpg",
-  "prod-1787849206215": "/images/vietnam_beach_villa.jpg",
+  "prod-1787849206215": "/images/villa_danang_mykhe_6bed.jpg",
 
   // 5. 18-HOLE DAILY GOLF TOURS (EACH 100% UNIQUE)
   "prod-golf-18h-brg-danang": "/images/golf_brg_danang.jpg",
@@ -148,24 +148,32 @@ export function getProductFallbackImage(category?: string, city?: string): strin
 export function getDisplayProductImage(product?: { id?: string; imageUrl?: string; additionalImages?: string[]; category?: string; city?: string; title?: string; subTitle?: string } | null): string {
   if (!product) return DEFAULT_TRAVEL_FALLBACK;
 
-  const id = product.id || '';
+  // 1. Clean custom user-uploaded or specified imageUrl takes top priority!
+  if (
+    product.imageUrl && 
+    typeof product.imageUrl === 'string' &&
+    product.imageUrl.trim().length > 0 && 
+    product.imageUrl !== 'VILLA_PHOTO_DATA' && 
+    product.imageUrl !== 'TEST_IMG'
+  ) {
+    return product.imageUrl.trim();
+  }
 
-  // 1. DIRECT PRODUCT ID 1:1 UNIQUE PHOTO GUARANTEE
+  // 2. If additional gallery images exist, check for first valid image
+  if (Array.isArray(product.additionalImages)) {
+    const firstValid = product.additionalImages.find(
+      img => img && typeof img === 'string' && img.trim().length > 0 && 
+             img !== 'VILLA_PHOTO_DATA' && img !== 'TEST_IMG'
+    );
+    if (firstValid) return firstValid.trim();
+  }
+
+  // 3. Fallback to DIRECT PRODUCT ID 1:1 UNIQUE PHOTO GUARANTEE if available
+  const id = product.id || '';
   if (id && MASTER_UNIQUE_PRODUCT_IMAGES[id]) {
     return MASTER_UNIQUE_PRODUCT_IMAGES[id];
   }
 
-  // 2. Clean custom user-uploaded imageUrl
-  if (product.imageUrl && product.imageUrl.trim().length > 0 && 
-      product.imageUrl !== 'VILLA_PHOTO_DATA' && 
-      product.imageUrl !== 'TEST_IMG' && 
-      !product.imageUrl.includes('photo_1787849366639') &&
-      !product.imageUrl.includes('1598899134739-24c46f58b8c0')) {
-    return product.imageUrl;
-  }
-  if (Array.isArray(product.additionalImages)) {
-    const firstValid = product.additionalImages.find(img => img && img.trim().length > 0 && img !== 'VILLA_PHOTO_DATA' && img !== 'TEST_IMG' && !img.includes('1598899134739-24c46f58b8c0'));
-    if (firstValid) return firstValid;
-  }
+  // 4. City & Category scenic spots fallback
   return getProductFallbackImage(product.category, product.city);
 }

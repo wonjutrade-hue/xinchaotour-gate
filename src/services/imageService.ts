@@ -126,16 +126,73 @@ export const imageService = {
   },
 
   /**
-   * Upload multiple images in parallel
+   * Upload multiple images in parallel or chunked batches
    */
   async uploadMultipleImages(
     filesOrDataUrls: Array<File | Blob | string>
   ): Promise<string[]> {
     if (!filesOrDataUrls || filesOrDataUrls.length === 0) return [];
-    const results = await Promise.all(
-      filesOrDataUrls.map(item => this.uploadImage(item))
-    );
-    return results.filter(Boolean);
+
+    if (isSupabaseConfigured() && supabase) {
+      const results = await Promise.all(
+        filesOrDataUrls.map(item => this.uploadImage(item))
+      );
+      return results.filter(Boolean);
+    }
+
+    // Convert items to Data URLs / existing paths
+    const dataUrls: string[] = [];
+    for (const item of filesOrDataUrls) {
+      if (typeof item === 'string') {
+        dataUrls.push(item);
+      } else {
+        try {
+          const dUrl = await new Promise<string>((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result as string);
+            reader.onerror = reject;
+            reader.readAsDataURL(item);
+          });
+          dataUrls.push(dUrl);
+        } catch (e) {
+          console.warn('[ImageService] FileReader failed:', e);
+        }
+      }
+    }
+
+    const finalUrls: string[] = [];
+    const batchSize = 4;
+    for (let i = 0; i < dataUrls.length; i += batchSize) {
+      const chunk = dataUrls.slice(i, i + batchSize);
+      const toUpload = chunk.filter(u => u.startsWith('data:image/'));
+      const alreadyUrls = chunk.filter(u => !u.startsWith('data:image/'));
+
+      if (toUpload.length > 0) {
+        try {
+          const res = await fetch('/api/upload-images', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ images: toUpload })
+          });
+          if (res.ok) {
+            const data = await res.json();
+            if (data.success && Array.isArray(data.urls)) {
+              finalUrls.push(...data.urls);
+            } else {
+              finalUrls.push(...toUpload);
+            }
+          } else {
+            finalUrls.push(...toUpload);
+          }
+        } catch (err) {
+          console.warn('[ImageService] Batch upload failed, keeping dataUrl:', err);
+          finalUrls.push(...toUpload);
+        }
+      }
+      finalUrls.push(...alreadyUrls);
+    }
+
+    return finalUrls.filter(Boolean);
   },
 
   /**

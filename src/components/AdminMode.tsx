@@ -53,6 +53,7 @@ import {
   Users,
   Compass,
   FileText,
+  Camera,
   Key,
   Smartphone,
   Info,
@@ -81,6 +82,25 @@ interface AdminModeProps {
 }
 
 // Preset high quality Vietnam travel photos for 1-click selection
+const HIGH_RES_VIETNAM_PRESETS = [
+  { label: '다낭 오션비치 독채 풀빌라', url: '/images/vietnam_beach_villa.jpg', category: '풀빌라' },
+  { label: '시티 프라이빗 대저택 풀빌라', url: '/images/vietnam_city_villa.jpg', category: '풀빌라' },
+  { label: '미케비치 에메랄드 풀빌라', url: '/images/vietnam_beach_villa_1787099211528.jpg', category: '풀빌라' },
+  { label: '다낭 시티 럭셔리 빌라', url: '/images/vietnam_city_villa_1787099231914.jpg', category: '풀빌라' },
+  { label: '미케비치 비치프론트 오션뷰', url: '/images/mykhe_beach.jpg', category: '자유여행' },
+  { label: '다낭 바나힐 골든브릿지', url: '/images/danang_golden_bridge.jpg', category: '추천패키지' },
+  { label: '다낭 용다리 & 시티 야경', url: '/images/danang_city_dragon.jpg', category: '추천패키지' },
+  { label: '나트랑 오션베이 해변', url: '/images/nhatrang_ocean_bay_1787097818318.jpg', category: '자유여행' },
+  { label: '하롱베이 에메랄드 크루즈', url: '/images/halong_emerald_cruise_1787097807698.jpg', category: '추천패키지' },
+  { label: '호이안 올드타운 투본강 유등', url: '/images/hoian_lantern_night_1787097792559.jpg', category: '추천패키지' },
+  { label: '베트남 챔피언십 골프 리조트', url: '/images/vietnam_golf_resort.jpg', category: '골프투어' },
+  { label: '호이아나 쇼어스 명문 골프코스', url: '/images/golf_hoiana_shores.jpg', category: '골프투어' },
+  { label: '사파 판시판 & 계단식 논', url: '/images/sapa_fansipan_terraces_1786458401102.jpg', category: '자유여행' },
+  { label: '달랏 고원 호수 & 플라워', url: '/images/dalat_flower_garden.jpg', category: '자유여행' },
+  { label: '무이네 화이트 샌듄 사막', url: '/images/muine_sand_dunes_1787098437757.jpg', category: '자유여행' },
+  { label: '푸꾸옥 선셋 케이블카', url: '/images/phuquoc_sunset_cablecar_1787098424693.jpg', category: '자유여행' },
+];
+
 const PRESET_PHOTOS = [
   { label: '다낭 미케비치 & 풀빌라', url: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1200&q=80', category: '풀빌라' },
   { label: '럭셔리 오션뷰 인피니티풀', url: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80', category: '풀빌라' },
@@ -938,10 +958,15 @@ export const AdminMode: React.FC<AdminModeProps> = ({
     try {
       // Ensure product has a valid display image and update timestamp
       const nowIso = new Date().toISOString();
+      const currentMain = editingProduct.imageUrl?.trim() || '';
+      const validMain = currentMain && !isSampleUrl(currentMain)
+        ? currentMain
+        : getDisplayProductImage(editingProduct);
+
       const validatedProduct: Product = {
         ...editingProduct,
-        imageUrl: getDisplayProductImage(editingProduct),
-        additionalImages: (editingProduct.additionalImages || []).filter(img => Boolean(img && img !== 'VILLA_PHOTO_DATA' && img !== 'TEST_IMG')),
+        imageUrl: validMain,
+        additionalImages: (editingProduct.additionalImages || []).filter(img => Boolean(img && !isSampleUrl(img))),
         updatedAt: nowIso
       };
 
@@ -978,9 +1003,9 @@ export const AdminMode: React.FC<AdminModeProps> = ({
 
     try {
       // 1. Client-side parallel compression & optimization
-      const imageFiles = files.filter(f => f.type.startsWith('image/'));
+      const imageFiles = files.filter(f => !f.type || f.type.startsWith('image/') || /\.(jpe?g|png|webp|gif|bmp|svg|heic|heif|avif)$/i.test(f.name));
       if (imageFiles.length === 0) {
-        showNotification('⚠️ 이미지 파일(JPG, PNG, WebP)만 선택해주세요.');
+        showNotification('⚠️ 이미지 파일(JPG, PNG, WebP 등)만 선택해주세요.');
         return;
       }
 
@@ -1001,17 +1026,21 @@ export const AdminMode: React.FC<AdminModeProps> = ({
           if (!prev) return prev;
           
           const currentMain = prev.imageUrl || '';
-          const hasDummyMain = !currentMain || currentMain === 'VILLA_PHOTO_DATA' || currentMain === 'TEST_IMG';
+          const hasDummyMain = !currentMain || isSampleUrl(currentMain);
 
           if (targetType === 'main') {
             // User explicitly clicked representative/main photo button
+            const newMain = finalUrls[0];
+            const oldMain = prev.imageUrl;
+            const subs = prev.additionalImages || [];
+            // Preserve the old main photo in the gallery if it was a real photo
+            const keepOld = oldMain && !isSampleUrl(oldMain) && oldMain !== newMain && !subs.includes(oldMain);
+            const nextSubs = keepOld ? [oldMain, ...subs] : [...subs];
             const remaining = finalUrls.slice(1);
             return {
               ...prev,
-              imageUrl: finalUrls[0],
-              additionalImages: remaining.length > 0
-                ? Array.from(new Set([...(prev.additionalImages || []), ...remaining]))
-                : (prev.additionalImages || [])
+              imageUrl: newMain,
+              additionalImages: Array.from(new Set([...nextSubs, ...remaining]))
             };
           } else {
             // Target is gallery or bulk upload
@@ -1053,6 +1082,7 @@ export const AdminMode: React.FC<AdminModeProps> = ({
     const files = e.target.files;
     if (!files || files.length === 0) return;
     processAndUploadFiles(Array.from(files), 'main');
+    e.target.value = '';
   };
 
   // Multi Image Gallery Upload
@@ -1060,6 +1090,7 @@ export const AdminMode: React.FC<AdminModeProps> = ({
     const files = e.target.files;
     if (!files || files.length === 0) return;
     processAndUploadFiles(Array.from(files), 'gallery');
+    e.target.value = '';
   };
 
   // Drag & Drop Handler
@@ -1324,6 +1355,25 @@ export const AdminMode: React.FC<AdminModeProps> = ({
 
       {/* Main Content Area */}
       <main className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 pt-4 sm:pt-6 space-y-4 sm:space-y-6">
+
+        {/* Global Hidden File Inputs: always mounted so file selection works from any tab or product row */}
+        <input
+          ref={galleryImageInputRef}
+          type="file"
+          multiple
+          accept="image/*"
+          onChange={handleGalleryImagesUpload}
+          className="hidden"
+          disabled={isUploadingImages}
+        />
+        <input
+          ref={mainImageInputRef}
+          type="file"
+          accept="image/*"
+          onChange={handleMainImageFileUpload}
+          className="hidden"
+          disabled={isUploadingImages}
+        />
 
         {/* =================================================================== */}
         {/* TAB 1: TRAVEL PRODUCTS MANAGEMENT                                   */}
@@ -1624,12 +1674,22 @@ export const AdminMode: React.FC<AdminModeProps> = ({
                               >
                                 {/* Left: Thumbnail & Info */}
                                 <div className="flex items-start gap-4 min-w-0 flex-1">
-                                  <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-slate-900 overflow-hidden shrink-0 border border-slate-700 relative group">
+                                  <div 
+                                    onClick={() => {
+                                      handleEditProduct(prod);
+                                      setEditorTab('photos');
+                                    }}
+                                    className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-slate-900 overflow-hidden shrink-0 border border-slate-700 hover:border-amber-400 relative group cursor-pointer shadow-md transition-all"
+                                    title="클릭하여 대표 메인 사진 및 갤러리 변경"
+                                  >
                                     <img
                                       src={prod.imageUrl || 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=400&q=80'}
                                       alt={prod.title}
                                       className="w-full h-full object-cover group-hover:scale-105 transition-transform"
                                     />
+                                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                      <Camera className="w-5 h-5 text-amber-300 drop-shadow" />
+                                    </div>
                                     <span className="absolute bottom-1 right-1 bg-slate-950/80 text-[10px] text-white font-bold px-1.5 py-0.2 rounded-md backdrop-blur-xs">
                                       📸 {subPhotosCount}
                                     </span>
@@ -1701,6 +1761,18 @@ export const AdminMode: React.FC<AdminModeProps> = ({
                                   >
                                     <Copy className="w-3.5 h-3.5 text-amber-400" />
                                     <span>복제</span>
+                                  </button>
+
+                                  <button
+                                    onClick={() => {
+                                      handleEditProduct(prod);
+                                      setEditorTab('photos');
+                                    }}
+                                    className="px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl bg-slate-800 hover:bg-slate-700 active:scale-95 text-amber-300 border border-amber-400/40 font-bold text-xs flex items-center gap-1 sm:gap-1.5 transition-colors cursor-pointer"
+                                    title="대표 사진 및 갤러리 관리"
+                                  >
+                                    <Camera className="w-3.5 h-3.5 text-amber-400" />
+                                    <span>사진 변경</span>
                                   </button>
 
                                   <button
@@ -1808,12 +1880,22 @@ export const AdminMode: React.FC<AdminModeProps> = ({
                               >
                                 {/* Left: Thumbnail & Info */}
                                 <div className="flex items-start gap-4 min-w-0 flex-1">
-                                  <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-slate-900 overflow-hidden shrink-0 border border-slate-700 relative group">
+                                  <div 
+                                    onClick={() => {
+                                      handleEditProduct(prod);
+                                      setEditorTab('photos');
+                                    }}
+                                    className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-slate-900 overflow-hidden shrink-0 border border-slate-700 hover:border-amber-400 relative group cursor-pointer shadow-md transition-all"
+                                    title="클릭하여 대표 메인 사진 및 갤러리 변경"
+                                  >
                                     <img
                                       src={prod.imageUrl || 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=400&q=80'}
                                       alt={prod.title}
                                       className="w-full h-full object-cover group-hover:scale-105 transition-transform"
                                     />
+                                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                      <Camera className="w-5 h-5 text-amber-300 drop-shadow" />
+                                    </div>
                                     <span className="absolute bottom-1 right-1 bg-slate-950/80 text-[10px] text-white font-bold px-1.5 py-0.2 rounded-md backdrop-blur-xs">
                                       📸 {subPhotosCount}
                                     </span>
@@ -1898,6 +1980,18 @@ export const AdminMode: React.FC<AdminModeProps> = ({
                                   </button>
 
                                   <button
+                                    onClick={() => {
+                                      handleEditProduct(prod);
+                                      setEditorTab('photos');
+                                    }}
+                                    className="px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl bg-slate-800 hover:bg-slate-700 active:scale-95 text-amber-300 border border-amber-400/40 font-bold text-xs flex items-center gap-1 sm:gap-1.5 transition-colors cursor-pointer"
+                                    title="대표 사진 및 갤러리 관리"
+                                  >
+                                    <Camera className="w-3.5 h-3.5 text-amber-400" />
+                                    <span>사진 변경</span>
+                                  </button>
+
+                                  <button
                                     onClick={() => handleEditProduct(prod)}
                                     className="px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-amber-400 hover:bg-amber-300 active:scale-95 text-slate-950 font-black text-xs flex items-center gap-1 sm:gap-1.5 shadow-md transition-colors cursor-pointer"
                                   >
@@ -1951,13 +2045,25 @@ export const AdminMode: React.FC<AdminModeProps> = ({
                       >
                         {/* Left: Thumbnail & Info */}
                         <div className="flex items-start gap-4 min-w-0 flex-1">
-                          <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-slate-900 overflow-hidden shrink-0 border border-slate-700 relative group flex items-center justify-center">
+                          <div 
+                            onClick={() => {
+                              handleEditProduct(prod);
+                              setEditorTab('photos');
+                            }}
+                            className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-slate-900 overflow-hidden shrink-0 border border-slate-700 hover:border-amber-400 relative group flex items-center justify-center cursor-pointer shadow-md transition-all"
+                            title="클릭하여 대표 메인 사진 및 갤러리 변경"
+                          >
                             {prod.imageUrl ? (
-                              <img
-                                src={prod.imageUrl}
-                                alt={prod.title}
-                                className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                              />
+                              <>
+                                <img
+                                  src={prod.imageUrl}
+                                  alt={prod.title}
+                                  className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                                />
+                                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                  <Camera className="w-5 h-5 text-amber-300 drop-shadow" />
+                                </div>
+                              </>
                             ) : (
                               <div className="w-full h-full bg-slate-850 flex flex-col items-center justify-center text-slate-500 gap-1 p-2 text-center">
                                 <ImageIcon className="w-5 h-5 text-slate-600" />
@@ -2331,6 +2437,195 @@ export const AdminMode: React.FC<AdminModeProps> = ({
               {/* ============================================================= */}
               {editorTab === 'basic' && (
                 <div className="space-y-6 animate-fadeIn">
+                  {/* Complete Main Representative Photo Management Card */}
+                  <div className="bg-gradient-to-r from-amber-500/15 via-slate-900 to-slate-950 p-4 sm:p-5 rounded-3xl border-2 border-amber-400/60 shadow-xl space-y-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-8 h-8 rounded-xl bg-amber-400 text-slate-950 flex items-center justify-center font-black shrink-0">
+                          <Star className="w-4 h-4 fill-slate-950" />
+                        </div>
+                        <div>
+                          <h4 className="text-sm sm:text-base font-black text-white flex items-center gap-2">
+                            <span>👑 메인 대표 사진 설정</span>
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-400 text-slate-950">
+                              메인 화면 노출
+                            </span>
+                          </h4>
+                          <p className="text-xs text-slate-400">
+                            고객이 메인 화면 및 검색 결과에서 가장 먼저 보게 되는 대표 사진입니다.
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2 shrink-0">
+                        <button
+                          type="button"
+                          onClick={() => mainImageInputRef.current?.click()}
+                          disabled={isUploadingImages}
+                          className="px-3.5 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 active:scale-95 text-slate-950 text-xs font-black flex items-center gap-1.5 cursor-pointer shadow-md transition-all disabled:opacity-50"
+                        >
+                          <RefreshCw className="w-3.5 h-3.5" />
+                          <span>📸 내 기기에서 사진 파일 업로드</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setEditorTab('photos')}
+                          className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-slate-700 flex items-center gap-1.5 cursor-pointer transition-all"
+                        >
+                          <ImageIcon className="w-3.5 h-3.5 text-amber-400" />
+                          <span>전체 갤러리 관리 ({(editingProduct.additionalImages || []).length + (editingProduct.imageUrl ? 1 : 0)}장)</span>
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Preview + URL Input */}
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-center bg-slate-950/70 p-3.5 rounded-2xl border border-slate-800">
+                      {/* Left: Thumbnail Preview */}
+                      <div className="relative aspect-video rounded-xl overflow-hidden bg-slate-900 border-2 border-amber-400/40 shadow-inner group">
+                        {editingProduct.imageUrl ? (
+                          <>
+                            <img
+                              src={editingProduct.imageUrl}
+                              alt="대표 사진 미리보기"
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                            />
+                            <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center p-2">
+                              <button
+                                type="button"
+                                onClick={() => mainImageInputRef.current?.click()}
+                                className="px-2.5 py-1.5 rounded-lg bg-amber-400 text-slate-950 font-black text-xs flex items-center gap-1 cursor-pointer"
+                              >
+                                <RefreshCw className="w-3 h-3" /> 파일 교체
+                              </button>
+                            </div>
+                          </>
+                        ) : (
+                          <div className="w-full h-full flex flex-col items-center justify-center text-slate-500 gap-1 p-2 text-center">
+                            <ImageIcon className="w-6 h-6 text-slate-600" />
+                            <span className="text-[11px] font-bold">대표 사진 없음</span>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Right: URL Input & Actions */}
+                      <div className="md:col-span-3 space-y-2">
+                        <label className="text-xs font-bold text-slate-300 flex items-center justify-between">
+                          <span>🔗 대표 사진 URL 직접 입력 / 붙여넣기</span>
+                          {editingProduct.imageUrl && (
+                            <span className="text-[11px] text-emerald-400 font-medium">✓ 실시간 적용 중</span>
+                          )}
+                        </label>
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="text"
+                            value={editingProduct.imageUrl || ''}
+                            onChange={(e) => {
+                              const val = e.target.value;
+                              setEditingProduct(prev => prev ? { ...prev, imageUrl: val } : prev);
+                            }}
+                            placeholder="이미지 링크를 직접 입력하거나 붙여넣기 (예: /images/... 또는 https://...)"
+                            className="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 font-mono"
+                          />
+                          {editingProduct.imageUrl && (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setEditingProduct(prev => prev ? { ...prev, imageUrl: '' } : prev);
+                              }}
+                              className="px-3 py-2 rounded-xl bg-slate-800 hover:bg-rose-900/60 text-slate-400 hover:text-rose-300 text-xs font-bold border border-slate-700 transition-colors"
+                              title="대표 사진 초기화"
+                            >
+                              삭제
+                            </button>
+                          )}
+                        </div>
+                        <p className="text-[11px] text-slate-400">
+                          💡 PC나 스마트폰의 사진 파일을 직접 올리거나, 인터넷 웹 사진 링크를 복사하여 붙여넣으면 즉시 대표 사진으로 등록됩니다.
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Quick Preset Selector for 1-click photo choice */}
+                    <div className="space-y-2 pt-1 border-t border-slate-800/80">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-amber-300 flex items-center gap-1.5">
+                          <span>✨ 베트남 추천 고화질 사진에서 1초 선택:</span>
+                        </span>
+                        <span className="text-[11px] text-slate-400">클릭 시 즉시 대표 사진으로 적용</span>
+                      </div>
+                      <div className="flex flex-wrap gap-1.5">
+                        {HIGH_RES_VIETNAM_PRESETS.slice(0, 8).map((preset, idx) => (
+                          <button
+                            key={idx}
+                            type="button"
+                            onClick={() => {
+                              setEditingProduct(prev => {
+                                if (!prev) return prev;
+                                const old = prev.imageUrl;
+                                const subs = prev.additionalImages || [];
+                                const keepOld = old && old !== preset.url && !subs.includes(old);
+                                return {
+                                  ...prev,
+                                  imageUrl: preset.url,
+                                  additionalImages: keepOld ? [old, ...subs] : subs
+                                };
+                              });
+                              showNotification(`📸 "${preset.label}" 사진이 대표 사진으로 설정되었습니다!`);
+                            }}
+                            className={`px-2.5 py-1 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer border ${
+                              editingProduct.imageUrl === preset.url
+                                ? 'bg-amber-400 text-slate-950 border-amber-300 shadow-md scale-102 font-black'
+                                : 'bg-slate-900 hover:bg-slate-800 text-slate-300 border-slate-700'
+                            }`}
+                          >
+                            <span>{preset.label}</span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Existing Gallery Photos Quick Promote */}
+                    {(editingProduct.additionalImages || []).filter(Boolean).length > 0 && (
+                      <div className="space-y-2 pt-1 border-t border-slate-800/80">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-bold text-teal-300 flex items-center gap-1.5">
+                            <span>📁 등록된 갤러리 사진 중 대표 사진으로 지정:</span>
+                          </span>
+                          <span className="text-[11px] text-slate-400">원하는 사진을 클릭하면 대표 사진으로 바뀝니다</span>
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                          {(editingProduct.additionalImages || []).filter(Boolean).map((subImg, sIdx) => (
+                            <button
+                              key={sIdx}
+                              type="button"
+                              onClick={() => {
+                                setEditingProduct(prev => {
+                                  if (!prev) return prev;
+                                  const old = prev.imageUrl;
+                                  const restSubs = (prev.additionalImages || []).filter((_, i) => i !== sIdx);
+                                  const nextSubs = old && old !== subImg ? [old, ...restSubs] : restSubs;
+                                  return {
+                                    ...prev,
+                                    imageUrl: subImg,
+                                    additionalImages: nextSubs
+                                  };
+                                });
+                                showNotification('👑 선택한 갤러리 사진이 대표 사진으로 지정되었습니다!');
+                              }}
+                              className="relative w-16 h-12 rounded-lg overflow-hidden border border-slate-700 hover:border-amber-400 group cursor-pointer shadow-sm shrink-0"
+                              title="이 사진을 대표 사진으로 지정"
+                            >
+                              <img src={subImg} alt={`갤러리 ${sIdx + 1}`} className="w-full h-full object-cover group-hover:scale-110 transition-transform" />
+                              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center text-[10px] text-white font-bold">
+                                대표로
+                              </div>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
                   {/* Visual Category Selector */}
                   <div className="space-y-2">
                     <label className="font-bold text-slate-200 block text-xs sm:text-sm">
@@ -2736,25 +3031,6 @@ export const AdminMode: React.FC<AdminModeProps> = ({
               {editorTab === 'photos' && (
                 <div className="space-y-6 animate-fadeIn">
                   
-                  {/* Hidden File Inputs */}
-                  <input
-                    ref={galleryImageInputRef}
-                    type="file"
-                    multiple
-                    accept="image/jpeg,image/png,image/webp,image/jpg"
-                    onChange={handleGalleryImagesUpload}
-                    className="hidden"
-                    disabled={isUploadingImages}
-                  />
-                  <input
-                    ref={mainImageInputRef}
-                    type="file"
-                    accept="image/jpeg,image/png,image/webp,image/jpg"
-                    onChange={handleMainImageFileUpload}
-                    className="hidden"
-                    disabled={isUploadingImages}
-                  />
-
                   {/* 1. Main Representative Thumbnail Preview Banner */}
                   <div className="bg-slate-950 p-5 sm:p-6 rounded-3xl border-2 border-amber-400/80 shadow-xl space-y-4">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
@@ -2862,6 +3138,80 @@ export const AdminMode: React.FC<AdminModeProps> = ({
                         <p className="text-[11px] text-slate-400 leading-relaxed">
                           💡 <strong>꿀팁:</strong> 아래 사진 목록에서 원하는 사진의 <strong className="text-amber-300">[⭐ 대표로 지정]</strong> 버튼을 누르면 언제든지 대표 메인 썸네일로 즉시 변경됩니다.
                         </p>
+                      </div>
+                    </div>
+
+                    {/* Direct URL input and High-res Presets */}
+                    <div className="pt-3 border-t border-slate-800 space-y-3">
+                      <div>
+                        <label className="text-xs font-bold text-slate-300 flex items-center justify-between mb-1">
+                          <span>🔗 대표 사진 URL 직접 입력 / 붙여넣기</span>
+                          {editingProduct.imageUrl && (
+                            <span className="text-[11px] text-emerald-400 font-medium">✓ 실시간 적용 중</span>
+                          )}
+                        </label>
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="text"
+                            value={editingProduct.imageUrl || ''}
+                            onChange={(e) => {
+                              const val = e.target.value;
+                              setEditingProduct(prev => prev ? { ...prev, imageUrl: val } : prev);
+                            }}
+                            placeholder="대표 사진 URL 직접 입력 (예: /images/... 또는 https://...)"
+                            className="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 font-mono"
+                          />
+                          {editingProduct.imageUrl && (
+                            <button
+                              type="button"
+                              onClick={() => setEditingProduct(prev => prev ? { ...prev, imageUrl: '' } : prev)}
+                              className="px-3 py-2 rounded-xl bg-slate-800 hover:bg-rose-900/60 text-slate-400 hover:text-rose-300 text-xs font-bold border border-slate-700 transition-colors"
+                            >
+                              삭제
+                            </button>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Vietnam High-res Presets for 1-Click Set */}
+                      <div>
+                        <div className="text-xs font-bold text-amber-300 flex items-center gap-1 mb-1.5">
+                          <Sparkles className="w-3.5 h-3.5" />
+                          <span>추천 베트남 고화질 사진에서 1초 만에 대표 사진 선택:</span>
+                        </div>
+                        <div className="flex flex-wrap gap-1.5">
+                          {HIGH_RES_VIETNAM_PRESETS.map((preset, pIdx) => {
+                            const isCurrent = editingProduct.imageUrl === preset.url;
+                            return (
+                              <button
+                                key={pIdx}
+                                type="button"
+                                onClick={() => {
+                                  setEditingProduct(prev => {
+                                    if (!prev) return prev;
+                                    const old = prev.imageUrl;
+                                    const subs = prev.additionalImages || [];
+                                    const keepOld = old && old !== preset.url && !subs.includes(old);
+                                    return {
+                                      ...prev,
+                                      imageUrl: preset.url,
+                                      additionalImages: keepOld ? [old, ...subs] : subs
+                                    };
+                                  });
+                                  showNotification(`📸 "${preset.label}" 사진이 대표 사진으로 지정되었습니다!`);
+                                }}
+                                className={`px-2.5 py-1 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer border ${
+                                  isCurrent
+                                    ? 'bg-amber-400 text-slate-950 border-amber-300 shadow-md font-black scale-102'
+                                    : 'bg-slate-900 hover:bg-slate-800 text-slate-300 border-slate-700'
+                                }`}
+                              >
+                                <span>{preset.label}</span>
+                                {isCurrent && <span className="text-[10px] bg-slate-950 text-amber-400 px-1 rounded font-bold">대표</span>}
+                              </button>
+                            );
+                          })}
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -2993,9 +3343,36 @@ export const AdminMode: React.FC<AdminModeProps> = ({
                             alt={`갤러리 사진 ${sIdx + 1}`} 
                             className="w-full h-full object-cover group-hover:scale-105 transition-transform" 
                           />
-                          <span className="absolute bottom-1.5 right-1.5 bg-black/70 text-slate-300 text-[10px] font-bold px-1.5 py-0.5 rounded">
+                          <span className="absolute bottom-1.5 right-1.5 bg-black/70 text-slate-300 text-[10px] font-bold px-1.5 py-0.5 rounded pointer-events-none">
                             #{sIdx + 1}
                           </span>
+
+                          {/* Quick Set as Main Badge (Always clickable) */}
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              const oldMain = editingProduct.imageUrl;
+                              setEditingProduct(prev => {
+                                if (!prev) return prev;
+                                const filtered = (prev.additionalImages || []).filter((_, i) => i !== sIdx);
+                                const newSubs = oldMain && oldMain !== 'VILLA_PHOTO_DATA' && oldMain !== 'TEST_IMG'
+                                  ? [oldMain, ...filtered]
+                                  : filtered;
+                                return {
+                                  ...prev,
+                                  imageUrl: url,
+                                  additionalImages: newSubs.filter(Boolean)
+                                };
+                              });
+                              showNotification('👑 대표 메인 사진으로 지정되었습니다.');
+                            }}
+                            className="absolute bottom-1.5 left-1.5 bg-slate-900/90 hover:bg-amber-400 text-amber-300 hover:text-slate-950 text-[10px] font-black px-2 py-0.5 rounded-md border border-amber-400/40 flex items-center gap-1 shadow transition-all cursor-pointer z-10"
+                            title="대표 사진으로 지정"
+                          >
+                            <Star className="w-2.5 h-2.5 fill-current" />
+                            <span>대표지정</span>
+                          </button>
 
                           <div className="absolute inset-0 bg-slate-950/80 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-between p-2">
                             {/* Top action row */}
