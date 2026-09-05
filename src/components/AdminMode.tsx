@@ -68,6 +68,7 @@ import {
 import { AdminVisitorAnalytics } from './AdminVisitorAnalytics';
 import { AdminProductGuide } from './AdminProductGuide';
 import { ALL_COMPREHENSIVE_PRODUCTS } from '../data/seedProducts';
+import { productService } from '../services/productService';
 
 interface AdminModeProps {
   products: Product[];
@@ -546,10 +547,15 @@ export const AdminMode: React.FC<AdminModeProps> = ({
 
       const updatedList = products.map(p => p.id === updatedProduct.id ? updatedProduct : p);
       await onSaveProducts(updatedList);
+      try {
+        await productService.updateProduct(updatedProduct.id, updatedProduct);
+      } catch (pErr) {
+        console.warn('Direct product update warning:', pErr);
+      }
       
       // Update quickPhotoProduct if still open
       setQuickPhotoProduct(updatedProduct);
-      showNotification(`👑 "${targetProduct.title}" 대표 사진이 즉시 변경 & 저장되었습니다!`);
+      showNotification(`👑 "${targetProduct.title}" 대표 사진이 즉시 변경 & 영구 저장되었습니다!`);
     } catch (err) {
       console.error('Quick set main photo failed:', err);
       showNotification('⚠️ 대표 사진 변경 중 오류가 발생했습니다.');
@@ -608,7 +614,12 @@ export const AdminMode: React.FC<AdminModeProps> = ({
     if (exists) {
       const updatedList = products.map(p => p.id === updatedProduct.id ? updatedProduct : p);
       await onSaveProducts(updatedList);
-      showNotification(`👑 "${updatedProduct.title}" 상품의 대표 사진이 즉시 변경 및 저장되었습니다!`);
+      try {
+        await productService.updateProduct(updatedProduct.id, updatedProduct);
+      } catch (pErr) {
+        console.warn('Direct product update warning:', pErr);
+      }
+      showNotification(`👑 "${updatedProduct.title}" 상품의 대표 사진이 즉시 변경 및 영구 저장되었습니다!`);
     } else {
       showNotification(`👑 대표 메인 사진으로 지정되었습니다.`);
     }
@@ -1088,6 +1099,15 @@ export const AdminMode: React.FC<AdminModeProps> = ({
       }
 
       await onSaveProducts(updated);
+      try {
+        if (exists) {
+          await productService.updateProduct(validatedProduct.id, validatedProduct);
+        } else {
+          await productService.createProduct(validatedProduct);
+        }
+      } catch (pErr) {
+        console.warn('Direct product save warning:', pErr);
+      }
       setIsEditorOpen(false);
       const savedTitle = validatedProduct.title;
       setEditingProduct(null);

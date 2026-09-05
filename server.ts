@@ -416,14 +416,29 @@ async function startServer() {
     }
   });
 
-  // 3. Update Product
+  // 3. Update or Upsert Product
   app.put('/api/products/:id', (req: Request, res: Response) => {
     const { id } = req.params;
+    const nowIso = new Date().toISOString();
     const index = products.findIndex(p => p.id === id);
     if (index === -1) {
-      return res.status(404).json({ success: false, error: 'Product not found' });
+      const newProduct: Product = {
+        ...req.body,
+        id,
+        createdAt: req.body.createdAt || nowIso,
+        updatedAt: req.body.updatedAt || nowIso
+      };
+      products = [newProduct, ...products];
+      saveStoredProducts(products);
+      lastDataSyncTimestamp = Date.now();
+      return res.json({ success: true, product: newProduct });
     }
-    products[index] = { ...products[index], ...req.body };
+    products[index] = { 
+      ...products[index], 
+      ...req.body, 
+      id, 
+      updatedAt: req.body.updatedAt || nowIso 
+    };
     saveStoredProducts(products);
     lastDataSyncTimestamp = Date.now();
     res.json({ success: true, product: products[index] });
@@ -446,12 +461,24 @@ async function startServer() {
     res.json({ success: true, count: 0, products: [] });
   });
 
-  // 4-C. Sync Products (Full Array Replacement/Save)
+  // 4-C. Sync Products (Safely merge and save)
   app.post('/api/products/sync', (req: Request, res: Response) => {
     try {
       const { products: newProducts } = req.body;
       if (Array.isArray(newProducts)) {
-        products = newProducts;
+        if (newProducts.length === 0 && products.length > 0) {
+          console.warn('[Server] Ignored sync with empty array to prevent data loss');
+          return res.json({ success: true, count: products.length, products });
+        }
+        // Preserve any products that were not included in partial sync
+        const incomingMap = new Map(newProducts.map(p => [p.id, p]));
+        const mergedList = newProducts.slice();
+        products.forEach(existing => {
+          if (!incomingMap.has(existing.id)) {
+            mergedList.push(existing);
+          }
+        });
+        products = mergedList;
         saveStoredProducts(products);
         lastDataSyncTimestamp = Date.now();
         res.json({ success: true, count: products.length, products });

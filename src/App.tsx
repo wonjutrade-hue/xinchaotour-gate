@@ -53,8 +53,8 @@ const PRODUCTS_CACHE_KEY = 'xinchao_products_cache_master';
 const CURRENT_CATALOG_REVISION = '2026_09_03_v12_restore_user_danang_villas';
 
 function mergeProductsPreservingLocal(localList: Product[], incomingList: Product[]): { merged: Product[]; localWasNewer: boolean } {
-  if (!incomingList || incomingList.length === 0) return { merged: localList, localWasNewer: false };
-  if (!localList || localList.length === 0) return { merged: incomingList, localWasNewer: false };
+  if (!incomingList || incomingList.length === 0) return { merged: localList || [], localWasNewer: false };
+  if (!localList || localList.length === 0) return { merged: incomingList || [], localWasNewer: false };
 
   const localMap = new Map<string, Product>();
   localList.forEach(p => { if (p && p.id) localMap.set(p.id, p); });
@@ -62,31 +62,46 @@ function mergeProductsPreservingLocal(localList: Product[], incomingList: Produc
   const mergedMap = new Map<string, Product>();
   let localWasNewer = false;
 
+  const isDummyImage = (url: string | undefined) => !url || url === 'VILLA_PHOTO_DATA' || url === 'TEST_IMG';
+
   // Process incoming from server
   incomingList.forEach(serverProd => {
     if (!serverProd || !serverProd.id) return;
     const localProd = localMap.get(serverProd.id);
     if (!localProd) {
       mergedMap.set(serverProd.id, serverProd);
+      return;
+    }
+
+    const serverTime = serverProd.updatedAt ? new Date(serverProd.updatedAt).getTime() : (serverProd.createdAt ? new Date(serverProd.createdAt).getTime() : 0);
+    const localTime = localProd.updatedAt ? new Date(localProd.updatedAt).getTime() : (localProd.createdAt ? new Date(localProd.createdAt).getTime() : 0);
+
+    // Detect user modifications
+    const localHasDifferentImage = Boolean(localProd.imageUrl && localProd.imageUrl !== serverProd.imageUrl && !isDummyImage(localProd.imageUrl));
+    const localHasCustomSubs = JSON.stringify(localProd.additionalImages || []) !== JSON.stringify(serverProd.additionalImages || []);
+    const localHasCustomDesc = Boolean(localProd.description && localProd.description !== serverProd.description);
+    const localHasCustomTitle = Boolean(localProd.title && localProd.title !== serverProd.title);
+    const localHasCustomPrice = Boolean(localProd.priceKRW && localProd.priceKRW !== serverProd.priceKRW);
+    const localHasCustomItinerary = JSON.stringify(localProd.itinerary || []) !== JSON.stringify(serverProd.itinerary || []);
+    const localHasCustomIncluded = JSON.stringify(localProd.included || []) !== JSON.stringify(serverProd.included || []);
+    const localHasCustomHighlights = JSON.stringify(localProd.highlights || []) !== JSON.stringify(serverProd.highlights || []);
+
+    const hasLocalCustomizations = localHasDifferentImage || localHasCustomSubs || localHasCustomDesc || localHasCustomTitle || localHasCustomPrice || localHasCustomItinerary || localHasCustomIncluded || localHasCustomHighlights;
+
+    if (localTime > serverTime || (localTime === serverTime && hasLocalCustomizations) || (hasLocalCustomizations && !isDummyImage(localProd.imageUrl))) {
+      // Local user edits have higher priority!
+      mergedMap.set(localProd.id, localProd);
+      localWasNewer = true;
     } else {
-      const serverTime = serverProd.updatedAt ? new Date(serverProd.updatedAt).getTime() : (serverProd.createdAt ? new Date(serverProd.createdAt).getTime() : 0);
-      const localTime = localProd.updatedAt ? new Date(localProd.updatedAt).getTime() : (localProd.createdAt ? new Date(localProd.createdAt).getTime() : 0);
-
-      // Check if local has custom uploaded photos, modified representative image, or custom title
-      const localHasMorePhotos = (localProd.additionalImages?.length || 0) > (serverProd.additionalImages?.length || 0);
-      const isDummyImage = (url: string | undefined) => !url || url === 'VILLA_PHOTO_DATA' || url === 'TEST_IMG';
-      const localHasCustomImage = Boolean(
-        localProd.imageUrl && 
-        localProd.imageUrl !== serverProd.imageUrl && 
-        !isDummyImage(localProd.imageUrl)
-      );
-
-      if (localHasCustomImage || localTime >= serverTime || localHasMorePhotos) {
-        // User edited locally, set custom image, or has fresher timestamp
-        mergedMap.set(localProd.id, localProd);
+      // Server is newer; but preserve user uploaded image if server somehow lacks it
+      if (localHasDifferentImage && isDummyImage(serverProd.imageUrl)) {
+        mergedMap.set(serverProd.id, {
+          ...serverProd,
+          imageUrl: localProd.imageUrl,
+          additionalImages: localProd.additionalImages && localProd.additionalImages.length > 0 ? localProd.additionalImages : serverProd.additionalImages
+        });
         localWasNewer = true;
       } else {
-        // Server has fresher data and local has no custom overrides
         mergedMap.set(serverProd.id, serverProd);
       }
     }
@@ -292,8 +307,8 @@ export default function App() {
 
   // Sync Data with Database (Supabase / Server)
   const syncAllDataFromServer = async (showLoading: boolean = false) => {
-    // If saving right now or recently saved within 5 seconds, skip polling fetch
-    if (isSavingToServerRef.current || (Date.now() - lastClientSaveTimestampRef.current < 5000)) {
+    // If saving right now or recently saved within 30 seconds, skip polling fetch
+    if (isSavingToServerRef.current || (Date.now() - lastClientSaveTimestampRef.current < 30000)) {
       return;
     }
     // If admin is actively editing in AdminMode, prevent background polling from overriding active form
@@ -309,14 +324,14 @@ export default function App() {
       ]);
 
       if (Array.isArray(fetchedProducts)) {
-        if (!isSavingToServerRef.current && (Date.now() - lastClientSaveTimestampRef.current >= 5000)) {
+        if (!isSavingToServerRef.current && (Date.now() - lastClientSaveTimestampRef.current >= 30000)) {
           if (fetchedProducts.length > 0) {
             setProducts(currentProducts => {
               const { merged, localWasNewer } = mergeProductsPreservingLocal(currentProducts, fetchedProducts);
               saveProductsToIndexedDB(merged).catch(console.warn);
               setStoredJson(PRODUCTS_CACHE_KEY, merged);
               if (localWasNewer) {
-                // If local had newer edits, sync them back to server immediately
+                // If local had newer edits or photos, sync them back to server immediately
                 productService.syncAllProducts(merged).catch(console.warn);
               }
               return merged;
@@ -360,25 +375,26 @@ export default function App() {
     // 1. Initial local load with Revision-based auto cache update
     const initLocalData = async () => {
       try {
-        const storedRevision = localStorage.getItem('xinchao_catalog_revision');
+        // Load both IndexedDB and localStorage cache
         const idbProducts = await loadProductsFromIndexedDB();
-        const hasLatestNhaTrangDalat = idbProducts && idbProducts.some(p => p.id === 'prod-nhatrang-dalat-vip-3n5d');
-        const isOutdated = storedRevision !== CURRENT_CATALOG_REVISION || !hasLatestNhaTrangDalat || (idbProducts && idbProducts.length < 80);
-
-        if (isOutdated) {
-          localStorage.setItem('xinchao_catalog_revision', CURRENT_CATALOG_REVISION);
-          try { localStorage.removeItem(PRODUCTS_CACHE_KEY); } catch (e) {}
-          // Fetch fresh server catalog immediately on new version or missing items
-          await syncAllDataFromServer(true);
-        } else {
-          if (idbProducts && idbProducts.length > 0) {
-            setProducts(prev => {
-              const { merged } = mergeProductsPreservingLocal(prev, idbProducts);
-              setStoredJson(PRODUCTS_CACHE_KEY, merged);
-              return merged;
-            });
-          }
+        const cachedProducts = getStoredJson<Product[]>(PRODUCTS_CACHE_KEY, []);
+        
+        let localMaster: Product[] = [];
+        if (idbProducts && idbProducts.length > 0 && cachedProducts && cachedProducts.length > 0) {
+          localMaster = mergeProductsPreservingLocal(cachedProducts, idbProducts).merged;
+        } else if (idbProducts && idbProducts.length > 0) {
+          localMaster = idbProducts;
+        } else if (cachedProducts && cachedProducts.length > 0) {
+          localMaster = cachedProducts;
         }
+
+        if (localMaster.length > 0) {
+          setProducts(localMaster);
+          setStoredJson(PRODUCTS_CACHE_KEY, localMaster);
+        }
+
+        // Fetch server updates in background; merge preserving local without wiping
+        await syncAllDataFromServer(localMaster.length === 0);
         const idbInq = await loadInquiriesFromIndexedDB();
         if (idbInq && idbInq.length > 0) {
           setInquiries(idbInq);

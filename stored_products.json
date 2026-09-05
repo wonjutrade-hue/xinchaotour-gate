@@ -11,7 +11,8 @@
     "duration": "3박 5일",
     "imageUrl": "/images/mykhe_beach.jpg",
     "additionalImages": [
-      "/images/mykhe_beach.jpg"
+      "https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 4.9,
     "reviewCount": 278,
@@ -85,9 +86,7 @@
         "description": "오전 06:00~08:30 한국 공항 도착. 일상으로 복귀하여 활기찬 하루를 시작합니다.",
         "meal": "기내식"
       }
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-free-danang-hoian-hue-4n6d",
@@ -101,7 +100,8 @@
     "duration": "4박 6일",
     "imageUrl": "/images/hue_imperial_citadel.jpg",
     "additionalImages": [
-      "/images/hue_imperial_citadel.jpg"
+      "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 5,
     "reviewCount": 142,
@@ -171,23 +171,21 @@
         "title": "이른 아침 한국 공항 도착",
         "description": "한국 도착 후 안전하게 귀가합니다."
       }
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-free-nhatrang-dalat-3n5d",
-    "title": "[나트랑·달랏 3박5일/단독자유 콤보팩] 에메랄드 해변 나트랑 & 고원도시 달랏 3박 5일 자유여행 팩 (5성급 리조트+단독차량+루지)",
-    "subTitle": "가성비와 자유도를 극대화한 세미 패키지! 나트랑 5성급 오션뷰 리조트 3박 + 깜란 공항 단독 픽업/샌딩 + 나트랑-달랏 왕복 단독 렌터카 & 다딴라 폭포 루지 티켓 포함",
+    "title": "[나트랑+달랏/자유3박5일] 에메랄드 해변 나트랑 & 영원한 봄의 고원 달랏 콤보 자유팩",
+    "subTitle": "심야 깜란공항 픽업 + 나트랑 호핑/머드온천 + 달랏 숲속 카페 & 루지 전용 렌터카 + 마지막 날 심야 공항 샌딩",
     "category": "자유여행",
     "region": "남부",
     "city": "나트랑",
-    "priceKRW": 450000,
-    "priceVND": 8400000,
+    "priceKRW": 420000,
+    "priceVND": 7800000,
     "duration": "3박 5일",
     "imageUrl": "/images/dalat_flower_garden.jpg",
     "additionalImages": [
-      "/images/dalat_flower_garden.jpg"
+      "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 5,
     "reviewCount": 198,
@@ -200,17 +198,12 @@
       "대구"
     ],
     "tags": [
-      "나트랑",
-      "달랏",
-      "나트랑달랏",
-      "자유여행",
-      "단독자유",
-      "단독차량",
-      "3박5일",
-      "남부",
-      "휴양",
-      "루지",
-      "호텔포함"
+      "#나트랑자유여행",
+      "#달랏연계",
+      "#3박5일",
+      "#에메랄드비치",
+      "#달랏루지",
+      "#단독차량"
     ],
     "description": "베트남 최고의 청정 해변 휴양지 나트랑과 해발 1,500m 서늘한 꽃의 도시 달랏을 단독 차량으로 쾌적하게 묶어 여행하는 3박 5일 콤보 자유여행입니다.",
     "included": [
@@ -258,23 +251,22 @@
         "title": "이른 아침 한국 공항 도착 및 귀가",
         "description": "인천/지방 공항 도착."
       }
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-free-nhatrang-phanrang-dalat-4n6d",
-    "title": "[나트랑·달랏 4박6일/사막+고원 자유팩] 해변 휴양 & 판랑 사막 지프 & 달랏 고원 힐링 4박 6일 자유여행 팩",
-    "subTitle": "나트랑 에메랄드 비치 휴양 + 판랑 붉은 모래사막 샌듄 지프투어 + 달랏 고원 감성 카페 탐방 3색 완전정복 자유팩",
+    "title": "[나트랑+판랑사막+달랏/자유4박6일] 해변 휴양 & 붉은 사막 지프 & 고원 힐링 3색 완전정복 팩",
+    "subTitle": "심야 공항 픽업/샌딩 + 판랑 붉은 사막 샌듄 지프 투어 + 달랏 1박2일 감성 연계 + 5성급 리조트",
     "category": "자유여행",
     "region": "남부",
     "city": "나트랑",
-    "priceKRW": 590000,
-    "priceVND": 11000000,
+    "priceKRW": 550000,
+    "priceVND": 10200000,
     "duration": "4박 6일",
     "imageUrl": "/images/phanrang_desert_jeep.jpg",
     "additionalImages": [
-      "/images/phanrang_desert_jeep.jpg"
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 5,
     "reviewCount": 165,
@@ -284,18 +276,12 @@
       "부산"
     ],
     "tags": [
-      "나트랑",
-      "달랏",
-      "판랑",
-      "나트랑달랏",
-      "자유여행",
-      "단독자유",
-      "단독지프",
-      "4박6일",
-      "남부",
-      "사막",
-      "고원",
-      "호텔포함"
+      "#나트랑자유여행",
+      "#판랑사막지프",
+      "#달랏연계",
+      "#4박6일",
+      "#인생샷",
+      "#단독렌터카"
     ],
     "description": "나트랑의 푸른 바다, 판랑의 거대한 붉은 사막 지프 샌듄, 달랏의 로맨틱한 소나무 숲까지 한 번에 즐기는 4박 6일 베스트셀러 자유여행입니다.",
     "included": [
@@ -346,9 +332,7 @@
         "title": "이른 아침 한국 공항 도착",
         "description": "한국 도착 후 안전 귀가."
       }
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-free-hanoi-halong-ninbinh-3n5d",
@@ -362,7 +346,7 @@
     "duration": "3박 5일",
     "imageUrl": "/images/ninhbinh_trangan.jpg",
     "additionalImages": [
-      "/images/ninhbinh_trangan.jpg"
+      "https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 4.9,
     "reviewCount": 210,
@@ -425,9 +409,7 @@
         "title": "이른 아침 한국 공항 도착 및 귀가",
         "description": "한국 도착."
       }
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-free-hochiminh-muine-3n5d",
@@ -441,7 +423,7 @@
     "duration": "3박 5일",
     "imageUrl": "/images/saigon_skyline_city.jpg",
     "additionalImages": [
-      "/images/saigon_skyline_city.jpg"
+      "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 4.9,
     "reviewCount": 184,
@@ -500,9 +482,7 @@
         "title": "이른 아침 한국 공항 도착",
         "description": "한국 도착."
       }
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-free-phuquoc-3n5d",
@@ -573,12 +553,7 @@
         "title": "이른 아침 한국 공항 도착",
         "description": "한국 도착."
       }
-    ],
-    "additionalImages": [
-      "/images/phuquoc_grandworld.jpg"
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-golf-18h-brg-danang",
@@ -634,12 +609,7 @@
         "description": "티오프 1시간 전 호텔 로비에서 전용 리무진 탑승 후 BRG 다낭으로 이동. 락커 배정 후 18홀 명품 라운딩 진행. 라운딩 및 샤워 후 숙소로 편안하게 복귀합니다.",
         "vehicle": "왕복 단독 전용 차량"
       }
-    ],
-    "additionalImages": [
-      "/images/golf_brg_danang.jpg"
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-golf-18h-montgomerie-danang",
@@ -693,12 +663,7 @@
         "description": "티오프 시간에 맞춰 단독 차량으로 이동 후 18홀 라운딩.",
         "vehicle": "왕복 단독 차량"
       }
-    ],
-    "additionalImages": [
-      "/images/golf_montgomerie_danang.jpg"
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-golf-18h-banahills",
@@ -751,12 +716,7 @@
         "description": "바나힐 산맥의 상쾌한 바람 속에서 즐기는 18홀 라운딩.",
         "vehicle": "왕복 단독 차량"
       }
-    ],
-    "additionalImages": [
-      "/images/golf_banahills.jpg"
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-golf-18h-hoiana-shores",
@@ -809,12 +769,7 @@
         "description": "환상적인 해변 듄스 링크스에서 인생 최고의 라운딩.",
         "vehicle": "왕복 단독 차량"
       }
-    ],
-    "additionalImages": [
-      "/images/golf_hoiana_shores.jpg"
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-golf-18h-vinpearl-namhoian",
@@ -865,12 +820,7 @@
         "description": "아름다운 남호이안 리조트 단지 내 코스에서 라운딩.",
         "vehicle": "왕복 단독 차량"
       }
-    ],
-    "additionalImages": [
-      "/images/golf_vinpearl_namhoian.jpg"
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-golf-18h-laguna-langco",
@@ -922,12 +872,7 @@
         "description": "천혜의 자연 속에서 도전적인 18홀 플레이.",
         "vehicle": "왕복 단독 차량"
       }
-    ],
-    "additionalImages": [
-      "/images/golf_laguna_langco.jpg"
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-golf-18h-kn-links-nhatrang",
@@ -980,12 +925,7 @@
         "description": "환상적인 해변 듄스 코스에서 플레이.",
         "vehicle": "왕복 단독 차량"
       }
-    ],
-    "additionalImages": [
-      "/images/golf_kn_links_camranh.jpg"
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-golf-18h-skylake-hanoi",
@@ -1038,12 +978,7 @@
         "description": "천혜의 호수를 낀 명문 코스 라운딩.",
         "vehicle": "왕복 단독 차량"
       }
-    ],
-    "additionalImages": [
-      "/images/golf_skylake_hanoi.jpg"
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-golf-18h-tansonnhat-hochiminh",
@@ -1095,12 +1030,7 @@
         "description": "도심 속 럭셔리 36홀 코스 라운딩.",
         "vehicle": "왕복 단독 차량"
       }
-    ],
-    "additionalImages": [
-      "/images/golf_tansonnhat_saigon.jpg"
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-golf-18h-dalat-palace",
@@ -1153,12 +1083,7 @@
         "description": "100년 역사의 유서 깊은 황실 코스에서 라운딩.",
         "vehicle": "왕복 단독 차량"
       }
-    ],
-    "additionalImages": [
-      "/images/golf_dalat_palace.jpg"
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-golf-18h-vinpearl-phuquoc",
@@ -1210,12 +1135,7 @@
         "description": "울창한 열대 원시림 속에서 펼쳐지는 상쾌한 라운딩.",
         "vehicle": "왕복 단독 차량"
       }
-    ],
-    "additionalImages": [
-      "/images/golf_vinpearl_phuquoc.jpg"
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-golf-54h-danang-3n5d",
@@ -1229,7 +1149,8 @@
     "duration": "3박 5일",
     "imageUrl": "/images/golf_danang_3courses.jpg",
     "additionalImages": [
-      "/images/golf_danang_3courses.jpg"
+      "https://images.unsplash.com/photo-1535131749006-b7f58c99034b?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 5,
     "reviewCount": 380,
@@ -1317,9 +1238,7 @@
         "title": "이른 아침 한국 공항 도착",
         "description": "오전 한국 공항 도착 후 귀가."
       }
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-golf-54h-danang-banahills-3n5d",
@@ -1333,7 +1252,7 @@
     "duration": "3박 5일",
     "imageUrl": "/images/golf_danang_banahills_combo.jpg",
     "additionalImages": [
-      "/images/golf_danang_banahills_combo.jpg"
+      "https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 4.9,
     "reviewCount": 245,
@@ -1406,9 +1325,7 @@
         "title": "이른 아침 한국 공항 도착",
         "description": "한국 도착."
       }
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-golf-54h-nhatrang-3n5d",
@@ -1494,12 +1411,7 @@
         "title": "이른 아침 한국 공항 도착",
         "description": "한국 도착."
       }
-    ],
-    "additionalImages": [
-      "/images/golf_nhatrang_combo.jpg"
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-golf-54h-hanoi-3n5d",
@@ -1584,12 +1496,7 @@
         "title": "이른 아침 한국 공항 도착",
         "description": "한국 도착."
       }
-    ],
-    "additionalImages": [
-      "/images/golf_hanoi_combo.jpg"
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-golf-54h-hochiminh-3n5d",
@@ -1672,12 +1579,7 @@
         "title": "이른 아침 한국 공항 도착",
         "description": "한국 도착."
       }
-    ],
-    "additionalImages": [
-      "/images/golf_saigon_combo.jpg"
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-golf-54h-dalat-3n5d",
@@ -1760,12 +1662,7 @@
         "title": "이른 아침 한국 공항 도착",
         "description": "한국 도착."
       }
-    ],
-    "additionalImages": [
-      "/images/golf_dalat_highland.jpg"
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-golf-54h-phuquoc-3n5d",
@@ -1848,12 +1745,7 @@
         "title": "이른 아침 한국 공항 도착",
         "description": "한국 도착."
       }
-    ],
-    "additionalImages": [
-      "/images/golf_phuquoc_ocean.jpg"
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-danang-hanatour-benchmark-vip-3n5d",
@@ -1867,7 +1759,9 @@
     "duration": "3박 5일",
     "imageUrl": "/images/danang_golden_bridge.jpg",
     "additionalImages": [
-      "/images/danang_golden_bridge.jpg"
+      "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 5,
     "reviewCount": 384,
@@ -1889,9 +1783,7 @@
       "#미케비치5성급",
       "#NO쇼핑NO옵션",
       "#VIP단독투어",
-      "#해산물BBQ",
-      "#단독자유여행",
-      "#자유여행"
+      "#해산물BBQ"
     ],
     "description": "대형 패키지 여행사의 20~30인 단체 합승 버스와 3~4회 강제 쇼핑센터 방문의 불편함을 완벽히 해결했습니다. 신짜오투어는 오직 우리 일행만을 위한 최신형 16인승 전용 차량과 한국어 가이드가 동행하며, 바나힐·호이안·미케비치 핵심 명소와 프리미엄 미식, 90분 VIP 스파까지 전 일정 올포함으로 케어해 드립니다.",
     "included": [
@@ -1988,9 +1880,7 @@
     ],
     "vehicleInfo": "우리 일행 단독 최신형 16인승 리무진 밴 (베테랑 전담 기사)",
     "guideInfo": "신짜오투어 베트남 현지 공인 한국어 1급 전담 가이드 풀케어",
-    "travelTheme": "가족/부모님/연인/친구를 위한 NO쇼핑 VIP 단독 힐링 품격 패키지",
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    "travelTheme": "가족/부모님/연인/친구를 위한 NO쇼핑 VIP 단독 힐링 품격 패키지"
   },
   {
     "id": "prod-danang-pkg-01",
@@ -2004,7 +1894,8 @@
     "duration": "3박 5일",
     "imageUrl": "/images/danang_city_dragon.jpg",
     "additionalImages": [
-      "/images/danang_city_dragon.jpg"
+      "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 5,
     "reviewCount": 312,
@@ -2073,9 +1964,7 @@
         "hotel": "기내박 또는 귀국",
         "vehicle": "16인승 단독 전용 차량"
       }
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-danang-pkg-02",
@@ -2089,7 +1978,7 @@
     "duration": "4박 5일",
     "imageUrl": "/images/hoian_lantern.jpg",
     "additionalImages": [
-      "/images/hoian_lantern.jpg"
+      "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 4.9,
     "reviewCount": 128,
@@ -2148,9 +2037,7 @@
         "meal": "조식: 호텔식 | 중식: 바나힐 뷔페 | 석식: 해산물 만찬",
         "hotel": "기내박"
       }
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-danang-golf-01",
@@ -2164,7 +2051,7 @@
     "duration": "3박 5일",
     "imageUrl": "/images/vietnam_golf_resort.jpg",
     "additionalImages": [
-      "/images/vietnam_golf_resort.jpg"
+      "https://images.unsplash.com/photo-1535131749006-b7f58c99034b?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 4.9,
     "reviewCount": 154,
@@ -2234,9 +2121,7 @@
         "meal": "조식: 호텔식 | 중식: 클럽하우스 | 석식: 한정식 갈비살",
         "hotel": "기내박"
       }
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-danang-golf-02",
@@ -2250,7 +2135,7 @@
     "duration": "4박 6일",
     "imageUrl": "/images/my_khe_beach_1786255505556.jpg",
     "additionalImages": [
-      "/images/my_khe_beach_1786255505556.jpg"
+      "https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 5,
     "reviewCount": 86,
@@ -2337,9 +2222,7 @@
         "meal": "조식: 호텔식 | 중식: 클럽하우스 | 석식: 기내식",
         "hotel": "기내박"
       }
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-danang-villa-01",
@@ -2402,6 +2285,7 @@
       "floors": 2,
       "address": "23 Chế Lan Viên, Ngũ Hành Sơn, Đà Nẵng 550000 베트남",
       "googleMapUrl": "https://maps.google.com/?q=23+Che+Lan+Vien+Ngu+Hanh+Son+Da+Nang",
+      "airbnbUrl": "https://www.airbnb.co.kr/rooms/1596807485988738548",
       "amenities": [
         "프라이빗 수영장",
         "넓은 거실 & 소파",
@@ -2413,8 +2297,7 @@
         "초고속 Wi-Fi"
       ],
       "checkInTime": "15:00",
-      "checkOutTime": "11:00",
-      "airbnbUrl": "https://www.airbnb.co.kr/rooms/1596807485988738548"
+      "checkOutTime": "11:00"
     },
     "itinerary": [
       {
@@ -2445,9 +2328,7 @@
         "meal": "조식: 풀빌라 조식 | 중식: 현지식 | 석식: 한정식",
         "hotel": "기내박"
       }
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-danang-villa-02",
@@ -2546,9 +2427,7 @@
         "meal": "조식: 풀빌라 조식 | 중식: 한정식 | 석식: 공항식",
         "hotel": "기내박"
       }
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-danang-free-01",
@@ -2562,7 +2441,7 @@
     "duration": "당일 투어",
     "imageUrl": "/images/danang_golden_bridge_1786255489649.jpg",
     "additionalImages": [
-      "/images/danang_golden_bridge_1786255489649.jpg"
+      "https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 4.9,
     "reviewCount": 420,
@@ -2597,9 +2476,7 @@
         "meal": "자유식",
         "hotel": "고객 개별 숙소"
       }
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-danang-free-02",
@@ -2613,7 +2490,7 @@
     "duration": "반나절 (약 6시간)",
     "imageUrl": "/images/hoian_lantern_night_1787097792559.jpg",
     "additionalImages": [
-      "/images/hoian_lantern_night_1787097792559.jpg"
+      "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 5,
     "reviewCount": 280,
@@ -2649,14 +2526,12 @@
         "meal": "자유식",
         "hotel": "개별 숙소"
       }
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-nhatrang-dalat-vip-3n5d",
-    "title": "[나트랑·달랏 3박5일/단독자유 품격] 에메랄드 해변 & 영원한 봄의 고원도시 3박 5일 올인원 (NO쇼핑/단독차량+가이드+5성급)",
-    "subTitle": "한국 주요 여행사 NO쇼핑 베스트셀러 모델! 나트랑 5성급 호텔 2박 + 달랏 5성급 리조트 1박 + 전 일정 우리 일행 단독 16인승 밴 & 전담 한국어가이드 + 다딴라 루지 & 랑비앙산 4WD 지프 + 아이리조트 머드온천 + 랍스터 씨푸드 + 90분 VIP 스파 풀코스",
+    "title": "[나짱·달랏/VIP 단독 품격] 에메랄드 해변 & 영원한 봄의 고원도시 3박 5일 올인원 (NO쇼핑/NO옵션)",
+    "subTitle": "나트랑 5성급 오션뷰 2박 + 달랏 5성급 리조트 1박 + 전 일정 단독 16인승 밴 & 전담 한국어가이드 + 다딴라 루지 & 랑비앙산 지프 + 아이리조트 머드온천 + 랍스터 씨푸드 + 90분 VIP 스파",
     "category": "추천패키지",
     "region": "남부",
     "city": "나트랑",
@@ -2665,13 +2540,15 @@
     "duration": "3박 5일",
     "imageUrl": "/images/nhatrang_bay.jpg",
     "additionalImages": [
-      "/images/nhatrang_bay.jpg"
+      "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 5,
     "reviewCount": 296,
     "isPopular": true,
     "isHotDeal": true,
-    "discountPercent": 28,
+    "discountPercent": 17,
     "departureCities": [
       "인천",
       "부산",
@@ -2687,33 +2564,32 @@
       "단독자유",
       "단독투어",
       "추천패키지",
-      "3박5일",
-      "남부",
-      "NO쇼핑",
-      "올인원",
-      "휴양",
-      "힐링",
-      "머드온천",
-      "루지",
-      "지프투어",
-      "호텔포함"
+      "#나트랑달랏3박5일",
+      "#바다와고원콤보",
+      "#다딴라알파인루지",
+      "#랑비앙산지프",
+      "#아이리조트머드스파",
+      "#5성급호텔올인원",
+      "#NO쇼핑NO옵션",
+      "#랍스터씨푸드"
     ],
     "description": "300일 내내 온화한 햇살과 에메랄드빛 바다가 펼쳐지는 나트랑(동양의 나폴리)과 해발 1,500m 연중 18~24도의 쾌적한 꽃과 소나무의 고원도시 달랏을 묶은 베스트셀러 VIP 단독 패키지입니다. 단체 합승 없이 오직 우리 일행만을 위한 최신형 16인승 밴과 전담 한국어 가이드가 밀착 케어하며, 다딴라 루지, 랑비앙산 사륜 지프, 프라이빗 머드온천, 랍스터 특식까지 전 일정 추가 비용 없이 완벽하게 포함되어 있습니다.",
     "included": [
-      "나트랑 5성급 특급 호텔 2박 + 달랏 5성급 헤리티지 리조트 1박 (2인 1실, 특급 조식 뷔페 포함)",
-      "전 일정 우리 일행 전용 단독 VIP 16인승 리무진 밴 & 베테랑 전담 기사 (유류비/도로비/주차비 일체 포함)",
-      "신짜오투어 베트남 관광청 공인 100% 한국어 전문 가이드 전 일정 동행",
-      "전 일정 웰빙 대표 특식 (달랏 넴느엉 바베큐, 달랏 아티초 소갈비 전골, 나트랑 베이 랍스터 반마리 & 씨푸드 BBQ, 갈랑가 전통 베트남식 등)",
-      "관광지 전체 입장료 일체 (다딴라 폭포 & 알파인 코스터 루지 왕복, 랑비앙산 정상 4WD 지프 사파리, 린푸옥 사원, 크레이지하우스, 포나가르 첨탑)",
-      "아이리조트(I-Resort) 프라이빗 천연 머드온천 & 미네랄 유황 스파 입장권",
-      "여행의 피로를 풀어주는 베트남 전통 전신 아로마 마사지 90분 (1회 포함)",
-      "현대해상/DB 1억원 해외여행자보험"
+      "나트랑 5성급 오션뷰 호텔 2박 + 달랏 5성급 리조트 1박 (2인 1실, 조식 포함)",
+      "전 일정 우리 일행 전용 단독 16인승 리무진 밴 & 베테랑 전담 기사 (유류비/도로비/주차비 일체 포함)",
+      "신짜오투어 현지 베트남 공인 한국어 1급 전담 가이드 풀케어",
+      "아이리조트(I-Resort) 프라이빗 미네랄 머드스파 & 온천 워터파크 입장권",
+      "달랏 다딴라 폭포 아시아 최장 알파인 루지 코스터 탑승권",
+      "달랏 랑비앙산(해발 2,167m) 4WD 사륜구동 지프차 정상 투어",
+      "달랏 기차역 + 크레이지 하우스 + 린푸억 사원 + 포나가르 참탑 사원 입장료",
+      "4대 프리미엄 특식: ① 나트랑 랍스터/크랩 씨푸드 BBQ, ② 달랏 전통 항아리 소고기 핫팟(Lau Bo), ③ 넴느엉 닌호아 & 분짜 특식, ④ 프리미엄 숯불갈비 한정식",
+      "여행의 피로를 풀어주는 90분 VIP 천연 핫스톤 아로마 스파 전원 포함 (1회)",
+      "달랏 낭만 야시장 투어 & 신선한 로컬 간식 제공"
     ],
     "excluded": [
-      "국제선 왕복 항공권 (고객 선호 항공사/시간대별 실시간 최저가 발권 지원 또는 마일리지 발권 자유)",
-      "기사/가이드 매너팁 (1인 $20 권장, 강제성 없음)",
+      "국제선 왕복 항공권 (최저가 실시간 발권 지원)",
       "개인 쇼핑 경비 및 주류/음료",
-      "호텔 1인실 단독 투숙 시 싱글 차지"
+      "호텔 1인실 싱글룸 사용 시 싱글 차지"
     ],
     "itinerary": [
       {
@@ -2793,29 +2669,29 @@
     ],
     "vehicleInfo": "우리 일행 단독 최신형 16인승 리무진 밴 (베테랑 전담 기사)",
     "guideInfo": "신짜오투어 현지 베트남 공인 한국어 1급 전담 가이드 풀케어",
-    "travelTheme": "바다 휴양과 시원한 숲속 힐링을 한 번에 즐기는 NO쇼핑 VIP 단독 품격 콤보 패키지",
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    "travelTheme": "바다 휴양과 시원한 숲속 힐링을 한 번에 즐기는 NO쇼핑 VIP 단독 품격 콤보 패키지"
   },
   {
     "id": "prod-nhatrang-dalat-vip-4n6d",
-    "title": "[나트랑·달랏 4박6일/단독자유 프리미엄] 해변 호핑투어 & 고원 숲속 감성 4박 6일 올인원 (NO쇼핑/단독스피드보트+루지+지프+5성급)",
-    "subTitle": "한국 주요 여행사 프리미엄 2색 여행 최상위 모델! 나트랑 5성급 오션뷰 2박 + 달랏 5성급 프렌치 리조트 2박! 단독 스피드보트 산호섬 스노클링 호핑 + 머드온천 + 랑비앙 지프 + 다딴라 루지 + 90분 스파 2회 + 랍스터 BBQ & 달랏 와인 만찬",
+    "title": "[나짱·달랏/VIP 프리미엄 여유] 에메랄드 비치 호핑 & 숲속 감성 힐링 4박 6일 올인원 (NO쇼핑/NO옵션)",
+    "subTitle": "나트랑 5성급 오션뷰 2박 + 달랏 5성급 프렌치 리조트 2박! 단독 스피드보트 산호섬 스노클링 호핑 + 머드온천 + 랑비앙 지프 + 다딴라 루지 + 90분 스파 2회 + 랍스터 BBQ & 달랏 와인 만찬",
     "category": "추천패키지",
     "region": "남부",
     "city": "나트랑",
     "priceKRW": 950000,
-    "priceVND": 17800000,
+    "priceVND": 17700000,
     "duration": "4박 6일",
     "imageUrl": "/images/dalat.jpg",
     "additionalImages": [
-      "/images/dalat.jpg"
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 5,
     "reviewCount": 312,
     "isPopular": true,
     "isHotDeal": true,
-    "discountPercent": 32,
+    "discountPercent": 19,
     "departureCities": [
       "인천",
       "부산",
@@ -2831,36 +2707,34 @@
       "단독자유",
       "단독투어",
       "추천패키지",
-      "4박6일",
-      "남부",
-      "NO쇼핑",
-      "올인원",
-      "휴양",
-      "힐링",
-      "호핑",
-      "스노클링",
-      "머드온천",
-      "루지",
-      "지프투어",
-      "호텔포함"
+      "#나트랑달랏4박6일",
+      "#단독스피드보트호핑",
+      "#스노클링산호섬",
+      "#달랏2박완전정복",
+      "#로빈힐케이블카",
+      "#스파90분2회포함",
+      "#NO쇼핑NO옵션",
+      "#달랏와인만찬"
     ],
     "description": "3박 5일의 아쉬움을 완벽히 채워주는 4박 6일 최고급 여유 패키지! 나트랑의 청정 해변 산호섬에서 단독 스피드보트로 즐기는 프리미엄 스노클링 호핑투어와 아이리조트 머드스파, 그리고 프랑스풍 고원도시 달랏에서 2박을 머물며 랑비앙산 지프, 다딴라 루지, 로빈힐 케이블카, 죽림선원, 숲속 힐링 카페까지 여유롭게 만끽합니다. 전 일정 90분 VIP 스파가 2회 포함되어 피로 없는 완벽한 휴식을 선사합니다.",
     "included": [
-      "나트랑 5성급 오션뷰 리조트 2박 + 달랏 5성급 프렌치 헤리티지 리조트 2박 (2인 1실, 조식 뷔페 4회 포함)",
-      "전 일정 우리 일행 전용 단독 VIP 16인승 리무진 밴 & 베테랑 전담 기사 (유류비/도로비/주차비 일체 포함)",
-      "신짜오투어 베트남 관광청 공인 100% 한국어 전문 가이드 전 일정 풀케어 동행",
-      "나트랑 베이 단독 전용 스피드보트 호핑투어 (문섬 산호초 스노클링 장비, 미니비치 휴양, 선상 해상 런치)",
-      "전 일정 웰빙 대표 특식 (나트랑 랍스터 BBQ 디너, 달랏 아티초 갈비탕, 달랏 넴느엉 바베큐, 달랏 와인 만찬 등)",
-      "관광지 전체 입장료 일체 (다딴라 폭포 & 알파인 코스터 루지 왕복, 랑비앙산 정상 4WD 지프 사파리, 린푸옥 사원, 로빈힐 케이블카, 쭉람선원, 크레이지하우스, 달랏 기차역, 포나가르 첨탑, 롱선사)",
-      "아이리조트(I-Resort) 프라이빗 머드온천 & 미네랄 스파",
-      "베트남 정통 90분 전신 힐링 마사지 총 2회 포함 (나트랑 1회, 달랏 1회)",
-      "현대해상/DB 1억원 해외여행자보험"
+      "나트랑 5성급 오션뷰 호텔 2박 + 달랏 5성급 프렌치 리조트 2박 (2인 1실, 조식 포함)",
+      "전 일정 우리 일행 전용 단독 16인승 리무진 밴 & 베테랑 전담 기사 (유류비/도로비/주차비 일체 포함)",
+      "신짜오투어 현지 베트남 공인 한국어 1급 전담 가이드 풀케어",
+      "나트랑 전용 단독 스피드보트 산호초 스노클링 호핑투어 (장비 일체 대여 + 해상 활어 중식)",
+      "아이리조트(I-Resort) 프라이빗 미네랄 머드스파 & 온천 수영장 입장권",
+      "달랏 랑비앙산(2,167m) 4WD 사륜구동 지프차 정상 투어",
+      "달랏 다딴라 폭포 아시아 최장 알파인 루지 코스터 탑승권",
+      "달랏 로빈힐 ➔ 죽림선원 파노라마 케이블카 탑승권",
+      "달랏 기차역 + 크레이지 하우스 + 린푸억 사원 + 포나가르 사원 입장료",
+      "5대 프리미엄 특식: ① 나트랑 랍스터/크랩 씨푸드 BBQ, ② 선상 해상 활어 해산물식, ③ 달랏 소고기 핫팟 & 달랏 와인, ④ 미슐랭 분짜 & 넴느엉, ⑤ 고급 한정식 만찬",
+      "총 2회 90분 VIP 천연 핫스톤/아로마 스파 전원 포함",
+      "달랏 숲속 전망 감성 카페 음료 1회 제공 & 달랏 야시장 투어"
     ],
     "excluded": [
-      "국제선 왕복 항공권 (고객 선호 항공사/시간대별 실시간 최저가 발권 지원 또는 마일리지 발권 자유)",
-      "기사/가이드 매너팁 (1인 $30 권장, 강제성 없음)",
+      "국제선 왕복 항공권 (최저가 실시간 발권 지원)",
       "개인 쇼핑 경비 및 주류/음료",
-      "호텔 1인실 단독 투숙 시 싱글 차지"
+      "호텔 1인실 싱글룸 사용 시 싱글 차지"
     ],
     "itinerary": [
       {
@@ -2956,9 +2830,7 @@
     ],
     "vehicleInfo": "우리 일행 단독 최신형 16인승 리무진 밴 (베테랑 전담 기사)",
     "guideInfo": "신짜오투어 현지 베트남 공인 한국어 1급 전담 가이드 풀케어",
-    "travelTheme": "바다 호핑 레저와 고원 숲속 감성을 여유롭게 모두 정복하는 NO쇼핑 프리미엄 힐링 패키지",
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    "travelTheme": "바다 호핑 레저와 고원 숲속 감성을 여유롭게 모두 정복하는 NO쇼핑 프리미엄 힐링 패키지"
   },
   {
     "id": "prod-nhatrang-pkg-01",
@@ -2972,7 +2844,7 @@
     "duration": "3박 5일",
     "imageUrl": "/images/nhatrang_ocean_bay_1787097818318.jpg",
     "additionalImages": [
-      "/images/nhatrang_ocean_bay_1787097818318.jpg"
+      "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 4.9,
     "reviewCount": 215,
@@ -3035,9 +2907,7 @@
         "meal": "조식: 호텔식 | 중식: 쌀국수 | 석식: 한정식",
         "hotel": "기내박"
       }
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-nhatrang-pkg-02",
@@ -3051,7 +2921,7 @@
     "duration": "4박 5일",
     "imageUrl": "/images/muine_sand.jpg",
     "additionalImages": [
-      "/images/muine_sand.jpg"
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 4.9,
     "reviewCount": 168,
@@ -3109,9 +2979,7 @@
         "meal": "조식: 호텔식 | 중식: 쌀국수 | 석식: 삼겹살",
         "hotel": "기내박"
       }
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-nhatrang-golf-01",
@@ -3125,7 +2993,7 @@
     "duration": "3박 5일",
     "imageUrl": "/images/vietnam_beach_villa_1787099211528.jpg",
     "additionalImages": [
-      "/images/vietnam_beach_villa_1787099211528.jpg"
+      "https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 4.9,
     "reviewCount": 98,
@@ -3192,9 +3060,7 @@
         "meal": "조식: 호텔식 | 중식: 쌀국수 | 석식: 기내식",
         "hotel": "기내박"
       }
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-nhatrang-golf-02",
@@ -3208,7 +3074,7 @@
     "duration": "4박 5일",
     "imageUrl": "/images/vietnam_golf_resort_1787099191979.jpg",
     "additionalImages": [
-      "/images/vietnam_golf_resort_1787099191979.jpg"
+      "https://images.unsplash.com/photo-1535131749006-b7f58c99034b?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 5,
     "reviewCount": 72,
@@ -3284,9 +3150,7 @@
         "meal": "조식: 호텔식 | 중식: 현지식 | 석식: 기내식",
         "hotel": "기내박"
       }
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-nhatrang-villa-01",
@@ -3300,7 +3164,7 @@
     "duration": "3박 5일",
     "imageUrl": "/images/villa_nhatrang_bay.jpg",
     "additionalImages": [
-      "/images/villa_nhatrang_bay.jpg"
+      "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 4.9,
     "reviewCount": 52,
@@ -3378,9 +3242,7 @@
         "meal": "조식: 리조트식 | 중식: 쌀국수 | 석식: 공항식",
         "hotel": "기내박"
       }
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-nhatrang-villa-02",
@@ -3394,7 +3256,7 @@
     "duration": "3박 5일",
     "imageUrl": "/images/villa_camranh_ocean.jpg",
     "additionalImages": [
-      "/images/villa_camranh_ocean.jpg"
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 5,
     "reviewCount": 38,
@@ -3473,9 +3335,7 @@
         "meal": "조식: 빌라 조식 | 중식: 한정식 | 석식: 공항식",
         "hotel": "기내박"
       }
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-nhatrang-free-01",
@@ -3489,7 +3349,7 @@
     "duration": "반나절 (약 4시간)",
     "imageUrl": "/images/phuquoc_sunset.jpg",
     "additionalImages": [
-      "/images/phuquoc_sunset.jpg"
+      "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 5,
     "reviewCount": 190,
@@ -3524,9 +3384,7 @@
         "meal": "석식: 선상 BBQ",
         "hotel": "개별 숙소"
       }
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-nhatrang-free-02",
@@ -3540,7 +3398,7 @@
     "duration": "1일 데이투어",
     "imageUrl": "/images/phanrang_desert_jeep_1788400701381.jpg",
     "additionalImages": [
-      "/images/phanrang_desert_jeep_1788400701381.jpg"
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 4.9,
     "reviewCount": 340,
@@ -3575,9 +3433,7 @@
         "meal": "자유식",
         "hotel": "개별 숙소"
       }
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-phuquoc-pkg-01",
@@ -3591,7 +3447,7 @@
     "duration": "3박 5일",
     "imageUrl": "/images/phuquoc_cablecar.jpg",
     "additionalImages": [
-      "/images/phuquoc_cablecar.jpg"
+      "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 4.9,
     "reviewCount": 185,
@@ -3653,9 +3509,7 @@
         "meal": "조식: 리조트식 | 중식: 쌀국수 | 석식: 공항식",
         "hotel": "기내박"
       }
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-phuquoc-pkg-02",
@@ -3669,7 +3523,7 @@
     "duration": "4박 5일",
     "imageUrl": "/images/phuquoc_island_hopping.jpg",
     "additionalImages": [
-      "/images/phuquoc_island_hopping.jpg"
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 4.9,
     "reviewCount": 96,
@@ -3727,9 +3581,7 @@
         "meal": "조식: 호텔식 | 중식: 현지식 | 석식: 한정식",
         "hotel": "기내박"
       }
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-phuquoc-golf-01",
@@ -3743,7 +3595,7 @@
     "duration": "3박 5일",
     "imageUrl": "/images/vietnam_city_villa_1787099231914.jpg",
     "additionalImages": [
-      "/images/vietnam_city_villa_1787099231914.jpg"
+      "https://images.unsplash.com/photo-1535131749006-b7f58c99034b?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 4.9,
     "reviewCount": 64,
@@ -3809,9 +3661,7 @@
         "meal": "조식: 호텔식 | 중식: 쌀국수 | 석식: 기내식",
         "hotel": "기내박"
       }
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-phuquoc-golf-02",
@@ -3825,7 +3675,7 @@
     "duration": "4박 5일",
     "imageUrl": "/images/bangioc.jpg",
     "additionalImages": [
-      "/images/bangioc.jpg"
+      "https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 5,
     "reviewCount": 42,
@@ -3900,9 +3750,7 @@
         "meal": "조식: 호텔식 | 중식: 현지식 | 석식: 기내식",
         "hotel": "기내박"
       }
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-phuquoc-villa-01",
@@ -3916,7 +3764,7 @@
     "duration": "3박 5일",
     "imageUrl": "/images/villa_phuquoc_saobeach.jpg",
     "additionalImages": [
-      "/images/villa_phuquoc_saobeach.jpg"
+      "https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 5,
     "reviewCount": 45,
@@ -3994,9 +3842,7 @@
         "meal": "조식: 빌라 조식 | 중식: 쌀국수 | 석식: 공항식",
         "hotel": "기내박"
       }
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-phuquoc-villa-02",
@@ -4010,7 +3856,7 @@
     "duration": "3박 5일",
     "imageUrl": "/images/villa_phuquoc_longbeach.jpg",
     "additionalImages": [
-      "/images/villa_phuquoc_longbeach.jpg"
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 5,
     "reviewCount": 39,
@@ -4086,9 +3932,7 @@
         "meal": "조식: 빌라 조식 | 중식: 한정식 | 석식: 공항식",
         "hotel": "기내박"
       }
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-phuquoc-free-01",
@@ -4102,7 +3946,7 @@
     "duration": "1일 데이투어",
     "imageUrl": "/images/phuquoc_sunset_cablecar_1787098424693.jpg",
     "additionalImages": [
-      "/images/phuquoc_sunset_cablecar_1787098424693.jpg"
+      "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 5,
     "reviewCount": 310,
@@ -4138,9 +3982,7 @@
         "meal": "중식: 선상 해산물식",
         "hotel": "개별 숙소"
       }
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-phuquoc-free-02",
@@ -4154,7 +3996,7 @@
     "duration": "1일 (10시간)",
     "imageUrl": "/images/phuquoc_starfish_beach.jpg",
     "additionalImages": [
-      "/images/phuquoc_starfish_beach.jpg"
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 4.9,
     "reviewCount": 220,
@@ -4188,9 +4030,7 @@
         "meal": "자유식",
         "hotel": "개별 숙소"
       }
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-hanoi-halong-pkg-01",
@@ -4204,7 +4044,7 @@
     "duration": "3박 5일",
     "imageUrl": "/images/halong_cruise.jpg",
     "additionalImages": [
-      "/images/halong_cruise.jpg"
+      "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 5,
     "reviewCount": 260,
@@ -4267,9 +4107,7 @@
         "meal": "조식: 호텔식 | 중식: 현지식 | 석식: 한정식",
         "hotel": "기내박"
       }
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-hanoi-halong-pkg-02",
@@ -4283,7 +4121,7 @@
     "duration": "4박 5일",
     "imageUrl": "/images/halong_kayak_bay.jpg",
     "additionalImages": [
-      "/images/halong_kayak_bay.jpg"
+      "https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 4.9,
     "reviewCount": 140,
@@ -4342,9 +4180,7 @@
         "meal": "조식: 호텔식 | 중식: 쌀국수 | 석식: 한정식",
         "hotel": "기내박"
       }
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-hanoi-golf-01",
@@ -4358,7 +4194,7 @@
     "duration": "3박 5일",
     "imageUrl": "/images/ha_giang_mapileng_1787098378307.jpg",
     "additionalImages": [
-      "/images/ha_giang_mapileng_1787098378307.jpg"
+      "https://images.unsplash.com/photo-1535131749006-b7f58c99034b?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 4.9,
     "reviewCount": 88,
@@ -4427,9 +4263,7 @@
         "meal": "조식: 호텔식 | 중식: 클럽하우스 | 석식: 기내식",
         "hotel": "기내박"
       }
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-hanoi-golf-02",
@@ -4443,7 +4277,7 @@
     "duration": "3박 4일",
     "imageUrl": "/images/golf_halong_flc.jpg",
     "additionalImages": [
-      "/images/golf_halong_flc.jpg"
+      "https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 5,
     "reviewCount": 56,
@@ -4510,9 +4344,7 @@
         "meal": "조식: 호텔식 | 중식: 쌀국수 | 석식: 기내식",
         "hotel": "기내박"
       }
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-hanoi-villa-01",
@@ -4526,7 +4358,7 @@
     "duration": "3박 4일",
     "imageUrl": "/images/villa_hanoi_bavi.jpg",
     "additionalImages": [
-      "/images/villa_hanoi_bavi.jpg"
+      "https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 4.9,
     "reviewCount": 38,
@@ -4602,9 +4434,7 @@
         "meal": "조식: 빌라 조식 | 중식: 쌀국수 | 석식: 기내식",
         "hotel": "기내박"
       }
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-hanoi-villa-02",
@@ -4618,7 +4448,7 @@
     "duration": "3박 4일",
     "imageUrl": "/images/villa_halong_flamingo.jpg",
     "additionalImages": [
-      "/images/villa_halong_flamingo.jpg"
+      "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 4.9,
     "reviewCount": 41,
@@ -4693,9 +4523,7 @@
         "meal": "조식: 빌라 조식 | 중식: 쌀국수 | 석식: 기내식",
         "hotel": "기내박"
       }
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-hanoi-free-01",
@@ -4709,7 +4537,7 @@
     "duration": "당일 투어 (약 10시간)",
     "imageUrl": "/images/halong_emerald_cruise_1787097807698.jpg",
     "additionalImages": [
-      "/images/halong_emerald_cruise_1787097807698.jpg"
+      "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 5,
     "reviewCount": 520,
@@ -4746,9 +4574,7 @@
         "meal": "중식: 선상 뷔페",
         "hotel": "개별 숙소"
       }
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-hanoi-free-02",
@@ -4762,7 +4588,7 @@
     "duration": "당일 투어",
     "imageUrl": "/images/ninh_binh_trangan_1787098412494.jpg",
     "additionalImages": [
-      "/images/ninh_binh_trangan_1787098412494.jpg"
+      "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 4.9,
     "reviewCount": 380,
@@ -4797,9 +4623,7 @@
         "meal": "자유식",
         "hotel": "개별 숙소"
       }
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-dalat-pkg-01",
@@ -4813,7 +4637,7 @@
     "duration": "3박 5일",
     "imageUrl": "/images/dalat_langbiang_mountain.jpg",
     "additionalImages": [
-      "/images/dalat_langbiang_mountain.jpg"
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 5,
     "reviewCount": 165,
@@ -4874,13 +4698,11 @@
         "meal": "조식: 호텔식 | 중식: 쌀국수 | 석식: 공항식",
         "hotel": "기내박"
       }
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-dalat-pkg-02",
-    "title": "[나트랑·달랏 콤보/4박5일 단독투어] 나트랑 오션 힐링 & 달랏 고원 감성 4박 5일 2개 도시 힐링",
+    "title": "[나트랑·달랏 콤보] 나트랑 오션 힐링 & 달랏 고원 감성 4박 5일 2개 도시 정복",
     "subTitle": "나트랑 5성급 비치 호텔 2박 + 달랏 5성급 호텔 2박 + 핵심 명소 올포함",
     "category": "추천패키지",
     "region": "남부",
@@ -4890,7 +4712,7 @@
     "duration": "4박 5일",
     "imageUrl": "/images/dalat_spring_lake_1787099173538.jpg",
     "additionalImages": [
-      "/images/dalat_spring_lake_1787099173538.jpg"
+      "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 4.9,
     "reviewCount": 110,
@@ -4901,13 +4723,10 @@
       "부산"
     ],
     "tags": [
-      "나트랑",
-      "달랏",
-      "나트랑달랏",
-      "자유여행",
-      "단독투어",
-      "추천패키지",
-      "남부"
+      "#나트랑달랏",
+      "#2개도시",
+      "#콤보패키지",
+      "#바다와고원"
     ],
     "description": "나트랑의 푸른 바다와 달랏의 시원한 고원 감성을 4박 5일 동안 여유롭게 둘러보는 실속 만점 결합 상품입니다.",
     "included": [
@@ -4949,9 +4768,7 @@
         "meal": "조식: 호텔식 | 중식: 쌀국수 | 석식: 기내식",
         "hotel": "기내박"
       }
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-dalat-golf-01",
@@ -4965,7 +4782,7 @@
     "duration": "3박 5일",
     "imageUrl": "/images/hagiang.jpg",
     "additionalImages": [
-      "/images/hagiang.jpg"
+      "https://images.unsplash.com/photo-1535131749006-b7f58c99034b?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 4.9,
     "reviewCount": 95,
@@ -5033,9 +4850,7 @@
         "meal": "조식: 호텔식 | 중식: 클럽하우스 | 석식: 기내식",
         "hotel": "기내박"
       }
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-dalat-golf-02",
@@ -5049,7 +4864,7 @@
     "duration": "3박 4일",
     "imageUrl": "/images/cao_bang_bangioc_1787098400108.jpg",
     "additionalImages": [
-      "/images/cao_bang_bangioc_1787098400108.jpg"
+      "https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 5,
     "reviewCount": 62,
@@ -5117,9 +4932,7 @@
         "meal": "조식: 호텔식 | 중식: 쌀국수 | 석식: 기내식",
         "hotel": "기내박"
       }
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-dalat-villa-01",
@@ -5133,7 +4946,7 @@
     "duration": "3박 4일",
     "imageUrl": "/images/villa_dalat_tuyenlam.jpg",
     "additionalImages": [
-      "/images/villa_dalat_tuyenlam.jpg"
+      "https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 5,
     "reviewCount": 35,
@@ -5209,9 +5022,7 @@
         "meal": "조식: 빌라 조식 | 중식: 쌀국수 | 석식: 기내식",
         "hotel": "기내박"
       }
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-dalat-villa-02",
@@ -5225,7 +5036,7 @@
     "duration": "3박 4일",
     "imageUrl": "/images/villa_dalat_chateau.jpg",
     "additionalImages": [
-      "/images/villa_dalat_chateau.jpg"
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 5,
     "reviewCount": 28,
@@ -5302,9 +5113,7 @@
         "meal": "조식: 빌라 조식 | 중식: 쌀국수 | 석식: 기내식",
         "hotel": "기내박"
       }
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-dalat-free-01",
@@ -5318,7 +5127,7 @@
     "duration": "1일 데이투어",
     "imageUrl": "/images/dalat_cafe_instagram.jpg",
     "additionalImages": [
-      "/images/dalat_cafe_instagram.jpg"
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 5,
     "reviewCount": 240,
@@ -5353,9 +5162,7 @@
         "meal": "자유식",
         "hotel": "개별 숙소"
       }
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-dalat-free-02",
@@ -5369,7 +5176,7 @@
     "duration": "1일 (10시간)",
     "imageUrl": "/images/dalat_flower_garden_1788400752600.jpg",
     "additionalImages": [
-      "/images/dalat_flower_garden_1788400752600.jpg"
+      "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 4.9,
     "reviewCount": 180,
@@ -5402,9 +5209,7 @@
         "meal": "자유식",
         "hotel": "개별 숙소"
       }
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-sapa-pkg-01",
@@ -5418,7 +5223,7 @@
     "duration": "3박 5일",
     "imageUrl": "/images/sapa_fansipan.jpg",
     "additionalImages": [
-      "/images/sapa_fansipan.jpg"
+      "https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 5,
     "reviewCount": 142,
@@ -5479,9 +5284,7 @@
         "meal": "조식: 호텔식 | 중식: 분짜 | 석식: 공항식",
         "hotel": "기내박"
       }
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-sapa-pkg-02",
@@ -5495,7 +5298,7 @@
     "duration": "4박 5일",
     "imageUrl": "/images/sapa_terraced_fields.jpg",
     "additionalImages": [
-      "/images/sapa_terraced_fields.jpg"
+      "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 4.9,
     "reviewCount": 98,
@@ -5552,9 +5355,7 @@
         "meal": "조식: 호텔식 | 중식: 분짜 | 석식: 기내식",
         "hotel": "기내박"
       }
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-sapa-golf-01",
@@ -5568,7 +5369,7 @@
     "duration": "3박 4일",
     "imageUrl": "/images/vietnam_city_villa.jpg",
     "additionalImages": [
-      "/images/vietnam_city_villa.jpg"
+      "https://images.unsplash.com/photo-1535131749006-b7f58c99034b?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 4.9,
     "reviewCount": 45,
@@ -5634,9 +5435,7 @@
         "meal": "조식: 호텔식 | 중식: 현지식 | 석식: 기내식",
         "hotel": "기내박"
       }
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-sapa-golf-02",
@@ -5650,7 +5449,7 @@
     "duration": "4박 5일",
     "imageUrl": "/images/hue_imperial_citadel_1788400737935.jpg",
     "additionalImages": [
-      "/images/hue_imperial_citadel_1788400737935.jpg"
+      "https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 5,
     "reviewCount": 38,
@@ -5724,9 +5523,7 @@
         "meal": "조식: 호텔식 | 중식: 쌀국수 | 석식: 기내식",
         "hotel": "기내박"
       }
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-sapa-villa-01",
@@ -5740,7 +5537,7 @@
     "duration": "3박 4일",
     "imageUrl": "/images/villa_sapa_topas.jpg",
     "additionalImages": [
-      "/images/villa_sapa_topas.jpg"
+      "https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 5,
     "reviewCount": 82,
@@ -5817,9 +5614,7 @@
         "meal": "조식: 호텔식 | 중식: 분짜 | 석식: 기내식",
         "hotel": "기내박"
       }
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-sapa-villa-02",
@@ -5833,7 +5628,7 @@
     "duration": "3박 4일",
     "imageUrl": "/images/villa_sapa_jadehill.jpg",
     "additionalImages": [
-      "/images/villa_sapa_jadehill.jpg"
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 4.9,
     "reviewCount": 36,
@@ -5908,9 +5703,7 @@
         "meal": "조식: 빌라 조식 | 중식: 쌀국수 | 석식: 기내식",
         "hotel": "기내박"
       }
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-sapa-free-01",
@@ -5924,7 +5717,7 @@
     "duration": "반나절 (약 5시간)",
     "imageUrl": "/images/sapa_fansipan_terraces_1786458401102.jpg",
     "additionalImages": [
-      "/images/sapa_fansipan_terraces_1786458401102.jpg"
+      "https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 5,
     "reviewCount": 410,
@@ -5957,9 +5750,7 @@
         "meal": "자유식",
         "hotel": "개별 숙소"
       }
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-sapa-free-02",
@@ -5973,7 +5764,7 @@
     "duration": "1일 (8시간)",
     "imageUrl": "/images/sapa_catcat_village.jpg",
     "additionalImages": [
-      "/images/sapa_catcat_village.jpg"
+      "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 4.9,
     "reviewCount": 160,
@@ -6004,9 +5795,7 @@
         "meal": "자유식",
         "hotel": "개별 숙소"
       }
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-saigon-pkg-01",
@@ -6020,7 +5809,7 @@
     "duration": "3박 5일",
     "imageUrl": "/images/saigon_notredame_post.jpg",
     "additionalImages": [
-      "/images/saigon_notredame_post.jpg"
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 4.9,
     "reviewCount": 198,
@@ -6083,9 +5872,7 @@
         "meal": "조식: 호텔식 | 중식: 분짜 특식 | 석식: 공항식",
         "hotel": "기내박"
       }
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-saigon-pkg-02",
@@ -6099,7 +5886,7 @@
     "duration": "4박 5일",
     "imageUrl": "/images/mekong_river_boat.jpg",
     "additionalImages": [
-      "/images/mekong_river_boat.jpg"
+      "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 4.8,
     "reviewCount": 115,
@@ -6157,9 +5944,7 @@
         "meal": "조식: 호텔식 | 중식: 쌀국수 | 석식: 한정식",
         "hotel": "기내박"
       }
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-saigon-golf-01",
@@ -6173,7 +5958,7 @@
     "duration": "3박 5일",
     "imageUrl": "/images/danang_city_dragon_1788400718422.jpg",
     "additionalImages": [
-      "/images/danang_city_dragon_1788400718422.jpg"
+      "https://images.unsplash.com/photo-1535131749006-b7f58c99034b?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 4.9,
     "reviewCount": 112,
@@ -6242,9 +6027,7 @@
         "meal": "조식: 호텔식 | 중식: 클럽하우스 | 석식: 기내식",
         "hotel": "기내박"
       }
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-saigon-golf-02",
@@ -6258,7 +6041,7 @@
     "duration": "3박 4일",
     "imageUrl": "/images/golf_muine_pga.jpg",
     "additionalImages": [
-      "/images/golf_muine_pga.jpg"
+      "https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 5,
     "reviewCount": 58,
@@ -6326,9 +6109,7 @@
         "meal": "조식: 호텔식 | 중식: 쌀국수 | 석식: 기내식",
         "hotel": "기내박"
       }
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-saigon-villa-01",
@@ -6342,7 +6123,7 @@
     "duration": "3박 4일",
     "imageUrl": "/images/villa_saigon_river.jpg",
     "additionalImages": [
-      "/images/villa_saigon_river.jpg"
+      "https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 4.9,
     "reviewCount": 44,
@@ -6418,9 +6199,7 @@
         "meal": "조식: 빌라 조식 | 중식: 쌀국수 | 석식: 기내식",
         "hotel": "기내박"
       }
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-saigon-villa-02",
@@ -6434,7 +6213,7 @@
     "duration": "3박 4일",
     "imageUrl": "/images/villa_muine_beach.jpg",
     "additionalImages": [
-      "/images/villa_muine_beach.jpg"
+      "https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 5,
     "reviewCount": 39,
@@ -6511,9 +6290,7 @@
         "meal": "조식: 빌라 조식 | 중식: 쌀국수 | 석식: 기내식",
         "hotel": "기내박"
       }
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-saigon-free-01",
@@ -6527,7 +6304,7 @@
     "duration": "1일 데이투어",
     "imageUrl": "/images/mekong_river_boat_1788400683530.jpg",
     "additionalImages": [
-      "/images/mekong_river_boat_1788400683530.jpg"
+      "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 4.9,
     "reviewCount": 350,
@@ -6561,9 +6338,7 @@
         "meal": "중식: 현지 특식",
         "hotel": "개별 숙소"
       }
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    ]
   },
   {
     "id": "prod-saigon-free-02",
@@ -6577,7 +6352,7 @@
     "duration": "반나절 (새벽 04:30~09:00)",
     "imageUrl": "/images/muine_sand_dunes_1787098437757.jpg",
     "additionalImages": [
-      "/images/muine_sand_dunes_1787098437757.jpg"
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 5,
     "reviewCount": 490,
@@ -6609,95 +6384,6 @@
         "meal": "자유식",
         "hotel": "개별 숙소"
       }
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
-  },
-  {
-    "id": "prod-1787849206215",
-    "title": "[다낭/독채풀빌라] 미케비치 시그니처 4베드룸 럭셔리 풀빌라",
-    "subTitle": "전용 대형 프라이빗 수영장 + 24시간 버틀러 + 매일 전신 마사지 90분 + 단독 차량 & 가이드 올포함",
-    "category": "풀빌라",
-    "region": "중부",
-    "city": "다낭",
-    "priceKRW": 315000,
-    "priceVND": 5929185,
-    "duration": "",
-    "imageUrl": "/images/villa_danang_mykhe_6bed.jpg",
-    "additionalImages": [
-      "/images/villa_danang_mykhe_6bed.jpg",
-      "/images/vietnam_beach_villa.jpg"
-    ],
-    "rating": 5,
-    "reviewCount": 94,
-    "isPopular": true,
-    "isHotDeal": true,
-    "discountPercent": 15,
-    "departureCities": [
-      "인천",
-      "부산",
-      "대구",
-      "청주"
-    ],
-    "tags": [
-      "#다낭풀빌라",
-      "#독채풀빌라",
-      "#오션뷰",
-      "#가족여행",
-      "#프라이빗수영장",
-      "#바비큐파티"
-    ],
-    "description": "다낭 최고급 미케비치 해변가에 위치한 2222222222222222222베드룸 럭셔리 단독 풀빌라입니다. 다른 투숙객 없이 오직 우리 가족과 일행만을 위한 넓은 정원, 프라이빗 인피니티 풀, 풀사이드 바베큐 파티를 누려보세요.44444444444",
-    "included": [
-      "미케비치 6베드룸 럭셔리 독채 풀빌라  (단독 사용)"
-    ],
-    "excluded": [
-      "개인 경비 및 매너팁",
-      "항공권"
-    ],
-    "villaSpecs": {
-      "villaName": "다낭 미케비치 시그니처22222222",
-      "structureDescription": "마스터룸 2실 + 패밀리룸 1실 + 트윈룸 1실 (총 4객실 / 독립 욕실 4개 + 대형 거실 + 키친)",
-      "bedrooms": 4,
-      "bathrooms": 4,
-      "beds": "킹베드 3개 + 싱글베드 2개",
-      "maxOccupancy": 10,
-      "standardOccupancy": 8,
-      "privatePool": true,
-      "oceanView": false,
-      "areaSqm": 420,
-      "floors": 2,
-      "address": "",
-      "googleMapUrl": "23 Chế Lan Viên, Ngũ Hành Sơn, Đà Nẵng 550000 베트남",
-      "amenities": [
-        "프라이빗 수영장",
-        "넓은 거실 & 소파",
-        "풀옵션 주방 & 다이닝 룸",
-        "프라이빗 잔디 정원",
-        "야외 바비큐(BBQ) 그릴 시설",
-        "스마트 TV & 넷플릭스",
-        "24시간 전담 버틀러",
-        "초고속 Wi-Fi",
-        "프라이빗 전용 수영장",
-        "야외 바비큐(BBQ) 시설",
-        "세탁기 & 건조기",
-        "프라이빗 정원 & 테라스",
-        "풀 키친 (주방 조리시설)",
-        "초고속 무료 Wi-Fi",
-        "대형 냉장고 & 전자레인지",
-        "스마트 TV (넷플릭스)"
-      ],
-      "checkInTime": "14:00",
-      "checkOutTime": "11:00",
-      "breakfastIncluded": false,
-      "airbnbUrl": "https://www.airbnb.co.kr/rooms/1596807485988738548?adults=8&search_mode=regular_search&source_impression_id=p3_1773058617_P3xK6pEU9aoIJDMS&previous_page_section_name=1000&federated_search_id=a2420d66-c7ca-4754-98c4-1f72afdd15e6&guests=1&check_in=2026-10-13&check_out=2026-10-14",
-      "hostLanguage": " 베트남어 지원 (24시간 카카오톡 실시간 응대)"
-    },
-    "itinerary": [],
-    "createdAt": "2026-08-27T16:46:46.215Z",
-    "airbnbUrl": "https://www.airbnb.co.kr/rooms/1596807485988738548?adults=8&search_mode=regular_search&source_impression_id=p3_1773058617_P3xK6pEU9aoIJDMS&previous_page_section_name=1000&federated_search_id=a2420d66-c7ca-4754-98c4-1f72afdd15e6&guests=1&check_in=2026-10-13&check_out=2026-10-14",
-    "googleMapUrl": "23 Chế Lan Viên, Ngũ Hành Sơn, Đà Nẵng 550000 베트남",
-    "address": "",
-    "updatedAt": "2026-09-03T01:59:45.021Z"
+    ]
   }
 ]
