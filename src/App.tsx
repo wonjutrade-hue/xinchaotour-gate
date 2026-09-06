@@ -537,7 +537,8 @@ export default function App() {
     if (sortBy === 'price_asc') return a.priceKRW - b.priceKRW;
     if (sortBy === 'price_desc') return b.priceKRW - a.priceKRW;
     if (sortBy === 'rating') return b.rating - a.rating;
-    return (b.reviewCount || 0) - (a.reviewCount || 0);
+    // Popular / Default: Preserve administrator curated custom order
+    return 0;
   });
 
   if (isAdminMode) {

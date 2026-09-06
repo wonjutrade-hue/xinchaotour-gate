@@ -59,6 +59,9 @@ import {
   Info,
   ArrowUp,
   ArrowDown,
+  GripVertical,
+  ChevronsUp,
+  Move,
   RefreshCw,
   Loader2,
   FolderOpen,
@@ -522,6 +525,12 @@ export const AdminMode: React.FC<AdminModeProps> = ({
   const [quickPhotoProduct, setQuickPhotoProduct] = useState<Product | null>(null);
   const [isQuickPhotoSaving, setIsQuickPhotoSaving] = useState(false);
   const quickPhotoUploadRef = useRef<HTMLInputElement>(null);
+
+  // Drag & Drop Mouse Reordering State
+  const [draggedProductId, setDraggedProductId] = useState<string | null>(null);
+  const [dragOverProductId, setDragOverProductId] = useState<string | null>(null);
+  const [dragOverPosition, setDragOverPosition] = useState<'above' | 'below' | null>(null);
+  const [, setIsReordering] = useState(false);
 
   // Quick Set Main Photo from any gallery image or new upload
   const handleQuickSetMainPhoto = async (targetProduct: Product, newImageUrl: string) => {
@@ -1358,6 +1367,387 @@ export const AdminMode: React.FC<AdminModeProps> = ({
 
   const pendingInquiriesCount = inquiries.filter(i => i.status === 'pending' || !i.status).length;
 
+  // =========================================================================
+  // Drag & Drop Mouse Reordering Handlers
+  // =========================================================================
+  const handleDragStart = (e: React.DragEvent, prodId: string) => {
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', prodId);
+    setDraggedProductId(prodId);
+  };
+
+  const handleDragOver = (e: React.DragEvent, prodId: string) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    if (draggedProductId === prodId) return;
+
+    const rect = e.currentTarget.getBoundingClientRect();
+    const midY = rect.top + rect.height / 2;
+    const position = e.clientY < midY ? 'above' : 'below';
+
+    if (dragOverProductId !== prodId || dragOverPosition !== position) {
+      setDragOverProductId(prodId);
+      setDragOverPosition(position);
+    }
+  };
+
+  const handleDragLeave = (e: React.DragEvent, prodId: string) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    if (
+      e.clientX < rect.left ||
+      e.clientX >= rect.right ||
+      e.clientY < rect.top ||
+      e.clientY >= rect.bottom
+    ) {
+      if (dragOverProductId === prodId) {
+        setDragOverProductId(null);
+        setDragOverPosition(null);
+      }
+    }
+  };
+
+  const handleDrop = async (e: React.DragEvent, targetProdId: string) => {
+    e.preventDefault();
+    const sourceProdId = e.dataTransfer.getData('text/plain') || draggedProductId;
+    const position = dragOverPosition || 'below';
+    setDraggedProductId(null);
+    setDragOverProductId(null);
+    setDragOverPosition(null);
+
+    if (!sourceProdId || sourceProdId === targetProdId) return;
+
+    const sourceIndex = products.findIndex(p => p.id === sourceProdId);
+    const targetIndex = products.findIndex(p => p.id === targetProdId);
+    if (sourceIndex === -1 || targetIndex === -1) return;
+
+    setIsReordering(true);
+    const updatedProducts = [...products];
+    const [movedItem] = updatedProducts.splice(sourceIndex, 1);
+    const newTargetIndex = updatedProducts.findIndex(p => p.id === targetProdId);
+    if (newTargetIndex === -1) {
+      setIsReordering(false);
+      return;
+    }
+
+    const insertIndex = position === 'above' ? newTargetIndex : newTargetIndex + 1;
+    updatedProducts.splice(insertIndex, 0, movedItem);
+
+    try {
+      await onSaveProducts(updatedProducts);
+      productService.syncAllProducts(updatedProducts).catch(console.warn);
+      showNotification(`✨ "${movedItem.title}" 순서가 성공적으로 변경 및 저장되었습니다!`);
+    } catch (err) {
+      console.error('Reorder error:', err);
+      showNotification('⚠️ 순서 저장 중 오류가 발생했습니다.');
+    } finally {
+      setIsReordering(false);
+    }
+  };
+
+  const handleDragEnd = () => {
+    setDraggedProductId(null);
+    setDragOverProductId(null);
+    setDragOverPosition(null);
+  };
+
+  const handleStepMoveProduct = async (
+    prodId: string, 
+    direction: 'up' | 'down' | 'top', 
+    contextList: Product[]
+  ) => {
+    const ctxIndex = contextList.findIndex(p => p.id === prodId);
+    if (ctxIndex === -1) return;
+
+    const sourceIndex = products.findIndex(p => p.id === prodId);
+    if (sourceIndex === -1) return;
+
+    const updatedProducts = [...products];
+    const [movedItem] = updatedProducts.splice(sourceIndex, 1);
+
+    if (direction === 'top') {
+      if (contextList.length > 0 && contextList[0].id !== prodId) {
+        const firstTargetIndex = updatedProducts.findIndex(p => p.id === contextList[0].id);
+        if (firstTargetIndex !== -1) {
+          updatedProducts.splice(firstTargetIndex, 0, movedItem);
+        } else {
+          updatedProducts.unshift(movedItem);
+        }
+      } else {
+        updatedProducts.unshift(movedItem);
+      }
+    } else if (direction === 'up') {
+      if (ctxIndex === 0) {
+        showNotification(`ℹ️ "${movedItem.title}" 은(는) 이미 해당 목록의 맨 위에 위치해 있습니다.`);
+        return;
+      }
+      const prevItem = contextList[ctxIndex - 1];
+      const targetIndex = updatedProducts.findIndex(p => p.id === prevItem.id);
+      if (targetIndex !== -1) {
+        updatedProducts.splice(targetIndex, 0, movedItem);
+      } else {
+        updatedProducts.splice(Math.max(0, sourceIndex - 1), 0, movedItem);
+      }
+    } else if (direction === 'down') {
+      if (ctxIndex === contextList.length - 1) {
+        showNotification(`ℹ️ "${movedItem.title}" 은(는) 이미 해당 목록의 맨 아래에 위치해 있습니다.`);
+        return;
+      }
+      const nextItem = contextList[ctxIndex + 1];
+      const targetIndex = updatedProducts.findIndex(p => p.id === nextItem.id);
+      if (targetIndex !== -1) {
+        updatedProducts.splice(targetIndex + 1, 0, movedItem);
+      } else {
+        updatedProducts.splice(Math.min(updatedProducts.length, sourceIndex + 1), 0, movedItem);
+      }
+    }
+
+    setIsReordering(true);
+    try {
+      await onSaveProducts(updatedProducts);
+      productService.syncAllProducts(updatedProducts).catch(console.warn);
+      showNotification(`✨ "${movedItem.title}" 순서가 변경 및 저장되었습니다!`);
+    } catch (err) {
+      console.error('Step move error:', err);
+      showNotification('⚠️ 순서 변경 중 오류가 발생했습니다.');
+    } finally {
+      setIsReordering(false);
+    }
+  };
+
+  // Reusable Product Row Card with Mouse Drag & Drop & Step Buttons
+  const renderProductCard = (prod: Product, index: number, contextList: Product[]) => {
+    const subPhotosCount = (prod.additionalImages?.length || 0) + (prod.imageUrl ? 1 : 0);
+    const liveVND = calculateVNDFromKRW(prod.priceKRW || 0, rates);
+    const isDraggingThis = draggedProductId === prod.id;
+    const isDragOverThis = dragOverProductId === prod.id;
+
+    return (
+      <div
+        key={prod.id}
+        id={`admin-product-item-${prod.id}`}
+        draggable={true}
+        onDragStart={(e) => handleDragStart(e, prod.id)}
+        onDragEnd={handleDragEnd}
+        onDragOver={(e) => handleDragOver(e, prod.id)}
+        onDragLeave={(e) => handleDragLeave(e, prod.id)}
+        onDrop={(e) => handleDrop(e, prod.id)}
+        className={`p-4 sm:p-5 transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 relative group select-none ${
+          isDraggingThis
+            ? 'opacity-30 bg-amber-400/10 border-2 border-dashed border-amber-400'
+            : 'hover:bg-slate-750/70'
+        } ${
+          isDragOverThis && dragOverPosition === 'above'
+            ? 'border-t-4 border-t-amber-400 bg-amber-400/10 shadow-lg'
+            : ''
+        } ${
+          isDragOverThis && dragOverPosition === 'below'
+            ? 'border-b-4 border-b-amber-400 bg-amber-400/10 shadow-lg'
+            : ''
+        }`}
+      >
+        {/* Drop Placement Indicator */}
+        {isDragOverThis && (
+          <div className={`absolute ${dragOverPosition === 'above' ? 'top-1' : 'bottom-1'} left-1/2 -translate-x-1/2 z-20 bg-amber-400 text-slate-950 font-black text-[10px] px-3 py-0.5 rounded-full shadow-xl pointer-events-none flex items-center gap-1 border border-slate-950/20`}>
+            <span>⬇️ 여기에 마우스 놓기 ({dragOverPosition === 'above' ? '이전으로' : '다음으로'} 이동)</span>
+          </div>
+        )}
+
+        {/* Left: Drag Handle, Quick Step Move Buttons, Thumbnail & Info */}
+        <div className="flex items-start gap-3 sm:gap-4 min-w-0 flex-1">
+          {/* Drag Handle & Quick Step Move Buttons */}
+          <div className="flex items-center gap-1.5 shrink-0 pt-1">
+            {/* Drag Handle */}
+            <div
+              className="flex flex-col items-center justify-center p-1.5 sm:p-2 rounded-xl bg-slate-800/90 hover:bg-amber-400/20 border border-slate-700 hover:border-amber-400 text-slate-400 hover:text-amber-300 cursor-grab active:cursor-grabbing transition-all select-none shadow-xs group/grip"
+              title="마우스로 꾹 잡고 위/아래로 끌어다 놓으세요 (드래그 & 드롭으로 순서 변경)"
+            >
+              <GripVertical className="w-4 h-4 sm:w-5 sm:h-5" />
+              <span className="text-[9px] font-black text-slate-400 group-hover/grip:text-amber-300 mt-0.5 font-mono">
+                #{index + 1}
+              </span>
+            </div>
+
+            {/* Quick Step Buttons */}
+            <div className="flex flex-col gap-0.5">
+              <button
+                type="button"
+                onClick={() => handleStepMoveProduct(prod.id, 'top', contextList)}
+                className="p-1 rounded-md bg-slate-800 hover:bg-amber-400 hover:text-slate-950 text-slate-400 transition-colors cursor-pointer"
+                title="맨 위로 올리기 (1순위)"
+              >
+                <ChevronsUp className="w-3 h-3" />
+              </button>
+              <button
+                type="button"
+                onClick={() => handleStepMoveProduct(prod.id, 'up', contextList)}
+                className="p-1 rounded-md bg-slate-800 hover:bg-amber-400 hover:text-slate-950 text-slate-400 transition-colors cursor-pointer"
+                title="위로 1칸 이동"
+              >
+                <ArrowUp className="w-3 h-3" />
+              </button>
+              <button
+                type="button"
+                onClick={() => handleStepMoveProduct(prod.id, 'down', contextList)}
+                className="p-1 rounded-md bg-slate-800 hover:bg-amber-400 hover:text-slate-950 text-slate-400 transition-colors cursor-pointer"
+                title="아래로 1칸 이동"
+              >
+                <ArrowDown className="w-3 h-3" />
+              </button>
+            </div>
+          </div>
+
+          {/* Thumbnail & Quick Photo Replace */}
+          <div className="flex flex-col items-center shrink-0">
+            <div 
+              onClick={() => setQuickPhotoProduct(prod)}
+              className="w-18 h-18 sm:w-22 sm:h-22 rounded-2xl bg-slate-900 overflow-hidden shrink-0 border-2 border-slate-700 hover:border-amber-400 relative group flex items-center justify-center cursor-pointer shadow-md transition-all"
+              title="클릭하여 대표 메인 사진 즉시 변경 및 갤러리 관리"
+            >
+              {getDisplayProductImage(prod) ? (
+                <>
+                  <img
+                    src={getDisplayProductImage(prod)}
+                    alt={prod.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                  />
+                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1 p-1 text-center">
+                    <Camera className="w-4 h-4 text-amber-300 drop-shadow" />
+                    <span className="text-[9px] font-black text-amber-300 leading-tight">사진<br/>변경</span>
+                  </div>
+                </>
+              ) : (
+                <div className="w-full h-full bg-slate-850 flex flex-col items-center justify-center text-slate-500 gap-1 p-2 text-center">
+                  <ImageIcon className="w-5 h-5 text-slate-600" />
+                  <span className="text-[10px] font-bold">사진 없음</span>
+                </div>
+              )}
+              <span className="absolute bottom-1 right-1 bg-slate-950/80 text-[10px] text-white font-bold px-1.5 py-0.2 rounded-md backdrop-blur-xs">
+                📸 {subPhotosCount}
+              </span>
+            </div>
+            <button
+              type="button"
+              onClick={() => setQuickPhotoProduct(prod)}
+              className="mt-1 w-full text-[10px] font-black text-amber-400 hover:text-amber-300 bg-amber-400/10 hover:bg-amber-400/20 border border-amber-400/30 rounded-lg py-0.5 px-1 flex items-center justify-center gap-0.5 cursor-pointer transition-colors"
+            >
+              <Camera className="w-2.5 h-2.5" />
+              <span>사진교체</span>
+            </button>
+          </div>
+
+          {/* Product Info */}
+          <div className="space-y-1.5 min-w-0 flex-1">
+            {/* Badges */}
+            <div className="flex flex-wrap items-center gap-1.5 text-xs">
+              <span className={`px-2 py-0.5 rounded-md font-black text-[11px] ${
+                prod.category === '풀빌라' 
+                  ? 'bg-teal-500/20 text-teal-300 border border-teal-500/30'
+                  : prod.category === '골프투어'
+                  ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                  : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+              }`}>
+                {prod.category}
+              </span>
+
+              <span className="bg-slate-700 text-slate-300 px-2 py-0.5 rounded-md font-bold text-[11px]">
+                {prod.region} · {prod.city}
+              </span>
+
+              <span className="bg-slate-700/60 text-slate-300 px-2 py-0.5 rounded-md font-bold text-[11px]">
+                ⏱️ {prod.duration}
+              </span>
+
+              {isSampleUrl(prod.imageUrl) ? (
+                <span className="bg-amber-500/20 text-amber-300 border border-amber-500/30 px-1.5 py-0.2 rounded font-bold text-[10px]">
+                  ⚠️ 샘플 사진
+                </span>
+              ) : prod.imageUrl ? (
+                <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-1.5 py-0.2 rounded font-bold text-[10px]">
+                  ✅ 등록 사진 ({subPhotosCount}장)
+                </span>
+              ) : (
+                <span className="bg-slate-700 text-slate-400 px-1.5 py-0.2 rounded font-medium text-[10px]">
+                  📷 사진 미등록
+                </span>
+              )}
+
+              {prod.isPopular && (
+                <span className="bg-amber-400 text-slate-950 px-1.5 py-0.2 rounded font-black text-[10px]">
+                  👑 추천
+                </span>
+              )}
+              {prod.isHotDeal && (
+                <span className="bg-rose-500 text-white px-1.5 py-0.2 rounded font-black text-[10px]">
+                  🔥 특가
+                </span>
+              )}
+            </div>
+
+            {/* Title */}
+            <h4 className="font-black text-white text-sm sm:text-base truncate leading-snug">
+              {prod.title}
+            </h4>
+
+            {/* Subtitle */}
+            <p className="text-xs text-slate-400 truncate">
+              {prod.subTitle || prod.description}
+            </p>
+
+            {/* Price & Specs */}
+            <div className="flex flex-wrap items-center gap-3 pt-1 text-xs">
+              <span className="font-black text-amber-400 font-mono text-sm">
+                ₩{(prod.priceKRW || 0).toLocaleString()}원
+              </span>
+              <span className="text-slate-400 text-[11px]">
+                (약 {formatVND(liveVND)})
+              </span>
+              <span className="text-amber-400 flex items-center gap-0.5 text-[11px]">
+                ★ {prod.rating || 4.9} ({prod.reviewCount || 0})
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Right: Quick Action Buttons */}
+        <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 shrink-0 border-t md:border-t-0 border-slate-700/60 pt-3 md:pt-0 justify-end">
+          <button
+            onClick={() => onPreviewProduct(prod)}
+            className="px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl bg-slate-700 hover:bg-slate-600 active:scale-95 text-slate-200 font-bold text-xs flex items-center gap-1 sm:gap-1.5 transition-colors cursor-pointer"
+            title="손님 화면에서 미리보기"
+          >
+            <Eye className="w-3.5 h-3.5 text-teal-400" />
+            <span>미리보기</span>
+          </button>
+
+          <button
+            onClick={() => handleDuplicateProduct(prod)}
+            className="px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl bg-slate-700 hover:bg-slate-600 active:scale-95 text-slate-200 font-bold text-xs flex items-center gap-1 sm:gap-1.5 transition-colors cursor-pointer"
+            title="상품 즉시 복제"
+          >
+            <Copy className="w-3.5 h-3.5 text-amber-400" />
+            <span>복제</span>
+          </button>
+
+          <button
+            onClick={() => handleEditProduct(prod)}
+            className="px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-amber-400 hover:bg-amber-300 active:scale-95 text-slate-950 font-black text-xs flex items-center gap-1 sm:gap-1.5 shadow-md transition-colors cursor-pointer"
+          >
+            <Edit3 className="w-3.5 h-3.5" />
+            <span>수정</span>
+          </button>
+
+          <button
+            onClick={() => handleDeleteProduct(prod.id, prod.title)}
+            className="p-1.5 sm:p-2 rounded-xl bg-slate-700/50 hover:bg-rose-600 active:scale-95 text-slate-400 hover:text-white transition-colors cursor-pointer"
+            title="상품 삭제"
+          >
+            <Trash2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+          </button>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="min-h-screen bg-slate-900 text-slate-100 pb-24">
       {/* Toast Notification */}
@@ -1699,6 +2089,31 @@ export const AdminMode: React.FC<AdminModeProps> = ({
               </div>
             </div>
 
+            {/* Drag & Drop Reordering Instruction Banner */}
+            <div className="bg-amber-500/10 border border-amber-400/30 rounded-2xl p-3 sm:p-4 mb-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs shadow-md">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-amber-400/20 border border-amber-400/30 flex items-center justify-center shrink-0 shadow-inner">
+                  <GripVertical className="w-5 h-5 text-amber-300" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <strong className="text-amber-300 font-black text-sm">마우스로 상품 순서 자유 이동 (드래그 & 드롭)</strong>
+                    <span className="bg-emerald-500/20 text-emerald-300 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-500/30">
+                      실시간 자동 저장
+                    </span>
+                  </div>
+                  <p className="text-slate-300 text-xs mt-0.5 leading-relaxed">
+                    각 상품 좌측의 <strong className="text-amber-300">손잡이(⠿)</strong>를 마우스로 잡고 위/아래로 끌어다 놓으세요. 또는 <strong className="text-white">[▲ 위로] [▼ 아래로] [🔝 맨위로]</strong> 버튼을 마우스로 클릭해 한 칸씩 정렬할 수 있습니다. 메인 고객 화면에 즉시 반영됩니다.
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 self-end sm:self-auto shrink-0">
+                <span className="text-[11px] text-slate-400 font-mono bg-slate-900/80 px-2.5 py-1 rounded-lg border border-slate-700">
+                  총 {products.length}개 상품 진열
+                </span>
+              </div>
+            </div>
+
             {/* Render Products based on View Mode */}
             {filteredProducts.length === 0 ? (
               <div className="bg-slate-800/80 border border-slate-700 rounded-3xl p-12 text-center space-y-4">
@@ -1786,137 +2201,7 @@ export const AdminMode: React.FC<AdminModeProps> = ({
                         </div>
                       ) : (
                         <div className="divide-y divide-slate-700/60">
-                          {catProducts.map((prod) => {
-                            const subPhotosCount = (prod.additionalImages?.length || 0) + (prod.imageUrl ? 1 : 0);
-                            const liveVND = calculateVNDFromKRW(prod.priceKRW || 0, rates);
-
-                            return (
-                              <div
-                                key={prod.id}
-                                className="p-4 sm:p-5 hover:bg-slate-750/70 transition-colors flex flex-col md:flex-row md:items-center justify-between gap-4"
-                              >
-                                {/* Left: Thumbnail & Info */}
-                                <div className="flex items-start gap-4 min-w-0 flex-1">
-                                  <div 
-                                    onClick={() => {
-                                      handleEditProduct(prod);
-                                      setEditorTab('photos');
-                                    }}
-                                    className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-slate-900 overflow-hidden shrink-0 border border-slate-700 hover:border-amber-400 relative group cursor-pointer shadow-md transition-all"
-                                    title="클릭하여 대표 메인 사진 및 갤러리 변경"
-                                  >
-                                    <img
-                                      src={prod.imageUrl || 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=400&q=80'}
-                                      alt={prod.title}
-                                      className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                                    />
-                                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                      <Camera className="w-5 h-5 text-amber-300 drop-shadow" />
-                                    </div>
-                                    <span className="absolute bottom-1 right-1 bg-slate-950/80 text-[10px] text-white font-bold px-1.5 py-0.2 rounded-md backdrop-blur-xs">
-                                      📸 {subPhotosCount}
-                                    </span>
-                                  </div>
-
-                                  <div className="space-y-1.5 min-w-0 flex-1">
-                                    {/* Badges */}
-                                    <div className="flex flex-wrap items-center gap-1.5 text-xs">
-                                      <span className="bg-teal-500/20 text-teal-300 border border-teal-500/30 px-2 py-0.5 rounded-md font-bold text-[11px]">
-                                        📍 {prod.region} · {prod.city}
-                                      </span>
-
-                                      <span className="bg-slate-700/60 text-slate-300 px-2 py-0.5 rounded-md font-bold text-[11px]">
-                                        ⏱️ {prod.duration}
-                                      </span>
-
-                                      {prod.isPopular && (
-                                        <span className="bg-amber-400 text-slate-950 px-1.5 py-0.2 rounded font-black text-[10px]">
-                                          👑 인기
-                                        </span>
-                                      )}
-                                      {prod.isHotDeal && (
-                                        <span className="bg-rose-500 text-white px-1.5 py-0.2 rounded font-black text-[10px]">
-                                          🔥 특가
-                                        </span>
-                                      )}
-                                    </div>
-
-                                    {/* Title */}
-                                    <h4 className="font-black text-white text-sm sm:text-base truncate leading-snug">
-                                      {prod.title}
-                                    </h4>
-
-                                    {/* Subtitle */}
-                                    <p className="text-xs text-slate-400 truncate">
-                                      {prod.subTitle || prod.description}
-                                    </p>
-
-                                    {/* Price & Specs */}
-                                    <div className="flex flex-wrap items-center gap-3 pt-1 text-xs">
-                                      <span className="font-black text-amber-400 font-mono text-sm">
-                                        ₩{(prod.priceKRW || 0).toLocaleString()}원
-                                      </span>
-                                      <span className="text-slate-400 text-[11px]">
-                                        (약 {formatVND(liveVND)})
-                                      </span>
-                                      <span className="text-amber-400 flex items-center gap-0.5 text-[11px]">
-                                        ★ {prod.rating || 4.9} ({prod.reviewCount || 0})
-                                      </span>
-                                    </div>
-                                  </div>
-                                </div>
-
-                                {/* Right: Quick Action Buttons */}
-                                <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 shrink-0 border-t md:border-t-0 border-slate-700/60 pt-3 md:pt-0 justify-end">
-                                  <button
-                                    onClick={() => onPreviewProduct(prod)}
-                                    className="px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl bg-slate-700 hover:bg-slate-600 active:scale-95 text-slate-200 font-bold text-xs flex items-center gap-1 sm:gap-1.5 transition-colors cursor-pointer"
-                                    title="손님 화면에서 미리보기"
-                                  >
-                                    <Eye className="w-3.5 h-3.5 text-teal-400" />
-                                    <span>미리보기</span>
-                                  </button>
-
-                                  <button
-                                    onClick={() => handleDuplicateProduct(prod)}
-                                    className="px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl bg-slate-700 hover:bg-slate-600 active:scale-95 text-slate-200 font-bold text-xs flex items-center gap-1 sm:gap-1.5 transition-colors cursor-pointer"
-                                    title="상품 즉시 복제"
-                                  >
-                                    <Copy className="w-3.5 h-3.5 text-amber-400" />
-                                    <span>복제</span>
-                                  </button>
-
-                                  <button
-                                    onClick={() => {
-                                      handleEditProduct(prod);
-                                      setEditorTab('photos');
-                                    }}
-                                    className="px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl bg-slate-800 hover:bg-slate-700 active:scale-95 text-amber-300 border border-amber-400/40 font-bold text-xs flex items-center gap-1 sm:gap-1.5 transition-colors cursor-pointer"
-                                    title="대표 사진 및 갤러리 관리"
-                                  >
-                                    <Camera className="w-3.5 h-3.5 text-amber-400" />
-                                    <span>사진 변경</span>
-                                  </button>
-
-                                  <button
-                                    onClick={() => handleEditProduct(prod)}
-                                    className="px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-amber-400 hover:bg-amber-300 active:scale-95 text-slate-950 font-black text-xs flex items-center gap-1 sm:gap-1.5 shadow-md transition-colors cursor-pointer"
-                                  >
-                                    <Edit3 className="w-3.5 h-3.5" />
-                                    <span>수정</span>
-                                  </button>
-
-                                  <button
-                                    onClick={() => handleDeleteProduct(prod.id, prod.title)}
-                                    className="p-1.5 sm:p-2 rounded-xl bg-slate-700/50 hover:bg-rose-600 active:scale-95 text-slate-400 hover:text-white transition-colors cursor-pointer"
-                                    title="상품 삭제"
-                                  >
-                                    <Trash2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                                  </button>
-                                </div>
-                              </div>
-                            );
-                          })}
+                          {catProducts.map((prod, idx) => renderProductCard(prod, idx, catProducts))}
                         </div>
                       )}
                     </div>
@@ -1992,147 +2277,7 @@ export const AdminMode: React.FC<AdminModeProps> = ({
                         </div>
                       ) : (
                         <div className="divide-y divide-slate-700/60">
-                          {regProducts.map((prod) => {
-                            const subPhotosCount = (prod.additionalImages?.length || 0) + (prod.imageUrl ? 1 : 0);
-                            const liveVND = calculateVNDFromKRW(prod.priceKRW || 0, rates);
-
-                            return (
-                              <div
-                                key={prod.id}
-                                className="p-4 sm:p-5 hover:bg-slate-750/70 transition-colors flex flex-col md:flex-row md:items-center justify-between gap-4"
-                              >
-                                {/* Left: Thumbnail & Info */}
-                                <div className="flex items-start gap-4 min-w-0 flex-1">
-                                  <div 
-                                    onClick={() => {
-                                      handleEditProduct(prod);
-                                      setEditorTab('photos');
-                                    }}
-                                    className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-slate-900 overflow-hidden shrink-0 border border-slate-700 hover:border-amber-400 relative group cursor-pointer shadow-md transition-all"
-                                    title="클릭하여 대표 메인 사진 및 갤러리 변경"
-                                  >
-                                    <img
-                                      src={prod.imageUrl || 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=400&q=80'}
-                                      alt={prod.title}
-                                      className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                                    />
-                                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                      <Camera className="w-5 h-5 text-amber-300 drop-shadow" />
-                                    </div>
-                                    <span className="absolute bottom-1 right-1 bg-slate-950/80 text-[10px] text-white font-bold px-1.5 py-0.2 rounded-md backdrop-blur-xs">
-                                      📸 {subPhotosCount}
-                                    </span>
-                                  </div>
-
-                                  <div className="space-y-1.5 min-w-0 flex-1">
-                                    {/* Badges */}
-                                    <div className="flex flex-wrap items-center gap-1.5 text-xs">
-                                      <span className={`px-2 py-0.5 rounded-md font-black text-[11px] ${
-                                        prod.category === '풀빌라' 
-                                          ? 'bg-teal-500/20 text-teal-300 border border-teal-500/30'
-                                          : prod.category === '골프투어'
-                                          ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
-                                          : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
-                                      }`}>
-                                        {prod.category}
-                                      </span>
-
-                                      <span className="bg-slate-700 text-slate-300 px-2 py-0.5 rounded-md font-bold text-[11px]">
-                                        🏙️ {prod.city}
-                                      </span>
-
-                                      <span className="bg-slate-700/60 text-slate-300 px-2 py-0.5 rounded-md font-bold text-[11px]">
-                                        ⏱️ {prod.duration}
-                                      </span>
-
-                                      {prod.isPopular && (
-                                        <span className="bg-amber-400 text-slate-950 px-1.5 py-0.2 rounded font-black text-[10px]">
-                                          👑 인기
-                                        </span>
-                                      )}
-                                      {prod.isHotDeal && (
-                                        <span className="bg-rose-500 text-white px-1.5 py-0.2 rounded font-black text-[10px]">
-                                          🔥 특가
-                                        </span>
-                                      )}
-                                    </div>
-
-                                    {/* Title */}
-                                    <h4 className="font-black text-white text-sm sm:text-base truncate leading-snug">
-                                      {prod.title}
-                                    </h4>
-
-                                    {/* Subtitle */}
-                                    <p className="text-xs text-slate-400 truncate">
-                                      {prod.subTitle || prod.description}
-                                    </p>
-
-                                    {/* Price & Specs */}
-                                    <div className="flex flex-wrap items-center gap-3 pt-1 text-xs">
-                                      <span className="font-black text-amber-400 font-mono text-sm">
-                                        ₩{(prod.priceKRW || 0).toLocaleString()}원
-                                      </span>
-                                      <span className="text-slate-400 text-[11px]">
-                                        (약 {formatVND(liveVND)})
-                                      </span>
-                                      <span className="text-amber-400 flex items-center gap-0.5 text-[11px]">
-                                        ★ {prod.rating || 4.9} ({prod.reviewCount || 0})
-                                      </span>
-                                    </div>
-                                  </div>
-                                </div>
-
-                                {/* Right: Quick Action Buttons */}
-                                <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 shrink-0 border-t md:border-t-0 border-slate-700/60 pt-3 md:pt-0 justify-end">
-                                  <button
-                                    onClick={() => onPreviewProduct(prod)}
-                                    className="px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl bg-slate-700 hover:bg-slate-600 active:scale-95 text-slate-200 font-bold text-xs flex items-center gap-1 sm:gap-1.5 transition-colors cursor-pointer"
-                                    title="손님 화면에서 미리보기"
-                                  >
-                                    <Eye className="w-3.5 h-3.5 text-teal-400" />
-                                    <span>미리보기</span>
-                                  </button>
-
-                                  <button
-                                    onClick={() => handleDuplicateProduct(prod)}
-                                    className="px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl bg-slate-700 hover:bg-slate-600 active:scale-95 text-slate-200 font-bold text-xs flex items-center gap-1 sm:gap-1.5 transition-colors cursor-pointer"
-                                    title="상품 즉시 복제"
-                                  >
-                                    <Copy className="w-3.5 h-3.5 text-amber-400" />
-                                    <span>복제</span>
-                                  </button>
-
-                                  <button
-                                    onClick={() => {
-                                      handleEditProduct(prod);
-                                      setEditorTab('photos');
-                                    }}
-                                    className="px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl bg-slate-800 hover:bg-slate-700 active:scale-95 text-amber-300 border border-amber-400/40 font-bold text-xs flex items-center gap-1 sm:gap-1.5 transition-colors cursor-pointer"
-                                    title="대표 사진 및 갤러리 관리"
-                                  >
-                                    <Camera className="w-3.5 h-3.5 text-amber-400" />
-                                    <span>사진 변경</span>
-                                  </button>
-
-                                  <button
-                                    onClick={() => handleEditProduct(prod)}
-                                    className="px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-amber-400 hover:bg-amber-300 active:scale-95 text-slate-950 font-black text-xs flex items-center gap-1 sm:gap-1.5 shadow-md transition-colors cursor-pointer"
-                                  >
-                                    <Edit3 className="w-3.5 h-3.5" />
-                                    <span>수정</span>
-                                  </button>
-
-                                  <button
-                                    onClick={() => handleDeleteProduct(prod.id, prod.title)}
-                                    className="p-1.5 sm:p-2 rounded-xl bg-slate-700/50 hover:bg-rose-600 active:scale-95 text-slate-400 hover:text-white transition-colors cursor-pointer"
-                                    title="상품 삭제"
-                                  >
-                                    <Trash2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                                  </button>
-                                </div>
-                              </div>
-                            );
-                          })}
+                          {regProducts.map((prod, idx) => renderProductCard(prod, idx, regProducts))}
                         </div>
                       )}
                     </div>
@@ -2152,171 +2297,12 @@ export const AdminMode: React.FC<AdminModeProps> = ({
                     </span>
                   </h3>
                   <span className="text-xs text-slate-400">
-                    수정, 복제, 삭제 또는 미리보기를 선택하세요
+                    마우스로 순서를 바꾸거나 수정, 복제, 삭제하세요
                   </span>
                 </div>
 
                 <div className="divide-y divide-slate-700/60">
-                  {filteredProducts.map((prod) => {
-                    const subPhotosCount = (prod.additionalImages?.length || 0) + (prod.imageUrl ? 1 : 0);
-                    const liveVND = calculateVNDFromKRW(prod.priceKRW || 0, rates);
-
-                    return (
-                      <div
-                        key={prod.id}
-                        className="p-4 sm:p-5 hover:bg-slate-750/70 transition-colors flex flex-col md:flex-row md:items-center justify-between gap-4"
-                      >
-                        {/* Left: Thumbnail & Info */}
-                        <div className="flex items-start gap-4 min-w-0 flex-1">
-                          <div className="flex flex-col items-center shrink-0">
-                            <div 
-                              onClick={() => setQuickPhotoProduct(prod)}
-                              className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-slate-900 overflow-hidden shrink-0 border-2 border-slate-700 hover:border-amber-400 relative group flex items-center justify-center cursor-pointer shadow-md transition-all"
-                              title="클릭하여 대표 메인 사진 즉시 변경 및 갤러리 관리"
-                            >
-                              {getDisplayProductImage(prod) ? (
-                                <>
-                                  <img
-                                    src={getDisplayProductImage(prod)}
-                                    alt={prod.title}
-                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                                  />
-                                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1 p-1 text-center">
-                                    <Camera className="w-5 h-5 text-amber-300 drop-shadow" />
-                                    <span className="text-[10px] font-black text-amber-300 leading-tight">대표사진<br/>빠른변경</span>
-                                  </div>
-                                </>
-                              ) : (
-                                <div className="w-full h-full bg-slate-850 flex flex-col items-center justify-center text-slate-500 gap-1 p-2 text-center">
-                                  <ImageIcon className="w-5 h-5 text-slate-600" />
-                                  <span className="text-[10px] font-bold">사진 없음</span>
-                                </div>
-                              )}
-                              <span className="absolute bottom-1 right-1 bg-slate-950/80 text-[10px] text-white font-bold px-1.5 py-0.2 rounded-md backdrop-blur-xs">
-                                📸 {subPhotosCount}
-                              </span>
-                            </div>
-                            <button
-                              type="button"
-                              onClick={() => setQuickPhotoProduct(prod)}
-                              className="mt-1.5 w-full text-[10px] font-black text-amber-400 hover:text-amber-300 bg-amber-400/10 hover:bg-amber-400/20 border border-amber-400/30 rounded-lg py-1 px-1.5 flex items-center justify-center gap-1 cursor-pointer transition-colors"
-                            >
-                              <Camera className="w-3 h-3" />
-                              <span>사진 교체</span>
-                            </button>
-                          </div>
-
-                          <div className="space-y-1.5 min-w-0 flex-1">
-                            {/* Badges */}
-                            <div className="flex flex-wrap items-center gap-1.5 text-xs">
-                              <span className={`px-2 py-0.5 rounded-md font-black text-[11px] ${
-                                prod.category === '풀빌라' 
-                                  ? 'bg-teal-500/20 text-teal-300 border border-teal-500/30'
-                                  : prod.category === '골프투어'
-                                  ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
-                                  : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
-                              }`}>
-                                {prod.category}
-                              </span>
-
-                              <span className="bg-slate-700 text-slate-300 px-2 py-0.5 rounded-md font-bold text-[11px]">
-                                {prod.region} · {prod.city}
-                              </span>
-
-                              <span className="bg-slate-700/60 text-slate-300 px-2 py-0.5 rounded-md font-bold text-[11px]">
-                                ⏱️ {prod.duration}
-                              </span>
-
-                              {isSampleUrl(prod.imageUrl) ? (
-                                <span className="bg-amber-500/20 text-amber-300 border border-amber-500/30 px-1.5 py-0.2 rounded font-bold text-[10px]">
-                                  ⚠️ 데모 샘플 사진
-                                </span>
-                              ) : prod.imageUrl ? (
-                                <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-1.5 py-0.2 rounded font-bold text-[10px]">
-                                  ✅ 등록 사진 ({subPhotosCount}장)
-                                </span>
-                              ) : (
-                                <span className="bg-slate-700 text-slate-400 px-1.5 py-0.2 rounded font-medium text-[10px]">
-                                  📷 사진 미등록
-                                </span>
-                              )}
-
-                              {prod.isPopular && (
-                                <span className="bg-amber-400 text-slate-950 px-1.5 py-0.2 rounded font-black text-[10px]">
-                                  👑 인기
-                                </span>
-                              )}
-                              {prod.isHotDeal && (
-                                <span className="bg-rose-500 text-white px-1.5 py-0.2 rounded font-black text-[10px]">
-                                  🔥 특가
-                                </span>
-                              )}
-                            </div>
-
-                            {/* Title */}
-                            <h4 className="font-black text-white text-sm sm:text-base truncate leading-snug">
-                              {prod.title}
-                            </h4>
-
-                            {/* Subtitle */}
-                            <p className="text-xs text-slate-400 truncate">
-                              {prod.subTitle || prod.description}
-                            </p>
-
-                            {/* Price & Specs */}
-                            <div className="flex flex-wrap items-center gap-3 pt-1 text-xs">
-                              <span className="font-black text-amber-400 font-mono text-sm">
-                                ₩{(prod.priceKRW || 0).toLocaleString()}원
-                              </span>
-                              <span className="text-slate-400 text-[11px]">
-                                (약 {formatVND(liveVND)})
-                              </span>
-                              <span className="text-amber-400 flex items-center gap-0.5 text-[11px]">
-                                ★ {prod.rating || 4.9} ({prod.reviewCount || 0})
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Right: Quick Action Buttons */}
-                        <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 shrink-0 border-t md:border-t-0 border-slate-700/60 pt-3 md:pt-0 justify-end">
-                          <button
-                            onClick={() => onPreviewProduct(prod)}
-                            className="px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl bg-slate-700 hover:bg-slate-600 active:scale-95 text-slate-200 font-bold text-xs flex items-center gap-1 sm:gap-1.5 transition-colors cursor-pointer"
-                            title="손님 화면에서 미리보기"
-                          >
-                            <Eye className="w-3.5 h-3.5 text-teal-400" />
-                            <span>미리보기</span>
-                          </button>
-
-                          <button
-                            onClick={() => handleDuplicateProduct(prod)}
-                            className="px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl bg-slate-700 hover:bg-slate-600 active:scale-95 text-slate-200 font-bold text-xs flex items-center gap-1 sm:gap-1.5 transition-colors cursor-pointer"
-                            title="상품 즉시 복제"
-                          >
-                            <Copy className="w-3.5 h-3.5 text-amber-400" />
-                            <span>복제</span>
-                          </button>
-
-                          <button
-                            onClick={() => handleEditProduct(prod)}
-                            className="px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-amber-400 hover:bg-amber-300 active:scale-95 text-slate-950 font-black text-xs flex items-center gap-1 sm:gap-1.5 shadow-md transition-colors cursor-pointer"
-                          >
-                            <Edit3 className="w-3.5 h-3.5" />
-                            <span>수정</span>
-                          </button>
-
-                          <button
-                            onClick={() => handleDeleteProduct(prod.id, prod.title)}
-                            className="p-1.5 sm:p-2 rounded-xl bg-slate-700/50 hover:bg-rose-600 active:scale-95 text-slate-400 hover:text-white transition-colors cursor-pointer"
-                            title="상품 삭제"
-                          >
-                            <Trash2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                          </button>
-                        </div>
-                      </div>
-                    );
-                  })}
+                  {filteredProducts.map((prod, idx) => renderProductCard(prod, idx, filteredProducts))}
                 </div>
               </div>
             )}
