@@ -4702,47 +4702,18 @@ export const AdminMode: React.FC<AdminModeProps> = ({
                           </div>
                         </div>
 
-                        {/* Guide & Departure */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                          <div>
-                            <label className="font-bold text-slate-200 block mb-1">
-                              🎙️ 한국어 전문 가이드 안내
-                            </label>
-                            <input
-                              type="text"
-                              value={editingProduct.guideInfo || ''}
-                              onChange={(e) => setEditingProduct(prev => prev ? { ...prev, guideInfo: e.target.value } : prev)}
-                              placeholder="예: 베트남 관광청 라이선스 한국어 전담 가이드 전 일정 풀케어"
-                              className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white"
-                            />
-                          </div>
-
-                          <div>
-                            <label className="font-bold text-slate-200 block mb-1">
-                              ✈️ 출발 가능 공항
-                            </label>
-                            <div className="flex flex-wrap gap-1.5 pt-1">
-                              {['인천', '부산', '대구', '청주', '무안'].map(city => {
-                                const hasCity = (editingProduct.departureCities || []).includes(city);
-                                return (
-                                  <button
-                                    key={city}
-                                    type="button"
-                                    onClick={() => {
-                                      const cur = editingProduct.departureCities || [];
-                                      const next = hasCity ? cur.filter(c => c !== city) : [...cur, city];
-                                      setEditingProduct(prev => prev ? { ...prev, departureCities: next } : prev);
-                                    }}
-                                    className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-colors cursor-pointer ${
-                                      hasCity ? 'bg-amber-400 text-slate-950 border-amber-400 font-black' : 'bg-slate-900 text-slate-400 border-slate-750'
-                                    }`}
-                                  >
-                                    {city} 출발 {hasCity && '✓'}
-                                  </button>
-                                );
-                              })}
-                            </div>
-                          </div>
+                        {/* Guide Info */}
+                        <div>
+                          <label className="font-bold text-slate-200 block mb-1">
+                            🎙️ 한국어 전문 가이드 안내
+                          </label>
+                          <input
+                            type="text"
+                            value={editingProduct.guideInfo || ''}
+                            onChange={(e) => setEditingProduct(prev => prev ? { ...prev, guideInfo: e.target.value } : prev)}
+                            placeholder="예: 베트남 관광청 라이선스 한국어 전담 가이드 전 일정 풀케어"
+                            className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white"
+                          />
                         </div>
 
                         {/* Highlights List */}

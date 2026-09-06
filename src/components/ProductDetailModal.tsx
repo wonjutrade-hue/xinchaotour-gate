@@ -10,7 +10,6 @@ import {
   Clock, 
   Utensils, 
   Hotel, 
-  Plane, 
   MessageCircle, 
   ShieldCheck, 
   Share2,
@@ -237,15 +236,8 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
             </p>
           )}
 
-          {/* Tags & Departure & Location */}
+          {/* Tags & Location */}
           <div className="flex flex-wrap items-center gap-2 pt-2 text-xs">
-            {product.departureCities && product.departureCities.length > 0 && (
-              <div className="flex items-center gap-1 text-slate-700 bg-slate-100 px-3 py-1.5 rounded-xl font-bold border border-slate-200">
-                <Plane className="w-3.5 h-3.5 text-teal-600" />
-                <span>출발 가능 공항: {product.departureCities.join(', ')}</span>
-              </div>
-            )}
-
             {product.tags && product.tags.map((tag, idx) => (
               <span key={idx} className="bg-slate-100 text-teal-900 text-xs font-bold px-3 py-1.5 rounded-xl border border-slate-200">
                 #{tag}
