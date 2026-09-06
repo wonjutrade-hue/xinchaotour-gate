@@ -26,7 +26,9 @@ import {
   CheckCircle2,
   Users,
   Award,
-  ThumbsUp
+  ThumbsUp,
+  Copy,
+  Link2
 } from 'lucide-react';
 import { ExchangeRates, calculateVNDFromKRW, calculateKRWFromVND, calculateUSDFromKRW, formatVND, formatUSD } from '../lib/exchangeRate';
 import { COMPANY_INFO } from '../data/companyInfo';
@@ -102,11 +104,26 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
     setCurrentImgIndex((prev) => (prev === allImages.length - 1 ? 0 : prev + 1));
   };
 
-  const handleShare = () => {
-    if (navigator.clipboard) {
-      navigator.clipboard.writeText(window.location.href);
+  const handleShare = async () => {
+    const shareUrl = window.location.href;
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(shareUrl);
+      } else {
+        const textArea = document.createElement('textarea');
+        textArea.value = shareUrl;
+        textArea.style.position = 'fixed';
+        textArea.style.opacity = '0';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+      }
       setCopyFeedback(true);
-      setTimeout(() => setCopyFeedback(false), 2000);
+      setTimeout(() => setCopyFeedback(false), 3000);
+    } catch (err) {
+      console.warn('Clipboard copy error:', err);
     }
   };
 
@@ -135,6 +152,14 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
       id="product-detail-fullpage"
       className="fixed inset-0 z-50 overflow-y-auto bg-slate-50 min-h-screen text-slate-900 flex flex-col animate-fadeIn"
     >
+      {/* Floating Toast when URL is copied */}
+      {copyFeedback && (
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-slate-900 text-white px-5 py-3 rounded-2xl shadow-2xl border-2 border-emerald-400 flex items-center gap-2.5 text-xs sm:text-sm font-black animate-bounce max-w-[90vw]">
+          <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
+          <span>상품 주소(URL)가 복사되었습니다! 카카오톡이나 문자에 바로 붙여넣기(Ctrl+V) 하세요.</span>
+        </div>
+      )}
+
       {/* 1. Top Sticky Fullscreen Navigation Header */}
       <header className="bg-slate-950 text-white sticky top-0 z-40 shadow-xl border-b border-slate-800">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-3">
@@ -163,12 +188,17 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
           {/* Right: Quick Action Buttons & Close */}
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
             <button
+              type="button"
               onClick={handleShare}
-              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-bold transition-colors cursor-pointer"
-              title="링크 복사"
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer shadow-md ${
+                copyFeedback
+                  ? 'bg-emerald-400 text-slate-950 scale-105 ring-2 ring-emerald-300'
+                  : 'bg-amber-400 hover:bg-amber-300 text-slate-950 hover:scale-102 active:scale-95'
+              }`}
+              title="고객에게 전송할 이 상품의 상세 인터넷 주소(URL) 링크 복사"
             >
-              <Share2 className="w-3.5 h-3.5" />
-              <span>{copyFeedback ? '링크 복사됨!' : '공유'}</span>
+              {copyFeedback ? <Check className="w-3.5 h-3.5" /> : <Link2 className="w-3.5 h-3.5" />}
+              <span>{copyFeedback ? '주소 복사됨!' : '주소 복사'}</span>
             </button>
 
             <a
@@ -176,10 +206,10 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               target="_blank"
               rel="noopener noreferrer"
               onClick={handleOpenKakaoTalkDirect}
-              className="hidden sm:flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-black transition-all cursor-pointer shadow-md"
+              className="hidden sm:flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-300 hover:text-amber-200 text-xs font-black transition-all cursor-pointer shadow-md"
               title="카카오톡 1:1 상담 바로가기"
             >
-              <MessageCircle className="w-3.5 h-3.5 fill-slate-950" />
+              <MessageCircle className="w-3.5 h-3.5 fill-amber-300" />
               <span>카톡 상담</span>
             </a>
 
@@ -278,6 +308,39 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               </a>
             </div>
           )}
+
+          {/* Customer Send Direct URL Banner */}
+          <div className="mt-4 p-4 rounded-2xl bg-amber-50 border-2 border-amber-300 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
+            <div className="flex items-start sm:items-center gap-3 min-w-0 flex-1">
+              <div className="w-9 h-9 rounded-xl bg-amber-400 text-slate-950 flex items-center justify-center shrink-0 font-black shadow-xs">
+                <Link2 className="w-5 h-5" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-xs font-black text-slate-900">고객 전송용 상품 인터넷 주소 (URL)</span>
+                  <span className="bg-amber-200 text-amber-900 text-[10px] font-black px-2 py-0.5 rounded-full">
+                    상단 브라우저 주소창과 동일
+                  </span>
+                </div>
+                <p className="text-xs text-slate-700 font-mono truncate select-all mt-1 bg-white px-3 py-1.5 rounded-xl border border-amber-200 shadow-2xs">
+                  {typeof window !== 'undefined' ? window.location.href : ''}
+                </p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={handleShare}
+              className={`shrink-0 px-4 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-md active:scale-95 ${
+                copyFeedback
+                  ? 'bg-emerald-600 text-white ring-2 ring-emerald-400'
+                  : 'bg-amber-400 hover:bg-amber-300 text-slate-950 hover:scale-102'
+              }`}
+              title="클릭 시 고객 전송용 상세 주소가 클립보드에 복사됩니다"
+            >
+              {copyFeedback ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+              <span>{copyFeedback ? '주소 복사완료! (Ctrl+V)' : '주소 복사하기'}</span>
+            </button>
+          </div>
         </section>
 
         {/* Photo Showcase Gallery Section */}

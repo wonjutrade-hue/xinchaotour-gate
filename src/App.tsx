@@ -254,6 +254,77 @@ export default function App() {
     trackVisitorEvent('product_view', `[상품상세] ${prod.title}`, { productId: prod.id, productTitle: prod.title });
   };
 
+  // --- Browser Address Bar (URL) & Deep Linking Synchronization ---
+  // 1. When selectedProduct changes, update browser address bar & title
+  useEffect(() => {
+    try {
+      const currentUrl = new URL(window.location.href);
+      if (selectedProduct) {
+        if (currentUrl.searchParams.get('productId') !== selectedProduct.id) {
+          currentUrl.searchParams.set('productId', selectedProduct.id);
+          window.history.pushState({ productId: selectedProduct.id }, '', currentUrl.toString());
+        }
+        document.title = `${selectedProduct.title} | 신짜오투어 베트남 여행`;
+      } else {
+        if (currentUrl.searchParams.has('productId') || currentUrl.searchParams.has('product') || currentUrl.searchParams.has('p')) {
+          currentUrl.searchParams.delete('productId');
+          currentUrl.searchParams.delete('product');
+          currentUrl.searchParams.delete('p');
+          const cleanUrl = currentUrl.pathname + (currentUrl.search ? currentUrl.search : '');
+          window.history.pushState({}, '', cleanUrl);
+          document.title = '신짜오투어 (XinChao Tour) | 베트남 전문 프리미엄 골프 & 여행';
+        }
+      }
+    } catch (e) {
+      console.warn('URL address bar sync error:', e);
+    }
+  }, [selectedProduct]);
+
+  // 2. Browser Back / Forward Button (popstate) event listener
+  useEffect(() => {
+    const handlePopState = () => {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const targetId = params.get('productId') || params.get('product') || params.get('p');
+        if (targetId && products.length > 0) {
+          const match = products.find(
+            p => p.id === targetId || encodeURIComponent(p.id) === targetId || decodeURIComponent(targetId) === p.id
+          );
+          if (match) {
+            setSelectedProduct(match);
+          }
+        } else {
+          setSelectedProduct(null);
+        }
+      } catch (e) {
+        console.warn('Popstate error:', e);
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [products]);
+
+  // 3. Direct Link / Refresh support: auto-open product if URL has ?productId=... on initial load
+  useEffect(() => {
+    if (products.length === 0) return;
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const targetId = params.get('productId') || params.get('product') || params.get('p');
+      if (targetId && !selectedProduct) {
+        const match = products.find(
+          p => p.id === targetId || encodeURIComponent(p.id) === targetId || decodeURIComponent(targetId) === p.id
+        );
+        if (match) {
+          setSelectedProduct(match);
+          trackVisitorEvent('product_view', `[직접링크접속] ${match.title}`, { productId: match.id, productTitle: match.title });
+        }
+      }
+    } catch (e) {
+      console.warn('Initial URL deep link check error:', e);
+    }
+  }, [products]);
+
   const handleOpenTravelInfo = (tab: TravelInfoTab = 'course') => {
     setTravelInfoTab(tab);
     setIsTravelInfoModalOpen(true);
