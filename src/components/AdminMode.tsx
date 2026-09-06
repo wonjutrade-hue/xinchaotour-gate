@@ -1554,45 +1554,51 @@ export const AdminMode: React.FC<AdminModeProps> = ({
 
         {/* Left: Drag Handle, Quick Step Move Buttons, Thumbnail & Info */}
         <div className="flex items-start gap-3 sm:gap-4 min-w-0 flex-1">
-          {/* Drag Handle & Quick Step Move Buttons */}
-          <div className="flex items-center gap-1.5 shrink-0 pt-1">
-            {/* Drag Handle */}
+          {/* Reordering Control Center: Distinct High-Visibility Drag Handle + Step Buttons */}
+          <div className="flex flex-col items-center gap-1 shrink-0 p-1.5 rounded-2xl bg-amber-500/10 border-2 border-amber-400/40 shadow-md">
+            {/* Prominent Drag Handle */}
             <div
-              className="flex flex-col items-center justify-center p-1.5 sm:p-2 rounded-xl bg-slate-800/90 hover:bg-amber-400/20 border border-slate-700 hover:border-amber-400 text-slate-400 hover:text-amber-300 cursor-grab active:cursor-grabbing transition-all select-none shadow-xs group/grip"
-              title="마우스로 꾹 잡고 위/아래로 끌어다 놓으세요 (드래그 & 드롭으로 순서 변경)"
+              className="w-14 sm:w-16 py-1.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 flex flex-col items-center justify-center cursor-grab active:cursor-grabbing transition-all select-none shadow-sm group/grip"
+              title="마우스 왼쪽 버튼으로 꾹 누른 채 위/아래로 끌어다 놓으세요 (드래그 & 드롭)"
             >
-              <GripVertical className="w-4 h-4 sm:w-5 sm:h-5" />
-              <span className="text-[9px] font-black text-slate-400 group-hover/grip:text-amber-300 mt-0.5 font-mono">
-                #{index + 1}
+              <div className="flex items-center gap-0.5">
+                <GripVertical className="w-4 h-4 font-black" />
+                <span className="text-[10px] font-black tracking-tighter">순서이동</span>
+              </div>
+              <span className="text-[11px] font-black text-slate-900 bg-amber-300/80 px-1.5 py-0.2 rounded mt-0.5 font-mono">
+                #{index + 1}위
               </span>
             </div>
 
-            {/* Quick Step Buttons */}
-            <div className="flex flex-col gap-0.5">
+            {/* Clear Korean Step Buttons */}
+            <div className="flex flex-col gap-1 w-full">
               <button
                 type="button"
                 onClick={() => handleStepMoveProduct(prod.id, 'top', contextList)}
-                className="p-1 rounded-md bg-slate-800 hover:bg-amber-400 hover:text-slate-950 text-slate-400 transition-colors cursor-pointer"
-                title="맨 위로 올리기 (1순위)"
+                className="w-full py-0.5 px-1 rounded-md bg-slate-800 hover:bg-amber-400 hover:text-slate-950 text-amber-300 text-[10px] font-bold transition-all cursor-pointer flex items-center justify-center gap-0.5 border border-slate-700 hover:border-amber-400"
+                title="이 상품을 맨 처음(1등)으로 즉시 올리기"
               >
-                <ChevronsUp className="w-3 h-3" />
+                <ChevronsUp className="w-2.5 h-2.5" />
+                <span>맨위</span>
               </button>
-              <button
-                type="button"
-                onClick={() => handleStepMoveProduct(prod.id, 'up', contextList)}
-                className="p-1 rounded-md bg-slate-800 hover:bg-amber-400 hover:text-slate-950 text-slate-400 transition-colors cursor-pointer"
-                title="위로 1칸 이동"
-              >
-                <ArrowUp className="w-3 h-3" />
-              </button>
-              <button
-                type="button"
-                onClick={() => handleStepMoveProduct(prod.id, 'down', contextList)}
-                className="p-1 rounded-md bg-slate-800 hover:bg-amber-400 hover:text-slate-950 text-slate-400 transition-colors cursor-pointer"
-                title="아래로 1칸 이동"
-              >
-                <ArrowDown className="w-3 h-3" />
-              </button>
+              <div className="grid grid-cols-2 gap-0.5 w-full">
+                <button
+                  type="button"
+                  onClick={() => handleStepMoveProduct(prod.id, 'up', contextList)}
+                  className="py-1 px-1 rounded-md bg-slate-800 hover:bg-amber-400 hover:text-slate-950 text-slate-200 text-[10px] font-bold transition-all cursor-pointer flex items-center justify-center border border-slate-700 hover:border-amber-400"
+                  title="위로 1칸 올리기"
+                >
+                  <ArrowUp className="w-3 h-3" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleStepMoveProduct(prod.id, 'down', contextList)}
+                  className="py-1 px-1 rounded-md bg-slate-800 hover:bg-amber-400 hover:text-slate-950 text-slate-200 text-[10px] font-bold transition-all cursor-pointer flex items-center justify-center border border-slate-700 hover:border-amber-400"
+                  title="아래로 1칸 내리기"
+                >
+                  <ArrowDown className="w-3 h-3" />
+                </button>
+              </div>
             </div>
           </div>
 
@@ -1710,6 +1716,35 @@ export const AdminMode: React.FC<AdminModeProps> = ({
 
         {/* Right: Quick Action Buttons */}
         <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 shrink-0 border-t md:border-t-0 border-slate-700/60 pt-3 md:pt-0 justify-end">
+          {/* Quick Step Reorder Buttons on the Right as well for effortless access */}
+          <div className="flex items-center gap-1 bg-slate-800 p-1 rounded-xl border border-slate-700">
+            <span className="text-[10px] font-bold text-amber-300 px-1 hidden sm:inline">순서:</span>
+            <button
+              type="button"
+              onClick={() => handleStepMoveProduct(prod.id, 'top', contextList)}
+              className="px-2 py-1 rounded-lg bg-amber-400/20 hover:bg-amber-400 text-amber-300 hover:text-slate-950 font-black text-xs transition-colors cursor-pointer"
+              title="이 상품을 맨 처음(1위)으로 올리기"
+            >
+              🔝 맨위
+            </button>
+            <button
+              type="button"
+              onClick={() => handleStepMoveProduct(prod.id, 'up', contextList)}
+              className="px-2 py-1 rounded-lg bg-slate-700 hover:bg-amber-400 text-slate-200 hover:text-slate-950 font-black text-xs transition-colors cursor-pointer"
+              title="위로 1칸 올리기"
+            >
+              ▲ 위로
+            </button>
+            <button
+              type="button"
+              onClick={() => handleStepMoveProduct(prod.id, 'down', contextList)}
+              className="px-2 py-1 rounded-lg bg-slate-700 hover:bg-amber-400 text-slate-200 hover:text-slate-950 font-black text-xs transition-colors cursor-pointer"
+              title="아래로 1칸 내리기"
+            >
+              ▼ 아래로
+            </button>
+          </div>
+
           <button
             onClick={() => onPreviewProduct(prod)}
             className="px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl bg-slate-700 hover:bg-slate-600 active:scale-95 text-slate-200 font-bold text-xs flex items-center gap-1 sm:gap-1.5 transition-colors cursor-pointer"
