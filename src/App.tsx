@@ -529,21 +529,7 @@ export default function App() {
   const filteredProducts = products.filter((p) => {
     // 1. Category Filter
     if (activeCategory !== '전체') {
-      if (activeCategory === '자유여행') {
-        // 단독 자유여행 탭: 자유여행 상품뿐 아니라 단독/올인원/투어/콤보팩 및 나트랑·달랏 연계 투어도 모두 포함
-        const isFree =
-          p.category === '자유여행' ||
-          p.category === '추천패키지' ||
-          (p.tags && p.tags.some(t => t.includes('자유') || t.includes('단독') || t.includes('올인원') || t.includes('투어') || t.includes('콤보'))) ||
-          p.title.includes('자유') || p.title.includes('단독') || p.title.includes('올인원') || p.title.includes('투어') || p.title.includes('콤보');
-        if (!isFree) return false;
-      } else if (activeCategory === '추천패키지') {
-        const isPkg =
-          p.category === '추천패키지' ||
-          (p.tags && p.tags.some(t => t.includes('패키지') || t.includes('올인원') || t.includes('투어') || t.includes('3박') || t.includes('4박'))) ||
-          p.title.includes('패키지') || p.title.includes('올인원') || p.title.includes('3박') || p.title.includes('4박');
-        if (!isPkg) return false;
-      } else if (p.category !== activeCategory) {
+      if (p.category !== activeCategory) {
         return false;
       }
     }
@@ -587,6 +573,7 @@ export default function App() {
       const regionMatches =
         p.region === activeRegion ||
         regionCities.includes(p.city as City) ||
+        (activeRegion === '북부' && (p.city === '하노이' || p.city === '하롱베이' || p.city === '닌빈' || p.city === '사파' || p.city === '하장' || p.title.includes('하노이') || p.title.includes('하롱베이') || p.title.includes('닌빈') || p.title.includes('사파') || p.title.includes('하장'))) ||
         (activeRegion === '중부' && (p.city === '다낭' || p.city === '호이안' || p.city === '후에' || p.title.includes('다낭') || p.title.includes('호이안') || p.title.includes('후에'))) ||
         (activeRegion === '남부' && (p.city === '나트랑' || p.city === '달랏' || p.city === '푸꾸옥' || p.city === '호치민' || p.city === '무이네' || p.title.includes('달랏') || p.title.includes('푸꾸옥') || p.title.includes('나트랑') || p.title.includes('나짱') || p.title.includes('호치민') || p.title.includes('무이네')));
       if (!regionMatches) return false;
