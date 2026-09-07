@@ -988,7 +988,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                 <span>XinChao Tour 안심 케어 시스템</span>
               </div>
               <h4 className="text-lg sm:text-xl font-black">
-                100% 한국인 전문 가이드 & 단독 VIP 전용 차량 결합
+                100% 한국어 전문 가이드 & 단독 VIP 전용 차량 결합
               </h4>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 text-xs text-slate-300">
                 <div className="bg-white/10 p-3.5 rounded-2xl border border-white/10">

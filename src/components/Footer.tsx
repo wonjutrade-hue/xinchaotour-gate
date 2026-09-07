@@ -49,7 +49,7 @@ export const Footer: React.FC<FooterProps> = ({
 
             <p className="text-xs leading-relaxed text-slate-300 max-w-sm">
               "{COMPANY_INFO.intro}" <br />
-              베트남 현지 직영 시스템으로 거품 없는 합리적인 가격과 단독 VIP 전용 차량, 검증된 한국인 전담 가이드가 함께하는 최고의 여행을 만듭니다.
+              베트남 현지 직영 시스템으로 거품 없는 합리적인 가격과 단독 VIP 전용 차량, 검증된 한국어 전담 가이드가 함께하는 최고의 여행을 만듭니다.
             </p>
 
             <div className="pt-2 flex flex-wrap gap-2 text-[11px] text-emerald-400">

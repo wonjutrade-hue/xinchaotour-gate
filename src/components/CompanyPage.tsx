@@ -94,7 +94,7 @@ export const CompanyPage: React.FC<CompanyPageProps> = ({ onOpenConsultation }) 
             <div className="w-12 h-12 bg-teal-100 text-teal-700 rounded-2xl flex items-center justify-center mx-auto mb-4 text-xl font-bold">
               👨‍💼
             </div>
-            <h3 className="font-bold text-slate-900 mb-1.5 text-base">한국인/한국어 전담</h3>
+            <h3 className="font-bold text-slate-900 mb-1.5 text-base">한국어 전담 가이드</h3>
             <p className="text-xs text-slate-500 leading-relaxed">
               언어 걱정 전혀 없이 역사, 문화 해설부터 식당 주문까지 밀착 케어하는 전문 가이드.
             </p>

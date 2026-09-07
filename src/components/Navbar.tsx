@@ -72,7 +72,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <div className="flex items-center gap-2.5 text-slate-300 text-[11px] sm:text-xs flex-wrap">
             <span className="flex items-center gap-1.5 font-black whitespace-nowrap text-emerald-300">
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-              100% 현지 직영 · 한국인 전담 가이드 & 단독 VIP 차량
+              100% 현지 직영 · 한국어 전담 가이드 & 단독 VIP 차량
             </span>
             <span className="hidden md:inline-block text-teal-800">|</span>
             {/* Live Exchange Rate Indicator */}

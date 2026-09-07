@@ -1028,7 +1028,7 @@ export default function App() {
                 </span>
               </h2>
               <p className="text-xs font-bold text-teal-800 mt-0.5">
-                엄선된 베트남 단독 전용 차량 및 100% 한국인 전문 가이드 결합 상품
+                엄선된 베트남 단독 전용 차량 및 100% 한국어 전문 가이드 결합 상품
               </p>
             </div>
 

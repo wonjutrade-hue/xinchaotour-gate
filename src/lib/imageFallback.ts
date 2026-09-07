@@ -107,26 +107,15 @@ export const MASTER_UNIQUE_PRODUCT_IMAGES: Record<string, string> = {
 export function getProductFallbackImage(category?: string, city?: string): string {
   // 1. POOL VILLA MUST ALWAYS HAVE REAL POOL VILLA PHOTO
   if (category === '풀빌라') {
-    if (city?.includes('다낭')) return '/images/vietnam_beach_villa.jpg';
-    if (city?.includes('나트랑')) return '/images/villa_nhatrang_bay.jpg';
-    if (city?.includes('푸꾸옥')) return '/images/villa_phuquoc_saobeach.jpg';
-    if (city?.includes('달랏')) return '/images/villa_dalat_tuyenlam.jpg';
-    if (city?.includes('하노이')) return '/images/villa_hanoi_bavi.jpg';
-    if (city?.includes('사파')) return '/images/villa_sapa_topas.jpg';
-    if (city?.includes('호치민') || city?.includes('사이공')) return '/images/villa_saigon_river.jpg';
+    if (city?.includes('다낭')) return '/images/villa_danang_mykhe_6bed.jpg';
+    if (city?.includes('도심') || city?.includes('시티') || city?.includes('대저택')) return '/images/vietnam_city_villa.jpg';
     return '/images/vietnam_beach_villa.jpg';
   }
 
   // 2. GOLF TOUR MUST ALWAYS HAVE REAL GOLF PHOTO
   if (category === '골프투어') {
-    if (city?.includes('다낭')) return '/images/golf_brg_danang.jpg';
     if (city?.includes('호이안')) return '/images/golf_hoiana_shores.jpg';
-    if (city?.includes('하노이')) return '/images/golf_skylake_hanoi.jpg';
-    if (city?.includes('나트랑')) return '/images/golf_kn_links_camranh.jpg';
-    if (city?.includes('호치민')) return '/images/golf_tansonnhat_saigon.jpg';
-    if (city?.includes('달랏')) return '/images/golf_dalat_palace.jpg';
-    if (city?.includes('푸꾸옥')) return '/images/golf_vinpearl_phuquoc.jpg';
-    return '/images/golf_brg_danang.jpg';
+    return '/images/vietnam_golf_resort.jpg';
   }
 
   // 3. City-specific scenic spots for packages and free tours
@@ -140,7 +129,9 @@ export function getProductFallbackImage(category?: string, city?: string): strin
     if (city.includes('하노이') || city.includes('하롱')) return '/images/halong_cruise.jpg';
     if (city.includes('닌빈')) return '/images/ninhbinh_trangan.jpg';
     if (city.includes('무이네')) return '/images/muine_sand.jpg';
-    if (city.includes('호치민')) return '/images/saigon_skyline_city.jpg';
+    if (city.includes('후에')) return '/images/hue_imperial_citadel.jpg';
+    if (city.includes('판랑')) return '/images/phanrang_desert_jeep.jpg';
+    if (city.includes('호치민')) return '/images/mekong_river_boat.jpg';
   }
   return '/images/danang_golden_bridge.jpg';
 }

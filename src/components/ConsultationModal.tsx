@@ -280,7 +280,7 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
               </label>
               <textarea
                 rows={3}
-                placeholder="예: 객실 업그레이드 여부, 골프 티타임 시간 요청, 한국인 가이드 단독 차량 맞춤 견적 등..."
+                placeholder="예: 객실 업그레이드 여부, 골프 티타임 시간 요청, 한국어 가이드 단독 차량 맞춤 견적 등..."
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-teal-500"
