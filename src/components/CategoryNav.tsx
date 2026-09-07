@@ -33,43 +33,9 @@ export const CategoryNav: React.FC<CategoryNavProps> = ({
   onSortChange,
   totalProductsCount,
 }) => {
-  const categories: { key: Category | '전체'; label: string; icon: string; desc: string }[] = [
-    { key: '전체', label: '전체 상품', icon: '🌟', desc: '모든 여행' },
-    { key: '자유여행', label: '단독 자유여행', icon: '🛫', desc: 'VIP 단독차량' },
-    { key: '풀빌라', label: '독채 풀빌라', icon: '🏰', desc: '프라이빗 수영장' },
-    { key: '골프투어', label: '명문 골프여행', icon: '⛳', desc: '90홀 챔피언십' },
-    { key: '추천패키지', label: '추천 패키지', icon: '🎒', desc: '알찬 힐링코스' },
-  ];
-
   return (
-    <div id="filter-section" className="bg-gradient-to-b from-teal-50/50 via-white to-slate-50 border-y border-teal-100/70 py-4 px-3 sm:px-6 lg:px-8 scroll-mt-20">
-      <div className="max-w-7xl mx-auto space-y-3.5">
-        {/* Category Selector Tabs */}
-        <div className="flex items-center gap-2 sm:gap-3 overflow-x-auto pb-1 scrollbar-none">
-          {categories.map((cat) => {
-            const isActive = activeCategory === cat.key;
-            return (
-              <button
-                key={cat.key}
-                onClick={() => onSelectCategory(cat.key)}
-                className={`px-4 sm:px-5 py-2.5 sm:py-3 rounded-2xl text-xs sm:text-sm font-black transition-all shrink-0 flex items-center gap-2 cursor-pointer shadow-xs active:scale-95 ${
-                  isActive
-                    ? 'bg-gradient-to-r from-teal-600 to-emerald-600 text-white shadow-md shadow-emerald-500/25 border border-teal-400/40 ring-2 ring-emerald-400/30'
-                    : 'bg-white text-slate-700 hover:text-emerald-700 hover:bg-emerald-50/50 border border-slate-200/90 hover:border-emerald-300'
-                }`}
-              >
-                <span className="text-base sm:text-lg">{cat.icon}</span>
-                <div className="text-left">
-                  <div>{cat.label}</div>
-                  <div className={`text-[10px] font-medium hidden sm:block ${isActive ? 'text-emerald-100' : 'text-slate-400'}`}>
-                    {cat.desc}
-                  </div>
-                </div>
-              </button>
-            );
-          })}
-        </div>
-
+    <div id="filter-section" className="bg-gradient-to-b from-teal-50/50 via-white to-slate-50 border-y border-teal-100/70 py-3.5 px-3 sm:px-6 lg:px-8 scroll-mt-20">
+      <div className="max-w-7xl mx-auto space-y-3">
         {/* Filter Card */}
         <div className="bg-white p-3.5 sm:p-4 rounded-2xl border border-teal-100/90 shadow-sm space-y-3">
           {/* Region & Sort Controls Row */}
