@@ -182,6 +182,21 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
 
           {/* Right: Quick Action Buttons */}
           <div className="flex items-center gap-2">
+            {resolvedAirbnbUrl && (
+              <a
+                href={resolvedAirbnbUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-3 sm:px-3.5 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-[#FF5A5F] border border-rose-200 font-extrabold text-xs flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer"
+                title="에어비앤비 원본 페이지 보기"
+              >
+                <Home className="w-4 h-4 text-[#FF5A5F]" />
+                <span className="hidden sm:inline">에어비앤비 보기</span>
+                <span className="sm:hidden">에어비앤비</span>
+                <ExternalLink className="w-3 h-3 opacity-60" />
+              </a>
+            )}
+
             <button
               onClick={handleShare}
               className="p-2 sm:px-3 sm:py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
@@ -218,6 +233,11 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
             <span className={`text-white text-xs font-black px-2.5 py-1 rounded-lg ${isVilla ? 'bg-teal-700' : 'bg-slate-900'}`}>
               {product.category}
             </span>
+            {product.city === '다낭' && product.category === '풀빌라' && (
+              <span className="text-xs bg-teal-50 text-teal-800 border border-teal-300 font-black px-2.5 py-1 rounded-lg flex items-center gap-1">
+                💎 대표님 현지 직영 숙소
+              </span>
+            )}
             <span className="text-xs text-slate-600 font-bold flex items-center gap-1 bg-slate-100 px-2.5 py-1 rounded-lg">
               <MapPin className="w-3.5 h-3.5 text-teal-600" />
               {product.region} · {product.city}
@@ -965,6 +985,19 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                   <Calendar className="w-5 h-5" />
                   <span>{isVilla ? '풀빌라 맞춤 예약 신청' : '맞춤 견적 & 실시간 예약 신청'}</span>
                 </button>
+
+                {resolvedAirbnbUrl && (
+                  <a
+                    href={resolvedAirbnbUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full py-3 px-4 rounded-2xl bg-rose-50 hover:bg-rose-100 text-[#FF5A5F] border border-rose-200 font-extrabold text-xs flex items-center justify-center gap-2 transition-colors cursor-pointer"
+                  >
+                    <Home className="w-4 h-4 text-[#FF5A5F]" />
+                    <span>에어비앤비 원본 페이지 바로가기</span>
+                    <ExternalLink className="w-3.5 h-3.5 opacity-60" />
+                  </a>
+                )}
               </div>
 
               <div className="text-center pt-1">

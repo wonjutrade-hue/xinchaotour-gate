@@ -75,6 +75,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
         {/* Category & Status Sticker */}
         <div className="absolute top-3 right-3 flex flex-wrap items-center justify-end gap-1">
+          {product.city === '다낭' && product.category === '풀빌라' && (
+            <span className="bg-teal-600 text-white font-black text-[10px] px-2 py-0.5 rounded shadow-sm border border-teal-300/40">
+              💎 대표 직영 풀빌라
+            </span>
+          )}
           {product.isHotDeal && (
             <span className="bg-rose-500 text-white font-extrabold text-[10px] px-2 py-0.5 rounded shadow-sm animate-pulse">
               🔥 초특가

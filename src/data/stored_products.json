@@ -6,8 +6,8 @@
     "category": "자유여행",
     "region": "중부",
     "city": "다낭",
-    "priceKRW": 530000,
-    "priceVND": 9973010,
+    "priceKRW": 390000,
+    "priceVND": 7200000,
     "duration": "3박 5일",
     "imageUrl": "/images/mykhe_beach.jpg",
     "additionalImages": [
@@ -35,17 +35,17 @@
     ],
     "description": "한국 출발 저녁 비행기(21:00~01:00 다낭 도착)와 마지막 날 밤 심야 비행기(22:00~02:00 출발) 패턴에 100% 최적화된 상품입니다. 이동 걱정 없이 단독 렌터카로 다낭, 호이안, 바나힐을 내 맘대로 즐기세요.",
     "included": [
-      "다낭 4·5성급 특급 호텔/리조트 3박 (2인 1실, 호텔 조식 포함)",
+      "다낭 미케비치 5성급 호텔 3박 (2인 1실, 조식 포함)",
       "1일차 심야 공항 도착 시 단독 피켓 픽업 차량 (대기료 무료)",
-      "2일차 바나힐 왕복 전용 렌터카 (케이블카+골든브릿지 입장권 포함) 및 전 일정 모든 관광지 입장료 100% 포함",
-      "3일차 호이안 올드타운 & 야시장 왕복 단독 렌터카 (소원배 탑승권 포함) 및 전 일정 모든 관광지 입장료 100% 포함",
-      "전 일정 엄선 현지 미식 식대 전액 포함 (1끼당 20만동 기준, 중·석식 총 6회)",
-      "4인 기준 전용 VIP 단독 차량 및 한국어 전문 가이드 결합"
+      "2일차 바나힐 왕복 전용 렌터카 (케이블카+골든브릿지 입장권 포함)",
+      "3일차 호이안 올드타운 & 야시장 왕복 단독 렌터카 (소원배 탑승권 포함)",
+      "4일차 체크아웃 투어 (호텔 픽업 ➔ 쇼핑/마사지/미식 ➔ 심야 다낭공항 샌딩)",
+      "기사 식대, 유류비, 고속도로 톨게이트비, 공항 주차비 일체 포함"
     ],
     "excluded": [
       "국제선 왕복 항공권",
-      "기사 매너팁 (팀당 $10/일 권장)",
-      "개인 기호성 음료 및 주류, 매너팁 (자율)"
+      "일정 외 개인 식사비 및 쇼핑",
+      "기사 매너팁 (팀당 $10/일 권장)"
     ],
     "itinerary": [
       {
@@ -96,8 +96,8 @@
     "category": "자유여행",
     "region": "중부",
     "city": "다낭",
-    "priceKRW": 690000,
-    "priceVND": 12983730,
+    "priceKRW": 490000,
+    "priceVND": 9100000,
     "duration": "4박 6일",
     "imageUrl": "/images/hue_imperial_citadel.jpg",
     "additionalImages": [
@@ -121,19 +121,16 @@
     ],
     "description": "다낭과 호이안뿐 아니라 베트남 마지막 왕조의 수도인 고도 후에(Hue)까지 전용 차량으로 여유롭고 안전하게 다녀오는 4박 6일 프리미엄 자유여행 코스입니다.",
     "included": [
-      "다낭 4·5성급 특급 호텔/리조트 4박 (2인 1실, 호텔 조식 포함)",
+      "다낭 5성급 오션뷰 리조트 4박 (2인 1실, 조식 포함)",
       "1일차 심야 공항 단독 픽업 & 5일차 심야 공항 샌딩",
       "하이반 고개 드라이브 & 후에 왕궁 1일 단독 렌터카 대절",
       "바나힐 국립공원 & 골든브릿지 단독 차량 지원",
-      "호이안 올드타운 & 야시장 단독 차량 지원",
-      "전 일정 엄선 현지 미식 식대 전액 포함 (1끼당 20만동 기준, 중·석식 총 8회)",
-      "일정표 내 모든 관광지 및 명소 입장료 100% 포함",
-      "4인 기준 전용 VIP 단독 차량 및 한국어 전문 가이드 결합"
+      "호이안 올드타운 & 야시장 단독 차량 지원"
     ],
     "excluded": [
       "국제선 항공권",
-      "기사 매너팁",
-      "개인 기호성 음료 및 주류, 매너팁 (자율)"
+      "개인 식비 및 입장료",
+      "기사 매너팁"
     ],
     "itinerary": [
       {
@@ -185,8 +182,8 @@
     "category": "자유여행",
     "region": "남부",
     "city": "나트랑",
-    "priceKRW": 530000,
-    "priceVND": 9973010,
+    "priceKRW": 450000,
+    "priceVND": 8400000,
     "duration": "3박 5일",
     "imageUrl": "/images/dalat_flower_garden.jpg",
     "additionalImages": [
@@ -217,18 +214,16 @@
     ],
     "description": "베트남 최고의 청정 해변 휴양지 나트랑과 해발 1,500m 서늘한 꽃의 도시 달랏을 단독 차량으로 쾌적하게 묶어 여행하는 3박 5일 콤보 자유여행입니다.",
     "included": [
-      "나트랑 4·5성급 특급 호텔/리조트 3박 (2인 1실, 호텔 조식 포함)",
+      "나트랑 깜란 5성급 오션뷰 리조트 3박 (조식 포함)",
       "1일차 깜란공항 심야 도착 시 단독 피켓 픽업",
       "나트랑 ➔ 달랏 ➔ 나트랑 1일 단독 렌터카 왕복 (다딴라 루지 + 랑비앙산 코스)",
-      "4일차 체크아웃 후 시내 자유일정 & 심야 깜란공항 샌딩",
-      "전 일정 엄선 현지 미식 식대 전액 포함 (1끼당 20만동 기준, 중·석식 총 6회)",
-      "일정표 내 모든 관광지 및 명소 입장료 100% 포함",
-      "4인 기준 전용 VIP 단독 차량 및 한국어 전문 가이드 결합"
+      "나트랑 시내 아이리조트 머드온천 & 포나가르 사원 차량 지원",
+      "4일차 체크아웃 후 시내 자유일정 & 심야 깜란공항 샌딩"
     ],
     "excluded": [
       "항공권",
-      "기사 매너팁",
-      "개인 기호성 음료 및 주류, 매너팁 (자율)"
+      "개인 식비 및 입장료",
+      "기사 매너팁"
     ],
     "itinerary": [
       {
@@ -274,8 +269,8 @@
     "category": "자유여행",
     "region": "남부",
     "city": "나트랑",
-    "priceKRW": 690000,
-    "priceVND": 12983730,
+    "priceKRW": 590000,
+    "priceVND": 11000000,
     "duration": "4박 6일",
     "imageUrl": "/images/phanrang_desert_jeep.jpg",
     "additionalImages": [
@@ -304,18 +299,15 @@
     ],
     "description": "나트랑의 푸른 바다, 판랑의 거대한 붉은 사막 지프 샌듄, 달랏의 로맨틱한 소나무 숲까지 한 번에 즐기는 4박 6일 베스트셀러 자유여행입니다.",
     "included": [
-      "나트랑 4·5성급 특급 호텔/리조트 4박 (2인 1실, 호텔 조식 포함)",
+      "나트랑 5성급 리조트 3박 + 달랏 감성 5성급 빌라 1박 (조식 포함)",
       "깜란공항 심야 픽업 & 심야 샌딩 단독 차량",
       "판랑 붉은 사막 전용 오프로드 지프차 대여 및 인생샷 촬영",
-      "나트랑 ➔ 판랑 ➔ 달랏 ➔ 나트랑 전 구간 단독 렌터카 & 전담 기사",
-      "전 일정 엄선 현지 미식 식대 전액 포함 (1끼당 20만동 기준, 중·석식 총 8회)",
-      "일정표 내 모든 관광지 및 명소 입장료 100% 포함",
-      "4인 기준 전용 VIP 단독 차량 및 한국어 전문 가이드 결합"
+      "나트랑 ➔ 판랑 ➔ 달랏 ➔ 나트랑 전 구간 단독 렌터카 & 전담 기사"
     ],
     "excluded": [
       "항공권",
-      "기사 매너팁",
-      "개인 기호성 음료 및 주류, 매너팁 (자율)"
+      "개인 식비",
+      "기사 매너팁"
     ],
     "itinerary": [
       {
@@ -365,8 +357,8 @@
     "category": "자유여행",
     "region": "북부",
     "city": "하노이",
-    "priceKRW": 530000,
-    "priceVND": 9973010,
+    "priceKRW": 450000,
+    "priceVND": 8300000,
     "duration": "3박 5일",
     "imageUrl": "/images/ninhbinh_trangan.jpg",
     "additionalImages": [
@@ -393,17 +385,15 @@
     ],
     "description": "베트남 천년 고도 하노이의 올드쿼터 미식과 유네스코 세계자연유산 하롱베이, 육지의 하롱베이라 불리는 닌빈 짱안을 단독 렌터카로 안전하게 누비는 3박 5일 자유여행입니다.",
     "included": [
-      "하노이 4·5성급 특급 호텔/리조트 3박 (2인 1실, 호텔 조식 포함)",
+      "하노이 시내 5성급 럭셔리 호텔 3박 (조식 포함)",
       "1일차 심야 노이바이공항 단독 픽업 & 4일차 심야 샌딩",
-      "전 일정 엄선 현지 미식 식대 전액 포함 (1끼당 20만동 기준, 중·석식 총 6회)",
-      "닌빈 짱안 유네스코 나룻배 & 항무아 전망대 단독 차량 지원",
-      "일정표 내 모든 관광지 및 명소 입장료 100% 포함",
-      "4인 기준 전용 VIP 단독 차량 및 한국어 전문 가이드 결합"
+      "하롱베이 럭셔리 크루즈 투어 (선상 뷔페 중식 포함)",
+      "닌빈 짱안 유네스코 나룻배 & 항무아 전망대 단독 차량 지원"
     ],
     "excluded": [
       "국제선 항공권",
-      "기사 매너팁",
-      "개인 기호성 음료 및 주류, 매너팁 (자율)"
+      "개인 식비",
+      "기사 매너팁"
     ],
     "itinerary": [
       {
@@ -446,12 +436,12 @@
     "category": "자유여행",
     "region": "남부",
     "city": "호치민",
-    "priceKRW": 530000,
-    "priceVND": 9973010,
+    "priceKRW": 410000,
+    "priceVND": 7600000,
     "duration": "3박 5일",
-    "imageUrl": "/images/mekong_river_boat.jpg",
+    "imageUrl": "/images/saigon_skyline_city.jpg",
     "additionalImages": [
-      "/images/mekong_river_boat.jpg"
+      "/images/saigon_skyline_city.jpg"
     ],
     "rating": 4.9,
     "reviewCount": 184,
@@ -470,18 +460,15 @@
     ],
     "description": "베트남 최대 도시 호치민의 역동적인 도심 문화와 이국적인 무이네 사막 지프 투어를 결합한 3박 5일 감성 자유여행입니다.",
     "included": [
-      "호치민 4·5성급 특급 호텔/리조트 3박 (2인 1실, 호텔 조식 포함)",
+      "호치민 1군 5성급 호텔 3박 (조식 포함)",
       "1일차 심야 탄손넛공항 픽업 & 4일차 심야 샌딩",
       "호치민 ➔ 무이네 사막 왕복 단독 고속도로 렌터카",
-      "무이네 화이트샌듄 & 레드샌듄 전용 지프 투어",
-      "전 일정 엄선 현지 미식 식대 전액 포함 (1끼당 20만동 기준, 중·석식 총 6회)",
-      "일정표 내 모든 관광지 및 명소 입장료 100% 포함",
-      "4인 기준 전용 VIP 단독 차량 및 한국어 전문 가이드 결합"
+      "무이네 화이트샌듄 & 레드샌듄 전용 지프 투어"
     ],
     "excluded": [
       "항공권",
-      "기사 매너팁",
-      "개인 기호성 음료 및 주류, 매너팁 (자율)"
+      "식사비",
+      "기사 매너팁"
     ],
     "itinerary": [
       {
@@ -524,10 +511,10 @@
     "category": "자유여행",
     "region": "남부",
     "city": "푸꾸옥",
-    "priceKRW": 530000,
-    "priceVND": 9973010,
+    "priceKRW": 460000,
+    "priceVND": 8500000,
     "duration": "3박 5일",
-    "imageUrl": "/images/phuquoc_sunset.jpg",
+    "imageUrl": "/images/phuquoc_grandworld.jpg",
     "rating": 5,
     "reviewCount": 230,
     "isPopular": true,
@@ -546,19 +533,15 @@
     ],
     "description": "베트남의 숨은 진주 푸꾸옥의 북부(사파리, 그랜드월드)와 남부(세계 최장 해상 케이블카, 선셋타운)를 단독 렌터카로 자유롭게 누비는 3박 5일 힐링 팩입니다.",
     "included": [
-      "푸꾸옥 4·5성급 특급 호텔/리조트 3박 (2인 1실, 호텔 조식 포함)",
+      "푸꾸옥 5성급 비치 프론트 리조트 3박 (조식 포함)",
       "1일차 심야 공항 픽업 & 4일차 심야 샌딩",
       "북부 1일 단독 렌터카 (사파리/그랜드월드)",
-      "남부 1일 단독 렌터카 (혼똔섬/선셋타운)",
-      "전 일정 엄선 현지 미식 식대 전액 포함 (1끼당 20만동 기준, 중·석식 총 6회)",
-      "일정표 내 모든 관광지 및 명소 입장료 100% 포함",
-      "4인 기준 전용 VIP 단독 차량 및 한국어 전문 가이드 결합"
+      "남부 1일 단독 렌터카 (혼똔섬/선셋타운)"
     ],
     "excluded": [
       "항공권",
       "입장권",
-      "개인 경비",
-      "개인 기호성 음료 및 주류, 매너팁 (자율)"
+      "개인 경비"
     ],
     "itinerary": [
       {
@@ -592,7 +575,7 @@
       }
     ],
     "additionalImages": [
-      "/images/phuquoc_sunset.jpg"
+      "/images/phuquoc_grandworld.jpg"
     ],
     "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
@@ -604,10 +587,10 @@
     "category": "골프투어",
     "region": "중부",
     "city": "다낭",
-    "priceKRW": 255000,
-    "priceVND": 4798335,
+    "priceKRW": 240000,
+    "priceVND": 4500000,
     "duration": "1일 (18홀)",
-    "imageUrl": "/images/vietnam_golf_resort.jpg",
+    "imageUrl": "/images/golf_brg_danang.jpg",
     "rating": 5,
     "reviewCount": 320,
     "isPopular": true,
@@ -628,12 +611,11 @@
       "BRG 다낭 골프 리조트 18홀 그린피 100% 포함",
       "전동 카트비 (2인 1카트 기준) 포함",
       "1인 1캐디피 포함",
-      "다낭/호이안 숙소 ➔ BRG 다낭 왕복 단독 전용 차량 & 전담 기사",
-      "클럽하우스 중식 1회 식대 포함 (1끼 20만동 기준)",
-      "4인 1팀 기준 골프장 왕복 단독 전용 차량 지원"
+      "다낭/호이안 숙소 ➔ BRG 다낭 왕복 단독 전용 차량 & 전담 기사"
     ],
     "excluded": [
-      "캐디팁 ($15~$20 / 18홀 기준 현장 지불)"
+      "캐디팁 ($15~$20 / 18홀 기준 현장 지불)",
+      "클럽하우스 중식 및 개인 음료/주류"
     ],
     "golfSpecs": {
       "holes": 18,
@@ -654,7 +636,7 @@
       }
     ],
     "additionalImages": [
-      "/images/vietnam_golf_resort.jpg"
+      "/images/golf_brg_danang.jpg"
     ],
     "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
@@ -666,10 +648,10 @@
     "category": "골프투어",
     "region": "중부",
     "city": "다낭",
-    "priceKRW": 255000,
-    "priceVND": 4798335,
+    "priceKRW": 235000,
+    "priceVND": 4400000,
     "duration": "1일 (18홀)",
-    "imageUrl": "/images/vietnam_golf_resort.jpg",
+    "imageUrl": "/images/golf_montgomerie_danang.jpg",
     "rating": 4.9,
     "reviewCount": 285,
     "isPopular": true,
@@ -688,9 +670,7 @@
       "몽고메리 링크스 18홀 그린피",
       "전동 카트 (2인 1카트)",
       "1인 1캐디피",
-      "호텔 왕복 단독 차량 & 기사",
-      "클럽하우스 중식 1회 식대 포함 (1끼 20만동 기준)",
-      "4인 1팀 기준 골프장 왕복 단독 전용 차량 지원"
+      "호텔 왕복 단독 차량 & 기사"
     ],
     "excluded": [
       "캐디팁 ($15~$20)",
@@ -715,7 +695,7 @@
       }
     ],
     "additionalImages": [
-      "/images/vietnam_golf_resort.jpg"
+      "/images/golf_montgomerie_danang.jpg"
     ],
     "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
@@ -727,10 +707,10 @@
     "category": "골프투어",
     "region": "중부",
     "city": "다낭",
-    "priceKRW": 255000,
-    "priceVND": 4798335,
+    "priceKRW": 250000,
+    "priceVND": 4650000,
     "duration": "1일 (18홀)",
-    "imageUrl": "/images/vietnam_golf_resort.jpg",
+    "imageUrl": "/images/golf_banahills.jpg",
     "rating": 5,
     "reviewCount": 310,
     "isPopular": true,
@@ -748,9 +728,7 @@
     "included": [
       "바나힐스 GC 18홀 그린피 (주간 또는 야간 라이트 라운딩 선택)",
       "2인 1카트 + 1인 1캐디피",
-      "호텔 왕복 단독 전용 차량",
-      "클럽하우스 중식 1회 식대 포함 (1끼 20만동 기준)",
-      "4인 1팀 기준 골프장 왕복 단독 전용 차량 지원"
+      "호텔 왕복 단독 전용 차량"
     ],
     "excluded": [
       "캐디팁 ($15~$20)",
@@ -775,7 +753,7 @@
       }
     ],
     "additionalImages": [
-      "/images/vietnam_golf_resort.jpg"
+      "/images/golf_banahills.jpg"
     ],
     "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
@@ -787,8 +765,8 @@
     "category": "골프투어",
     "region": "중부",
     "city": "호이안",
-    "priceKRW": 255000,
-    "priceVND": 4798335,
+    "priceKRW": 270000,
+    "priceVND": 5000000,
     "duration": "1일 (18홀)",
     "imageUrl": "/images/golf_hoiana_shores.jpg",
     "rating": 5,
@@ -808,9 +786,7 @@
     "included": [
       "호이아나 쇼어스 18홀 그린피",
       "2인 1카트 + 1인 1캐디피",
-      "다낭/호이안 숙소 왕복 단독 차량",
-      "클럽하우스 중식 1회 식대 포함 (1끼 20만동 기준)",
-      "4인 1팀 기준 골프장 왕복 단독 전용 차량 지원"
+      "다낭/호이안 숙소 왕복 단독 차량"
     ],
     "excluded": [
       "캐디팁 ($15~$20)",
@@ -847,10 +823,10 @@
     "category": "골프투어",
     "region": "중부",
     "city": "호이안",
-    "priceKRW": 255000,
-    "priceVND": 4798335,
+    "priceKRW": 220000,
+    "priceVND": 4100000,
     "duration": "1일 (18홀)",
-    "imageUrl": "/images/golf_hoiana_shores.jpg",
+    "imageUrl": "/images/golf_vinpearl_namhoian.jpg",
     "rating": 4.9,
     "reviewCount": 215,
     "departureCities": [
@@ -866,9 +842,7 @@
     "included": [
       "빈펄 남호이안 18홀 그린피",
       "2인 1카트 + 1인 1캐디피",
-      "왕복 단독 전용 차량",
-      "클럽하우스 중식 1회 식대 포함 (1끼 20만동 기준)",
-      "4인 1팀 기준 골프장 왕복 단독 전용 차량 지원"
+      "왕복 단독 전용 차량"
     ],
     "excluded": [
       "캐디팁 ($15~$20)",
@@ -893,7 +867,7 @@
       }
     ],
     "additionalImages": [
-      "/images/golf_hoiana_shores.jpg"
+      "/images/golf_vinpearl_namhoian.jpg"
     ],
     "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
@@ -905,10 +879,10 @@
     "category": "골프투어",
     "region": "중부",
     "city": "다낭",
-    "priceKRW": 255000,
-    "priceVND": 4798335,
+    "priceKRW": 245000,
+    "priceVND": 4550000,
     "duration": "1일 (18홀)",
-    "imageUrl": "/images/vietnam_golf_resort.jpg",
+    "imageUrl": "/images/golf_laguna_langco.jpg",
     "rating": 5,
     "reviewCount": 190,
     "departureCities": [
@@ -925,9 +899,7 @@
     "included": [
       "라구나 랑코 18홀 그린피",
       "2인 1카트 + 1인 1캐디피",
-      "다낭/호이안/후에 왕복 단독 차량",
-      "클럽하우스 중식 1회 식대 포함 (1끼 20만동 기준)",
-      "4인 1팀 기준 골프장 왕복 단독 전용 차량 지원"
+      "다낭/호이안/후에 왕복 단독 차량"
     ],
     "excluded": [
       "캐디팁 ($15~$20)",
@@ -952,7 +924,7 @@
       }
     ],
     "additionalImages": [
-      "/images/vietnam_golf_resort.jpg"
+      "/images/golf_laguna_langco.jpg"
     ],
     "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
@@ -964,10 +936,10 @@
     "category": "골프투어",
     "region": "남부",
     "city": "나트랑",
-    "priceKRW": 255000,
-    "priceVND": 4798335,
+    "priceKRW": 245000,
+    "priceVND": 4550000,
     "duration": "1일 (18홀)",
-    "imageUrl": "/images/vietnam_golf_resort.jpg",
+    "imageUrl": "/images/golf_kn_links_camranh.jpg",
     "rating": 5,
     "reviewCount": 275,
     "isPopular": true,
@@ -985,9 +957,7 @@
     "included": [
       "KN 골프링크스 18홀 그린피",
       "2인 1카트 + 1인 1캐디피",
-      "나트랑 시내 및 깜란 리조트 왕복 단독 차량",
-      "클럽하우스 중식 1회 식대 포함 (1끼 20만동 기준)",
-      "4인 1팀 기준 골프장 왕복 단독 전용 차량 지원"
+      "나트랑 시내 및 깜란 리조트 왕복 단독 차량"
     ],
     "excluded": [
       "캐디팁 ($15~$20)",
@@ -1012,7 +982,7 @@
       }
     ],
     "additionalImages": [
-      "/images/vietnam_golf_resort.jpg"
+      "/images/golf_kn_links_camranh.jpg"
     ],
     "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
@@ -1024,10 +994,10 @@
     "category": "골프투어",
     "region": "북부",
     "city": "하노이",
-    "priceKRW": 255000,
-    "priceVND": 4798335,
+    "priceKRW": 240000,
+    "priceVND": 4500000,
     "duration": "1일 (18홀)",
-    "imageUrl": "/images/vietnam_golf_resort.jpg",
+    "imageUrl": "/images/golf_skylake_hanoi.jpg",
     "rating": 5,
     "reviewCount": 290,
     "isPopular": true,
@@ -1045,9 +1015,7 @@
     "included": [
       "스카이레이크 CC 18홀 그린피",
       "2인 1카트 + 1인 1캐디피",
-      "하노이 시내 왕복 전용 단독 차량",
-      "클럽하우스 중식 1회 식대 포함 (1끼 20만동 기준)",
-      "4인 1팀 기준 골프장 왕복 단독 전용 차량 지원"
+      "하노이 시내 왕복 전용 단독 차량"
     ],
     "excluded": [
       "캐디팁 ($15~$20)",
@@ -1072,7 +1040,7 @@
       }
     ],
     "additionalImages": [
-      "/images/vietnam_golf_resort.jpg"
+      "/images/golf_skylake_hanoi.jpg"
     ],
     "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
@@ -1084,10 +1052,10 @@
     "category": "골프투어",
     "region": "남부",
     "city": "호치민",
-    "priceKRW": 255000,
-    "priceVND": 4798335,
+    "priceKRW": 230000,
+    "priceVND": 4300000,
     "duration": "1일 (18홀)",
-    "imageUrl": "/images/vietnam_golf_resort.jpg",
+    "imageUrl": "/images/golf_tansonnhat_saigon.jpg",
     "rating": 4.9,
     "reviewCount": 240,
     "departureCities": [
@@ -1104,9 +1072,7 @@
     "included": [
       "탄손넛 CC 18홀 그린피",
       "2인 1카트 + 1인 1캐디피",
-      "호치민 호텔 왕복 단독 전용 차량",
-      "클럽하우스 중식 1회 식대 포함 (1끼 20만동 기준)",
-      "4인 1팀 기준 골프장 왕복 단독 전용 차량 지원"
+      "호치민 호텔 왕복 단독 전용 차량"
     ],
     "excluded": [
       "캐디팁 ($15~$20)",
@@ -1131,7 +1097,7 @@
       }
     ],
     "additionalImages": [
-      "/images/vietnam_golf_resort.jpg"
+      "/images/golf_tansonnhat_saigon.jpg"
     ],
     "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
@@ -1143,10 +1109,10 @@
     "category": "골프투어",
     "region": "남부",
     "city": "달랏",
-    "priceKRW": 255000,
-    "priceVND": 4798335,
+    "priceKRW": 235000,
+    "priceVND": 4400000,
     "duration": "1일 (18홀)",
-    "imageUrl": "/images/vietnam_golf_resort.jpg",
+    "imageUrl": "/images/golf_dalat_palace.jpg",
     "rating": 5,
     "reviewCount": 220,
     "isPopular": true,
@@ -1164,9 +1130,7 @@
     "included": [
       "달랏 팰리스 GC 18홀 그린피",
       "2인 1카트 + 1인 1캐디피",
-      "달랏 호텔 왕복 단독 차량",
-      "클럽하우스 중식 1회 식대 포함 (1끼 20만동 기준)",
-      "4인 1팀 기준 골프장 왕복 단독 전용 차량 지원"
+      "달랏 호텔 왕복 단독 차량"
     ],
     "excluded": [
       "캐디팁 ($15~$20)",
@@ -1191,7 +1155,7 @@
       }
     ],
     "additionalImages": [
-      "/images/vietnam_golf_resort.jpg"
+      "/images/golf_dalat_palace.jpg"
     ],
     "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
@@ -1203,10 +1167,10 @@
     "category": "골프투어",
     "region": "남부",
     "city": "푸꾸옥",
-    "priceKRW": 255000,
-    "priceVND": 4798335,
+    "priceKRW": 240000,
+    "priceVND": 4500000,
     "duration": "1일 (18홀)",
-    "imageUrl": "/images/vietnam_golf_resort.jpg",
+    "imageUrl": "/images/golf_vinpearl_phuquoc.jpg",
     "rating": 4.9,
     "reviewCount": 205,
     "departureCities": [
@@ -1223,9 +1187,7 @@
     "included": [
       "빈펄 푸꾸옥 18홀 그린피",
       "2인 1카트 + 1인 1캐디피",
-      "푸꾸옥 호텔 왕복 단독 차량",
-      "클럽하우스 중식 1회 식대 포함 (1끼 20만동 기준)",
-      "4인 1팀 기준 골프장 왕복 단독 전용 차량 지원"
+      "푸꾸옥 호텔 왕복 단독 차량"
     ],
     "excluded": [
       "캐디팁 ($15~$20)",
@@ -1250,7 +1212,7 @@
       }
     ],
     "additionalImages": [
-      "/images/vietnam_golf_resort.jpg"
+      "/images/golf_vinpearl_phuquoc.jpg"
     ],
     "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
@@ -1262,12 +1224,12 @@
     "category": "골프투어",
     "region": "중부",
     "city": "다낭",
-    "priceKRW": 1010000,
-    "priceVND": 19005170,
+    "priceKRW": 990000,
+    "priceVND": 18400000,
     "duration": "3박 5일",
-    "imageUrl": "/images/golf_hoiana_shores.jpg",
+    "imageUrl": "/images/golf_danang_3courses.jpg",
     "additionalImages": [
-      "/images/golf_hoiana_shores.jpg"
+      "/images/golf_danang_3courses.jpg"
     ],
     "rating": 5,
     "reviewCount": 380,
@@ -1291,19 +1253,17 @@
     ],
     "description": "다낭과 호이안의 가장 가까운 3대 명문 코스를 매일 18홀씩 총 54홀 라운딩하는 베스트셀러 골프투어입니다. 한국 출발 저녁 항공편 및 마지막 날 체크아웃 라운딩 후 심야 귀국 스케줄에 맞추어 전 일정 단독 골프밴이 풀케어합니다.",
     "included": [
-      "다낭 4·5성급 특급 골프 리조트/호텔 3박 (2인 1실, 호텔 조식 포함)",
+      "다낭 5성급 오션뷰 호텔 3박 (2인 1실, 조식 포함)",
       "18홀 × 3일 = 총 54홀 그린피 100% 포함",
       "전 일정 전동 카트비 (2인 1카트 기준) 포함",
       "전 일정 1인 1캐디피 포함",
       "1일차 심야 공항 픽업부터 4일차 심야 샌딩까지 전용 단독 리무진 골프밴 & 기사",
-      "4일차 마지막 라운딩 후 90분 피로회복 VIP 스파 마사지 1회",
-      "전 일정 클럽하우스 중식 및 현지 정찬 석식 포함 (1끼당 20만동 기준, 총 6회)",
-      "4인 1팀 기준 단독 전용 리무진 골프밴 및 한국어 전담 안내 지원"
+      "4일차 마지막 라운딩 후 90분 피로회복 VIP 스파 마사지 1회"
     ],
     "excluded": [
       "국제선 왕복 항공권 (최저가 실시간 발권 지원)",
       "캐디팁 ($15~$20 / 18홀당 / 1인 기준 현장 지불)",
-      "캐디팁 (18홀당 $15~$20 현장 지불)"
+      "클럽하우스 중식 및 개인 석식"
     ],
     "golfSpecs": {
       "holes": 54,
@@ -1368,12 +1328,12 @@
     "category": "골프투어",
     "region": "중부",
     "city": "다낭",
-    "priceKRW": 1010000,
-    "priceVND": 19005170,
+    "priceKRW": 970000,
+    "priceVND": 18000000,
     "duration": "3박 5일",
-    "imageUrl": "/images/golf_hoiana_shores.jpg",
+    "imageUrl": "/images/golf_danang_banahills_combo.jpg",
     "additionalImages": [
-      "/images/golf_hoiana_shores.jpg"
+      "/images/golf_danang_banahills_combo.jpg"
     ],
     "rating": 4.9,
     "reviewCount": 245,
@@ -1393,18 +1353,15 @@
     ],
     "description": "산악형 바나힐스와 해변형 빈펄 남호이안, 정통 링크스 몽고메리를 모두 경험할 수 있는 다채로운 54홀 골프 패키지입니다.",
     "included": [
-      "다낭 4·5성급 특급 골프 리조트/호텔 3박 (2인 1실, 호텔 조식 포함)",
+      "다낭 5성급 호텔 3박 (조식 포함)",
       "54홀 그린피 + 2인1카트 + 1인1캐디피 올포함",
       "전 일정 단독 골프밴 차량 & 기사",
-      "심야 공항 픽업 및 심야 공항 샌딩",
-      "전 일정 클럽하우스 중식 및 현지 정찬 석식 포함 (1끼당 20만동 기준, 총 6회)",
-      "4인 1팀 기준 단독 전용 리무진 골프밴 및 한국어 전담 안내 지원"
+      "심야 공항 픽업 및 심야 공항 샌딩"
     ],
     "excluded": [
       "항공권",
       "캐디팁 ($15~$20/18홀)",
-      "개인 식비",
-      "캐디팁 (18홀당 $15~$20 현장 지불)"
+      "개인 식비"
     ],
     "golfSpecs": {
       "holes": 54,
@@ -1460,10 +1417,10 @@
     "category": "골프투어",
     "region": "남부",
     "city": "나트랑",
-    "priceKRW": 1010000,
-    "priceVND": 19005170,
+    "priceKRW": 980000,
+    "priceVND": 18200000,
     "duration": "3박 5일",
-    "imageUrl": "/images/vietnam_golf_resort.jpg",
+    "imageUrl": "/images/golf_nhatrang_combo.jpg",
     "rating": 5,
     "reviewCount": 260,
     "isPopular": true,
@@ -1484,18 +1441,15 @@
     ],
     "description": "베트남 최고의 해변 휴양지 나트랑과 깜란에 위치한 3대 명문 코스를 섭렵하는 54홀 3박 5일 풀패키지입니다.",
     "included": [
-      "나트랑 4·5성급 특급 골프 리조트/호텔 3박 (2인 1실, 호텔 조식 포함)",
+      "나트랑 깜란 5성급 오션 리조트 3박 (조식 포함)",
       "KN 링크스 + 빈펄 나트랑 + 다이아몬드베이 54홀 그린피/카트/캐디 포함",
       "전 일정 왕복 단독 골프밴 & 기사",
-      "심야 깜란공항 픽업 및 심야 공항 샌딩",
-      "전 일정 클럽하우스 중식 및 현지 정찬 석식 포함 (1끼당 20만동 기준, 총 6회)",
-      "4인 1팀 기준 단독 전용 리무진 골프밴 및 한국어 전담 안내 지원"
+      "심야 깜란공항 픽업 및 심야 공항 샌딩"
     ],
     "excluded": [
       "항공권",
       "캐디팁 ($15~$20/18홀)",
-      "개인 경비",
-      "캐디팁 (18홀당 $15~$20 현장 지불)"
+      "개인 경비"
     ],
     "golfSpecs": {
       "holes": 54,
@@ -1542,7 +1496,7 @@
       }
     ],
     "additionalImages": [
-      "/images/vietnam_golf_resort.jpg"
+      "/images/golf_nhatrang_combo.jpg"
     ],
     "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
@@ -1554,10 +1508,10 @@
     "category": "골프투어",
     "region": "북부",
     "city": "하노이",
-    "priceKRW": 1010000,
-    "priceVND": 19005170,
+    "priceKRW": 990000,
+    "priceVND": 18400000,
     "duration": "3박 5일",
-    "imageUrl": "/images/vietnam_golf_resort.jpg",
+    "imageUrl": "/images/golf_hanoi_combo.jpg",
     "rating": 4.9,
     "reviewCount": 230,
     "isPopular": true,
@@ -1577,17 +1531,15 @@
     ],
     "description": "베트남 1위 명문 스카이레이크와 도심형 롱비엔, 금강산 같은 비경의 피닉스 CC를 연계한 하노이 최고 권위의 54홀 골프 패키지입니다.",
     "included": [
-      "하노이 4·5성급 특급 골프 리조트/호텔 3박 (2인 1실, 호텔 조식 포함)",
+      "하노이 시내 5성급 호텔 3박 (조식 포함)",
       "스카이레이크 + 롱비엔 + 피닉스 54홀 그린피/카트/캐디 일체 포함",
       "전 일정 전용 단독 리무진 골프밴",
-      "심야 노이바이공항 픽업 및 심야 공항 샌딩",
-      "전 일정 클럽하우스 중식 및 현지 정찬 석식 포함 (1끼당 20만동 기준, 총 6회)",
-      "4인 1팀 기준 단독 전용 리무진 골프밴 및 한국어 전담 안내 지원"
+      "심야 노이바이공항 픽업 및 심야 공항 샌딩"
     ],
     "excluded": [
       "항공권",
       "캐디팁 ($15~$20/18홀)",
-      "캐디팁 (18홀당 $15~$20 현장 지불)"
+      "식사비"
     ],
     "golfSpecs": {
       "holes": 54,
@@ -1634,7 +1586,7 @@
       }
     ],
     "additionalImages": [
-      "/images/vietnam_golf_resort.jpg"
+      "/images/golf_hanoi_combo.jpg"
     ],
     "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
@@ -1646,10 +1598,10 @@
     "category": "골프투어",
     "region": "남부",
     "city": "호치민",
-    "priceKRW": 1010000,
-    "priceVND": 19005170,
+    "priceKRW": 960000,
+    "priceVND": 17800000,
     "duration": "3박 5일",
-    "imageUrl": "/images/vietnam_golf_resort.jpg",
+    "imageUrl": "/images/golf_saigon_combo.jpg",
     "rating": 4.9,
     "reviewCount": 210,
     "isPopular": true,
@@ -1667,17 +1619,15 @@
     ],
     "description": "호치민 인근 최고 권위의 3개 명문 골프장을 매일 18홀씩 쾌적하게 라운딩하는 3박 5일 완성형 골프투어입니다.",
     "included": [
-      "호치민 4·5성급 특급 골프 리조트/호텔 3박 (2인 1실, 호텔 조식 포함)",
+      "호치민 1군 5성급 호텔 3박 (조식 포함)",
       "탄손넛 + 투득 + 트윈도브스 54홀 그린피/카트/캐디 올포함",
       "전 일정 단독 골프밴 차량 & 기사",
-      "심야 탄손넛공항 픽업 및 심야 공항 샌딩",
-      "전 일정 클럽하우스 중식 및 현지 정찬 석식 포함 (1끼당 20만동 기준, 총 6회)",
-      "4인 1팀 기준 단독 전용 리무진 골프밴 및 한국어 전담 안내 지원"
+      "심야 탄손넛공항 픽업 및 심야 공항 샌딩"
     ],
     "excluded": [
       "항공권",
       "캐디팁 ($15~$20/18홀)",
-      "캐디팁 (18홀당 $15~$20 현장 지불)"
+      "식사비"
     ],
     "golfSpecs": {
       "holes": 54,
@@ -1724,7 +1674,7 @@
       }
     ],
     "additionalImages": [
-      "/images/vietnam_golf_resort.jpg"
+      "/images/golf_saigon_combo.jpg"
     ],
     "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
@@ -1736,10 +1686,10 @@
     "category": "골프투어",
     "region": "남부",
     "city": "달랏",
-    "priceKRW": 1010000,
-    "priceVND": 19005170,
+    "priceKRW": 980000,
+    "priceVND": 18200000,
     "duration": "3박 5일",
-    "imageUrl": "/images/vietnam_golf_resort.jpg",
+    "imageUrl": "/images/golf_dalat_highland.jpg",
     "rating": 5,
     "reviewCount": 195,
     "isPopular": true,
@@ -1757,17 +1707,15 @@
     ],
     "description": "한여름에도 18~24도의 서늘하고 쾌적한 날씨를 자랑하는 달랏의 3대 명문 코스에서 땀 흘리지 않고 즐기는 피서 골프투어입니다.",
     "included": [
-      "달랏 4·5성급 특급 골프 리조트/호텔 3박 (2인 1실, 호텔 조식 포함)",
+      "달랏 5성급 호텔 3박 (조식 포함)",
       "달랏 팰리스 + 삼투옌람 + 달랏 1200 54홀 그린피/카트/캐디 포함",
       "전 일정 전용 단독 골프밴 & 기사",
-      "심야 리엔크엉공항 픽업 및 심야 공항 샌딩",
-      "전 일정 클럽하우스 중식 및 현지 정찬 석식 포함 (1끼당 20만동 기준, 총 6회)",
-      "4인 1팀 기준 단독 전용 리무진 골프밴 및 한국어 전담 안내 지원"
+      "심야 리엔크엉공항 픽업 및 심야 공항 샌딩"
     ],
     "excluded": [
       "항공권",
       "캐디팁 ($15~$20/18홀)",
-      "캐디팁 (18홀당 $15~$20 현장 지불)"
+      "식사비"
     ],
     "golfSpecs": {
       "holes": 54,
@@ -1814,7 +1762,7 @@
       }
     ],
     "additionalImages": [
-      "/images/vietnam_golf_resort.jpg"
+      "/images/golf_dalat_highland.jpg"
     ],
     "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
@@ -1826,10 +1774,10 @@
     "category": "골프투어",
     "region": "남부",
     "city": "푸꾸옥",
-    "priceKRW": 1010000,
-    "priceVND": 19005170,
+    "priceKRW": 990000,
+    "priceVND": 18400000,
     "duration": "3박 5일",
-    "imageUrl": "/images/vietnam_golf_resort.jpg",
+    "imageUrl": "/images/golf_phuquoc_ocean.jpg",
     "rating": 5,
     "reviewCount": 180,
     "isPopular": true,
@@ -1847,17 +1795,15 @@
     ],
     "description": "푸꾸옥 섬의 청정 원시림과 에메랄드 바다를 배경으로 매일 18홀씩 54홀 라운딩과 최고급 비치 리조트 휴양을 동시에 즐기는 상품입니다.",
     "included": [
-      "푸꾸옥 4·5성급 특급 골프 리조트/호텔 3박 (2인 1실, 호텔 조식 포함)",
+      "푸꾸옥 5성급 해변 리조트 3박 (조식 포함)",
       "빈펄 푸꾸옥 54홀 그린피 + 2인1카트 + 1인1캐디피 올포함",
       "전 일정 전용 단독 리무진 골프밴",
-      "심야 푸꾸옥공항 픽업 및 심야 공항 샌딩",
-      "전 일정 클럽하우스 중식 및 현지 정찬 석식 포함 (1끼당 20만동 기준, 총 6회)",
-      "4인 1팀 기준 단독 전용 리무진 골프밴 및 한국어 전담 안내 지원"
+      "심야 푸꾸옥공항 픽업 및 심야 공항 샌딩"
     ],
     "excluded": [
       "항공권",
       "캐디팁 ($15~$20/18홀)",
-      "캐디팁 (18홀당 $15~$20 현장 지불)"
+      "식사비"
     ],
     "golfSpecs": {
       "holes": 54,
@@ -1904,7 +1850,7 @@
       }
     ],
     "additionalImages": [
-      "/images/vietnam_golf_resort.jpg"
+      "/images/golf_phuquoc_ocean.jpg"
     ],
     "updatedAt": "2026-09-03T01:59:45.021Z",
     "createdAt": "2026-01-01T00:00:00.000Z"
@@ -1916,8 +1862,8 @@
     "category": "추천패키지",
     "region": "중부",
     "city": "다낭",
-    "priceKRW": 530000,
-    "priceVND": 9973010,
+    "priceKRW": 750000,
+    "priceVND": 13900000,
     "duration": "3박 5일",
     "imageUrl": "/images/danang_golden_bridge.jpg",
     "additionalImages": [
@@ -1949,22 +1895,20 @@
     ],
     "description": "대형 패키지 여행사의 20~30인 단체 합승 버스와 3~4회 강제 쇼핑센터 방문의 불편함을 완벽히 해결했습니다. 신짜오투어는 오직 우리 일행만을 위한 최신형 16인승 전용 차량과 한국어 가이드가 동행하며, 바나힐·호이안·미케비치 핵심 명소와 프리미엄 미식, 90분 VIP 스파까지 전 일정 올포함으로 케어해 드립니다.",
     "included": [
-      "다낭 4·5성급 특급 호텔/리조트 3박 (2인 1실, 호텔 조식 포함)",
+      "다낭 미케비치 5성급 인터내셔널 오션뷰 호텔 3박 (2인 1실, 조식 포함)",
       "우리 일행만을 위한 16인승 단독 전용 차량 및 베테랑 전담 기사 (전 일정)",
       "신짜오투어 현지 베트남 공인 한국어 1급 전담 가이드 풀케어",
-      "전 일정 엄선 현지 미식 식대 전액 포함 (1끼당 20만동 기준, 중·석식 총 6회)",
-      "호이안 유네스코 올드타운 입장권 + 투본강 소원배(야간 유등 포함) + 깜딴 코코넛 바구니배 체험 및 전 일정 모든 관광지 입장료 100% 포함",
-      "오행산(마블마운틴) 동굴 & 손짜반도 영흥사(해수관음상) 입장료 및 전 일정 모든 관광지 입장료 100% 포함",
+      "바나힐 썬월드 국립공원 케이블카 왕복 + 골든브릿지 + 프랑스마을 테마파크 + 정상 뷔페 중식",
+      "호이안 유네스코 올드타운 입장권 + 투본강 소원배(야간 유등 포함) + 깜딴 코코넛 바구니배 체험",
+      "오행산(마블마운틴) 동굴 & 손짜반도 영흥사(해수관음상) 입장료",
       "4대 프리미엄 특식: ① 미케비치 랍스터/크랩 씨푸드 BBQ, ② 호이안 전통 반쎄오&화이트로즈, ③ 미슐랭 분짜&스프링롤, ④ 프리미엄 한정식",
       "여행의 피로를 풀어주는 90분 VIP 천연 허브 핫스톤 스파 전원 포함 (1회)",
-      "기사/가이드 팁, 차량 유류비, 도로비, 주차비 일체 포함",
-      "4인 기준 전용 VIP 단독 차량 및 한국어 전문 가이드 결합"
+      "기사/가이드 팁, 차량 유류비, 도로비, 주차비 일체 포함"
     ],
     "excluded": [
       "국제선 왕복 항공권 (최저가 실시간 발권 지원)",
       "개인 쇼핑 경비 및 주류/음료",
-      "호텔 1인실 싱글룸 사용 시 싱글 차지",
-      "개인 기호성 음료 및 주류, 매너팁 (자율)"
+      "호텔 1인실 싱글룸 사용 시 싱글 차지"
     ],
     "itinerary": [
       {
@@ -2055,8 +1999,8 @@
     "category": "추천패키지",
     "region": "중부",
     "city": "다낭",
-    "priceKRW": 530000,
-    "priceVND": 9973010,
+    "priceKRW": 690000,
+    "priceVND": 12800000,
     "duration": "3박 5일",
     "imageUrl": "/images/danang_city_dragon.jpg",
     "additionalImages": [
@@ -2084,19 +2028,17 @@
     ],
     "description": "타인과의 합승 없이 오직 우리 일행만을 위한 16인승 전용 차량과 한국어 가이드가 동행하는 신짜오투어 대표 베스트셀러 상품입니다.",
     "included": [
-      "다낭 4·5성급 특급 호텔/리조트 3박 (2인 1실, 호텔 조식 포함)",
+      "다낭 5성급 오션뷰 호텔 3박 (2인 1실, 조식 포함)",
       "16인승 최신형 단독 전용 차량 및 베테랑 전담 기사",
       "신짜오투어 공인 한국어 전담 전문 가이드 풀케어",
-      "전 일정 엄선 현지 미식 식대 전액 포함 (1끼당 20만동 기준, 중·석식 총 6회)",
-      "호이안 올드타운 입장권 + 투본강 소원배(유등 포함) 및 전 일정 모든 관광지 입장료 100% 포함",
-      "90분 VIP 전신 힐링 마사지 1회",
-      "4인 기준 전용 VIP 단독 차량 및 한국어 전문 가이드 결합"
+      "바나힐 왕복 케이블카 + 골든브릿지 + 정상 뷔페 중식",
+      "호이안 올드타운 입장권 + 투본강 소원배(유등 포함)",
+      "90분 VIP 전신 힐링 마사지 1회"
     ],
     "excluded": [
       "국제선 왕복 항공권 (최저가 실시간 발권 지원)",
       "개인 쇼핑 경비 및 주류/음료",
-      "가이드/기사 자율 매너팁",
-      "개인 기호성 음료 및 주류, 매너팁 (자율)"
+      "가이드/기사 자율 매너팁"
     ],
     "itinerary": [
       {
@@ -2142,8 +2084,8 @@
     "category": "추천패키지",
     "region": "중부",
     "city": "다낭",
-    "priceKRW": 690000,
-    "priceVND": 12983730,
+    "priceKRW": 780000,
+    "priceVND": 14500000,
     "duration": "4박 5일",
     "imageUrl": "/images/hoian_lantern.jpg",
     "additionalImages": [
@@ -2167,18 +2109,15 @@
     ],
     "description": "베트남의 찬란한 응우옌 왕조 유적도시 후에와 다낭/호이안의 힐링 명소를 결합한 프리미엄 품격 여행입니다.",
     "included": [
-      "다낭 4·5성급 특급 호텔/리조트 4박 (2인 1실, 호텔 조식 포함)",
+      "5성급 리조트 4박 (조식 포함)",
       "단독 전용 차량 및 한국어 전문 가이드",
-      "후에 황궁 입장료 및 전동카 탑승권 및 전 일정 모든 관광지 입장료 100% 포함",
-      "하이반 패스 전망대 티켓 & 후에 궁중 요리 특식",
-      "전 일정 엄선 현지 미식 식대 전액 포함 (1끼당 20만동 기준, 중·석식 총 8회)",
-      "4인 기준 전용 VIP 단독 차량 및 한국어 전문 가이드 결합"
+      "후에 황궁 입장료 및 전동카 탑승권",
+      "하이반 패스 전망대 티켓 & 후에 궁중 요리 특식"
     ],
     "excluded": [
       "국제선 항공권",
       "개인 경비",
-      "매너팁",
-      "개인 기호성 음료 및 주류, 매너팁 (자율)"
+      "매너팁"
     ],
     "itinerary": [
       {
@@ -2220,8 +2159,8 @@
     "category": "골프투어",
     "region": "중부",
     "city": "다낭",
-    "priceKRW": 1010000,
-    "priceVND": 19005170,
+    "priceKRW": 1190000,
+    "priceVND": 22000000,
     "duration": "3박 5일",
     "imageUrl": "/images/vietnam_golf_resort.jpg",
     "additionalImages": [
@@ -2245,15 +2184,15 @@
     ],
     "description": "선호도 1위 다낭 대표 3대 명문 코스에서 매일 18홀씩 총 54홀을 즐기는 베스트셀러 골프 패키지입니다.",
     "included": [
-      "다낭 4·5성급 특급 골프 리조트/호텔 3박 (2인 1실, 호텔 조식 포함)",
+      "5성급 호텔 3박 (2인 1실, 조식 포함)",
       "54홀 그린피 + 전동카트 + 1인 1캐디피 올포함",
-      "전 일정 클럽하우스 중식 및 현지 정찬 석식 포함 (1끼당 20만동 기준, 총 6회)",
-      "4인 1팀 기준 단독 전용 리무진 골프밴 및 한국어 전담 안내 지원"
+      "공항-골프장-호텔 전 일정 골프백 전용 단독 리무진",
+      "클럽하우스 중식 쿠폰 3회 + 90분 골프 마사지 1회"
     ],
     "excluded": [
       "캐디팁 ($15~$20/18홀 현장 지불)",
-      "항공권",
-      "캐디팁 (18홀당 $15~$20 현장 지불)"
+      "개인 경비 및 석식",
+      "항공권"
     ],
     "golfSpecs": {
       "holes": 54,
@@ -2306,8 +2245,8 @@
     "category": "골프투어",
     "region": "중부",
     "city": "다낭",
-    "priceKRW": 1300000,
-    "priceVND": 24462100,
+    "priceKRW": 1590000,
+    "priceVND": 29500000,
     "duration": "4박 6일",
     "imageUrl": "/images/my_khe_beach_1786255505556.jpg",
     "additionalImages": [
@@ -2332,16 +2271,15 @@
     ],
     "description": "베트남 중부의 세계적인 5대 챔피언십 코스에서 5일간 매일 18홀씩 총 90홀을 완주하는 프리미엄 골프 패키지입니다.",
     "included": [
-      "다낭 4·5성급 특급 골프 리조트/호텔 4박 (2인 1실, 호텔 조식 포함)",
+      "5성급 럭셔리 호텔 4박 (2인 1실, 조식 포함)",
       "5일간 총 90홀 그린피 + 2인 1카트 + 1인 1캐디피 올포함",
       "공항/골프장 전 일정 골프백 전용 VIP 리무진 밴 & 전담 기사",
-      "전 일정 클럽하우스 중식 및 현지 정찬 석식 포함 (1끼당 20만동 기준, 총 8회)",
-      "4인 1팀 기준 단독 전용 리무진 골프밴 및 한국어 전담 안내 지원"
+      "클럽하우스 중식 쿠폰 5회 + 90분 골프 마사지 2회"
     ],
     "excluded": [
       "캐디팁 ($15~$20/18홀)",
-      "항공권",
-      "캐디팁 (18홀당 $15~$20 현장 지불)"
+      "개인 경비 및 석식",
+      "항공권"
     ],
     "golfSpecs": {
       "holes": 90,
@@ -2404,213 +2342,425 @@
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
-    "id": "prod-danang-villa-01",
-    "title": "[다낭/독채풀빌라] 미케비치 오션뷰 4베드룸 프리미엄 독채 풀빌라 3박 5일",
-    "subTitle": "전용 대형 프라이빗 수영장 + 24시간 버틀러 + 매일 전신 마사지 90분 + 단독 차량 & 가이드 올포함",
+    "id": "prod-danang-villa-cysea-5bed",
+    "title": "[다낭/독채풀빌라] Cy'sea(사이시) 프라이빗 비치 5베드룸 단독 풀빌라",
+    "subTitle": "리엔찌에우 에메랄드 해변 인근 · 침실 5개/침대 8개/욕실 5.5개 · 전용 단독 수영장 · 바비큐 시설",
     "category": "풀빌라",
     "region": "중부",
     "city": "다낭",
-    "priceKRW": 980000,
-    "priceVND": 18200000,
-    "duration": "3박 5일",
-    "imageUrl": "/images/vietnam_beach_villa.jpg",
+    "priceKRW": 380000,
+    "priceVND": 7150000,
+    "duration": "1박 기준 (연박 가능)",
+    "imageUrl": "https://a0.muscache.com/im/pictures/hosting/Hosting-1234407839831467877/original/d39f92f1-316d-4fd4-9014-21899e528396.jpeg",
     "additionalImages": [
-      "/images/vietnam_beach_villa.jpg",
-      "/images/vietnam_beach_villa.jpg",
-      "/images/vietnam_beach_villa.jpg"
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1234407839831467877/original/ef2a1b6a-1e84-4928-8407-490c890f911f.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1234407839831467877/original/960a9d8a-c27b-4523-a71f-28d480bd0dc8.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1234407839831467877/original/4ffa1995-d443-49f5-814f-d22f70f11f30.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1234407839831467877/original/5d8692e9-4627-4fd5-ade8-f945da23afbf.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1234407839831467877/original/25cf6fa2-5a19-4792-9be5-37f3f365e5db.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1234407839831467877/original/f3af1348-15be-4cc5-a7ed-54b57d1f0b27.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1234407839831467877/original/2c972791-eddc-40ea-bbb6-0db200d03b6f.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1234407839831467877/original/55176adf-d338-472b-8ef8-bba954c1c636.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1234407839831467877/original/d39f92f1-316d-4fd4-9014-21899e528396.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1234407839831467877/original/bd6a622f-e5b8-4c45-a062-eb56ea313507.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1234407839831467877/original/a1f5e58c-03ad-4cb4-a651-898788ba8759.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1234407839831467877/original/93b31322-fc3e-4dda-910e-47b775817004.jpeg"
     ],
-    "rating": 5,
-    "reviewCount": 94,
+    "galleryImages": [
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1234407839831467877/original/ef2a1b6a-1e84-4928-8407-490c890f911f.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1234407839831467877/original/960a9d8a-c27b-4523-a71f-28d480bd0dc8.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1234407839831467877/original/4ffa1995-d443-49f5-814f-d22f70f11f30.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1234407839831467877/original/5d8692e9-4627-4fd5-ade8-f945da23afbf.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1234407839831467877/original/25cf6fa2-5a19-4792-9be5-37f3f365e5db.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1234407839831467877/original/f3af1348-15be-4cc5-a7ed-54b57d1f0b27.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1234407839831467877/original/2c972791-eddc-40ea-bbb6-0db200d03b6f.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1234407839831467877/original/55176adf-d338-472b-8ef8-bba954c1c636.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1234407839831467877/original/d39f92f1-316d-4fd4-9014-21899e528396.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1234407839831467877/original/bd6a622f-e5b8-4c45-a062-eb56ea313507.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1234407839831467877/original/a1f5e58c-03ad-4cb4-a651-898788ba8759.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1234407839831467877/original/93b31322-fc3e-4dda-910e-47b775817004.jpeg"
+    ],
+    "rating": 5.0,
+    "reviewCount": 24,
     "isPopular": true,
     "isHotDeal": true,
-    "discountPercent": 15,
+    "discountPercent": 10,
     "departureCities": [
-      "인천",
-      "부산",
-      "대구",
-      "청주"
-    ],
-    "tags": [
-      "#다낭풀빌라",
-      "#독채풀빌라",
-      "#오션뷰",
-      "#가족여행",
-      "#프라이빗수영장",
-      "#바비큐파티"
-    ],
-    "description": "다낭 최고급 미케비치 해변가에 위치한 4베드룸 럭셔리 단독 풀빌라입니다. 다른 투숙객 없이 오직 우리 가족과 일행만을 위한 넓은 정원, 프라이빗 인피니티 풀, 풀사이드 바베큐 파티를 누려보세요.",
-    "included": [
-      "미케비치 4베드룸 럭셔리 독채 풀빌라 3박 (단독 사용)",
-      "단독 VIP 리무진 밴 & 한국어 가이드 전 일정 상시 대기",
-      "매일 풀빌라 홈메이드 조식 서비스 + 1회 풀사이드 해산물 BBQ 파티",
-      "투숙객 전원 90분 아로마 전신 마사지 1회 무료",
-      "호이안 올드타운 & 바나힐 투어 전용 차량 지원"
-    ],
-    "excluded": [
-      "개인 경비 및 매너팁",
-      "항공권"
-    ],
-    "villaSpecs": {
-      "villaName": "다낭 미케비치 시그니처 4베드룸 럭셔리 빌라",
-      "structureDescription": "마스터룸 2실 + 패밀리룸 1실 + 트윈룸 1실 (총 4객실 / 독립 욕실 4개 + 대형 거실 + 키친)",
-      "bedrooms": 4,
-      "bathrooms": 4,
-      "beds": "킹베드 3개 + 싱글베드 2개",
-      "maxOccupancy": 10,
-      "standardOccupancy": 8,
-      "privatePool": true,
-      "oceanView": true,
-      "areaSqm": 420,
-      "floors": 2,
-      "address": "23 Chế Lan Viên, Ngũ Hành Sơn, Đà Nẵng 550000 베트남",
-      "googleMapUrl": "https://maps.google.com/?q=23+Che+Lan+Vien+Ngu+Hanh+Son+Da+Nang",
-      "amenities": [
-        "프라이빗 수영장",
-        "넓은 거실 & 소파",
-        "풀옵션 주방 & 다이닝 룸",
-        "프라이빗 잔디 정원",
-        "야외 바비큐(BBQ) 그릴 시설",
-        "스마트 TV & 넷플릭스",
-        "24시간 전담 버틀러",
-        "초고속 Wi-Fi"
-      ],
-      "checkInTime": "15:00",
-      "checkOutTime": "11:00",
-      "airbnbUrl": "https://www.airbnb.co.kr/rooms/1596807485988738548"
-    },
-    "itinerary": [
-      {
-        "day": 1,
-        "title": "다낭 공항 도착 ➔ 전용 VIP 밴 ➔ 풀빌라 체크인 & 웰컴 드링크",
-        "description": "공항 도착 후 풀빌라 체크인 및 전용 수영장 힐링 휴식.",
-        "meal": "조식: - | 중식: - | 석식: 베트남 궁중 요리 디너",
-        "hotel": "다낭 미케비치 4베드룸 럭셔리 풀빌라"
-      },
-      {
-        "day": 2,
-        "title": "호이안 고대도시 올드타운 ➔ 풀사이드 해산물 BBQ 파티",
-        "description": "호이안 올드타운 투어 후 풀빌라 잔디 정원에서 프라이빗 바비큐 파티.",
-        "meal": "조식: 풀빌라 조식 | 중식: 호이안 미식 | 석식: 풀사이드 BBQ",
-        "hotel": "다낭 미케비치 4베드룸 럭셔리 풀빌라"
-      },
-      {
-        "day": 3,
-        "title": "전일 풀빌라 힐링 휴양 또는 바나힐 테마파크 자유 선택",
-        "description": "프라이빗 풀에서 여유로운 수영과 휴식. 희망 시 바나힐 무료 차량 지원.",
-        "meal": "조식: 풀빌라 조식 | 중식: 자유식 | 석식: 다낭 유명 레스토랑",
-        "hotel": "다낭 미케비치 4베드룸 럭셔리 풀빌라"
-      },
-      {
-        "day": 4,
-        "title": "레이트 체크아웃 ➔ 90분 스파 마사지 ➔ 쇼핑 ➔ 공항 샌딩",
-        "description": "스파 90분 마사지 및 롯데마트 쇼핑 후 공항 샌딩.",
-        "meal": "조식: 풀빌라 조식 | 중식: 현지식 | 석식: 한정식",
-        "hotel": "기내박"
-      }
-    ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
-  },
-  {
-    "id": "prod-danang-villa-02",
-    "title": "[다낭/대저택] 오션프론트 6베드룸 초대형 프리미엄 풀빌라 3박 5일",
-    "subTitle": "총 6객실 (최대 16인) + 실내 엘리베이터 + 최신 노래방 + 자쿠지 스파 + 15m 대형 인피니티 풀",
-    "category": "풀빌라",
-    "region": "중부",
-    "city": "다낭",
-    "priceKRW": 1350000,
-    "priceVND": 25000000,
-    "duration": "3박 5일",
-    "imageUrl": "/images/vietnam_city_villa.jpg",
-    "additionalImages": [
-      "/images/vietnam_city_villa.jpg",
-      "/images/vietnam_city_villa.jpg",
-      "/images/vietnam_city_villa.jpg"
-    ],
-    "rating": 5,
-    "reviewCount": 48,
-    "isPopular": true,
-    "isHotDeal": false,
-    "departureCities": [
+      "다낭 현지 체크인",
       "인천",
       "부산",
       "대구"
     ],
     "tags": [
-      "#6베드룸",
-      "#대저택풀빌라",
-      "#최대16인",
-      "#노래방",
-      "#자쿠지",
-      "#엘리베이터"
+      "#다낭직영풀빌라",
+      "#Cysea빌라",
+      "#5베드룸",
+      "#전용수영장",
+      "#오션피스",
+      "#가족모임"
     ],
-    "description": "동호회, 기업 워크숍, 3대 대가족 여행에 최적화된 다낭 최고의 6베드룸 대저택 풀빌라입니다. 최신식 엘리베이터, 음향 완비 노래방 룸, 자쿠지 스파, 초대형 인피니티 풀을 갖추고 있습니다.",
+    "description": "다낭 리엔찌에우의 고요하고 아름다운 해변가에 자리잡은 Cy'sea(사이시) 5베드룸 단독 풀빌라입니다. 침실 5개, 침대 8개, 욕실 5.5개를 완비하여 가족 및 친구들과 함께 다른 투숙객 없이 우리 일행만의 완벽한 프라이빗 휴식을 누릴 수 있습니다. 맑은 전용 수영장과 야외 잔디 테라스, 바비큐 그릴 시설이 준비되어 있습니다.",
     "included": [
-      "6베드룸 오션프론트 단독 대저택 풀빌라 3박",
-      "전용 16인승 리무진 밴 & 전담 한국어 가이드",
-      "매일 프라이빗 쉐프 조식 및 통돼지/해산물 BBQ 파티 1회",
-      "고급 와인 4병 & 웰컴 과일 바구니 제공"
+      "Cy'sea 5베드룸 단독 풀빌라 전체 독채 사용",
+      "프라이빗 단독 수영장 및 야외 선베드",
+      "풀옵션 주방 (대형 냉장고, 전자레인지, 조리도구 일체)",
+      "야외 바비큐(BBQ) 그릴 시설",
+      "초고속 무료 Wi-Fi & 스마트 TV",
+      "호스트 24시간 실시간 한국어 케어 및 응대"
     ],
     "excluded": [
-      "개인 경비",
+      "개인 경비 및 식사비 (주방에서 직접 취사 가능)",
+      "항공권 (요청 시 단독 렌터카 및 픽업 연결 가능)"
+    ],
+    "villaSpecs": {
+      "villaName": "다낭 Cy'sea 빌라 (해변의 평화)",
+      "structureDescription": "침실 5개 + 침대 8개 + 욕실 5.5개 + 대형 거실 + 키친 + 단독 프라이빗 수영장",
+      "bedrooms": 5,
+      "bathrooms": 6,
+      "beds": "침대 8개 (더블 3개, 싱글 5개)",
+      "maxOccupancy": 12,
+      "standardOccupancy": 10,
+      "privatePool": true,
+      "oceanView": true,
+      "areaSqm": 450,
+      "floors": 3,
+      "address": "Liên Chiểu, Đà Nẵng, 베트남",
+      "googleMapUrl": "https://maps.google.com/?q=Lien+Chieu+Da+Nang",
+      "airbnbUrl": "https://www.airbnb.co.kr/rooms/1234407839831467877",
+      "amenities": [
+        "프라이빗 전용 수영장",
+        "야외 바비큐(BBQ) 그릴",
+        "풀옵션 주방 & 다이닝 공간",
+        "초고속 와이파이 & 스마트 TV",
+        "세탁기 & 건조 공간",
+        "야외 샤워 시설 & 테라스",
+        "에어컨 전 구역 완비",
+        "호스트 실시간 케어"
+      ],
+      "checkInTime": "14:00",
+      "checkOutTime": "11:00",
+      "breakfastIncluded": false,
+      "hostLanguage": "한국어 / 베트남어 / 영어 (24시간 카카오톡 실시간 상담)"
+    },
+    "airbnbUrl": "https://www.airbnb.co.kr/rooms/1234407839831467877",
+    "googleMapUrl": "https://maps.google.com/?q=Lien+Chieu+Da+Nang",
+    "address": "Liên Chiểu, Đà Nẵng, 베트남"
+  },
+  {
+    "id": "prod-danang-villa-marble-6bed",
+    "title": "[다낭/독채풀빌라] 마루블 가든(Marble Garden) 6베드룸 프라이빗 풀빌라",
+    "subTitle": "응우하인선 미케비치 인근 · 침실 6개/침대 6개/욕실 5개 · 단독 정원 & 전용 수영장",
+    "category": "풀빌라",
+    "region": "중부",
+    "city": "다낭",
+    "priceKRW": 315000,
+    "priceVND": 5930000,
+    "duration": "1박 기준 (연박 가능)",
+    "imageUrl": "https://a0.muscache.com/im/pictures/hosting/Hosting-1596807485988738548/original/446c4cf5-db2f-4473-898b-e81124186cbc.jpeg",
+    "additionalImages": [
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1596807485988738548/original/fae8687e-3550-49fd-8a42-1d881d3d6b93.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1596807485988738548/original/1113fc18-b815-4f95-ae77-a4862b3b43b8.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1596807485988738548/original/7009d16d-8476-4446-8efc-491617985a34.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1596807485988738548/original/1cb390b8-0012-405f-8045-a2583d211fe2.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1596807485988738548/original/00e41da5-dc35-44da-b437-35cad7e13092.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1596807485988738548/original/2fd45edd-456b-4702-b8d5-e5eb4fa00c79.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1596807485988738548/original/6920b1f8-b057-43c2-a2ab-1013058b4684.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1596807485988738548/original/ebacf5ee-29aa-4aea-bdda-fdc3f42d12f4.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1596807485988738548/original/2cf99bf8-abea-43bd-b9bb-c2884cea1009.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1596807485988738548/original/c2e8df07-de5a-4851-b3a4-1abc9ed62421.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1596807485988738548/original/523fbe89-3d00-4022-a195-46fae3c84088.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1596807485988738548/original/8c06afd7-4d31-449f-bb3d-baaaf81b5e20.jpeg"
+    ],
+    "galleryImages": [
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1596807485988738548/original/fae8687e-3550-49fd-8a42-1d881d3d6b93.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1596807485988738548/original/1113fc18-b815-4f95-ae77-a4862b3b43b8.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1596807485988738548/original/7009d16d-8476-4446-8efc-491617985a34.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1596807485988738548/original/1cb390b8-0012-405f-8045-a2583d211fe2.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1596807485988738548/original/00e41da5-dc35-44da-b437-35cad7e13092.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1596807485988738548/original/2fd45edd-456b-4702-b8d5-e5eb4fa00c79.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1596807485988738548/original/6920b1f8-b057-43c2-a2ab-1013058b4684.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1596807485988738548/original/ebacf5ee-29aa-4aea-bdda-fdc3f42d12f4.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1596807485988738548/original/2cf99bf8-abea-43bd-b9bb-c2884cea1009.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1596807485988738548/original/c2e8df07-de5a-4851-b3a4-1abc9ed62421.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1596807485988738548/original/523fbe89-3d00-4022-a195-46fae3c84088.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1596807485988738548/original/8c06afd7-4d31-449f-bb3d-baaaf81b5e20.jpeg"
+    ],
+    "rating": 5.0,
+    "reviewCount": 38,
+    "isPopular": true,
+    "isHotDeal": true,
+    "discountPercent": 15,
+    "departureCities": [
+      "다낭 현지 체크인",
+      "인천",
+      "부산",
+      "대구"
+    ],
+    "tags": [
+      "#다낭직영풀빌라",
+      "#마루블가든",
+      "#6베드룸",
+      "#미케비치풀빌라",
+      "#오순도순힐링"
+    ],
+    "description": "다낭 응우하인선군 미케비치 번화가와 인접한 중심부에 위치한 마루블 가든(Marble Garden) 6베드룸 프라이빗 독채 풀빌라입니다. 침실 6개와 욕실 5개, 넓은 전용 거실과 수영장, 감성 가득한 정원을 갖추어 가족 모임이나 친목 여행에 최적화된 편안함을 선사합니다.",
+    "included": [
+      "마루블 가든 6베드룸 독채 풀빌라 전체 단독 사용",
+      "프라이빗 전용 수영장 & 가든 테라스",
+      "풀옵션 주방 및 바비큐(BBQ) 시설",
+      "스마트 TV (넷플릭스) & 초고속 와이파이",
+      "세탁기, 냉장고, 전자레인지 등 생활가전 완비",
+      "호스트 24시간 실시간 케어"
+    ],
+    "excluded": [
+      "개인 경비 및 식사비",
       "항공권"
     ],
     "villaSpecs": {
-      "villaName": "다낭 그랜드 오션 6베드룸 맨션",
-      "structureDescription": "마스터룸 2실 + 패밀리룸 2실 + 트윈룸 2실 (총 6객실 / 전 객실 개별 욕실 + 전용 엘리베이터)",
+      "villaName": "다낭 마루블 가든 빌라 (Marble Garden Villa)",
+      "structureDescription": "침실 6개 + 침대 6개 + 욕실 5개 + 넓은 정원 + 프라이빗 단독 수영장",
       "bedrooms": 6,
-      "bathrooms": 7,
-      "beds": "킹베드 4개 + 퀸베드 2개 + 싱글 2개",
-      "maxOccupancy": 16,
-      "standardOccupancy": 12,
+      "bathrooms": 5,
+      "beds": "더블베드 6개",
+      "maxOccupancy": 14,
+      "standardOccupancy": 10,
+      "privatePool": true,
+      "oceanView": false,
+      "areaSqm": 460,
+      "floors": 3,
+      "address": "23 Chế Lan Viên, Ngũ Hành Sơn, Đà Nẵng 550000 베트남",
+      "googleMapUrl": "https://maps.google.com/?q=23+Che+Lan+Vien+Ngu+Hanh+Son+Da+Nang",
+      "airbnbUrl": "https://www.airbnb.co.kr/rooms/1596807485988738548",
+      "amenities": [
+        "프라이빗 전용 수영장",
+        "아늑한 잔디 정원 & 야외 식사 공간",
+        "바비큐(BBQ) 그릴",
+        "풀옵션 주방 & 다이닝 공간",
+        "세탁기 및 건조 시설",
+        "스마트 TV & 와이파이",
+        "전 구역 에어컨",
+        "셀프 체크인 & 호스트 케어"
+      ],
+      "checkInTime": "14:00",
+      "checkOutTime": "11:00",
+      "breakfastIncluded": false,
+      "hostLanguage": "한국어 / 베트남어 (24시간 카카오톡 실시간 상담)"
+    },
+    "airbnbUrl": "https://www.airbnb.co.kr/rooms/1596807485988738548",
+    "googleMapUrl": "https://maps.google.com/?q=23+Che+Lan+Vien+Ngu+Hanh+Son+Da+Nang",
+    "address": "23 Chế Lan Viên, Ngũ Hành Sơn, Đà Nẵng 550000 베트남"
+  },
+  {
+    "id": "prod-danang-villa-pearl-10bed",
+    "title": "[다낭/대저택풀빌라] 펄 리트리트(Pearl Retreat) 미케비치 10베드룸 웅장한 빌라",
+    "subTitle": "선짜군 미케비치 도보 1분 · 침실 10개/침대 11개/욕실 10개 · 전용 사우나 & 인피니티 풀",
+    "category": "풀빌라",
+    "region": "중부",
+    "city": "다낭",
+    "priceKRW": 650000,
+    "priceVND": 12200000,
+    "duration": "1박 기준 (연박 가능)",
+    "imageUrl": "https://a0.muscache.com/im/pictures/hosting/Hosting-1470661871888779964/original/ef25966e-087b-45bb-95ff-a510b9267b3b.jpeg",
+    "additionalImages": [
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1470661871888779964/original/49f70ab8-cb13-452e-b2c0-8abada9cf148.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1470661871888779964/original/2e0b187b-b39f-4814-97ec-d1190f69e3c3.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1470661871888779964/original/0755c7bb-8106-40bb-a904-e01f1a89d1e9.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1470661871888779964/original/1c063d3c-551e-416a-be9f-38ff5ce059e1.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1470661871888779964/original/e71561ce-aa87-4f04-a7f1-2cbd1c795cd9.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1470661871888779964/original/a7c06c2c-a71a-44c9-a6c4-84c4ab46518c.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1470661871888779964/original/05b8ab1c-809b-4835-8683-ddb5aea069e2.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1470661871888779964/original/c710d67b-ecf6-493e-8f74-b9b2d89fdc17.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1470661871888779964/original/2c8cd258-83bb-46a6-9157-bed170bf166c.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1470661871888779964/original/58d77ad9-3d60-4d54-a465-e7c637e7ada4.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1470661871888779964/original/53cdb625-0b90-4917-bf25-e108e1a64144.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1470661871888779964/original/42713ce0-561f-4e81-8e37-c9a3f3f4c08f.jpeg"
+    ],
+    "galleryImages": [
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1470661871888779964/original/49f70ab8-cb13-452e-b2c0-8abada9cf148.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1470661871888779964/original/2e0b187b-b39f-4814-97ec-d1190f69e3c3.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1470661871888779964/original/0755c7bb-8106-40bb-a904-e01f1a89d1e9.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1470661871888779964/original/1c063d3c-551e-416a-be9f-38ff5ce059e1.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1470661871888779964/original/e71561ce-aa87-4f04-a7f1-2cbd1c795cd9.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1470661871888779964/original/a7c06c2c-a71a-44c9-a6c4-84c4ab46518c.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1470661871888779964/original/05b8ab1c-809b-4835-8683-ddb5aea069e2.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1470661871888779964/original/c710d67b-ecf6-493e-8f74-b9b2d89fdc17.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1470661871888779964/original/2c8cd258-83bb-46a6-9157-bed170bf166c.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1470661871888779964/original/58d77ad9-3d60-4d54-a465-e7c637e7ada4.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1470661871888779964/original/53cdb625-0b90-4917-bf25-e108e1a64144.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1470661871888779964/original/42713ce0-561f-4e81-8e37-c9a3f3f4c08f.jpeg"
+    ],
+    "rating": 4.98,
+    "reviewCount": 47,
+    "isPopular": true,
+    "isHotDeal": true,
+    "discountPercent": 10,
+    "departureCities": [
+      "다낭 현지 체크인",
+      "인천",
+      "부산",
+      "대구"
+    ],
+    "tags": [
+      "#다낭직영풀빌라",
+      "#펄리트리트",
+      "#10베드룸",
+      "#대저택풀빌라",
+      "#사우나완비",
+      "#기업워크샵",
+      "#대가족모임"
+    ],
+    "description": "미케 해변에서 도보 단 1분 거리에 위치한 다낭 최고 규모의 10베드룸 럭셔리 대저택 펄 리트리트(Pearl Retreat)입니다. 전 객실 개별 욕실을 갖춘 10개의 침실과 11개의 침대, 전용 사우나, 초대형 수영장, 카약 등을 완비하여 대가족, 기업 워크숍, 골프 동호회 등 대규모 단체 여행객에게 비교할 수 없는 감동을 선사합니다.",
+    "included": [
+      "펄 리트리트 10베드룸 초대형 독채 대저택 전체 단독 사용",
+      "대형 프라이빗 수영장 & 전용 사우나 시설",
+      "카약 및 해변 액티비티 장비",
+      "초대형 다이닝 룸 & 풀옵션 대형 주방",
+      "스마트 도어록 & 보안 시스템",
+      "호스트 24시간 실시간 케어 및 가이드 연계"
+    ],
+    "excluded": [
+      "개인 경비 및 식사비",
+      "항공권"
+    ],
+    "villaSpecs": {
+      "villaName": "다낭 펄 리트리트 (Pearl Retreat Luxury Villa)",
+      "structureDescription": "침실 10개 + 침대 11개 + 욕실 10개 + 전용 사우나 + 대형 인피니티 풀 + 초대형 거실",
+      "bedrooms": 10,
+      "bathrooms": 10,
+      "beds": "침대 11개 (킹/더블 침대)",
+      "maxOccupancy": 24,
+      "standardOccupancy": 16,
       "privatePool": true,
       "oceanView": true,
-      "areaSqm": 680,
-      "floors": 3,
+      "areaSqm": 750,
+      "floors": 4,
+      "address": "Sơn Trà, Đà Nẵng, 베트남 (미케비치 도보 1분)",
+      "googleMapUrl": "https://maps.google.com/?q=Son+Tra+Da+Nang",
+      "airbnbUrl": "https://www.airbnb.co.kr/rooms/1470661871888779964",
       "amenities": [
-        "초대형 프라이빗 수영장 (15m)",
-        "실내 전용 엘리베이터",
-        "프라이빗 노래방 & 사운드 시스템",
-        "야외 루프탑 자쿠지 스파",
-        "풀옵션 대형 주방",
-        "야외 정원 및 대형 BBQ 그릴",
-        "24시간 전담 상주 버틀러"
+        "초대형 프라이빗 수영장",
+        "전용 프라이빗 사우나",
+        "미케비치 도보 1분 해변 접근성",
+        "카약 및 레저 장비",
+        "풀옵션 대형 주방 & 단체 다이닝 룸",
+        "각 방별 독립 욕실 10개 완비",
+        "스마트 도어록 & 셀프 체크인",
+        "초고속 Wi-Fi & 스마트 TV"
       ],
       "checkInTime": "15:00",
-      "checkOutTime": "11:00"
+      "checkOutTime": "11:00",
+      "breakfastIncluded": false,
+      "hostLanguage": "한국어 / 베트남어 / 영어 (24시간 카카오톡 실시간 상담)"
     },
-    "itinerary": [
-      {
-        "day": 1,
-        "title": "다낭 공항 도착 ➔ 16인승 VIP 리무진 ➔ 6베드룸 체크인 & 환영 만찬",
-        "description": "공항 도착 후 풀빌라 체크인 및 환영 만찬.",
-        "meal": "조식: - | 중식: - | 석식: 풀빌라 쉐프 특식",
-        "hotel": "다낭 그랜드 오션 6베드룸 맨션"
-      },
-      {
-        "day": 2,
-        "title": "호이안 올드타운 ➔ 풀사이드 통돼지 BBQ 파티",
-        "description": "호이안 관광 후 정원에서 프라이빗 바비큐 파티.",
-        "meal": "조식: 풀빌라 조식 | 중식: 호이안 미식 | 석식: 프리미엄 BBQ 파티",
-        "hotel": "다낭 그랜드 오션 6베드룸 맨션"
-      },
-      {
-        "day": 3,
-        "title": "자유 힐링 또는 바나힐 ➔ 실내 노래방 & 자쿠지 휴식",
-        "description": "원하는 일정대로 전용 차량 관광 후 풀빌라 노래방 파티.",
-        "meal": "조식: 풀빌라 조식 | 중식: 자유식 | 석식: 고급 해산물",
-        "hotel": "다낭 그랜드 오션 6베드룸 맨션"
-      },
-      {
-        "day": 4,
-        "title": "레이트 체크아웃 ➔ 90분 마사지 ➔ 롯데마트 ➔ 공항 샌딩",
-        "description": "전원 마사지 및 기념품 쇼핑 후 공항 샌딩.",
-        "meal": "조식: 풀빌라 조식 | 중식: 한정식 | 석식: 공항식",
-        "hotel": "기내박"
-      }
+    "airbnbUrl": "https://www.airbnb.co.kr/rooms/1470661871888779964",
+    "googleMapUrl": "https://maps.google.com/?q=Son+Tra+Da+Nang",
+    "address": "Sơn Trà, Đà Nẵng, 베트남 (미케비치 도보 1분)"
+  },
+  {
+    "id": "prod-danang-villa-napoli-12bed",
+    "title": "[다낭/슈퍼캐슬풀빌라] 나폴리 캐슬(Napoli Castle) 12베드룸 초대형 슈퍼 빌라",
+    "subTitle": "만타이 해변 오션뷰 파노라마 · 침실 12개/침대 16개/욕실 13개 · 다낭 최대 규모 슈퍼 럭셔리",
+    "category": "풀빌라",
+    "region": "중부",
+    "city": "다낭",
+    "priceKRW": 850000,
+    "priceVND": 15980000,
+    "duration": "1박 기준 (연박 가능)",
+    "imageUrl": "https://a0.muscache.com/im/pictures/hosting/Hosting-1622142057449951853/original/baf84951-c9a1-44e8-8ff4-759f41e41414.jpeg",
+    "additionalImages": [
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1622142057449951853/original/e5f3aabc-433d-49ed-a677-b7ce082fab1f.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1622142057449951853/original/b9d2541c-1a37-47c9-a056-1acdb11f9597.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1622142057449951853/original/0f2fa835-02c5-4b57-b8ce-76fe2e06ee35.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1622142057449951853/original/b23ca873-612c-45ac-8f62-dbc2bb7a9741.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1622142057449951853/original/05315fb8-b5f5-4c3d-8db7-75b8bc464635.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1622142057449951853/original/6ff7c5f9-ee7e-4474-beb5-9255b85e584a.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1622142057449951853/original/378c407b-3b1b-4f0b-9ebc-4993835aae17.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1622142057449951853/original/ff89c760-8f57-476e-97a7-644accd3444b.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1622142057449951853/original/dbb99f0f-8aa7-423a-80cd-075d3fbd5ca0.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1622142057449951853/original/a2100a18-30e0-4ad0-88bc-b3c97d8c33d6.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1622142057449951853/original/4d7133b3-4220-4eef-84d0-6ed60f2bdd98.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1622142057449951853/original/17a31513-4788-4ad5-8181-1a61027736b3.jpeg"
     ],
-    "updatedAt": "2026-09-03T01:59:45.021Z",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    "galleryImages": [
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1622142057449951853/original/e5f3aabc-433d-49ed-a677-b7ce082fab1f.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1622142057449951853/original/b9d2541c-1a37-47c9-a056-1acdb11f9597.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1622142057449951853/original/0f2fa835-02c5-4b57-b8ce-76fe2e06ee35.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1622142057449951853/original/b23ca873-612c-45ac-8f62-dbc2bb7a9741.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1622142057449951853/original/05315fb8-b5f5-4c3d-8db7-75b8bc464635.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1622142057449951853/original/6ff7c5f9-ee7e-4474-beb5-9255b85e584a.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1622142057449951853/original/378c407b-3b1b-4f0b-9ebc-4993835aae17.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1622142057449951853/original/ff89c760-8f57-476e-97a7-644accd3444b.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1622142057449951853/original/dbb99f0f-8aa7-423a-80cd-075d3fbd5ca0.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1622142057449951853/original/a2100a18-30e0-4ad0-88bc-b3c97d8c33d6.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1622142057449951853/original/4d7133b3-4220-4eef-84d0-6ed60f2bdd98.jpeg",
+      "https://a0.muscache.com/im/pictures/hosting/Hosting-1622142057449951853/original/17a31513-4788-4ad5-8181-1a61027736b3.jpeg"
+    ],
+    "rating": 4.94,
+    "reviewCount": 18,
+    "isPopular": true,
+    "isHotDeal": true,
+    "discountPercent": 10,
+    "departureCities": [
+      "다낭 현지 체크인",
+      "인천",
+      "부산",
+      "대구"
+    ],
+    "tags": [
+      "#다낭직영풀빌라",
+      "#나폴리캐슬",
+      "#12베드룸",
+      "#다낭최대규모",
+      "#슈퍼빌라",
+      "#초대형파티",
+      "#골프단체"
+    ],
+    "description": "다낭 해안의 환상적인 바다 전망을 품은 다낭 최대 규모의 최고급 슈퍼 빌라 나폴리 캐슬(Napoli Castle)입니다. 아침에 창문을 열면 미케와 만타이 해변의 황홀한 일출과 시원한 바닷바람이 펼쳐집니다. 12개의 럭셔리 침실과 16개의 침대, 13개의 욕실, 초대형 프라이빗 수영장, 야외 다이닝과 바비큐 공간까지 모두 갖추어 다낭 그 어느 곳에서도 경험할 수 없는 압도적인 웅장함과 힐링을 선사합니다.",
+    "included": [
+      "나폴리 캐슬 12베드룸 최고급 대저택 독채 전체 단독 사용",
+      "초대형 프라이빗 인피니티 수영장",
+      "만타이 & 미케비치 파노라마 오션뷰 조망",
+      "13개 전용 욕실 & 16개 편안한 침대",
+      "대규모 그룹을 위한 최고급 주방 & 야외 BBQ 다이닝 공간",
+      "호스트 24시간 실시간 케어 및 전담 상담 지원"
+    ],
+    "excluded": [
+      "개인 경비 및 식사비",
+      "항공권"
+    ],
+    "villaSpecs": {
+      "villaName": "다낭 나폴리 캐슬 (Napoli Castle Super Villa)",
+      "structureDescription": "침실 12개 + 침대 16개 + 욕실 13개 + 초대형 오션뷰 수영장 + 웅장한 대연회장 거실",
+      "bedrooms": 12,
+      "bathrooms": 13,
+      "beds": "침대 16개 (킹/퀸/더블)",
+      "maxOccupancy": 30,
+      "standardOccupancy": 20,
+      "privatePool": true,
+      "oceanView": true,
+      "areaSqm": 950,
+      "floors": 4,
+      "address": "Mân Thái, Sơn Trà, Đà Nẵng, 베트남 (만타이 해안)",
+      "googleMapUrl": "https://maps.google.com/?q=Man+Thai+Son+Tra+Da+Nang",
+      "airbnbUrl": "https://www.airbnb.co.kr/rooms/1622142057449951853",
+      "amenities": [
+        "다낭 최대 규모 초대형 수영장",
+        "파노라마 오션뷰 테라스 & 선베드",
+        "야외 대형 바비큐(BBQ) 공간",
+        "독립 욕실 13개 완비",
+        "대형 키친 및 풀옵션 조리시설",
+        "스마트 TV & 초고속 와이파이",
+        "전 구역 에어컨 완비",
+        "호스트 실시간 한국어 케어"
+      ],
+      "checkInTime": "15:00",
+      "checkOutTime": "11:00",
+      "breakfastIncluded": false,
+      "hostLanguage": "한국어 / 베트남어 / 영어 (24시간 카카오톡 실시간 상담)"
+    },
+    "airbnbUrl": "https://www.airbnb.co.kr/rooms/1622142057449951853",
+    "googleMapUrl": "https://maps.google.com/?q=Man+Thai+Son+Tra+Da+Nang",
+    "address": "Mân Thái, Sơn Trà, Đà Nẵng, 베트남 (만타이 해안)"
   },
   {
     "id": "prod-danang-free-01",
@@ -2620,7 +2770,7 @@
     "region": "중부",
     "city": "다낭",
     "priceKRW": 190000,
-    "priceVND": 3575230,
+    "priceVND": 3500000,
     "duration": "당일 투어",
     "imageUrl": "/images/danang_golden_bridge_1786255489649.jpg",
     "additionalImages": [
@@ -2644,12 +2794,11 @@
     "included": [
       "16인승 전용 차량 1일 10시간 단독 대절",
       "전담 베테랑 현지 기사 및 유류비, 톨게이트비, 주차비 일체 포함",
-      "호텔 로비 픽업 및 투어 후 원하는 장소 드롭",
-      "현지 특식 중식 1회 포함 (1끼 20만동 기준)",
-      "해당 관광지 입장료 일체 포함",
-      "4인 탑승 기준 단독 전용 차량 및 한국어 전문 가이드"
+      "호텔 로비 픽업 및 투어 후 원하는 장소 드롭"
     ],
     "excluded": [
+      "관광지 입장료",
+      "개인 식사비",
       "기사 매너팁 (1팀당 약 $10 권장)"
     ],
     "itinerary": [
@@ -2671,8 +2820,8 @@
     "category": "자유여행",
     "region": "중부",
     "city": "다낭",
-    "priceKRW": 110000,
-    "priceVND": 2069870,
+    "priceKRW": 65000,
+    "priceVND": 1200000,
     "duration": "반나절 (약 6시간)",
     "imageUrl": "/images/hoian_lantern_night_1787097792559.jpg",
     "additionalImages": [
@@ -2698,10 +2847,7 @@
       "왕복 전용 차량 및 전문 가이드",
       "코코넛 숲 바구니배 탑승료 & 팁",
       "호이안 올드타운 입장권",
-      "투본강 소원배 탑승권 & 소원초 유등",
-      "현지 특식 중식 1회 포함 (1끼 20만동 기준)",
-      "해당 관광지 입장료 일체 포함",
-      "4인 탑승 기준 단독 전용 차량 및 한국어 전문 가이드"
+      "투본강 소원배 탑승권 & 소원초 유등"
     ],
     "excluded": [
       "개인 쇼핑비",
@@ -2726,8 +2872,8 @@
     "category": "추천패키지",
     "region": "남부",
     "city": "나트랑",
-    "priceKRW": 530000,
-    "priceVND": 9973010,
+    "priceKRW": 790000,
+    "priceVND": 14800000,
     "duration": "3박 5일",
     "imageUrl": "/images/nhatrang_bay.jpg",
     "additionalImages": [
@@ -2766,22 +2912,20 @@
     ],
     "description": "300일 내내 온화한 햇살과 에메랄드빛 바다가 펼쳐지는 나트랑(동양의 나폴리)과 해발 1,500m 연중 18~24도의 쾌적한 꽃과 소나무의 고원도시 달랏을 묶은 베스트셀러 VIP 단독 패키지입니다. 단체 합승 없이 오직 우리 일행만을 위한 최신형 16인승 밴과 전담 한국어 가이드가 밀착 케어하며, 다딴라 루지, 랑비앙산 사륜 지프, 프라이빗 머드온천, 랍스터 특식까지 전 일정 추가 비용 없이 완벽하게 포함되어 있습니다.",
     "included": [
-      "나트랑 4·5성급 특급 호텔/리조트 3박 (2인 1실, 호텔 조식 포함)",
+      "나트랑 5성급 특급 호텔 2박 + 달랏 5성급 헤리티지 리조트 1박 (2인 1실, 특급 조식 뷔페 포함)",
       "전 일정 우리 일행 전용 단독 VIP 16인승 리무진 밴 & 베테랑 전담 기사 (유류비/도로비/주차비 일체 포함)",
       "신짜오투어 베트남 관광청 공인 100% 한국어 전문 가이드 전 일정 동행",
       "전 일정 웰빙 대표 특식 (달랏 넴느엉 바베큐, 달랏 아티초 소갈비 전골, 나트랑 베이 랍스터 반마리 & 씨푸드 BBQ, 갈랑가 전통 베트남식 등)",
       "관광지 전체 입장료 일체 (다딴라 폭포 & 알파인 코스터 루지 왕복, 랑비앙산 정상 4WD 지프 사파리, 린푸옥 사원, 크레이지하우스, 포나가르 첨탑)",
+      "아이리조트(I-Resort) 프라이빗 천연 머드온천 & 미네랄 유황 스파 입장권",
       "여행의 피로를 풀어주는 베트남 전통 전신 아로마 마사지 90분 (1회 포함)",
-      "현대해상/DB 1억원 해외여행자보험",
-      "전 일정 엄선 현지 미식 식대 전액 포함 (1끼당 20만동 기준, 중·석식 총 6회)",
-      "4인 기준 전용 VIP 단독 차량 및 한국어 전문 가이드 결합"
+      "현대해상/DB 1억원 해외여행자보험"
     ],
     "excluded": [
       "국제선 왕복 항공권 (고객 선호 항공사/시간대별 실시간 최저가 발권 지원 또는 마일리지 발권 자유)",
       "기사/가이드 매너팁 (1인 $20 권장, 강제성 없음)",
       "개인 쇼핑 경비 및 주류/음료",
-      "호텔 1인실 단독 투숙 시 싱글 차지",
-      "개인 기호성 음료 및 주류, 매너팁 (자율)"
+      "호텔 1인실 단독 투숙 시 싱글 차지"
     ],
     "itinerary": [
       {
@@ -2872,8 +3016,8 @@
     "category": "추천패키지",
     "region": "남부",
     "city": "나트랑",
-    "priceKRW": 690000,
-    "priceVND": 12983730,
+    "priceKRW": 950000,
+    "priceVND": 17800000,
     "duration": "4박 6일",
     "imageUrl": "/images/dalat.jpg",
     "additionalImages": [
@@ -2914,23 +3058,21 @@
     ],
     "description": "3박 5일의 아쉬움을 완벽히 채워주는 4박 6일 최고급 여유 패키지! 나트랑의 청정 해변 산호섬에서 단독 스피드보트로 즐기는 프리미엄 스노클링 호핑투어와 아이리조트 머드스파, 그리고 프랑스풍 고원도시 달랏에서 2박을 머물며 랑비앙산 지프, 다딴라 루지, 로빈힐 케이블카, 죽림선원, 숲속 힐링 카페까지 여유롭게 만끽합니다. 전 일정 90분 VIP 스파가 2회 포함되어 피로 없는 완벽한 휴식을 선사합니다.",
     "included": [
-      "나트랑 4·5성급 특급 호텔/리조트 4박 (2인 1실, 호텔 조식 포함)",
+      "나트랑 5성급 오션뷰 리조트 2박 + 달랏 5성급 프렌치 헤리티지 리조트 2박 (2인 1실, 조식 뷔페 4회 포함)",
       "전 일정 우리 일행 전용 단독 VIP 16인승 리무진 밴 & 베테랑 전담 기사 (유류비/도로비/주차비 일체 포함)",
       "신짜오투어 베트남 관광청 공인 100% 한국어 전문 가이드 전 일정 풀케어 동행",
       "나트랑 베이 단독 전용 스피드보트 호핑투어 (문섬 산호초 스노클링 장비, 미니비치 휴양, 선상 해상 런치)",
       "전 일정 웰빙 대표 특식 (나트랑 랍스터 BBQ 디너, 달랏 아티초 갈비탕, 달랏 넴느엉 바베큐, 달랏 와인 만찬 등)",
       "관광지 전체 입장료 일체 (다딴라 폭포 & 알파인 코스터 루지 왕복, 랑비앙산 정상 4WD 지프 사파리, 린푸옥 사원, 로빈힐 케이블카, 쭉람선원, 크레이지하우스, 달랏 기차역, 포나가르 첨탑, 롱선사)",
+      "아이리조트(I-Resort) 프라이빗 머드온천 & 미네랄 스파",
       "베트남 정통 90분 전신 힐링 마사지 총 2회 포함 (나트랑 1회, 달랏 1회)",
-      "현대해상/DB 1억원 해외여행자보험",
-      "전 일정 엄선 현지 미식 식대 전액 포함 (1끼당 20만동 기준, 중·석식 총 8회)",
-      "4인 기준 전용 VIP 단독 차량 및 한국어 전문 가이드 결합"
+      "현대해상/DB 1억원 해외여행자보험"
     ],
     "excluded": [
       "국제선 왕복 항공권 (고객 선호 항공사/시간대별 실시간 최저가 발권 지원 또는 마일리지 발권 자유)",
       "기사/가이드 매너팁 (1인 $30 권장, 강제성 없음)",
       "개인 쇼핑 경비 및 주류/음료",
-      "호텔 1인실 단독 투숙 시 싱글 차지",
-      "개인 기호성 음료 및 주류, 매너팁 (자율)"
+      "호텔 1인실 단독 투숙 시 싱글 차지"
     ],
     "itinerary": [
       {
@@ -3037,8 +3179,8 @@
     "category": "추천패키지",
     "region": "남부",
     "city": "나트랑",
-    "priceKRW": 530000,
-    "priceVND": 9973010,
+    "priceKRW": 690000,
+    "priceVND": 12800000,
     "duration": "3박 5일",
     "imageUrl": "/images/nhatrang_ocean_bay_1787097818318.jpg",
     "additionalImages": [
@@ -3065,18 +3207,16 @@
     ],
     "description": "동양의 나폴리 나트랑의 에메랄드빛 해변에서 즐기는 최고급 힐링 패키지! 빈원더스 테마파크와 천연 머드온천까지 완벽 포함되어 있습니다.",
     "included": [
-      "나트랑 4·5성급 특급 호텔/리조트 3박 (2인 1실, 호텔 조식 포함)",
+      "나트랑 시내 5성급 호텔 3박 (오션뷰, 조식 포함)",
       "단독 전용 차량 및 한국어 전문 가이드",
-      "빈원더스 테마파크/워터파크/케이블카 무제한 이용권 및 전 일정 모든 관광지 입장료 100% 포함",
-      "90분 힐링 아로마 전신 마사지 1회",
-      "전 일정 엄선 현지 미식 식대 전액 포함 (1끼당 20만동 기준, 중·석식 총 6회)",
-      "4인 기준 전용 VIP 단독 차량 및 한국어 전문 가이드 결합"
+      "빈원더스 테마파크/워터파크/케이블카 무제한 이용권",
+      "아이리조트 프라이빗 머드온천 VIP 입장권",
+      "90분 힐링 아로마 전신 마사지 1회"
     ],
     "excluded": [
       "국제선 항공권",
       "개인 경비",
-      "매너팁",
-      "개인 기호성 음료 및 주류, 매너팁 (자율)"
+      "매너팁"
     ],
     "itinerary": [
       {
@@ -3118,8 +3258,8 @@
     "category": "추천패키지",
     "region": "남부",
     "city": "나트랑",
-    "priceKRW": 690000,
-    "priceVND": 12983730,
+    "priceKRW": 750000,
+    "priceVND": 13900000,
     "duration": "4박 5일",
     "imageUrl": "/images/muine_sand.jpg",
     "additionalImages": [
@@ -3142,19 +3282,15 @@
     ],
     "description": "나트랑의 푸른 바다와 이국적인 판랑 붉은 사막의 오아시스를 한 번에 정복하는 최고의 액티비티 인생샷 코스입니다.",
     "included": [
-      "나트랑 4·5성급 특급 호텔/리조트 4박 (2인 1실, 호텔 조식 포함)",
+      "5성급 리조트 4박 (조식 포함)",
       "단독 전용 차량 및 한국어 가이드",
       "판랑 사막 오픈탑 전용 지프차 탑승권",
-      "혼문섬 스노클링 전용 스피드보트 & 장비 일체",
-      "전 일정 엄선 현지 미식 식대 전액 포함 (1끼당 20만동 기준, 중·석식 총 8회)",
-      "일정표 내 모든 관광지 및 명소 입장료 100% 포함",
-      "4인 기준 전용 VIP 단독 차량 및 한국어 전문 가이드 결합"
+      "혼문섬 스노클링 전용 스피드보트 & 장비 일체"
     ],
     "excluded": [
       "항공권",
       "개인 경비",
-      "매너팁",
-      "개인 기호성 음료 및 주류, 매너팁 (자율)"
+      "매너팁"
     ],
     "itinerary": [
       {
@@ -3196,8 +3332,8 @@
     "category": "골프투어",
     "region": "남부",
     "city": "나트랑",
-    "priceKRW": 1010000,
-    "priceVND": 19005170,
+    "priceKRW": 1080000,
+    "priceVND": 20000000,
     "duration": "3박 5일",
     "imageUrl": "/images/vietnam_beach_villa_1787099211528.jpg",
     "additionalImages": [
@@ -3219,17 +3355,15 @@
     ],
     "description": "베트남 최고의 해변 코스 빈펄 CC와 자연 친화적 다이아몬드베이 CC에서 만끽하는 럭셔리 라운딩 패키지입니다.",
     "included": [
-      "나트랑 4·5성급 특급 골프 리조트/호텔 3박 (2인 1실, 호텔 조식 포함)",
+      "5성급 리조트 3박 (2인 1실, 조식 포함)",
       "36홀 그린피 + 2인 1카트 + 1인 1캐디피 올포함",
       "전 일정 골프 전용 리무진 밴 & 픽업/샌딩",
-      "전 일정 클럽하우스 중식 및 현지 정찬 석식 포함 (1끼당 20만동 기준, 총 6회)",
-      "4인 1팀 기준 단독 전용 리무진 골프밴 및 한국어 전담 안내 지원"
+      "클럽하우스 중식 쿠폰 2회"
     ],
     "excluded": [
       "캐디팁 ($15~$20/18홀)",
       "개인 경비",
-      "항공권",
-      "캐디팁 (18홀당 $15~$20 현장 지불)"
+      "항공권"
     ],
     "golfSpecs": {
       "holes": 36,
@@ -3281,8 +3415,8 @@
     "category": "골프투어",
     "region": "남부",
     "city": "나트랑",
-    "priceKRW": 1300000,
-    "priceVND": 24462100,
+    "priceKRW": 1350000,
+    "priceVND": 25000000,
     "duration": "4박 5일",
     "imageUrl": "/images/vietnam_golf_resort_1787099191979.jpg",
     "additionalImages": [
@@ -3305,17 +3439,15 @@
     ],
     "description": "베트남 아시아 베스트 골프 코스로 꼽히는 KN 링크스 깜란의 환상적인 모래언덕 링크스 코스를 경험하세요.",
     "included": [
-      "나트랑 4·5성급 특급 골프 리조트/호텔 4박 (2인 1실, 호텔 조식 포함)",
+      "깜란 5성급 해변 리조트 4박 (조식 포함)",
       "54홀 그린피 + 2인 1카트 + 1인 1캐디피 올포함",
       "전 일정 골프백 전용 VIP 리무진 밴 & 기사",
-      "전 일정 클럽하우스 중식 및 현지 정찬 석식 포함 (1끼당 20만동 기준, 총 8회)",
-      "4인 1팀 기준 단독 전용 리무진 골프밴 및 한국어 전담 안내 지원"
+      "클럽하우스 중식 쿠폰 3회 + 90분 스파"
     ],
     "excluded": [
       "캐디팁 ($15~$20/18홀)",
       "개인 경비",
-      "항공권",
-      "캐디팁 (18홀당 $15~$20 현장 지불)"
+      "항공권"
     ],
     "golfSpecs": {
       "holes": 54,
@@ -3378,9 +3510,9 @@
     "priceKRW": 920000,
     "priceVND": 17100000,
     "duration": "3박 5일",
-    "imageUrl": "/images/vietnam_beach_villa.jpg",
+    "imageUrl": "/images/villa_nhatrang_bay.jpg",
     "additionalImages": [
-      "/images/vietnam_beach_villa.jpg"
+      "/images/villa_nhatrang_bay.jpg"
     ],
     "rating": 4.9,
     "reviewCount": 52,
@@ -3472,9 +3604,9 @@
     "priceKRW": 1250000,
     "priceVND": 23200000,
     "duration": "3박 5일",
-    "imageUrl": "/images/vietnam_city_villa.jpg",
+    "imageUrl": "/images/villa_camranh_ocean.jpg",
     "additionalImages": [
-      "/images/vietnam_city_villa.jpg"
+      "/images/villa_camranh_ocean.jpg"
     ],
     "rating": 5,
     "reviewCount": 38,
@@ -3565,7 +3697,7 @@
     "region": "남부",
     "city": "나트랑",
     "priceKRW": 150000,
-    "priceVND": 2822550,
+    "priceVND": 2800000,
     "duration": "반나절 (약 4시간)",
     "imageUrl": "/images/phuquoc_sunset.jpg",
     "additionalImages": [
@@ -3591,10 +3723,7 @@
       "단독 전용 요트 탑승 및 승무원 서비스",
       "와인, 맥주, 소프트드링크 무제한 제공",
       "선상 해산물 바비큐 디너",
-      "스노클링 장비 & 바다낚시 도구 대여",
-      "현지 특식 중식 1회 포함 (1끼 20만동 기준)",
-      "해당 관광지 입장료 일체 포함",
-      "4인 탑승 기준 단독 전용 차량 및 한국어 전문 가이드"
+      "스노클링 장비 & 바다낚시 도구 대여"
     ],
     "excluded": [
       "개인 경비"
@@ -3618,8 +3747,8 @@
     "category": "자유여행",
     "region": "남부",
     "city": "나트랑",
-    "priceKRW": 110000,
-    "priceVND": 2069870,
+    "priceKRW": 85000,
+    "priceVND": 1580000,
     "duration": "1일 데이투어",
     "imageUrl": "/images/phanrang_desert_jeep_1788400701381.jpg",
     "additionalImages": [
@@ -3644,9 +3773,7 @@
       "왕복 전용 차량 및 한국어 안내 기사",
       "판랑 탄안 사막 지프차 탑승료 및 샌드보딩",
       "양떼목장 & 참파 사원 입장료",
-      "생수 및 물티슈 제공",
-      "현지 특식 중식 1회 포함 (1끼 20만동 기준)",
-      "4인 탑승 기준 단독 전용 차량 및 한국어 전문 가이드"
+      "생수 및 물티슈 제공"
     ],
     "excluded": [
       "중식 (현지 맛집 안내)",
@@ -3671,12 +3798,12 @@
     "category": "추천패키지",
     "region": "남부",
     "city": "푸꾸옥",
-    "priceKRW": 530000,
-    "priceVND": 9973010,
+    "priceKRW": 850000,
+    "priceVND": 15700000,
     "duration": "3박 5일",
-    "imageUrl": "/images/phuquoc_sunset.jpg",
+    "imageUrl": "/images/phuquoc_cablecar.jpg",
     "additionalImages": [
-      "/images/phuquoc_sunset.jpg"
+      "/images/phuquoc_cablecar.jpg"
     ],
     "rating": 4.9,
     "reviewCount": 185,
@@ -3698,19 +3825,16 @@
     ],
     "description": "베트남의 숨겨진 에메랄드빛 진주 푸꾸옥에서 즐기는 가족/연인 최적화 힐링 휴양과 테마파크 어드벤처!",
     "included": [
-      "푸꾸옥 4·5성급 특급 호텔/리조트 3박 (2인 1실, 호텔 조식 포함)",
+      "5성급 프리미엄 비치 리조트 3박 (오션뷰, 조식 포함)",
       "단독 전용 차량 및 한국어 전문 가이드",
-      "혼똔섬 왕복 해상 케이블카 & 아쿠아토피아 워터파크 티켓 및 전 일정 모든 관광지 입장료 100% 포함",
-      "빈원더스 & 빈펄 사파리 VIP 입장권 및 전 일정 모든 관광지 입장료 100% 포함",
-      "90분 전신 힐링 아로마 스파 1회",
-      "전 일정 엄선 현지 미식 식대 전액 포함 (1끼당 20만동 기준, 중·석식 총 6회)",
-      "4인 기준 전용 VIP 단독 차량 및 한국어 전문 가이드 결합"
+      "혼똔섬 왕복 해상 케이블카 & 아쿠아토피아 워터파크 티켓",
+      "빈원더스 & 빈펄 사파리 VIP 입장권",
+      "90분 전신 힐링 아로마 스파 1회"
     ],
     "excluded": [
       "국제선 항공권",
       "개인 경비",
-      "매너팁",
-      "개인 기호성 음료 및 주류, 매너팁 (자율)"
+      "매너팁"
     ],
     "itinerary": [
       {
@@ -3752,12 +3876,12 @@
     "category": "추천패키지",
     "region": "남부",
     "city": "푸꾸옥",
-    "priceKRW": 690000,
-    "priceVND": 12983730,
+    "priceKRW": 890000,
+    "priceVND": 16500000,
     "duration": "4박 5일",
-    "imageUrl": "/images/phuquoc_sunset.jpg",
+    "imageUrl": "/images/phuquoc_island_hopping.jpg",
     "additionalImages": [
-      "/images/phuquoc_sunset.jpg"
+      "/images/phuquoc_island_hopping.jpg"
     ],
     "rating": 4.9,
     "reviewCount": 96,
@@ -3776,19 +3900,15 @@
     ],
     "description": "청정 푸꾸옥 남부 4개 섬의 산호초를 탐험하는 단독 스노클링 호핑과 럭셔리 리조트 휴양의 결합!",
     "included": [
-      "푸꾸옥 4·5성급 특급 호텔/리조트 4박 (2인 1실, 호텔 조식 포함)",
+      "풀만 푸꾸옥 5성급 리조트 4박 (조식 포함)",
       "단독 전용 차량 및 가이드",
       "남부 4섬 호핑 전용 스피드보트 & 스노클링 장비",
-      "선셋타운 키스 오브 더 씨 불꽃쇼 티켓",
-      "전 일정 엄선 현지 미식 식대 전액 포함 (1끼당 20만동 기준, 중·석식 총 8회)",
-      "일정표 내 모든 관광지 및 명소 입장료 100% 포함",
-      "4인 기준 전용 VIP 단독 차량 및 한국어 전문 가이드 결합"
+      "선셋타운 키스 오브 더 씨 불꽃쇼 티켓"
     ],
     "excluded": [
       "항공권",
       "개인 경비",
-      "매너팁",
-      "개인 기호성 음료 및 주류, 매너팁 (자율)"
+      "매너팁"
     ],
     "itinerary": [
       {
@@ -3830,8 +3950,8 @@
     "category": "골프투어",
     "region": "남부",
     "city": "푸꾸옥",
-    "priceKRW": 1010000,
-    "priceVND": 19005170,
+    "priceKRW": 1150000,
+    "priceVND": 21300000,
     "duration": "3박 5일",
     "imageUrl": "/images/vietnam_city_villa_1787099231914.jpg",
     "additionalImages": [
@@ -3853,17 +3973,15 @@
     ],
     "description": "유네스코 생물권 보전지역 푸꾸옥 북부 열대우림에 자리잡은 IMG 설계 빈펄 골프장에서 즐기는 청정 라운딩!",
     "included": [
-      "푸꾸옥 4·5성급 특급 골프 리조트/호텔 3박 (2인 1실, 호텔 조식 포함)",
+      "5성급 빈펄 리조트 3박 (조식 포함)",
       "36홀 그린피 + 2인 1카트 + 1인 1캐디피",
       "공항/골프장 전용 셔틀 & VIP 차량",
-      "전 일정 클럽하우스 중식 및 현지 정찬 석식 포함 (1끼당 20만동 기준, 총 6회)",
-      "4인 1팀 기준 단독 전용 리무진 골프밴 및 한국어 전담 안내 지원"
+      "클럽하우스 중식 쿠폰 2회"
     ],
     "excluded": [
       "캐디팁 ($15~$20/18홀)",
       "개인 경비",
-      "항공권",
-      "캐디팁 (18홀당 $15~$20 현장 지불)"
+      "항공권"
     ],
     "golfSpecs": {
       "holes": 36,
@@ -3914,8 +4032,8 @@
     "category": "골프투어",
     "region": "남부",
     "city": "푸꾸옥",
-    "priceKRW": 1300000,
-    "priceVND": 24462100,
+    "priceKRW": 1450000,
+    "priceVND": 27000000,
     "duration": "4박 5일",
     "imageUrl": "/images/bangioc.jpg",
     "additionalImages": [
@@ -3938,17 +4056,15 @@
     ],
     "description": "푸꾸옥의 에메랄드빛 바다와 열대 자연을 배경으로 54홀을 쾌적하게 즐기는 최고급 골프 패키지입니다.",
     "included": [
-      "푸꾸옥 4·5성급 특급 골프 리조트/호텔 4박 (2인 1실, 호텔 조식 포함)",
+      "5성급 리조트 4박 (조식 포함)",
       "54홀 그린피 + 카트 + 캐디피 올포함",
       "전 일정 골프 전용 리무진 밴",
-      "전 일정 클럽하우스 중식 및 현지 정찬 석식 포함 (1끼당 20만동 기준, 총 8회)",
-      "4인 1팀 기준 단독 전용 리무진 골프밴 및 한국어 전담 안내 지원"
+      "클럽하우스 중식 쿠폰 3회 + 90분 스파 2회"
     ],
     "excluded": [
       "캐디팁",
       "개인 경비",
-      "항공권",
-      "캐디팁 (18홀당 $15~$20 현장 지불)"
+      "항공권"
     ],
     "golfSpecs": {
       "holes": 54,
@@ -4010,9 +4126,9 @@
     "priceKRW": 990000,
     "priceVND": 18400000,
     "duration": "3박 5일",
-    "imageUrl": "/images/vietnam_beach_villa.jpg",
+    "imageUrl": "/images/villa_phuquoc_saobeach.jpg",
     "additionalImages": [
-      "/images/vietnam_beach_villa.jpg"
+      "/images/villa_phuquoc_saobeach.jpg"
     ],
     "rating": 5,
     "reviewCount": 45,
@@ -4104,9 +4220,9 @@
     "priceKRW": 1200000,
     "priceVND": 22300000,
     "duration": "3박 5일",
-    "imageUrl": "/images/vietnam_city_villa.jpg",
+    "imageUrl": "/images/villa_phuquoc_longbeach.jpg",
     "additionalImages": [
-      "/images/vietnam_city_villa.jpg"
+      "/images/villa_phuquoc_longbeach.jpg"
     ],
     "rating": 5,
     "reviewCount": 39,
@@ -4193,8 +4309,8 @@
     "category": "자유여행",
     "region": "남부",
     "city": "푸꾸옥",
-    "priceKRW": 110000,
-    "priceVND": 2069870,
+    "priceKRW": 95000,
+    "priceVND": 1760000,
     "duration": "1일 데이투어",
     "imageUrl": "/images/phuquoc_sunset_cablecar_1787098424693.jpg",
     "additionalImages": [
@@ -4220,10 +4336,7 @@
       "호텔 왕복 픽업 전용 차량",
       "단독 전용 스피드보트 대절 및 선장/가이드",
       "스노클링 마스크, 구명조끼, 바다낚시 장비",
-      "선상 해산물 런치 & 시원한 음료",
-      "현지 특식 중식 1회 포함 (1끼 20만동 기준)",
-      "해당 관광지 입장료 일체 포함",
-      "4인 탑승 기준 단독 전용 차량 및 한국어 전문 가이드"
+      "선상 해산물 런치 & 시원한 음료"
     ],
     "excluded": [
       "개인 경비",
@@ -4249,11 +4362,11 @@
     "region": "남부",
     "city": "푸꾸옥",
     "priceKRW": 180000,
-    "priceVND": 3387060,
+    "priceVND": 3350000,
     "duration": "1일 (10시간)",
-    "imageUrl": "/images/phuquoc_sunset.jpg",
+    "imageUrl": "/images/phuquoc_starfish_beach.jpg",
     "additionalImages": [
-      "/images/phuquoc_sunset.jpg"
+      "/images/phuquoc_starfish_beach.jpg"
     ],
     "rating": 4.9,
     "reviewCount": 220,
@@ -4272,12 +4385,11 @@
     "included": [
       "16인승 전용 차량 1일 10시간 대절",
       "전담 기사, 유류비, 주차료, 톨비 일체 포함",
-      "호텔 픽업 및 원하는 장소 드롭",
-      "현지 특식 중식 1회 포함 (1끼 20만동 기준)",
-      "해당 관광지 입장료 일체 포함",
-      "4인 탑승 기준 단독 전용 차량 및 한국어 전문 가이드"
+      "호텔 픽업 및 원하는 장소 드롭"
     ],
     "excluded": [
+      "입장료",
+      "식사비",
       "기사 팁"
     ],
     "itinerary": [
@@ -4299,8 +4411,8 @@
     "category": "추천패키지",
     "region": "북부",
     "city": "하노이",
-    "priceKRW": 530000,
-    "priceVND": 9973010,
+    "priceKRW": 890000,
+    "priceVND": 16500000,
     "duration": "3박 5일",
     "imageUrl": "/images/halong_cruise.jpg",
     "additionalImages": [
@@ -4327,20 +4439,16 @@
     ],
     "description": "세계 7대 자연경관 하롱베이에서 6성급 크루즈 1박을 하며 신비로운 기암괴석과 선상 갈라 디너를 즐기는 최고급 패키지입니다.",
     "included": [
-      "하노이 4·5성급 특급 호텔/리조트 3박 (2인 1실, 호텔 조식 포함)",
+      "하노이 5성급 롯데호텔 2박 + 하롱베이 6성급 크루즈 1박",
       "단독 VIP 리무진 차량 & 공인 한국어 가이드",
       "하롱베이 선상 해산물 뷔페 및 갈라 디너",
       "닌빈 짱안 유네스코 나룻배 탑승권",
-      "90분 VIP 스파 마사지 1회",
-      "전 일정 엄선 현지 미식 식대 전액 포함 (1끼당 20만동 기준, 중·석식 총 6회)",
-      "일정표 내 모든 관광지 및 명소 입장료 100% 포함",
-      "4인 기준 전용 VIP 단독 차량 및 한국어 전문 가이드 결합"
+      "90분 VIP 스파 마사지 1회"
     ],
     "excluded": [
       "국제선 항공권",
       "개인 경비",
-      "매너팁",
-      "개인 기호성 음료 및 주류, 매너팁 (자율)"
+      "매너팁"
     ],
     "itinerary": [
       {
@@ -4382,12 +4490,12 @@
     "category": "추천패키지",
     "region": "북부",
     "city": "하노이",
-    "priceKRW": 690000,
-    "priceVND": 12983730,
+    "priceKRW": 720000,
+    "priceVND": 13400000,
     "duration": "4박 5일",
-    "imageUrl": "/images/halong_cruise.jpg",
+    "imageUrl": "/images/halong_kayak_bay.jpg",
     "additionalImages": [
-      "/images/halong_cruise.jpg"
+      "/images/halong_kayak_bay.jpg"
     ],
     "rating": 4.9,
     "reviewCount": 140,
@@ -4407,17 +4515,15 @@
     ],
     "description": "호텔 이동 없이 하노이 5성급 호텔에 연박하며 하롱베이와 닌빈을 편안하게 탐방하는 알찬 패키지입니다.",
     "included": [
-      "하노이 4·5성급 특급 호텔/리조트 4박 (2인 1실, 호텔 조식 포함)",
+      "하노이 5성급 호텔 4박 (조식 포함)",
       "단독 VIP 리무진 차량 & 전담 가이드",
-      "전 일정 엄선 현지 미식 식대 전액 포함 (1끼당 20만동 기준, 중·석식 총 8회)",
-      "닌빈 짱안 나룻배 및 항무아 입장권 및 전 일정 모든 관광지 입장료 100% 포함",
-      "4인 기준 전용 VIP 단독 차량 및 한국어 전문 가이드 결합"
+      "하롱베이 당일 럭셔리 크루즈 & 뷔페 중식",
+      "닌빈 짱안 나룻배 및 항무아 입장권"
     ],
     "excluded": [
       "항공권",
       "개인 경비",
-      "매너팁",
-      "개인 기호성 음료 및 주류, 매너팁 (자율)"
+      "매너팁"
     ],
     "itinerary": [
       {
@@ -4459,8 +4565,8 @@
     "category": "골프투어",
     "region": "북부",
     "city": "하노이",
-    "priceKRW": 1010000,
-    "priceVND": 19005170,
+    "priceKRW": 1250000,
+    "priceVND": 23200000,
     "duration": "3박 5일",
     "imageUrl": "/images/ha_giang_mapileng_1787098378307.jpg",
     "additionalImages": [
@@ -4483,17 +4589,15 @@
     ],
     "description": "베트남 최고 난이도와 명성을 자랑하는 스카이레이크 CC와 도심형 명문 롱비엔 CC에서 즐기는 챔피언십 라운딩!",
     "included": [
-      "하노이 4·5성급 특급 골프 리조트/호텔 3박 (2인 1실, 호텔 조식 포함)",
+      "하노이 5성급 호텔 3박 (2인 1실, 조식 포함)",
       "54홀 그린피 + 카트 + 1인 1캐디피",
       "전 일정 골프 전용 리무진 밴",
-      "전 일정 클럽하우스 중식 및 현지 정찬 석식 포함 (1끼당 20만동 기준, 총 6회)",
-      "4인 1팀 기준 단독 전용 리무진 골프밴 및 한국어 전담 안내 지원"
+      "클럽하우스 중식 쿠폰 3회 + 90분 골프 마사지"
     ],
     "excluded": [
       "캐디팁 ($15~$20/18홀)",
       "개인 경비",
-      "항공권",
-      "캐디팁 (18홀당 $15~$20 현장 지불)"
+      "항공권"
     ],
     "golfSpecs": {
       "holes": 54,
@@ -4546,12 +4650,12 @@
     "category": "골프투어",
     "region": "북부",
     "city": "하노이",
-    "priceKRW": 1010000,
-    "priceVND": 19005170,
+    "priceKRW": 1120000,
+    "priceVND": 20800000,
     "duration": "3박 4일",
-    "imageUrl": "/images/vietnam_golf_resort.jpg",
+    "imageUrl": "/images/golf_halong_flc.jpg",
     "additionalImages": [
-      "/images/vietnam_golf_resort.jpg"
+      "/images/golf_halong_flc.jpg"
     ],
     "rating": 5,
     "reviewCount": 56,
@@ -4570,17 +4674,15 @@
     ],
     "description": "유네스코 세계유산 하롱베이 바다와 기암괴석을 조망하며 샷을 날리는 세계에서 가장 아름다운 오션뷰 골프 패키지입니다.",
     "included": [
-      "하노이 4·5성급 특급 골프 리조트/호텔 3박 (2인 1실, 호텔 조식 포함)",
+      "FLC 하롱 그랜드 호텔 3박 (오션뷰, 조식 포함)",
       "36홀 그린피 + 카트 + 캐디피",
       "전 일정 전용 리무진 차량",
-      "전 일정 클럽하우스 중식 및 현지 정찬 석식 포함 (1끼당 20만동 기준, 총 6회)",
-      "4인 1팀 기준 단독 전용 리무진 골프밴 및 한국어 전담 안내 지원"
+      "클럽하우스 중식 쿠폰 2회"
     ],
     "excluded": [
       "캐디팁",
       "개인 경비",
-      "항공권",
-      "캐디팁 (18홀당 $15~$20 현장 지불)"
+      "항공권"
     ],
     "golfSpecs": {
       "holes": 36,
@@ -4634,9 +4736,9 @@
     "priceKRW": 780000,
     "priceVND": 14500000,
     "duration": "3박 4일",
-    "imageUrl": "/images/vietnam_beach_villa.jpg",
+    "imageUrl": "/images/villa_hanoi_bavi.jpg",
     "additionalImages": [
-      "/images/vietnam_beach_villa.jpg"
+      "/images/villa_hanoi_bavi.jpg"
     ],
     "rating": 4.9,
     "reviewCount": 38,
@@ -4726,9 +4828,9 @@
     "priceKRW": 880000,
     "priceVND": 16400000,
     "duration": "3박 4일",
-    "imageUrl": "/images/vietnam_city_villa.jpg",
+    "imageUrl": "/images/villa_halong_flamingo.jpg",
     "additionalImages": [
-      "/images/vietnam_city_villa.jpg"
+      "/images/villa_halong_flamingo.jpg"
     ],
     "rating": 4.9,
     "reviewCount": 41,
@@ -4814,8 +4916,8 @@
     "category": "자유여행",
     "region": "북부",
     "city": "하노이",
-    "priceKRW": 110000,
-    "priceVND": 2069870,
+    "priceKRW": 99000,
+    "priceVND": 1840000,
     "duration": "당일 투어 (약 10시간)",
     "imageUrl": "/images/halong_emerald_cruise_1787097807698.jpg",
     "additionalImages": [
@@ -4842,8 +4944,7 @@
       "하롱베이 크루즈 탑승권 및 입장료",
       "선상 프리미엄 뷔페 중식",
       "카약 또는 밤부보트 탑승료",
-      "전문 영어/한국어 가이드",
-      "4인 탑승 기준 단독 전용 차량 및 한국어 전문 가이드"
+      "전문 영어/한국어 가이드"
     ],
     "excluded": [
       "음료 및 주류",
@@ -4868,8 +4969,8 @@
     "category": "자유여행",
     "region": "북부",
     "city": "하노이",
-    "priceKRW": 110000,
-    "priceVND": 2069870,
+    "priceKRW": 85000,
+    "priceVND": 1580000,
     "duration": "당일 투어",
     "imageUrl": "/images/ninh_binh_trangan_1787098412494.jpg",
     "additionalImages": [
@@ -4894,10 +4995,7 @@
       "왕복 전용 차량 및 기사",
       "짱안 보트 투어 티켓",
       "항무아 입장권",
-      "생수 제공",
-      "현지 특식 중식 1회 포함 (1끼 20만동 기준)",
-      "해당 관광지 입장료 일체 포함",
-      "4인 탑승 기준 단독 전용 차량 및 한국어 전문 가이드"
+      "생수 제공"
     ],
     "excluded": [
       "중식 (현지 맛집 안내)",
@@ -4922,12 +5020,12 @@
     "category": "추천패키지",
     "region": "남부",
     "city": "달랏",
-    "priceKRW": 530000,
-    "priceVND": 9973010,
+    "priceKRW": 750000,
+    "priceVND": 13900000,
     "duration": "3박 5일",
-    "imageUrl": "/images/dalat.jpg",
+    "imageUrl": "/images/dalat_langbiang_mountain.jpg",
     "additionalImages": [
-      "/images/dalat.jpg"
+      "/images/dalat_langbiang_mountain.jpg"
     ],
     "rating": 5,
     "reviewCount": 165,
@@ -4948,20 +5046,16 @@
     ],
     "description": "해발 1,500m 고원의 서늘하고 쾌적한 날씨, 소나무 숲과 꽃들의 향연! 베트남의 작은 프랑스 달랏에서 누리는 감성 힐링 여행입니다.",
     "included": [
-      "달랏 4·5성급 특급 호텔/리조트 3박 (2인 1실, 호텔 조식 포함)",
+      "아나만다라 달랏 5성급 프렌치 빌라 리조트 3박 (조식 포함)",
       "단독 전용 차량 및 한국어 전문 가이드",
       "다딴라 폭포 알파인 코스터(루지) 왕복 티켓",
       "랑비앙산 정상 오프로드 지프차 탑승권",
-      "달랏 명물 감성 숲속 카페 음료권 & 90분 아로마 스파",
-      "전 일정 엄선 현지 미식 식대 전액 포함 (1끼당 20만동 기준, 중·석식 총 6회)",
-      "일정표 내 모든 관광지 및 명소 입장료 100% 포함",
-      "4인 기준 전용 VIP 단독 차량 및 한국어 전문 가이드 결합"
+      "달랏 명물 감성 숲속 카페 음료권 & 90분 아로마 스파"
     ],
     "excluded": [
       "국제선 항공권",
       "개인 경비",
-      "매너팁",
-      "개인 기호성 음료 및 주류, 매너팁 (자율)"
+      "매너팁"
     ],
     "itinerary": [
       {
@@ -5003,8 +5097,8 @@
     "category": "추천패키지",
     "region": "남부",
     "city": "달랏",
-    "priceKRW": 690000,
-    "priceVND": 12983730,
+    "priceKRW": 820000,
+    "priceVND": 15200000,
     "duration": "4박 5일",
     "imageUrl": "/images/dalat_spring_lake_1787099173538.jpg",
     "additionalImages": [
@@ -5029,18 +5123,14 @@
     ],
     "description": "나트랑의 푸른 바다와 달랏의 시원한 고원 감성을 4박 5일 동안 여유롭게 둘러보는 실속 만점 결합 상품입니다.",
     "included": [
-      "달랏 4·5성급 특급 호텔/리조트 4박 (2인 1실, 호텔 조식 포함)",
       "나트랑 5성급 2박 + 달랏 5성급 2박 (조식 포함)",
       "도시 간 이동 및 전 일정 단독 전용 차량 & 가이드",
-      "나트랑 머드온천 + 달랏 루지/랑비앙산 입장권 및 전 일정 모든 관광지 입장료 100% 포함",
-      "전 일정 엄선 현지 미식 식대 전액 포함 (1끼당 20만동 기준, 중·석식 총 8회)",
-      "4인 기준 전용 VIP 단독 차량 및 한국어 전문 가이드 결합"
+      "나트랑 머드온천 + 달랏 루지/랑비앙산 입장권"
     ],
     "excluded": [
       "항공권",
       "개인 경비",
-      "매너팁",
-      "개인 기호성 음료 및 주류, 매너팁 (자율)"
+      "매너팁"
     ],
     "itinerary": [
       {
@@ -5082,13 +5172,13 @@
     "category": "추천패키지",
     "region": "남부",
     "city": "달랏",
-    "priceKRW": 690000,
-    "priceVND": 12983730,
+    "priceKRW": 990000,
+    "priceVND": 18350000,
     "duration": "4박 6일",
     "imageUrl": "/images/dalat_spring_lake_1787099173538.jpg",
     "additionalImages": [
       "/images/dalat_spring_lake_1787099173538.jpg",
-      "/images/dalat_spring_lake_1787099173538.jpg"
+      "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 5,
     "reviewCount": 94,
@@ -5111,20 +5201,20 @@
     ],
     "description": "나트랑 에메랄드 해변에서 2박, 시원하고 낭만적인 달랏 고원에서 2박! 이동 부담 없이 두 도시의 최고 인기 명소를 완벽히 섭렵하는 4박 6일 프리미엄 단독 투어입니다.",
     "included": [
-      "달랏 4·5성급 특급 호텔/리조트 4박 (2인 1실, 호텔 조식 포함)",
+      "나트랑 5성급 오션뷰 리조트/호텔 2박 (조식 뷔페 포함)",
+      "달랏 5성급 럭셔리 호텔/리조트 2박 (조식 뷔페 포함)",
       "전 일정 단독 전용 리무진 밴 차량 & 베테랑 전담 기사",
       "신짜오투어 한국어 전문 가이드 전 일정 풀케어",
       "나트랑 전용 스피드보트 호핑투어 (스노클링 장비 포함)",
-      "달랏 랑비앙산 4WD 지프차 + 다딴라 폭포 알파인 코스터 루지 입장권 및 전 일정 모든 관광지 입장료 100% 포함",
-      "전 일정 엄선 현지 미식 식대 전액 포함 (1끼당 20만동 기준, 중·석식 총 8회)",
-      "1억원 해외여행자보험",
-      "4인 기준 전용 VIP 단독 차량 및 한국어 전문 가이드 결합"
+      "아이리조트 프라이빗 미네랄 머드온천 스파",
+      "달랏 랑비앙산 4WD 지프차 + 다딴라 폭포 알파인 코스터 루지 입장권",
+      "전 일정 식사 (랍스터 씨푸드 BBQ, 달랏 소고기 핫팟, 넴느엉 등 특식)",
+      "1억원 해외여행자보험"
     ],
     "excluded": [
       "국제선 왕복 항공권 (실시간 최저가 발권 지원 가능)",
       "기사/가이드 매너팁 (자율)",
-      "개인 경비 및 음료",
-      "개인 기호성 음료 및 주류, 매너팁 (자율)"
+      "개인 경비 및 음료"
     ],
     "itinerary": [
       {
@@ -5180,8 +5270,8 @@
     "category": "골프투어",
     "region": "남부",
     "city": "달랏",
-    "priceKRW": 1010000,
-    "priceVND": 19005170,
+    "priceKRW": 1190000,
+    "priceVND": 22000000,
     "duration": "3박 5일",
     "imageUrl": "/images/hagiang.jpg",
     "additionalImages": [
@@ -5204,17 +5294,15 @@
     ],
     "description": "연중 18~23도의 쾌적하고 서늘한 날씨 속에서 즐기는 황제 골프! 베트남 최고(最古)의 달랏 팰리스 코스를 경험하세요.",
     "included": [
-      "달랏 4·5성급 특급 골프 리조트/호텔 3박 (2인 1실, 호텔 조식 포함)",
+      "달랏 5성급 호텔 3박 (조식 포함)",
       "54홀 그린피 + 카트 + 1인 1캐디피",
       "전 일정 골프 전용 리무진 밴 & 기사",
-      "전 일정 클럽하우스 중식 및 현지 정찬 석식 포함 (1끼당 20만동 기준, 총 6회)",
-      "4인 1팀 기준 단독 전용 리무진 골프밴 및 한국어 전담 안내 지원"
+      "클럽하우스 중식 3회 + 90분 마사지"
     ],
     "excluded": [
       "캐디팁 ($15~$20/18홀)",
       "개인 경비",
-      "항공권",
-      "캐디팁 (18홀당 $15~$20 현장 지불)"
+      "항공권"
     ],
     "golfSpecs": {
       "holes": 54,
@@ -5266,8 +5354,8 @@
     "category": "골프투어",
     "region": "남부",
     "city": "달랏",
-    "priceKRW": 1010000,
-    "priceVND": 19005170,
+    "priceKRW": 1050000,
+    "priceVND": 19500000,
     "duration": "3박 4일",
     "imageUrl": "/images/cao_bang_bangioc_1787098400108.jpg",
     "additionalImages": [
@@ -5290,17 +5378,15 @@
     ],
     "description": "해발 1,200m에 위치하여 환상적인 바람과 시원함을 자랑하는 명문 더 달랏 1200 컨트리클럽 패키지입니다.",
     "included": [
-      "달랏 4·5성급 특급 골프 리조트/호텔 3박 (2인 1실, 호텔 조식 포함)",
+      "5성급 리조트 3박 (조식 포함)",
       "36홀 그린피 + 카트 + 캐디피",
       "전용 리무진 차량 및 기사",
-      "전 일정 클럽하우스 중식 및 현지 정찬 석식 포함 (1끼당 20만동 기준, 총 6회)",
-      "4인 1팀 기준 단독 전용 리무진 골프밴 및 한국어 전담 안내 지원"
+      "클럽하우스 중식 2회"
     ],
     "excluded": [
       "캐디팁",
       "개인 경비",
-      "항공권",
-      "캐디팁 (18홀당 $15~$20 현장 지불)"
+      "항공권"
     ],
     "golfSpecs": {
       "holes": 36,
@@ -5355,9 +5441,9 @@
     "priceKRW": 850000,
     "priceVND": 15700000,
     "duration": "3박 4일",
-    "imageUrl": "/images/vietnam_beach_villa.jpg",
+    "imageUrl": "/images/villa_dalat_tuyenlam.jpg",
     "additionalImages": [
-      "/images/vietnam_beach_villa.jpg"
+      "/images/villa_dalat_tuyenlam.jpg"
     ],
     "rating": 5,
     "reviewCount": 35,
@@ -5447,9 +5533,9 @@
     "priceKRW": 1100000,
     "priceVND": 20400000,
     "duration": "3박 4일",
-    "imageUrl": "/images/vietnam_city_villa.jpg",
+    "imageUrl": "/images/villa_dalat_chateau.jpg",
     "additionalImages": [
-      "/images/vietnam_city_villa.jpg"
+      "/images/villa_dalat_chateau.jpg"
     ],
     "rating": 5,
     "reviewCount": 28,
@@ -5537,12 +5623,12 @@
     "category": "자유여행",
     "region": "남부",
     "city": "달랏",
-    "priceKRW": 110000,
-    "priceVND": 2069870,
+    "priceKRW": 79000,
+    "priceVND": 1470000,
     "duration": "1일 데이투어",
-    "imageUrl": "/images/dalat.jpg",
+    "imageUrl": "/images/dalat_cafe_instagram.jpg",
     "additionalImages": [
-      "/images/dalat.jpg"
+      "/images/dalat_cafe_instagram.jpg"
     ],
     "rating": 5,
     "reviewCount": 240,
@@ -5563,10 +5649,7 @@
     "included": [
       "1일 전용 차량 및 현지 기사",
       "다딴라 루지 왕복 탑승권",
-      "인기 뷰 카페 시그니처 음료 1잔 포함",
-      "현지 특식 중식 1회 포함 (1끼 20만동 기준)",
-      "해당 관광지 입장료 일체 포함",
-      "4인 탑승 기준 단독 전용 차량 및 한국어 전문 가이드"
+      "인기 뷰 카페 시그니처 음료 1잔 포함"
     ],
     "excluded": [
       "중식/석식",
@@ -5592,7 +5675,7 @@
     "region": "남부",
     "city": "달랏",
     "priceKRW": 160000,
-    "priceVND": 3010720,
+    "priceVND": 2980000,
     "duration": "1일 (10시간)",
     "imageUrl": "/images/dalat_flower_garden_1788400752600.jpg",
     "additionalImages": [
@@ -5614,12 +5697,11 @@
     "description": "원하는 시간, 원하는 장소 어디든 편안하게 이동하는 달랏 1일 맞춤 차량 대절 서비스입니다.",
     "included": [
       "전용 차량 1일 10시간 단독 대절",
-      "기사, 유류비, 주차료 일체 포함",
-      "현지 특식 중식 1회 포함 (1끼 20만동 기준)",
-      "해당 관광지 입장료 일체 포함",
-      "4인 탑승 기준 단독 전용 차량 및 한국어 전문 가이드"
+      "기사, 유류비, 주차료 일체 포함"
     ],
     "excluded": [
+      "입장료",
+      "식사비",
       "기사 팁"
     ],
     "itinerary": [
@@ -5641,8 +5723,8 @@
     "category": "추천패키지",
     "region": "북부",
     "city": "사파",
-    "priceKRW": 530000,
-    "priceVND": 9973010,
+    "priceKRW": 820000,
+    "priceVND": 15200000,
     "duration": "3박 5일",
     "imageUrl": "/images/sapa_fansipan.jpg",
     "additionalImages": [
@@ -5667,19 +5749,16 @@
     ],
     "description": "구름 위의 세계 사파! 해발 3,143m 판시판 정상 정복과 신비로운 계단식 논, 소수민족의 순수한 문화를 만나는 감동의 여행입니다.",
     "included": [
-      "사파 4·5성급 특급 호텔/리조트 3박 (2인 1실, 호텔 조식 포함)",
+      "사파 5성급 실크패스 그랜드 리조트 3박 (마운틴뷰, 조식 포함)",
       "하노이-사파 왕복 VIP 리무진 및 사파 단독 전용 차량",
       "한국어 전문 가이드 풀케어",
-      "판시판 썬월드 왕복 케이블카 + 정상 모노레일 티켓 및 전 일정 모든 관광지 입장료 100% 포함",
-      "깟깟마을 전통의상 체험 및 90분 허브 스파 1회",
-      "전 일정 엄선 현지 미식 식대 전액 포함 (1끼당 20만동 기준, 중·석식 총 6회)",
-      "4인 기준 전용 VIP 단독 차량 및 한국어 전문 가이드 결합"
+      "판시판 썬월드 왕복 케이블카 + 정상 모노레일 티켓",
+      "깟깟마을 전통의상 체험 및 90분 허브 스파 1회"
     ],
     "excluded": [
       "국제선 항공권",
       "개인 경비",
-      "매너팁",
-      "개인 기호성 음료 및 주류, 매너팁 (자율)"
+      "매너팁"
     ],
     "itinerary": [
       {
@@ -5721,12 +5800,12 @@
     "category": "추천패키지",
     "region": "북부",
     "city": "사파",
-    "priceKRW": 690000,
-    "priceVND": 12983730,
+    "priceKRW": 790000,
+    "priceVND": 14700000,
     "duration": "4박 5일",
-    "imageUrl": "/images/halong_cruise.jpg",
+    "imageUrl": "/images/sapa_terraced_fields.jpg",
     "additionalImages": [
-      "/images/halong_cruise.jpg"
+      "/images/sapa_terraced_fields.jpg"
     ],
     "rating": 4.9,
     "reviewCount": 98,
@@ -5745,18 +5824,14 @@
     ],
     "description": "하노이의 도시 감성과 사파의 웅장한 대자연 트레킹을 결합한 완벽한 4박 5일 코스입니다.",
     "included": [
-      "사파 4·5성급 특급 호텔/리조트 4박 (2인 1실, 호텔 조식 포함)",
       "하노이 5성급 2박 + 사파 5성급 2박 (조식 포함)",
       "왕복 VIP 리무진 & 단독 전용 차량 및 가이드",
-      "판시판 케이블카 및 타반 트레킹 입장권 및 전 일정 모든 관광지 입장료 100% 포함",
-      "전 일정 엄선 현지 미식 식대 전액 포함 (1끼당 20만동 기준, 중·석식 총 8회)",
-      "4인 기준 전용 VIP 단독 차량 및 한국어 전문 가이드 결합"
+      "판시판 케이블카 및 타반 트레킹 입장권"
     ],
     "excluded": [
       "항공권",
       "개인 경비",
-      "매너팁",
-      "개인 기호성 음료 및 주류, 매너팁 (자율)"
+      "매너팁"
     ],
     "itinerary": [
       {
@@ -5798,8 +5873,8 @@
     "category": "골프투어",
     "region": "북부",
     "city": "사파",
-    "priceKRW": 1010000,
-    "priceVND": 19005170,
+    "priceKRW": 1080000,
+    "priceVND": 20000000,
     "duration": "3박 4일",
     "imageUrl": "/images/vietnam_city_villa.jpg",
     "additionalImages": [
@@ -5821,17 +5896,15 @@
     ],
     "description": "베트남 북부 고원지대의 청량한 공기와 홍강의 장관 속에서 즐기는 이색 36홀 골프 패키지입니다.",
     "included": [
-      "사파 4·5성급 특급 골프 리조트/호텔 3박 (2인 1실, 호텔 조식 포함)",
+      "사파 5성급 리조트 3박 (조식 포함)",
       "36홀 그린피 + 카트 + 캐디피",
       "하노이-사파-골프장 전용 VIP 리무진",
-      "전 일정 클럽하우스 중식 및 현지 정찬 석식 포함 (1끼당 20만동 기준, 총 6회)",
-      "4인 1팀 기준 단독 전용 리무진 골프밴 및 한국어 전담 안내 지원"
+      "클럽하우스 중식 2회"
     ],
     "excluded": [
       "캐디팁",
       "개인 경비",
-      "항공권",
-      "캐디팁 (18홀당 $15~$20 현장 지불)"
+      "항공권"
     ],
     "golfSpecs": {
       "holes": 36,
@@ -5882,8 +5955,8 @@
     "category": "골프투어",
     "region": "북부",
     "city": "사파",
-    "priceKRW": 1300000,
-    "priceVND": 24462100,
+    "priceKRW": 1290000,
+    "priceVND": 24000000,
     "duration": "4박 5일",
     "imageUrl": "/images/hue_imperial_citadel_1788400737935.jpg",
     "additionalImages": [
@@ -5906,18 +5979,14 @@
     ],
     "description": "사파의 고원 골프와 하노이의 도심형 챔피언십 골프를 한 번에 즐기는 특별한 라운딩 상품입니다.",
     "included": [
-      "사파 4·5성급 특급 골프 리조트/호텔 4박 (2인 1실, 호텔 조식 포함)",
       "사파 2박 + 하노이 2박 (5성급, 조식 포함)",
       "54홀 그린피 + 카트 + 캐디피",
-      "전 일정 전용 리무진 밴",
-      "전 일정 클럽하우스 중식 및 현지 정찬 석식 포함 (1끼당 20만동 기준, 총 8회)",
-      "4인 1팀 기준 단독 전용 리무진 골프밴 및 한국어 전담 안내 지원"
+      "전 일정 전용 리무진 밴"
     ],
     "excluded": [
       "캐디팁",
       "개인 경비",
-      "항공권",
-      "캐디팁 (18홀당 $15~$20 현장 지불)"
+      "항공권"
     ],
     "golfSpecs": {
       "holes": 54,
@@ -5979,9 +6048,9 @@
     "priceKRW": 950000,
     "priceVND": 17600000,
     "duration": "3박 4일",
-    "imageUrl": "/images/vietnam_beach_villa.jpg",
+    "imageUrl": "/images/villa_sapa_topas.jpg",
     "additionalImages": [
-      "/images/vietnam_beach_villa.jpg"
+      "/images/villa_sapa_topas.jpg"
     ],
     "rating": 5,
     "reviewCount": 82,
@@ -6072,9 +6141,9 @@
     "priceKRW": 880000,
     "priceVND": 16400000,
     "duration": "3박 4일",
-    "imageUrl": "/images/vietnam_city_villa.jpg",
+    "imageUrl": "/images/villa_sapa_jadehill.jpg",
     "additionalImages": [
-      "/images/vietnam_city_villa.jpg"
+      "/images/villa_sapa_jadehill.jpg"
     ],
     "rating": 4.9,
     "reviewCount": 36,
@@ -6160,8 +6229,8 @@
     "category": "자유여행",
     "region": "북부",
     "city": "사파",
-    "priceKRW": 110000,
-    "priceVND": 2069870,
+    "priceKRW": 68000,
+    "priceVND": 1260000,
     "duration": "반나절 (약 5시간)",
     "imageUrl": "/images/sapa_fansipan_terraces_1786458401102.jpg",
     "additionalImages": [
@@ -6185,10 +6254,7 @@
     "included": [
       "사파 호텔 왕복 전용 차량",
       "판시판 케이블카 왕복 탑승권",
-      "정상 모노레일 탑승권",
-      "현지 특식 중식 1회 포함 (1끼 20만동 기준)",
-      "해당 관광지 입장료 일체 포함",
-      "4인 탑승 기준 단독 전용 차량 및 한국어 전문 가이드"
+      "정상 모노레일 탑승권"
     ],
     "excluded": [
       "개인 경비"
@@ -6213,11 +6279,11 @@
     "region": "북부",
     "city": "사파",
     "priceKRW": 140000,
-    "priceVND": 2634380,
+    "priceVND": 2600000,
     "duration": "1일 (8시간)",
-    "imageUrl": "/images/sapa_fansipan.jpg",
+    "imageUrl": "/images/sapa_catcat_village.jpg",
     "additionalImages": [
-      "/images/sapa_fansipan.jpg"
+      "/images/sapa_catcat_village.jpg"
     ],
     "rating": 4.9,
     "reviewCount": 160,
@@ -6234,12 +6300,12 @@
     "description": "사파의 가파른 산길을 걱정 없이 전용 차량과 기사로 편안하게 둘러보세요.",
     "included": [
       "전용 차량 1일 대절",
-      "기사, 유류비 일체",
-      "현지 특식 중식 1회 포함 (1끼 20만동 기준)",
-      "해당 관광지 입장료 일체 포함",
-      "4인 탑승 기준 단독 전용 차량 및 한국어 전문 가이드"
+      "기사, 유류비 일체"
     ],
-    "excluded": [],
+    "excluded": [
+      "입장료",
+      "식사비"
+    ],
     "itinerary": [
       {
         "day": 1,
@@ -6259,12 +6325,12 @@
     "category": "추천패키지",
     "region": "남부",
     "city": "호치민",
-    "priceKRW": 530000,
-    "priceVND": 9973010,
+    "priceKRW": 720000,
+    "priceVND": 13400000,
     "duration": "3박 5일",
-    "imageUrl": "/images/mekong_river_boat.jpg",
+    "imageUrl": "/images/saigon_notredame_post.jpg",
     "additionalImages": [
-      "/images/mekong_river_boat.jpg"
+      "/images/saigon_notredame_post.jpg"
     ],
     "rating": 4.9,
     "reviewCount": 198,
@@ -6287,19 +6353,16 @@
     ],
     "description": "베트남 경제 수도 호치민의 활기찬 도시 문화와 무이네의 광활한 사막 모래언덕을 만끽하는 베스트셀러 투어입니다.",
     "included": [
-      "호치민 4·5성급 특급 호텔/리조트 3박 (2인 1실, 호텔 조식 포함)",
+      "호치민 5성급 호텔 2박 + 무이네 4성급 리조트 1박 (조식 포함)",
       "단독 VIP 리무진 차량 및 한국어 전문 가이드",
       "무이네 화이트샌듄 전용 오픈 지프차 탑승권",
-      "요정의 샘 & 피싱빌리지 투어 입장료 및 전 일정 모든 관광지 입장료 100% 포함",
-      "90분 전신 스파 1회",
-      "전 일정 엄선 현지 미식 식대 전액 포함 (1끼당 20만동 기준, 중·석식 총 6회)",
-      "4인 기준 전용 VIP 단독 차량 및 한국어 전문 가이드 결합"
+      "요정의 샘 & 피싱빌리지 투어 입장료",
+      "90분 전신 스파 1회"
     ],
     "excluded": [
       "국제선 항공권",
       "개인 경비",
-      "매너팁",
-      "개인 기호성 음료 및 주류, 매너팁 (자율)"
+      "매너팁"
     ],
     "itinerary": [
       {
@@ -6342,7 +6405,7 @@
     "region": "남부",
     "city": "호치민",
     "priceKRW": 690000,
-    "priceVND": 12983730,
+    "priceVND": 12800000,
     "duration": "4박 5일",
     "imageUrl": "/images/mekong_river_boat.jpg",
     "additionalImages": [
@@ -6365,18 +6428,15 @@
     ],
     "description": "베트남의 역사를 체험하는 구찌터널과 남부의 젖줄 메콩강 정글 나룻배 탐험을 여유롭게 즐기는 코스입니다.",
     "included": [
-      "호치민 4·5성급 특급 호텔/리조트 4박 (2인 1실, 호텔 조식 포함)",
+      "호치민 5성급 호텔 4박 (조식 포함)",
       "단독 전용 차량 및 한국어 가이드",
-      "구찌터널 입장권 & 사격 체험장 안내 및 전 일정 모든 관광지 입장료 100% 포함",
-      "메콩델타 전통 나룻배 및 유람선 탑승권",
-      "전 일정 엄선 현지 미식 식대 전액 포함 (1끼당 20만동 기준, 중·석식 총 8회)",
-      "4인 기준 전용 VIP 단독 차량 및 한국어 전문 가이드 결합"
+      "구찌터널 입장권 & 사격 체험장 안내",
+      "메콩델타 전통 나룻배 및 유람선 탑승권"
     ],
     "excluded": [
       "항공권",
       "개인 경비",
-      "매너팁",
-      "개인 기호성 음료 및 주류, 매너팁 (자율)"
+      "매너팁"
     ],
     "itinerary": [
       {
@@ -6418,8 +6478,8 @@
     "category": "골프투어",
     "region": "남부",
     "city": "호치민",
-    "priceKRW": 1010000,
-    "priceVND": 19005170,
+    "priceKRW": 1190000,
+    "priceVND": 22000000,
     "duration": "3박 5일",
     "imageUrl": "/images/danang_city_dragon_1788400718422.jpg",
     "additionalImages": [
@@ -6443,17 +6503,15 @@
     ],
     "description": "이동 시간 20~30분 이내! 호치민 도심 최상급 인프라를 자랑하는 명문 탄손넛 CC와 투득 CC에서 즐기는 럭셔리 골프 패키지입니다.",
     "included": [
-      "호치민 4·5성급 특급 골프 리조트/호텔 3박 (2인 1실, 호텔 조식 포함)",
+      "호치민 5성급 호텔 3박 (2인 1실, 조식 포함)",
       "54홀 그린피 + 카트 + 1인 1캐디피 올포함",
       "전 일정 골프백 전용 VIP 리무진 밴 & 기사",
-      "전 일정 클럽하우스 중식 및 현지 정찬 석식 포함 (1끼당 20만동 기준, 총 6회)",
-      "4인 1팀 기준 단독 전용 리무진 골프밴 및 한국어 전담 안내 지원"
+      "클럽하우스 중식 3회 + 90분 골프 마사지"
     ],
     "excluded": [
       "캐디팁 ($15~$20/18홀)",
       "개인 경비",
-      "항공권",
-      "캐디팁 (18홀당 $15~$20 현장 지불)"
+      "항공권"
     ],
     "golfSpecs": {
       "holes": 54,
@@ -6505,12 +6563,12 @@
     "category": "골프투어",
     "region": "남부",
     "city": "호치민",
-    "priceKRW": 1010000,
-    "priceVND": 19005170,
+    "priceKRW": 1150000,
+    "priceVND": 21300000,
     "duration": "3박 4일",
-    "imageUrl": "/images/vietnam_golf_resort.jpg",
+    "imageUrl": "/images/golf_muine_pga.jpg",
     "additionalImages": [
-      "/images/vietnam_golf_resort.jpg"
+      "/images/golf_muine_pga.jpg"
     ],
     "rating": 5,
     "reviewCount": 58,
@@ -6529,17 +6587,15 @@
     ],
     "description": "베트남 최초 PGA 공인 36홀 코스로 지어진 PGA 노바월드 무이네에서 만끽하는 꿈의 라운딩!",
     "included": [
-      "호치민 4·5성급 특급 골프 리조트/호텔 3박 (2인 1실, 호텔 조식 포함)",
+      "무이네 5성급 리조트 3박 (조식 포함)",
       "36홀 그린피 + 카트 + 캐디피",
       "호치민-무이네 왕복 리무진 차량",
-      "전 일정 클럽하우스 중식 및 현지 정찬 석식 포함 (1끼당 20만동 기준, 총 6회)",
-      "4인 1팀 기준 단독 전용 리무진 골프밴 및 한국어 전담 안내 지원"
+      "클럽하우스 중식 쿠폰 2회"
     ],
     "excluded": [
       "캐디팁",
       "개인 경비",
-      "항공권",
-      "캐디팁 (18홀당 $15~$20 현장 지불)"
+      "항공권"
     ],
     "golfSpecs": {
       "holes": 36,
@@ -6594,9 +6650,9 @@
     "priceKRW": 890000,
     "priceVND": 16500000,
     "duration": "3박 4일",
-    "imageUrl": "/images/vietnam_beach_villa.jpg",
+    "imageUrl": "/images/villa_saigon_river.jpg",
     "additionalImages": [
-      "/images/vietnam_beach_villa.jpg"
+      "/images/villa_saigon_river.jpg"
     ],
     "rating": 4.9,
     "reviewCount": 44,
@@ -6686,9 +6742,9 @@
     "priceKRW": 980000,
     "priceVND": 18200000,
     "duration": "3박 4일",
-    "imageUrl": "/images/vietnam_beach_villa.jpg",
+    "imageUrl": "/images/villa_muine_beach.jpg",
     "additionalImages": [
-      "/images/vietnam_beach_villa.jpg"
+      "/images/villa_muine_beach.jpg"
     ],
     "rating": 5,
     "reviewCount": 39,
@@ -6776,8 +6832,8 @@
     "category": "자유여행",
     "region": "남부",
     "city": "호치민",
-    "priceKRW": 110000,
-    "priceVND": 2069870,
+    "priceKRW": 65000,
+    "priceVND": 1200000,
     "duration": "1일 데이투어",
     "imageUrl": "/images/mekong_river_boat_1788400683530.jpg",
     "additionalImages": [
@@ -6801,9 +6857,7 @@
     "included": [
       "왕복 전용 차량 및 가이드",
       "메콩강 보트 & 나룻배 탑승권",
-      "현지 특식 중식 포함",
-      "해당 관광지 입장료 일체 포함",
-      "4인 탑승 기준 단독 전용 차량 및 한국어 전문 가이드"
+      "현지 특식 중식 포함"
     ],
     "excluded": [
       "개인 쇼핑비",
@@ -6828,8 +6882,8 @@
     "category": "자유여행",
     "region": "남부",
     "city": "호치민",
-    "priceKRW": 110000,
-    "priceVND": 2069870,
+    "priceKRW": 45000,
+    "priceVND": 840000,
     "duration": "반나절 (새벽 04:30~09:00)",
     "imageUrl": "/images/muine_sand_dunes_1787098437757.jpg",
     "additionalImages": [
@@ -6851,10 +6905,7 @@
     "description": "무이네의 붉게 타오르는 사막 일출을 배경으로 인생샷을 남기는 필수 선라이즈 지프 투어입니다.",
     "included": [
       "호텔 왕복 전용 지프차 픽업",
-      "화이트샌듄, 레드샌듄, 요정의 샘, 피싱빌리지 코스",
-      "현지 특식 중식 1회 포함 (1끼 20만동 기준)",
-      "해당 관광지 입장료 일체 포함",
-      "4인 탑승 기준 단독 전용 차량 및 한국어 전문 가이드"
+      "화이트샌듄, 레드샌듄, 요정의 샘, 피싱빌리지 코스"
     ],
     "excluded": [
       "사막 ATV 탑승료 (개별 선택)",
@@ -6873,91 +6924,19 @@
     "createdAt": "2026-01-01T00:00:00.000Z"
   },
   {
-    "id": "prod-1787849206215",
-    "title": "[다낭/독채풀빌라] 미케비치 시그니처 4베드룸 럭셔리 풀빌라",
-    "subTitle": "전용 대형 프라이빗 수영장 + 24시간 버틀러 + 매일 전신 마사지 90분 + 단독 차량 & 가이드 올포함",
-    "category": "풀빌라",
-    "region": "중부",
+    "id": "test-123",
+    "title": "테스트",
+    "imageUrl": "/images/test.jpg",
+    "priceKRW": 100000,
+    "category": "자유여행",
+    "region": "다낭",
     "city": "다낭",
-    "priceKRW": 315000,
-    "priceVND": 5929185,
-    "duration": "",
-    "imageUrl": "/images/villa_danang_mykhe_6bed.jpg",
-    "additionalImages": [
-      "/images/villa_danang_mykhe_6bed.jpg",
-      "/images/vietnam_beach_villa.jpg"
-    ],
-    "rating": 5,
-    "reviewCount": 94,
-    "isPopular": true,
-    "isHotDeal": true,
-    "discountPercent": 15,
-    "departureCities": [
-      "인천",
-      "부산",
-      "대구",
-      "청주"
-    ],
-    "tags": [
-      "#다낭풀빌라",
-      "#독채풀빌라",
-      "#오션뷰",
-      "#가족여행",
-      "#프라이빗수영장",
-      "#바비큐파티"
-    ],
-    "description": "다낭 최고급 미케비치 해변가에 위치한 2222222222222222222베드룸 럭셔리 단독 풀빌라입니다. 다른 투숙객 없이 오직 우리 가족과 일행만을 위한 넓은 정원, 프라이빗 인피니티 풀, 풀사이드 바베큐 파티를 누려보세요.44444444444",
-    "included": [
-      "미케비치 6베드룸 럭셔리 독채 풀빌라  (단독 사용)",
-      "매일 아침 신선한 풀빌라 조식 서비스 제공"
-    ],
-    "excluded": [
-      "개인 경비 및 매너팁",
-      "항공권"
-    ],
-    "villaSpecs": {
-      "villaName": "다낭 미케비치 시그니처22222222",
-      "structureDescription": "마스터룸 2실 + 패밀리룸 1실 + 트윈룸 1실 (총 4객실 / 독립 욕실 4개 + 대형 거실 + 키친)",
-      "bedrooms": 4,
-      "bathrooms": 4,
-      "beds": "킹베드 3개 + 싱글베드 2개",
-      "maxOccupancy": 10,
-      "standardOccupancy": 8,
-      "privatePool": true,
-      "oceanView": false,
-      "areaSqm": 420,
-      "floors": 2,
-      "address": "",
-      "googleMapUrl": "23 Chế Lan Viên, Ngũ Hành Sơn, Đà Nẵng 550000 베트남",
-      "amenities": [
-        "프라이빗 수영장",
-        "넓은 거실 & 소파",
-        "풀옵션 주방 & 다이닝 룸",
-        "프라이빗 잔디 정원",
-        "야외 바비큐(BBQ) 그릴 시설",
-        "스마트 TV & 넷플릭스",
-        "24시간 전담 버틀러",
-        "초고속 Wi-Fi",
-        "프라이빗 전용 수영장",
-        "야외 바비큐(BBQ) 시설",
-        "세탁기 & 건조기",
-        "프라이빗 정원 & 테라스",
-        "풀 키친 (주방 조리시설)",
-        "초고속 무료 Wi-Fi",
-        "대형 냉장고 & 전자레인지",
-        "스마트 TV (넷플릭스)"
-      ],
-      "checkInTime": "14:00",
-      "checkOutTime": "11:00",
-      "breakfastIncluded": false,
-      "airbnbUrl": "https://www.airbnb.co.kr/rooms/1596807485988738548?adults=8&search_mode=regular_search&source_impression_id=p3_1773058617_P3xK6pEU9aoIJDMS&previous_page_section_name=1000&federated_search_id=a2420d66-c7ca-4754-98c4-1f72afdd15e6&guests=1&check_in=2026-10-13&check_out=2026-10-14",
-      "hostLanguage": " 베트남어 지원 (24시간 카카오톡 실시간 응대)"
-    },
+    "duration": "3박5일",
+    "description": "테스트 설명",
     "itinerary": [],
-    "createdAt": "2026-08-27T16:46:46.215Z",
-    "airbnbUrl": "https://www.airbnb.co.kr/rooms/1596807485988738548?adults=8&search_mode=regular_search&source_impression_id=p3_1773058617_P3xK6pEU9aoIJDMS&previous_page_section_name=1000&federated_search_id=a2420d66-c7ca-4754-98c4-1f72afdd15e6&guests=1&check_in=2026-10-13&check_out=2026-10-14",
-    "googleMapUrl": "23 Chế Lan Viên, Ngũ Hành Sơn, Đà Nẵng 550000 베트남",
-    "address": "",
-    "updatedAt": "2026-09-03T01:59:45.021Z"
+    "included": [],
+    "excluded": [],
+    "tags": [],
+    "additionalImages": []
   }
 ]

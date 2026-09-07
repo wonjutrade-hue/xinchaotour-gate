@@ -49,6 +49,10 @@ export const MASTER_UNIQUE_PRODUCT_IMAGES: Record<string, string> = {
   "prod-saigon-free-02": "/images/muine_sand_dunes_1787098437757.jpg",
 
   // 4. VILLAS (EACH 100% UNIQUE - ORIGINAL USER PHOTOS RESTORED)
+  "prod-danang-villa-cysea-5bed": "https://a0.muscache.com/im/pictures/hosting/Hosting-1234407839831467877/original/d39f92f1-316d-4fd4-9014-21899e528396.jpeg", // Cy'sea Villa
+  "prod-danang-villa-marble-6bed": "https://a0.muscache.com/im/pictures/hosting/Hosting-1596807485988738548/original/446c4cf5-db2f-4473-898b-e81124186cbc.jpeg", // Marble Garden Villa
+  "prod-danang-villa-pearl-10bed": "https://a0.muscache.com/im/pictures/hosting/Hosting-1470661871888779964/original/ef25966e-087b-45bb-95ff-a510b9267b3b.jpeg", // Pearl Retreat Villa
+  "prod-danang-villa-napoli-12bed": "https://a0.muscache.com/im/pictures/hosting/Hosting-1622142057449951853/original/baf84951-c9a1-44e8-8ff4-759f41e41414.jpeg", // Napoli Castle Super Villa
   "prod-danang-villa-01": "/images/vietnam_beach_villa.jpg", // Original User Danang Beach Villa
   "prod-danang-villa-02": "/images/vietnam_city_villa.jpg", // Original User Danang City/Mansion Villa
   "prod-nhatrang-villa-01": "/images/villa_nhatrang_bay.jpg",

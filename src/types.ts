@@ -96,6 +96,7 @@ export interface Product {
   duration: string;
   imageUrl: string;
   additionalImages?: string[];
+  galleryImages?: string[];
   rating: number;
   reviewCount: number;
   isPopular?: boolean;
@@ -106,7 +107,7 @@ export interface Product {
   description: string;
   included: string[];
   excluded: string[];
-  itinerary: ItineraryDay[];
+  itinerary?: ItineraryDay[];
   villaSpecs?: VillaSpecs;
   golfSpecs?: GolfSpecs;
   highlights?: string[];

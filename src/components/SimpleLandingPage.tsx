@@ -367,6 +367,11 @@ export const SimpleLandingPage: React.FC<SimpleLandingPageProps> = ({
                     <span className="px-2.5 py-1 rounded-lg bg-emerald-600/90 backdrop-blur-md text-white font-extrabold text-[11px] shadow-sm">
                       {prod.city || '베트남'}
                     </span>
+                    {prod.city === '다낭' && prod.category === '풀빌라' && (
+                      <span className="px-2.5 py-1 rounded-lg bg-teal-500/90 backdrop-blur-md text-white font-black text-[11px] shadow-sm border border-teal-300/40">
+                        💎 대표 직영
+                      </span>
+                    )}
                     <span className="px-2.5 py-1 rounded-lg bg-black/60 backdrop-blur-md text-slate-200 font-bold text-[11px]">
                       {prod.duration}
                     </span>
