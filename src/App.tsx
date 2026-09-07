@@ -18,6 +18,7 @@ import { ReservationPage } from './components/ReservationPage';
 import { TravelInfoPage } from './components/TravelInfoPage';
 import { ReviewsPage } from './components/ReviewsPage';
 import { CompanyPage } from './components/CompanyPage';
+import { SimpleLandingPage } from './components/SimpleLandingPage';
 import { getLiveExchangeRates, ExchangeRates, DEFAULT_RATES } from './lib/exchangeRate';
 import { productService } from './services/productService';
 import { inquiryService } from './services/inquiryService';
@@ -161,7 +162,18 @@ function setStoredJson(key: string, data: any) {
 }
 
 export default function App() {
-  const [currentPage, setCurrentPage] = useState<NavPage>('home');
+  const [currentPage, setCurrentPage] = useState<NavPage>(() => {
+    try {
+      if (typeof window !== 'undefined') {
+        const path = window.location.pathname.toLowerCase();
+        const search = window.location.search.toLowerCase();
+        if (path.includes('/simple') || search.includes('mode=simple') || search.includes('page=simple')) {
+          return 'simple';
+        }
+      }
+    } catch (e) {}
+    return 'home';
+  });
   const [products, setProducts] = useState<Product[]>(() => {
     const cached = getStoredJson<Product[]>(PRODUCTS_CACHE_KEY, []);
     if (cached && cached.length > 0) return cached;
@@ -335,6 +347,7 @@ export default function App() {
     setCurrentPage(page);
     const navTitles: Record<NavPage, string> = {
       home: '홈 메인',
+      simple: '신짜오투어 심플 메인',
       free_travel: '단독 자유여행',
       villa: '독채 풀빌라',
       golf: '골프투어',
@@ -343,7 +356,23 @@ export default function App() {
     };
     trackVisitorEvent('page_view', navTitles[page] || page);
 
-    if (page === 'home') {
+    try {
+      if (page === 'simple') {
+        const url = new URL(window.location.href);
+        if (!url.pathname.includes('/simple')) {
+          url.searchParams.set('page', 'simple');
+          window.history.pushState({ page: 'simple' }, '', url.toString());
+        }
+      } else if (page === 'home') {
+        const url = new URL(window.location.href);
+        if (url.searchParams.has('page')) {
+          url.searchParams.delete('page');
+          window.history.pushState({}, '', url.pathname + (url.search ? url.search : ''));
+        }
+      }
+    } catch (e) {}
+
+    if (page === 'home' || page === 'simple') {
       setActiveCategory('전체');
       setActiveRegion('전체');
       setActiveCity('전체');
@@ -659,6 +688,22 @@ export default function App() {
         <ReservationPage
           products={products}
           onSubmitInquiry={handleSubmitInquiry}
+        />
+      );
+    }
+
+    if (currentPage === 'simple') {
+      return (
+        <SimpleLandingPage
+          products={products}
+          onSelectProduct={handleSelectProduct}
+          onOpenConsultation={() => {
+            setConsultationTargetProduct(null);
+            setIsConsultationOpen(true);
+          }}
+          onSubmitInquiry={handleSubmitInquiry}
+          exchangeRates={exchangeRates}
+          onSwitchToFullView={() => handleNavigate('home')}
         />
       );
     }

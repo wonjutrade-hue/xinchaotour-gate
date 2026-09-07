@@ -67,6 +67,15 @@ export const Footer: React.FC<FooterProps> = ({
             <ul className="space-y-2 text-xs font-medium">
               <li>
                 <button
+                  onClick={() => onNavigate('simple')}
+                  className="hover:text-emerald-400 transition-colors text-left cursor-pointer font-bold text-emerald-300 flex items-center gap-1"
+                >
+                  <span>⚡ 신짜오투어 심플 모드</span>
+                  <span className="text-[10px] px-1.5 py-0.2 bg-emerald-500/30 text-emerald-300 rounded-full border border-emerald-500/40">NEW</span>
+                </button>
+              </li>
+              <li>
+                <button
                   onClick={() => onNavigate('free_travel')}
                   className="hover:text-emerald-400 transition-colors text-left cursor-pointer"
                 >

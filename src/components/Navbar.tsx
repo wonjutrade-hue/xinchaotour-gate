@@ -18,7 +18,7 @@ import { COMPANY_PHONE, COMPANY_PHONE_TEL, DEFAULT_KAKAO_LINK, handleOpenKakaoTa
 import { COMPANY_INFO } from '../data/companyInfo';
 import { ExchangeRates } from '../lib/exchangeRate';
 
-export type NavPage = 'home' | 'free_travel' | 'villa' | 'golf' | 'travel_info' | 'reservation';
+export type NavPage = 'home' | 'simple' | 'free_travel' | 'villa' | 'golf' | 'travel_info' | 'reservation';
 
 interface NavbarProps {
   currentPage: NavPage;
@@ -49,8 +49,9 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   const vndPerThousandKRW = Math.round((1000 / (exchangeRates.KRW || 1350)) * (exchangeRates.VND || 25200));
 
-  const navItems: { key: NavPage; label: string; icon?: string }[] = [
-    { key: 'home', label: 'HOME' },
+  const navItems: { key: NavPage; label: string; badge?: string }[] = [
+    { key: 'simple', label: '⚡심플홈', badge: '인기' },
+    { key: 'home', label: '전체상품' },
     { key: 'free_travel', label: '자유여행' },
     { key: 'villa', label: '풀빌라' },
     { key: 'golf', label: '골프여행' },
@@ -174,13 +175,20 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <button
                   key={item.key}
                   onClick={() => handleItemClick(item.key)}
-                  className={`px-4 py-2.5 rounded-xl text-sm font-extrabold transition-all cursor-pointer ${
+                  className={`px-3.5 py-2.5 rounded-xl text-sm font-extrabold transition-all cursor-pointer relative flex items-center gap-1.5 ${
                     isActive
                       ? 'bg-emerald-600 text-white shadow-sm'
+                      : item.key === 'simple'
+                      ? 'text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200'
                       : 'text-slate-700 hover:text-emerald-600 hover:bg-slate-50'
                   }`}
                 >
-                  {item.label}
+                  <span>{item.label}</span>
+                  {item.badge && !isActive && (
+                    <span className="text-[10px] px-1.5 py-0.2 bg-rose-500 text-white font-black rounded-full shadow-2xs">
+                      {item.badge}
+                    </span>
+                  )}
                 </button>
               );
             })}
@@ -267,10 +275,19 @@ export const Navbar: React.FC<NavbarProps> = ({
                   className={`p-3 rounded-xl text-sm font-extrabold transition text-left flex items-center justify-between cursor-pointer ${
                     isActive
                       ? 'bg-emerald-600 text-white shadow-sm'
+                      : item.key === 'simple'
+                      ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
                       : 'bg-slate-50 text-slate-800 hover:bg-slate-100'
                   }`}
                 >
-                  <span>{item.label}</span>
+                  <span className="flex items-center gap-1.5">
+                    <span>{item.label}</span>
+                    {item.badge && !isActive && (
+                      <span className="text-[9px] px-1.5 py-0.2 bg-rose-500 text-white font-black rounded-full">
+                        {item.badge}
+                      </span>
+                    )}
+                  </span>
                   {isActive && <span className="text-xs">●</span>}
                 </button>
               );
