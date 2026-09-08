@@ -69,29 +69,29 @@ export const Navbar: React.FC<NavbarProps> = ({
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md shadow-xs border-b border-slate-100">
       {/* Top Banner Bar */}
       <div className="bg-gradient-to-r from-slate-950 via-teal-950 to-slate-950 text-slate-200 text-xs py-1.5 px-3 sm:px-4 border-b border-teal-900/30">
-        <div className="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-x-4 gap-y-1">
-          <div className="flex items-center gap-2.5 text-slate-300 text-[11px] sm:text-xs flex-wrap">
-            <span className="flex items-center gap-1.5 font-black whitespace-nowrap text-emerald-300">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-2 overflow-x-auto scrollbar-none">
+          <div className="flex items-center gap-2 text-slate-300 text-[11px] sm:text-xs shrink-0 whitespace-nowrap">
+            <span className="flex items-center gap-1.5 font-black text-emerald-300">
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-              100% 현지 직영 · 한국어 전담 가이드 & 단독 VIP 차량
+              <span>100% 현지 직영 · 한국어 전담 가이드 & 단독 VIP 차량</span>
             </span>
-            <span className="hidden md:inline-block text-teal-800">|</span>
+            <span className="hidden lg:inline-block text-teal-800">|</span>
             {/* Live Exchange Rate Indicator */}
             <button
               onClick={onOpenRateCalculator}
               className="hidden sm:inline-flex items-center gap-1 text-slate-300 hover:text-emerald-300 transition cursor-pointer font-bold bg-white/5 px-2 py-0.5 rounded-md border border-white/10"
               title="실시간 베트남 동(VND) 환율 계산기 열기"
             >
-              <DollarSign className="w-3.5 h-3.5 text-amber-400" />
+              <DollarSign className="w-3.5 h-3.5 text-amber-400 shrink-0" />
               <span>실시간 환율: 1,000원 ≒ <strong className="text-amber-300">{vndPerThousandKRW.toLocaleString()}동</strong></span>
             </button>
           </div>
 
-          <div className="flex items-center gap-3 text-xs ml-auto">
+          <div className="flex items-center gap-2 sm:gap-2.5 text-xs shrink-0 whitespace-nowrap ml-auto">
             {/* Travel info guide trigger */}
             <button
               onClick={() => handleItemClick('travel_info')}
-              className="hidden sm:flex items-center gap-1 text-slate-200 hover:text-amber-300 transition cursor-pointer text-xs font-bold"
+              className="hidden xl:flex items-center gap-1 text-slate-200 hover:text-amber-300 transition cursor-pointer text-xs font-bold"
             >
               <BookOpen className="w-3 h-3 text-amber-400" />
               <span>여행정보 꿀팁</span>
@@ -101,7 +101,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             {onOpenAiAssistant && (
               <button
                 onClick={onOpenAiAssistant}
-                className="hidden md:flex items-center gap-1 text-teal-300 hover:text-white transition cursor-pointer text-xs font-bold bg-teal-500/20 px-2 py-0.5 rounded-md border border-teal-400/30"
+                className="hidden xl:flex items-center gap-1 text-teal-300 hover:text-white transition cursor-pointer text-xs font-bold bg-teal-500/20 px-2 py-0.5 rounded-md border border-teal-400/30"
               >
                 <Bot className="w-3.5 h-3.5" />
                 <span>AI 상담</span>
@@ -111,7 +111,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* Phone button */}
             <a
               href={COMPANY_PHONE_TEL}
-              className="flex items-center gap-1 text-slate-200 hover:text-emerald-300 font-bold transition"
+              className="hidden md:flex items-center gap-1 text-slate-200 hover:text-emerald-300 font-bold transition"
             >
               <PhoneCall className="w-3 h-3 text-emerald-400" />
               <span>{COMPANY_PHONE}</span>
@@ -146,36 +146,36 @@ export const Navbar: React.FC<NavbarProps> = ({
       </div>
 
       {/* Main Nav Bar */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 sm:h-20 gap-4">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6">
+        <div className="flex items-center justify-between h-16 sm:h-18 gap-2 lg:gap-4">
           {/* Logo */}
           <button
             onClick={() => handleItemClick('home')}
-            className="flex items-center gap-2.5 text-left shrink-0 cursor-pointer group"
+            className="flex items-center gap-2 text-left shrink-0 cursor-pointer group"
           >
-            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-white shadow-md shadow-emerald-500/20 group-hover:scale-105 transition">
-              <Palmtree className="w-6 h-6" />
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-white shadow-md shadow-emerald-500/20 group-hover:scale-105 transition shrink-0">
+              <Palmtree className="w-5 h-5 sm:w-5.5 sm:h-5.5" />
             </div>
-            <div>
-              <div className="font-black text-xl sm:text-2xl text-slate-900 tracking-tight flex items-center gap-1">
+            <div className="shrink-0">
+              <div className="font-black text-lg sm:text-xl text-slate-900 tracking-tight flex items-center gap-0.5 leading-none">
                 <span>XinChao</span>
                 <span className="text-emerald-600">Tour</span>
               </div>
-              <p className="text-[10px] text-slate-500 font-semibold tracking-wider">
-                신짜오투어 | 베트남 맞춤 여행 전문
+              <p className="text-[9px] sm:text-[10px] text-slate-500 font-semibold tracking-tight mt-0.5 whitespace-nowrap">
+                신짜오투어 | 베트남 맞춤여행
               </p>
             </div>
           </button>
 
-          {/* Desktop Navigation Links */}
-          <nav className="hidden lg:flex items-center gap-1 xl:gap-2">
+          {/* Desktop Navigation Links - Always Single Row */}
+          <nav className="hidden md:flex items-center gap-0.5 lg:gap-1 shrink-0 flex-nowrap whitespace-nowrap">
             {navItems.map(item => {
               const isActive = currentPage === item.key;
               return (
                 <button
                   key={item.key}
                   onClick={() => handleItemClick(item.key)}
-                  className={`px-3.5 py-2.5 rounded-xl text-sm font-extrabold transition-all cursor-pointer relative flex items-center gap-1.5 ${
+                  className={`px-2.5 lg:px-3 py-2 rounded-xl text-xs lg:text-sm font-extrabold transition-all cursor-pointer relative flex items-center gap-1 shrink-0 whitespace-nowrap leading-none ${
                     isActive
                       ? 'bg-emerald-600 text-white shadow-sm'
                       : item.key === 'simple'
@@ -183,9 +183,9 @@ export const Navbar: React.FC<NavbarProps> = ({
                       : 'text-slate-700 hover:text-emerald-600 hover:bg-slate-50'
                   }`}
                 >
-                  <span>{item.label}</span>
+                  <span className="whitespace-nowrap">{item.label}</span>
                   {item.badge && !isActive && (
-                    <span className="text-[10px] px-1.5 py-0.2 bg-rose-500 text-white font-black rounded-full shadow-2xs">
+                    <span className="text-[9px] px-1 py-0.2 bg-rose-500 text-white font-black rounded-full shadow-2xs leading-none">
                       {item.badge}
                     </span>
                   )}
@@ -195,21 +195,21 @@ export const Navbar: React.FC<NavbarProps> = ({
           </nav>
 
           {/* Search bar & Action Button */}
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0 flex-nowrap whitespace-nowrap">
             {/* Quick Search */}
-            <div className="relative hidden md:block w-40 xl:w-48">
+            <div className="relative hidden 2xl:block w-36">
               <input
                 type="text"
-                placeholder="지역, 풀빌라, 골프 검색"
+                placeholder="지역, 골프 검색"
                 value={searchTerm}
                 onChange={e => onSearchChange(e.target.value)}
-                className="w-full text-xs bg-slate-50 border border-slate-200 rounded-full pl-8 pr-3 py-2 text-slate-800 placeholder-slate-400 focus:outline-hidden focus:ring-2 focus:ring-emerald-500 focus:bg-white transition"
+                className="w-full text-xs bg-slate-50 border border-slate-200 rounded-full pl-7 pr-3 py-1.5 text-slate-800 placeholder-slate-400 focus:outline-hidden focus:ring-2 focus:ring-emerald-500 focus:bg-white transition"
               />
-              <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2.5 pointer-events-none" />
+              <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2 top-2 pointer-events-none" />
               {searchTerm && (
                 <button
                   onClick={() => onSearchChange('')}
-                  className="absolute right-2.5 top-2 text-slate-400 hover:text-slate-600 text-xs"
+                  className="absolute right-2 top-1.5 text-slate-400 hover:text-slate-600 text-xs"
                 >
                   ✕
                 </button>
@@ -220,7 +220,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             {onOpenAiAssistant && (
               <button
                 onClick={onOpenAiAssistant}
-                className="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition shadow-xs cursor-pointer"
+                className="hidden xl:flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition shadow-xs cursor-pointer shrink-0 whitespace-nowrap"
               >
                 <Sparkles className="w-3.5 h-3.5 text-amber-300" />
                 <span>AI 플래너</span>
@@ -230,20 +230,19 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* Top Quick Consultation button */}
             <button
               onClick={onOpenConsultation}
-              className="bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm shadow-sm hover:shadow-md transition flex items-center gap-1.5 shrink-0 cursor-pointer"
+              className="bg-emerald-600 hover:bg-emerald-500 text-white font-black px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-xs sm:text-xs shadow-sm hover:shadow-md transition flex items-center gap-1.5 shrink-0 cursor-pointer whitespace-nowrap"
             >
-              <CalendarCheck className="w-4 h-4" />
-              <span className="hidden sm:inline">1:1 빠른상담</span>
-              <span className="sm:hidden">상담</span>
+              <CalendarCheck className="w-3.5 h-3.5" />
+              <span>1:1 상담</span>
             </button>
 
-            {/* Mobile Hamburger Toggle */}
+            {/* Mobile Hamburger Toggle (only on smaller screens) */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-2 rounded-xl text-slate-700 hover:text-slate-900 hover:bg-slate-100 transition cursor-pointer"
+              className="md:hidden p-2 rounded-xl text-slate-700 hover:text-slate-900 hover:bg-slate-100 transition cursor-pointer"
               aria-label="메뉴 열기"
             >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
         </div>
