@@ -1,0 +1,17 @@
+{
+  "name": "신짜오투어",
+  "short_name": "신짜오투어",
+  "description": "베트남 자유여행 · 다낭 직영 풀빌라 · 명문 골프 맞춤 전문 신짜오투어",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#059669",
+  "icons": [
+    {
+      "src": "/logo.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

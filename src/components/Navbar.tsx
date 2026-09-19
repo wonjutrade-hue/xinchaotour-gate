@@ -12,7 +12,8 @@ import {
   DollarSign, 
   CalendarCheck, 
   BookOpen, 
-  Bot 
+  Bot,
+  ExternalLink
 } from 'lucide-react';
 import { COMPANY_PHONE, COMPANY_PHONE_TEL, DEFAULT_KAKAO_LINK, handleOpenKakaoTalkDirect } from '../constants';
 import { COMPANY_INFO } from '../data/companyInfo';
@@ -60,6 +61,17 @@ export const Navbar: React.FC<NavbarProps> = ({
   ];
 
   const handleItemClick = (page: NavPage) => {
+    if (page === 'simple') {
+      try {
+        const url = new URL(window.location.href);
+        url.searchParams.set('page', 'simple');
+        window.open(url.toString(), '_blank', 'noopener,noreferrer');
+      } catch (e) {
+        window.open('/?page=simple', '_blank', 'noopener,noreferrer');
+      }
+      setMobileMenuOpen(false);
+      return;
+    }
     onNavigate(page);
     setMobileMenuOpen(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -175,16 +187,20 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <button
                   key={item.key}
                   onClick={() => handleItemClick(item.key)}
+                  title={item.key === 'simple' ? '심플홈 새 창으로 열기' : item.label}
                   className={`px-2.5 lg:px-3 py-2 rounded-xl text-xs lg:text-sm font-extrabold transition-all cursor-pointer relative flex items-center gap-1 shrink-0 whitespace-nowrap leading-none ${
                     isActive
                       ? 'bg-emerald-600 text-white shadow-sm'
                       : item.key === 'simple'
-                      ? 'text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200'
+                      ? 'text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 shadow-2xs'
                       : 'text-slate-700 hover:text-emerald-600 hover:bg-slate-50'
                   }`}
                 >
                   <span className="whitespace-nowrap">{item.label}</span>
-                  {item.badge && !isActive && (
+                  {item.key === 'simple' && (
+                    <ExternalLink className="w-3 h-3 text-emerald-600 shrink-0" />
+                  )}
+                  {item.badge && !isActive && item.key !== 'simple' && (
                     <span className="text-[9px] px-1 py-0.2 bg-rose-500 text-white font-black rounded-full shadow-2xs leading-none">
                       {item.badge}
                     </span>
@@ -281,7 +297,10 @@ export const Navbar: React.FC<NavbarProps> = ({
                 >
                   <span className="flex items-center gap-1.5">
                     <span>{item.label}</span>
-                    {item.badge && !isActive && (
+                    {item.key === 'simple' && (
+                      <ExternalLink className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                    )}
+                    {item.badge && !isActive && item.key !== 'simple' && (
                       <span className="text-[9px] px-1.5 py-0.2 bg-rose-500 text-white font-black rounded-full">
                         {item.badge}
                       </span>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { PhoneCall, MessageCircle, Palmtree, Users, TrendingUp, BarChart2 } from 'lucide-react';
+import { PhoneCall, MessageCircle, Palmtree, Users, TrendingUp, BarChart2, ExternalLink } from 'lucide-react';
 import { COMPANY_PHONE, COMPANY_PHONE_TEL, DEFAULT_KAKAO_LINK, handleOpenKakaoTalkDirect } from '../constants';
 import { COMPANY_INFO } from '../data/companyInfo';
 import { NavPage } from './Navbar';
@@ -67,11 +67,21 @@ export const Footer: React.FC<FooterProps> = ({
             <ul className="space-y-2 text-xs font-medium">
               <li>
                 <button
-                  onClick={() => onNavigate('simple')}
+                  onClick={() => {
+                    try {
+                      const url = new URL(window.location.href);
+                      url.searchParams.set('page', 'simple');
+                      window.open(url.toString(), '_blank', 'noopener,noreferrer');
+                    } catch (e) {
+                      window.open('/?page=simple', '_blank', 'noopener,noreferrer');
+                    }
+                  }}
                   className="hover:text-emerald-400 transition-colors text-left cursor-pointer font-bold text-emerald-300 flex items-center gap-1"
+                  title="새 창에서 심플 모드 열기"
                 >
                   <span>⚡ 신짜오투어 심플 모드</span>
-                  <span className="text-[10px] px-1.5 py-0.2 bg-emerald-500/30 text-emerald-300 rounded-full border border-emerald-500/40">NEW</span>
+                  <ExternalLink className="w-3 h-3 text-emerald-400" />
+                  <span className="text-[10px] px-1.5 py-0.2 bg-emerald-500/30 text-emerald-300 rounded-full border border-emerald-500/40">새창</span>
                 </button>
               </li>
               <li>
