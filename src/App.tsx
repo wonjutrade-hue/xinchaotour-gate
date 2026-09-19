@@ -200,6 +200,18 @@ export default function App() {
     await saveProductsToIndexedDB(updatedProducts);
     setStoredJson(PRODUCTS_CACHE_KEY, updatedProducts);
 
+    // 1-1. Broadcast real-time change to all open tabs and windows (e.g. ?page=simple tab)
+    try {
+      if (typeof window !== 'undefined') {
+        if ('BroadcastChannel' in window) {
+          const channel = new BroadcastChannel('xinchao_product_sync');
+          channel.postMessage({ type: 'PRODUCTS_UPDATED', timestamp: saveTime });
+          channel.close();
+        }
+        localStorage.setItem('xinchao_products_broadcast_event', String(saveTime));
+      }
+    } catch (e) {}
+
     // If currently viewing a product that was modified, update selectedProduct
     setSelectedProduct(prev => {
       if (!prev) return null;
@@ -241,8 +253,15 @@ export default function App() {
   const [travelInfoTab, setTravelInfoTab] = useState<TravelInfoTab>('course');
   const [isAdminMode, setIsAdminMode] = useState(false);
   const [isAdminLoginOpen, setIsAdminLoginOpen] = useState(false);
+  const [adminTargetTab, setAdminTargetTab] = useState<'products' | 'inquiries' | 'analytics' | 'guide' | 'simple_page'>('products');
 
-  const handleOpenAdmin = () => {
+  const handleOpenAdmin = (targetTab?: string) => {
+    if (targetTab === 'simple_page' || targetTab === 'inquiries' || targetTab === 'analytics' || targetTab === 'guide') {
+      setAdminTargetTab(targetTab as any);
+    } else {
+      setAdminTargetTab('products');
+    }
+
     try {
       const isAuth = localStorage.getItem('xinchao_admin_auth') === 'true';
       if (isAuth) {
@@ -520,6 +539,40 @@ export default function App() {
       loadRates();
     };
 
+    // Real-time synchronization across all tabs and browser windows
+    const handleStorageChange = async (e: StorageEvent) => {
+      if (e.key === 'xinchao_products_broadcast_event' || e.key === PRODUCTS_CACHE_KEY || e.key === 'xinchao_products_last_saved') {
+        try {
+          const idbLatest = await loadProductsFromIndexedDB();
+          const cachedLatest = getStoredJson<Product[]>(PRODUCTS_CACHE_KEY, []);
+          const fresh = (idbLatest && idbLatest.length > 0) ? idbLatest : cachedLatest;
+          if (fresh && fresh.length > 0) {
+            setProducts(fresh);
+          }
+        } catch (err) {}
+      }
+    };
+    window.addEventListener('storage', handleStorageChange);
+
+    let channel: BroadcastChannel | null = null;
+    try {
+      if (typeof window !== 'undefined' && 'BroadcastChannel' in window) {
+        channel = new BroadcastChannel('xinchao_product_sync');
+        channel.onmessage = async (msg) => {
+          if (msg.data?.type === 'PRODUCTS_UPDATED') {
+            try {
+              const idbLatest = await loadProductsFromIndexedDB();
+              const cachedLatest = getStoredJson<Product[]>(PRODUCTS_CACHE_KEY, []);
+              const fresh = (idbLatest && idbLatest.length > 0) ? idbLatest : cachedLatest;
+              if (fresh && fresh.length > 0) {
+                setProducts(fresh);
+              }
+            } catch (err) {}
+          }
+        };
+      }
+    } catch (e) {}
+
     window.addEventListener('focus', handleReSync);
     const handleVisibility = () => {
       if (document.visibilityState === 'visible') {
@@ -530,6 +583,10 @@ export default function App() {
 
     return () => {
       clearInterval(pollTimer);
+      window.removeEventListener('storage', handleStorageChange);
+      if (channel) {
+        channel.close();
+      }
       window.removeEventListener('focus', handleReSync);
       document.removeEventListener('visibilitychange', handleVisibility);
     };
@@ -639,6 +696,7 @@ export default function App() {
         onExitAdmin={() => setIsAdminMode(false)}
         onForceSync={() => syncAllDataFromServer(true)}
         isSyncing={isLoadingProducts}
+        initialTab={adminTargetTab}
         onPreviewProduct={(prod) => {
           setIsAdminMode(false);
           handleSelectProduct(prod);
@@ -704,6 +762,7 @@ export default function App() {
           onSubmitInquiry={handleSubmitInquiry}
           exchangeRates={exchangeRates}
           onSwitchToFullView={() => handleNavigate('home')}
+          onOpenAdmin={(tab) => handleOpenAdmin(tab)}
         />
       );
     }

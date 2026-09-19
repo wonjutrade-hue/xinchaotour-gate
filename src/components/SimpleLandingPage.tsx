@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Sparkles, 
   ShieldCheck, 
@@ -16,13 +16,21 @@ import {
   Check, 
   ChevronRight,
   Send,
-  Palmtree
+  Palmtree,
+  SlidersHorizontal,
+  RotateCcw
 } from 'lucide-react';
 import { Product, Category, City } from '../types';
 import { COMPANY_INFO } from '../data/companyInfo';
 import { COMPANY_PHONE, COMPANY_PHONE_TEL, DEFAULT_KAKAO_LINK, handleOpenKakaoTalkDirect } from '../constants';
 import { trackVisitorEvent } from '../lib/analytics';
 import { ExchangeRates } from '../lib/exchangeRate';
+import { getDisplayProductImage } from '../lib/imageFallback';
+import { 
+  getSimplePageProducts, 
+  isSimplePageCustomized, 
+  resetSimplePageToMainSync 
+} from '../lib/simplePageStorage';
 
 interface SimpleLandingPageProps {
   products: Product[];
@@ -39,6 +47,7 @@ interface SimpleLandingPageProps {
   }) => Promise<boolean>;
   exchangeRates: ExchangeRates;
   onSwitchToFullView?: () => void;
+  onOpenAdmin?: (targetTab?: string) => void;
 }
 
 export const SimpleLandingPage: React.FC<SimpleLandingPageProps> = ({
@@ -48,7 +57,71 @@ export const SimpleLandingPage: React.FC<SimpleLandingPageProps> = ({
   onSubmitInquiry,
   exchangeRates,
   onSwitchToFullView,
+  onOpenAdmin,
 }) => {
+  // -------------------------------------------------------------
+  // Independent Simple Page State Management
+  // If customized on Simple Page, uses local overridden products.
+  // Otherwise automatically stays in sync with master products.
+  // -------------------------------------------------------------
+  const [activeProducts, setActiveProducts] = useState<Product[]>(() => getSimplePageProducts(products));
+  const [hasCustomOverride, setHasCustomOverride] = useState<boolean>(() => isSimplePageCustomized());
+
+  // Update active products when master products change (if not overridden)
+  useEffect(() => {
+    const customized = isSimplePageCustomized();
+    setHasCustomOverride(customized);
+    if (!customized) {
+      setActiveProducts(products);
+    } else {
+      setActiveProducts(getSimplePageProducts(products));
+    }
+  }, [products]);
+
+  // Listen for storage or BroadcastChannel updates specifically for simple page
+  useEffect(() => {
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key === 'xinchao_simple_page_products_override' || e.key === 'xinchao_simple_page_is_customized') {
+        const customized = isSimplePageCustomized();
+        setHasCustomOverride(customized);
+        setActiveProducts(getSimplePageProducts(products));
+      }
+    };
+
+    window.addEventListener('storage', handleStorage);
+
+    let channel: BroadcastChannel | null = null;
+    try {
+      if (typeof window !== 'undefined' && 'BroadcastChannel' in window) {
+        channel = new BroadcastChannel('xinchao_simple_product_sync');
+        channel.onmessage = (event) => {
+          if (event.data?.type === 'SIMPLE_PRODUCTS_UPDATED' || event.data?.type === 'SIMPLE_PRODUCTS_RESET') {
+            const customized = isSimplePageCustomized();
+            setHasCustomOverride(customized);
+            setActiveProducts(getSimplePageProducts(products));
+          }
+        };
+      }
+    } catch (e) {}
+
+    return () => {
+      window.removeEventListener('storage', handleStorage);
+      if (channel) {
+        try {
+          channel.close();
+        } catch (e) {}
+      }
+    };
+  }, [products]);
+
+  const handleResetToMasterSync = () => {
+    if (window.confirm('심플페이지의 단독 수정 내역을 지우고 메인 페이지의 최신 상품 데이터와 다시 100% 자동 동기화하시겠습니까?')) {
+      resetSimplePageToMainSync();
+      setHasCustomOverride(false);
+      setActiveProducts(products);
+    }
+  };
+
   // Active theme tab: 'free_travel' | 'villa' | 'golf'
   const [selectedTheme, setSelectedTheme] = useState<'free_travel' | 'villa' | 'golf'>('free_travel');
   
@@ -75,8 +148,8 @@ export const SimpleLandingPage: React.FC<SimpleLandingPageProps> = ({
 
   const currentCategory = themeCategoryMap[selectedTheme];
 
-  // Filter products for this theme
-  const themeProducts = products.filter(p => {
+  // Filter products for this theme (using activeProducts to guarantee isolation)
+  const themeProducts = activeProducts.filter(p => {
     if (selectedTheme === 'free_travel') {
       return p.category === '자유여행' || p.category === '추천패키지';
     }
@@ -86,7 +159,7 @@ export const SimpleLandingPage: React.FC<SimpleLandingPageProps> = ({
   // Unique cities available in this theme
   const availableCities = ['전체', ...Array.from(new Set(themeProducts.map(p => p.city).filter(Boolean)))];
 
-  // Filtered by city & pick top 4 best sellers
+  // Filtered by city & pick top 6 best sellers
   const displayedProducts = themeProducts
     .filter(p => selectedCity === '전체' || p.city === selectedCity)
     .slice(0, 6);
@@ -133,6 +206,11 @@ export const SimpleLandingPage: React.FC<SimpleLandingPageProps> = ({
             <span className="truncate">100% 한국어 전담 가이드 & 단독 전용차량 · 노쇼핑 안심케어</span>
           </div>
           <div className="flex items-center gap-3 shrink-0">
+            {hasCustomOverride && (
+              <span className="hidden md:inline-flex items-center gap-1.5 bg-amber-400 text-slate-950 font-black text-[11px] px-2.5 py-0.5 rounded-full shadow-xs">
+                <span>⭐ 심플 단독 맞춤 진열 중</span>
+              </span>
+            )}
             <a 
               href={COMPANY_PHONE_TEL}
               className="flex items-center gap-1 hover:underline text-white font-extrabold"
@@ -148,6 +226,16 @@ export const SimpleLandingPage: React.FC<SimpleLandingPageProps> = ({
               >
                 <span>전체 상품 모드</span>
                 <ChevronRight className="w-3 h-3" />
+              </button>
+            )}
+            {onOpenAdmin && (
+              <button
+                onClick={() => onOpenAdmin('simple_page')}
+                className="inline-flex items-center gap-1 bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-[11px] px-2.5 py-1 rounded-full transition shadow-xs cursor-pointer"
+                title="심플홈 단독 상품 편집"
+              >
+                <SlidersHorizontal className="w-3 h-3" />
+                <span>심플 관리</span>
               </button>
             )}
           </div>
@@ -237,6 +325,41 @@ export const SimpleLandingPage: React.FC<SimpleLandingPageProps> = ({
 
       {/* 3. THREE CORE THEMES SELECTOR */}
       <section className="max-w-5xl mx-auto px-4 sm:px-6 py-12">
+        {hasCustomOverride && (
+          <div className="mb-6 p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs shadow-md">
+            <div className="flex items-center gap-2.5">
+              <span className="text-xl">🛠️</span>
+              <div>
+                <p className="font-bold text-amber-300">
+                  현재 심플페이지 전용 맞춤 상품 목록이 적용되어 있습니다.
+                </p>
+                <p className="text-slate-400 text-[11px]">
+                  심플페이지에서 추가/수정/삭제한 내용은 메인 홈페이지에 영향을 주지 않고 안전하게 유지됩니다.
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 shrink-0 self-end sm:self-auto">
+              <button
+                onClick={handleResetToMasterSync}
+                className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white font-bold text-xs flex items-center gap-1 transition cursor-pointer border border-slate-700"
+                title="메인 페이지 상품과 다시 자동 동기화"
+              >
+                <RotateCcw className="w-3 h-3 text-teal-400" />
+                <span>메인 상품과 재동기화</span>
+              </button>
+              {onOpenAdmin && (
+                <button
+                  onClick={() => onOpenAdmin('simple_page')}
+                  className="px-3 py-1.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs flex items-center gap-1 transition cursor-pointer shadow-xs"
+                >
+                  <SlidersHorizontal className="w-3 h-3" />
+                  <span>상품 편집</span>
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+
         <div className="text-center mb-8">
           <span className="text-emerald-400 text-xs font-black tracking-widest uppercase">Best Selection</span>
           <h2 className="text-2xl sm:text-3xl font-black text-white mt-1">
@@ -343,7 +466,7 @@ export const SimpleLandingPage: React.FC<SimpleLandingPageProps> = ({
         {/* Selected Theme Top 3~6 Products */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {displayedProducts.map(prod => {
-            const displayImg = prod.imageUrl || '/images/danang_golden_bridge.jpg';
+            const displayImg = getDisplayProductImage(prod);
             const priceWon = prod.priceKRW ? `${prod.priceKRW.toLocaleString()}원` : '맞춤 견적 문의';
 
             return (
@@ -632,8 +755,19 @@ export const SimpleLandingPage: React.FC<SimpleLandingPageProps> = ({
             {COMPANY_INFO.name} · 상호: {COMPANY_INFO.brandName} · 사업자등록번호: {COMPANY_INFO.businessNumber} <br />
             주소: {COMPANY_INFO.address} · 고객센터: {COMPANY_PHONE} · 이메일: {COMPANY_INFO.email}
           </p>
-          <div className="pt-2 text-[11px] text-slate-600">
-            © 2026 XinChao Tour. All Rights Reserved. 100% 현지 직영 단독투어 시스템.
+          <div className="pt-2 text-[11px] text-slate-600 flex items-center justify-center gap-2">
+            <span>© 2026 XinChao Tour. All Rights Reserved. 100% 현지 직영 단독투어 시스템.</span>
+            {onOpenAdmin && (
+              <>
+                <span>·</span>
+                <button
+                  onClick={() => onOpenAdmin('simple_page')}
+                  className="hover:text-amber-400 transition cursor-pointer underline text-[11px]"
+                >
+                  심플 페이지 관리자
+                </button>
+              </>
+            )}
           </div>
         </div>
       </footer>

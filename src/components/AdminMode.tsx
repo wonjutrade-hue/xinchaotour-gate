@@ -70,6 +70,7 @@ import {
 } from 'lucide-react';
 import { AdminVisitorAnalytics } from './AdminVisitorAnalytics';
 import { AdminProductGuide } from './AdminProductGuide';
+import { SimplePageManagerTab } from './SimplePageManagerTab';
 import { ALL_COMPREHENSIVE_PRODUCTS } from '../data/seedProducts';
 import { productService } from '../services/productService';
 
@@ -83,6 +84,7 @@ interface AdminModeProps {
   onPreviewProduct: (product: Product) => void;
   onForceSync?: () => Promise<void> | void;
   isSyncing?: boolean;
+  initialTab?: 'products' | 'inquiries' | 'analytics' | 'guide' | 'simple_page';
 }
 
 // Preset high quality Vietnam travel photos for 1-click selection
@@ -484,9 +486,10 @@ export const AdminMode: React.FC<AdminModeProps> = ({
   onPreviewProduct,
   onForceSync,
   isSyncing = false,
+  initialTab = 'products',
 }) => {
-  // Navigation & Tabs
-  const [adminTab, setAdminTab] = useState<'products' | 'inquiries' | 'analytics' | 'guide'>('products');
+  // Navigation & Tabs: products | inquiries | analytics | guide | simple_page
+  const [adminTab, setAdminTab] = useState<'products' | 'inquiries' | 'analytics' | 'guide' | 'simple_page'>(initialTab);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCategory, setFilterCategory] = useState<string>('전체');
   const [filterRegion, setFilterRegion] = useState<string>('전체');
@@ -1898,6 +1901,21 @@ export const AdminMode: React.FC<AdminModeProps> = ({
               추천
             </span>
           </button>
+
+          <button
+            onClick={() => setAdminTab('simple_page')}
+            className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl text-xs sm:text-sm font-black flex items-center gap-1.5 sm:gap-2 whitespace-nowrap transition-all cursor-pointer ${
+              adminTab === 'simple_page'
+                ? 'bg-emerald-500 text-white shadow-md ring-2 ring-emerald-400/40'
+                : 'text-emerald-400 hover:text-white hover:bg-slate-800'
+            }`}
+          >
+            <span className="text-sm">📱</span>
+            <span>심플페이지 단독 관리</span>
+            <span className="bg-emerald-400/20 text-emerald-200 text-[10px] font-black px-1.5 py-0.2 rounded-md border border-emerald-400/30">
+              독립보호
+            </span>
+          </button>
         </div>
       </header>
 
@@ -2501,6 +2519,17 @@ export const AdminMode: React.FC<AdminModeProps> = ({
           <AdminProductGuide
             onLoadTemplate={handleLoadTemplate}
             onSelectPresetPhoto={handleSelectPresetPhoto}
+          />
+        )}
+
+        {/* =================================================================== */}
+        {/* TAB 5: SIMPLE LANDING PAGE INDEPENDENT PRODUCT MANAGEMENT          */}
+        {/* =================================================================== */}
+        {adminTab === 'simple_page' && (
+          <SimplePageManagerTab
+            masterProducts={products}
+            onNotify={showNotification}
+            onPreviewProduct={onPreviewProduct}
           />
         )}
       </main>
