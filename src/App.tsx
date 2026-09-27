@@ -50,8 +50,9 @@ import { INITIAL_PRODUCTS } from './data/seedProducts';
 import { getDisplayProductImage } from './lib/imageFallback';
 import { trackVisitorEvent } from './lib/analytics';
 
-const PRODUCTS_CACHE_KEY = 'xinchao_products_cache_master';
-const CURRENT_CATALOG_REVISION = '2026_09_03_v12_restore_user_danang_villas';
+const PRODUCTS_CACHE_KEY = 'xinchao_products_cache_master_v4';
+const CURRENT_CATALOG_REVISION = '2026_09_27_only_5_danang_poolvillas';
+const REVISION_KEY = 'xinchao_catalog_revision_applied';
 
 function mergeProductsPreservingLocal(localList: Product[], incomingList: Product[]): { merged: Product[]; localWasNewer: boolean } {
   if (!incomingList || incomingList.length === 0) return { merged: localList || [], localWasNewer: false };
@@ -65,7 +66,7 @@ function mergeProductsPreservingLocal(localList: Product[], incomingList: Produc
 
   const isDummyImage = (url: string | undefined) => !url || url === 'VILLA_PHOTO_DATA' || url === 'TEST_IMG';
 
-  // Process incoming from server
+  // Process incoming from server - incomingList defines the authoritative set of active products
   incomingList.forEach(serverProd => {
     if (!serverProd || !serverProd.id) return;
     const localProd = localMap.get(serverProd.id);
@@ -90,7 +91,7 @@ function mergeProductsPreservingLocal(localList: Product[], incomingList: Produc
     const hasLocalCustomizations = localHasDifferentImage || localHasCustomSubs || localHasCustomDesc || localHasCustomTitle || localHasCustomPrice || localHasCustomItinerary || localHasCustomIncluded || localHasCustomHighlights;
 
     if (localTime > serverTime || (localTime === serverTime && hasLocalCustomizations) || (hasLocalCustomizations && !isDummyImage(localProd.imageUrl))) {
-      // Local user edits have higher priority!
+      // Local user edits have higher priority
       mergedMap.set(localProd.id, localProd);
       localWasNewer = true;
     } else {
@@ -105,14 +106,6 @@ function mergeProductsPreservingLocal(localList: Product[], incomingList: Produc
       } else {
         mergedMap.set(serverProd.id, serverProd);
       }
-    }
-  });
-
-  // Preserve any local custom products newly added in admin mode
-  localList.forEach(localProd => {
-    if (localProd && localProd.id && !mergedMap.has(localProd.id)) {
-      mergedMap.set(localProd.id, localProd);
-      localWasNewer = true;
     }
   });
 
@@ -175,9 +168,20 @@ export default function App() {
     return 'home';
   });
   const [products, setProducts] = useState<Product[]>(() => {
+    try {
+      const appliedRev = localStorage.getItem(REVISION_KEY);
+      if (appliedRev !== CURRENT_CATALOG_REVISION) {
+        localStorage.setItem(REVISION_KEY, CURRENT_CATALOG_REVISION);
+        localStorage.removeItem('xinchao_products_cache_master');
+        localStorage.removeItem(PRODUCTS_CACHE_KEY);
+        localStorage.removeItem('xinchao_simple_page_products_override');
+        localStorage.removeItem('xinchao_simple_page_is_customized');
+        return INITIAL_PRODUCTS;
+      }
+    } catch (e) {}
     const cached = getStoredJson<Product[]>(PRODUCTS_CACHE_KEY, []);
     if (cached && cached.length > 0) return cached;
-    return [];
+    return INITIAL_PRODUCTS;
   });
   const [inquiries, setInquiries] = useState<ConsultationRequest[]>([]);
   const [isLoadingProducts, setIsLoadingProducts] = useState(true);
@@ -494,6 +498,20 @@ export default function App() {
     // 1. Initial local load with Revision-based auto cache update
     const initLocalData = async () => {
       try {
+        const appliedRev = localStorage.getItem(REVISION_KEY);
+        if (appliedRev !== CURRENT_CATALOG_REVISION) {
+          localStorage.setItem(REVISION_KEY, CURRENT_CATALOG_REVISION);
+          localStorage.removeItem('xinchao_products_cache_master');
+          localStorage.removeItem(PRODUCTS_CACHE_KEY);
+          localStorage.removeItem('xinchao_simple_page_products_override');
+          localStorage.removeItem('xinchao_simple_page_is_customized');
+          await saveProductsToIndexedDB(INITIAL_PRODUCTS);
+          setStoredJson(PRODUCTS_CACHE_KEY, INITIAL_PRODUCTS);
+          setProducts(INITIAL_PRODUCTS);
+          await syncAllDataFromServer(false);
+          return;
+        }
+
         // Load both IndexedDB and localStorage cache
         const idbProducts = await loadProductsFromIndexedDB();
         const cachedProducts = getStoredJson<Product[]>(PRODUCTS_CACHE_KEY, []);
@@ -510,6 +528,8 @@ export default function App() {
         if (localMaster.length > 0) {
           setProducts(localMaster);
           setStoredJson(PRODUCTS_CACHE_KEY, localMaster);
+        } else {
+          setProducts(INITIAL_PRODUCTS);
         }
 
         // Fetch server updates in background; merge preserving local without wiping

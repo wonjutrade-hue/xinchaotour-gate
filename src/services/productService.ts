@@ -9,7 +9,7 @@ import {
 import { imageService } from './imageService';
 import { INITIAL_PRODUCTS } from '../data/seedProducts';
 
-const LOCAL_PRODUCTS_KEY = 'xinchao_products_cache_master';
+const LOCAL_PRODUCTS_KEY = 'xinchao_products_cache_master_v4';
 
 function getLocalProducts(): Product[] | null {
   try {

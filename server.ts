@@ -26,6 +26,103 @@ if (!fs.existsSync(UPLOADS_DIR)) {
   }
 }
 
+// Explicit blocklist of all removed dummy/sample catalog items
+// Only the 5 user-created Danang pool villas and newly created products will be allowed
+const DELETED_LEGACY_CATALOG_IDS = new Set<string>([
+  'prod-free-danang-hoian-3n5d',
+  'prod-free-danang-hoian-hue-4n6d',
+  'prod-free-nhatrang-dalat-3n5d',
+  'prod-free-nhatrang-phanrang-dalat-4n6d',
+  'prod-free-hanoi-halong-ninbinh-3n5d',
+  'prod-free-hochiminh-muine-3n5d',
+  'prod-free-phuquoc-3n5d',
+  'prod-golf-18h-brg-danang',
+  'prod-golf-18h-montgomerie-danang',
+  'prod-golf-18h-banahills',
+  'prod-golf-18h-vinpearl-namhoian',
+  'prod-golf-18h-hoiana-shores',
+  'prod-golf-18h-vinpearl-nhatrang',
+  'prod-golf-18h-kn-golf-links',
+  'prod-golf-18h-diamond-bay',
+  'prod-golf-18h-skylake-hanoi',
+  'prod-golf-18h-longbien-hanoi',
+  'prod-golf-18h-flc-halong',
+  'prod-golf-18h-tansonnhut-saigon',
+  'prod-golf-18h-vietnam-golf-cc',
+  'prod-golf-18h-twin-doves',
+  'prod-golf-18h-taekwang-jeongsan',
+  'prod-golf-18h-dalat-palace',
+  'prod-golf-18h-sam-tuyen-lam',
+  'prod-golf-18h-the-1200-dalat',
+  'prod-golf-18h-vinpearl-phuquoc',
+  'prod-golf-18h-escheat-phuquoc',
+  'prod-golf-18h-sapa-grand-golf',
+  'prod-danang-pkg-01',
+  'prod-danang-pkg-02',
+  'prod-danang-golf-01',
+  'prod-danang-golf-02',
+  'prod-danang-free-01',
+  'prod-danang-free-02',
+  'prod-danang-villa-01',
+  'prod-danang-villa-02',
+  'prod-nhatrang-pkg-01',
+  'prod-nhatrang-pkg-02',
+  'prod-nhatrang-golf-01',
+  'prod-nhatrang-golf-02',
+  'prod-nhatrang-villa-01',
+  'prod-nhatrang-villa-02',
+  'prod-nhatrang-free-01',
+  'prod-nhatrang-free-02',
+  'prod-phuquoc-pkg-01',
+  'prod-phuquoc-pkg-02',
+  'prod-phuquoc-golf-01',
+  'prod-phuquoc-golf-02',
+  'prod-phuquoc-villa-01',
+  'prod-phuquoc-villa-02',
+  'prod-phuquoc-free-01',
+  'prod-phuquoc-free-02',
+  'prod-hanoi-halong-pkg-01',
+  'prod-hanoi-halong-pkg-02',
+  'prod-hanoi-golf-01',
+  'prod-hanoi-golf-02',
+  'prod-hanoi-villa-01',
+  'prod-hanoi-villa-02',
+  'prod-hanoi-free-01',
+  'prod-hanoi-free-02',
+  'prod-dalat-pkg-01',
+  'prod-dalat-pkg-02',
+  'prod-dalat-pkg-03',
+  'prod-dalat-golf-01',
+  'prod-dalat-golf-02',
+  'prod-dalat-villa-01',
+  'prod-dalat-villa-02',
+  'prod-dalat-free-01',
+  'prod-dalat-free-02',
+  'prod-sapa-pkg-01',
+  'prod-sapa-pkg-02',
+  'prod-sapa-golf-01',
+  'prod-sapa-golf-02',
+  'prod-sapa-villa-01',
+  'prod-sapa-villa-02',
+  'prod-sapa-free-01',
+  'prod-sapa-free-02',
+  'prod-saigon-pkg-01',
+  'prod-saigon-pkg-02',
+  'prod-saigon-golf-01',
+  'prod-saigon-golf-02',
+  'prod-saigon-villa-01',
+  'prod-saigon-villa-02',
+  'prod-saigon-free-01',
+  'prod-saigon-free-02',
+  'test-123'
+]);
+
+function isProductAllowed(p: Product): boolean {
+  if (!p || !p.id) return false;
+  if (DELETED_LEGACY_CATALOG_IDS.has(p.id)) return false;
+  return true;
+}
+
 function sanitizeProduct(p: Product): Product {
   if (!p) return p;
   const img = p.imageUrl || '';
@@ -46,8 +143,9 @@ function loadStoredProducts(): Product[] {
       const fileData = fs.readFileSync(PRODUCTS_FILE_PATH, 'utf-8');
       const parsed = JSON.parse(fileData);
       if (Array.isArray(parsed)) {
-        console.log(`[Server] Loaded ${parsed.length} products from stored_products.json`);
-        return parsed.map((p) => sanitizeProduct(p));
+        const filtered = parsed.filter(isProductAllowed);
+        console.log(`[Server] Loaded ${filtered.length} products from stored_products.json (filtered: ${parsed.length - filtered.length})`);
+        return filtered.map((p) => sanitizeProduct(p));
       }
     }
   } catch (err) {
@@ -60,8 +158,9 @@ function loadStoredProducts(): Product[] {
       const fileData = fs.readFileSync(PRODUCTS_DATA_DIR_PATH, 'utf-8');
       const parsed = JSON.parse(fileData);
       if (Array.isArray(parsed)) {
-        console.log(`[Server] Loaded ${parsed.length} products from src/data/stored_products.json`);
-        return parsed.map((p) => sanitizeProduct(p));
+        const filtered = parsed.filter(isProductAllowed);
+        console.log(`[Server] Loaded ${filtered.length} products from src/data/stored_products.json`);
+        return filtered.map((p) => sanitizeProduct(p));
       }
     }
   } catch (err) {
@@ -74,8 +173,9 @@ function loadStoredProducts(): Product[] {
       const backupData = fs.readFileSync(PRODUCTS_BACKUP_PATH, 'utf-8');
       const parsedBackup = JSON.parse(backupData);
       if (Array.isArray(parsedBackup)) {
-        console.log(`[Server] Restored ${parsedBackup.length} products from backup`);
-        return parsedBackup.map((p) => sanitizeProduct(p));
+        const filtered = parsedBackup.filter(isProductAllowed);
+        console.log(`[Server] Restored ${filtered.length} products from backup`);
+        return filtered.map((p) => sanitizeProduct(p));
       }
     }
   } catch (bErr) {
@@ -470,15 +570,8 @@ async function startServer() {
           console.warn('[Server] Ignored sync with empty array to prevent data loss');
           return res.json({ success: true, count: products.length, products });
         }
-        // Preserve any products that were not included in partial sync
-        const incomingMap = new Map(newProducts.map(p => [p.id, p]));
-        const mergedList = newProducts.slice();
-        products.forEach(existing => {
-          if (!incomingMap.has(existing.id)) {
-            mergedList.push(existing);
-          }
-        });
-        products = mergedList;
+        // Save the synchronized product list cleanly (filtering any legacy deleted dummy items)
+        products = newProducts.filter(isProductAllowed).map(p => sanitizeProduct(p));
         saveStoredProducts(products);
         lastDataSyncTimestamp = Date.now();
         res.json({ success: true, count: products.length, products });
