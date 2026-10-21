@@ -51,7 +51,7 @@ import { getDisplayProductImage } from './lib/imageFallback';
 import { trackVisitorEvent } from './lib/analytics';
 
 const PRODUCTS_CACHE_KEY = 'xinchao_products_cache_master_v4';
-const CURRENT_CATALOG_REVISION = '2026_09_27_only_5_danang_poolvillas';
+const CURRENT_CATALOG_REVISION = '2026_10_21_north_vietnam_tours_v2';
 const REVISION_KEY = 'xinchao_catalog_revision_applied';
 
 function mergeProductsPreservingLocal(localList: Product[], incomingList: Product[]): { merged: Product[]; localWasNewer: boolean } {

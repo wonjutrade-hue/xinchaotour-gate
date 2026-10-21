@@ -99,7 +99,7 @@ export const productService = {
 
     // 2. Server API fallback
     try {
-      const res = await fetch('/api/products');
+      const res = await fetch('/api/products?t=' + Date.now(), { cache: 'no-store' });
       if (res.ok) {
         const json = await res.json();
         if (json && Array.isArray(json.products) && json.products.length > 0) {

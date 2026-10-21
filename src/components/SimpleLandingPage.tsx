@@ -161,8 +161,7 @@ export const SimpleLandingPage: React.FC<SimpleLandingPageProps> = ({
 
   // Filtered by city & pick top 6 best sellers
   const displayedProducts = themeProducts
-    .filter(p => selectedCity === '전체' || p.city === selectedCity)
-    .slice(0, 6);
+    .filter(p => selectedCity === '전체' || p.city === selectedCity);
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
