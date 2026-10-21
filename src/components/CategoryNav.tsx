@@ -18,7 +18,7 @@ interface CategoryNavProps {
 
 export const REGION_CITIES: Record<Exclude<Region, '전체'>, City[]> = {
   북부: ['하노이', '하롱베이', '닌빈', '사파', '하장'],
-  중부: ['다낭', '호이안', '후에'],
+  중부: ['다낭', '호이안', '후에', '꾸이년', '퐁냐/광빈'],
   남부: ['나트랑', '달랏', '호치민', '푸꾸옥', '무이네'],
 };
 
