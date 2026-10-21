@@ -68,7 +68,15 @@ export const productService = {
         }
 
         if (filters?.category && filters.category !== '전체') {
-          query = query.eq('category', filters.category);
+          if (filters.category === '자유여행' || filters.category === '추천패키지') {
+            query = query.in('category', ['자유여행', '추천패키지', 'free_travel', 'package']);
+          } else if (filters.category === '풀빌라') {
+            query = query.in('category', ['풀빌라', 'pool_villa']);
+          } else if (filters.category === '골프투어') {
+            query = query.in('category', ['골프투어', 'golf']);
+          } else {
+            query = query.eq('category', filters.category);
+          }
         }
 
         if (filters?.region && filters.region !== '전체') {
@@ -105,7 +113,11 @@ export const productService = {
         if (json && Array.isArray(json.products) && json.products.length > 0) {
           let list: Product[] = json.products;
           if (filters?.category && filters.category !== '전체') {
-            list = list.filter(p => p.category === filters.category);
+            if (filters.category === '자유여행' || filters.category === '추천패키지') {
+              list = list.filter(p => p.category === '자유여행' || p.category === '추천패키지');
+            } else {
+              list = list.filter(p => p.category === filters.category);
+            }
           }
           if (filters?.region && filters.region !== '전체') {
             list = list.filter(p => p.region === filters.region);
@@ -122,7 +134,11 @@ export const productService = {
     let fallbackList = cached && cached.length > 0 ? cached : INITIAL_PRODUCTS;
 
     if (filters?.category && filters.category !== '전체') {
-      fallbackList = fallbackList.filter(p => p.category === filters.category);
+      if (filters.category === '자유여행' || filters.category === '추천패키지') {
+        fallbackList = fallbackList.filter(p => p.category === '자유여행' || p.category === '추천패키지');
+      } else {
+        fallbackList = fallbackList.filter(p => p.category === filters.category);
+      }
     }
     if (filters?.region && filters.region !== '전체') {
       fallbackList = fallbackList.filter(p => p.region === filters.region);
@@ -310,7 +326,10 @@ export const productService = {
         for (let i = 0; i < products.length; i++) {
           const p = products[i];
           const dbRow = mapProductToDbRow(p, i, 'published');
-          await supabase.from('products').upsert(dbRow);
+          const { error: upsertErr } = await supabase.from('products').upsert(dbRow);
+          if (upsertErr) {
+            console.error('[Supabase Upsert Error for prod:', p.id, upsertErr);
+          }
           
           if (p.additionalImages && p.additionalImages.length > 0) {
             await supabase.from('product_images').delete().eq('product_id', p.id);
@@ -323,7 +342,7 @@ export const productService = {
           }
         }
       } catch (supabaseErr) {
-        // ignore
+        console.error('[Supabase syncAllProducts error]', supabaseErr);
       }
     }
 

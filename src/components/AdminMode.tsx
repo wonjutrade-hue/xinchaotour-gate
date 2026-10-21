@@ -71,7 +71,7 @@ import {
 import { AdminVisitorAnalytics } from './AdminVisitorAnalytics';
 import { AdminProductGuide } from './AdminProductGuide';
 import { SimplePageManagerTab } from './SimplePageManagerTab';
-import { ALL_COMPREHENSIVE_PRODUCTS } from '../data/seedProducts';
+import { ALL_COMPREHENSIVE_PRODUCTS, INITIAL_PRODUCTS } from '../data/seedProducts';
 import { productService } from '../services/productService';
 
 interface AdminModeProps {
@@ -653,7 +653,12 @@ export const AdminMode: React.FC<AdminModeProps> = ({
 
   // Filtered Products
   const filteredProducts = products.filter((prod) => {
-    const matchCat = filterCategory === '전체' || prod.category === filterCategory;
+    let matchCat = true;
+    if (filterCategory === '자유여행' || filterCategory === '추천패키지') {
+      matchCat = prod.category === '자유여행' || prod.category === '추천패키지';
+    } else if (filterCategory !== '전체') {
+      matchCat = prod.category === filterCategory;
+    }
     const matchReg = filterRegion === '전체' || prod.region === filterRegion;
     const matchSearch = 
       !searchTerm ||
@@ -1346,6 +1351,46 @@ export const AdminMode: React.FC<AdminModeProps> = ({
     }
   };
 
+  // 1-Click: Force register 7 Northern Vietnam Tour Packages to database & Supabase
+  const handleImportNorthTours = async () => {
+    try {
+      showNotification('⏳ 북부 7개 여행상품을 Supabase 및 데이터베이스에 등록 중입니다...');
+      const prodMap = new Map<string, Product>();
+      // Keep existing products
+      products.forEach(p => prodMap.set(p.id, p));
+      // Merge initial 7 northern tours
+      INITIAL_PRODUCTS.forEach(p => {
+        if (!prodMap.has(p.id)) {
+          prodMap.set(p.id, p);
+        }
+      });
+      const mergedList = Array.from(prodMap.values());
+      await onSaveProducts(mergedList);
+      await productService.syncAllProducts(mergedList);
+      showNotification('✅ 북부 7개 여행상품 (하장, 까오방, 하롱베이, 닌빈, 사파)이 성공적으로 등록 & DB 업로드되었습니다!');
+    } catch (e: any) {
+      showNotification('⚠️ 북부 상품 등록 중 오류: ' + (e?.message || '잠시 후 다시 시도해주세요.'));
+    }
+  };
+
+  // 1-Click: Unify 추천패키지 -> 자유여행
+  const handleUnifyPackagesToFreeTravel = async () => {
+    try {
+      const packageCount = products.filter(p => p.category === '추천패키지').length;
+      if (packageCount === 0) {
+        showNotification('ℹ️ 이미 모든 여행 패키지가 자유여행 카테고리로 정리되어 있습니다.');
+        return;
+      }
+      showNotification(`⏳ ${packageCount}개 패키지 상품을 '자유여행' 카테고리로 일괄 전환 및 DB 동기화 중...`);
+      const updated = products.map(p => p.category === '추천패키지' ? { ...p, category: '자유여행' as Category } : p);
+      await onSaveProducts(updated);
+      await productService.syncAllProducts(updated);
+      showNotification(`✅ ${packageCount}개 상품이 '자유여행' 카테고리로 통합되어 DB에 저장되었습니다!`);
+    } catch (e: any) {
+      showNotification('⚠️ 카테고리 통합 중 오류: ' + (e?.message || '다시 시도해주세요.'));
+    }
+  };
+
   // Update Inquiry Status
   const handleUpdateInquiryStatus = (inqId: string, newStatus: ConsultationRequest['status']) => {
     const updated = inquiries.map(i => i.id === inqId ? { ...i, status: newStatus } : i);
@@ -1973,6 +2018,24 @@ export const AdminMode: React.FC<AdminModeProps> = ({
 
                 <div className="flex flex-wrap items-center gap-2">
                   <button
+                    onClick={handleImportNorthTours}
+                    className="px-3.5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 active:scale-95 text-white font-black text-xs sm:text-sm flex items-center gap-1.5 shadow-lg transition-all cursor-pointer shrink-0"
+                    title="하장, 까오방, 하롱베이, 닌빈, 사파 7개 북부 투어 상품을 즉시 등록하고 Supabase에 업로드합니다."
+                  >
+                    <Sparkles className="w-4 h-4 text-amber-300" />
+                    <span>⚡ 북부 7종 상품 즉시 등록/업로드</span>
+                  </button>
+
+                  <button
+                    onClick={handleUnifyPackagesToFreeTravel}
+                    className="px-3.5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 active:scale-95 text-amber-300 hover:text-amber-200 font-bold text-xs border border-amber-500/30 flex items-center gap-1.5 transition-all cursor-pointer shrink-0 shadow-sm"
+                    title="기존 추천패키지 상품들을 '자유여행' 카테고리로 일괄 통합하여 DB에 저장합니다."
+                  >
+                    <RefreshCw className="w-3.5 h-3.5" />
+                    <span>🔄 추천패키지 ➔ 자유여행 통합</span>
+                  </button>
+
+                  <button
                     onClick={() => setAdminTab('guide')}
                     className="px-3.5 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 active:scale-95 text-slate-950 font-black text-xs sm:text-sm flex items-center gap-1.5 shadow-lg transition-all cursor-pointer shrink-0"
                     title="초보자를 위한 카테고리별 상품 등록 가이드 및 원클릭 템플릿 마법사"
@@ -1982,7 +2045,7 @@ export const AdminMode: React.FC<AdminModeProps> = ({
                   </button>
 
                   <button
-                    onClick={() => handleCreateNewProduct('추천패키지')}
+                    onClick={() => handleCreateNewProduct('자유여행')}
                     className="px-4 py-2.5 rounded-xl bg-teal-500 hover:bg-teal-400 active:scale-95 text-white font-black text-xs sm:text-sm flex items-center gap-1.5 shadow-lg transition-all cursor-pointer shrink-0"
                   >
                     <Plus className="w-4 h-4 stroke-[3]" />
@@ -2035,10 +2098,20 @@ export const AdminMode: React.FC<AdminModeProps> = ({
                 <div className="flex flex-wrap gap-1.5">
                   {[
                     { id: '전체', label: '전체 종류', count: products.length, icon: '🌟' },
-                    { id: '자유여행', label: '자유여행', count: products.filter(p => p.category === '자유여행').length, icon: '🏝️' },
+                    { 
+                      id: '자유여행', 
+                      label: '자유여행 (패키지 포함)', 
+                      count: products.filter(p => p.category === '자유여행' || p.category === '추천패키지').length, 
+                      icon: '🏝️' 
+                    },
                     { id: '풀빌라', label: '독채 풀빌라', count: products.filter(p => p.category === '풀빌라').length, icon: '🏰' },
                     { id: '골프투어', label: '골프투어', count: products.filter(p => p.category === '골프투어').length, icon: '⛳' },
-                    { id: '추천패키지', label: '추천패키지', count: products.filter(p => p.category === '추천패키지').length, icon: '🎒' },
+                    ...(products.some(p => p.category === '추천패키지') ? [{
+                      id: '추천패키지', 
+                      label: '추천패키지', 
+                      count: products.filter(p => p.category === '추천패키지').length, 
+                      icon: '🎒' 
+                    }] : [])
                   ].map(cat => {
                     const isSelected = filterCategory === cat.id;
                     return (
@@ -2196,11 +2269,19 @@ export const AdminMode: React.FC<AdminModeProps> = ({
             ) : viewMode === 'category' ? (
               /* ============================================================= */
               /* VIEW MODE 1: CATEGORY GROUPED                                */
-              /* ============================================================= */
               <div className="space-y-6">
-                {(['자유여행', '풀빌라', '골프투어', '추천패키지'] as Category[]).map((cat) => {
-                  const catProducts = filteredProducts.filter(p => p.category === cat);
-                  if (filterCategory !== '전체' && filterCategory !== cat) return null;
+                {(['자유여행', '풀빌라', '골프투어'] as Category[]).map((cat) => {
+                  const catProducts = filteredProducts.filter(p => {
+                    if (cat === '자유여행') return p.category === '자유여행' || p.category === '추천패키지';
+                    return p.category === cat;
+                  });
+                  if (filterCategory !== '전체' && filterCategory !== cat) {
+                    if (filterCategory === '추천패키지' && cat === '자유여행') {
+                      // show in free travel
+                    } else {
+                      return null;
+                    }
+                  }
                   if (catProducts.length === 0 && filterCategory === '전체' && !searchTerm) return null;
 
                   const catIcons: Record<Category, string> = {

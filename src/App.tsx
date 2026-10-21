@@ -50,23 +50,25 @@ import { INITIAL_PRODUCTS } from './data/seedProducts';
 import { getDisplayProductImage } from './lib/imageFallback';
 import { trackVisitorEvent } from './lib/analytics';
 
-const PRODUCTS_CACHE_KEY = 'xinchao_products_cache_master_v4';
-const CURRENT_CATALOG_REVISION = '2026_10_21_north_vietnam_tours_v2';
+const PRODUCTS_CACHE_KEY = 'xinchao_products_cache_master_v5';
+const CURRENT_CATALOG_REVISION = '2026_10_22_north_vietnam_tours_v5_sync';
 const REVISION_KEY = 'xinchao_catalog_revision_applied';
 
 function mergeProductsPreservingLocal(localList: Product[], incomingList: Product[]): { merged: Product[]; localWasNewer: boolean } {
   if (!incomingList || incomingList.length === 0) return { merged: localList || [], localWasNewer: false };
-  if (!localList || localList.length === 0) return { merged: incomingList || [], localWasNewer: false };
 
   const localMap = new Map<string, Product>();
-  localList.forEach(p => { if (p && p.id) localMap.set(p.id, p); });
+  // 1. Track all INITIAL_PRODUCTS so new items (like Northern Vietnam tours) are never omitted
+  INITIAL_PRODUCTS.forEach(p => { if (p && p.id) localMap.set(p.id, p); });
+  // 2. Overlay with local list (which contains user customizations)
+  (localList || []).forEach(p => { if (p && p.id) localMap.set(p.id, p); });
 
   const mergedMap = new Map<string, Product>();
   let localWasNewer = false;
 
   const isDummyImage = (url: string | undefined) => !url || url === 'VILLA_PHOTO_DATA' || url === 'TEST_IMG';
 
-  // Process incoming from server - incomingList defines the authoritative set of active products
+  // Process incoming from server
   incomingList.forEach(serverProd => {
     if (!serverProd || !serverProd.id) return;
     const localProd = localMap.get(serverProd.id);
@@ -106,6 +108,14 @@ function mergeProductsPreservingLocal(localList: Product[], incomingList: Produc
       } else {
         mergedMap.set(serverProd.id, serverProd);
       }
+    }
+  });
+
+  // Preserve any newly seeded products (such as Northern Vietnam tours) that do not yet exist on the server
+  localMap.forEach((localProd, id) => {
+    if (!mergedMap.has(id)) {
+      mergedMap.set(id, localProd);
+      localWasNewer = true; // Signals that we have brand new items to push to server/Supabase!
     }
   });
 
@@ -635,7 +645,11 @@ export default function App() {
   const filteredProducts = products.filter((p) => {
     // 1. Category Filter
     if (activeCategory !== '전체') {
-      if (p.category !== activeCategory) {
+      if (activeCategory === '자유여행' || activeCategory === '추천패키지') {
+        if (p.category !== '자유여행' && p.category !== '추천패키지') {
+          return false;
+        }
+      } else if (p.category !== activeCategory) {
         return false;
       }
     }
@@ -1186,13 +1200,24 @@ export default function App() {
               <p className="text-xs text-slate-500 max-w-sm mx-auto">
                 관리자 페이지에서 상품을 등록하시거나 1:1 맞춤 상담을 통해 신청해주시면 최적의 견적을 안내해드립니다.
               </p>
-              <div className="flex items-center justify-center gap-3">
+              <div className="flex items-center justify-center gap-3 flex-wrap">
+                <button
+                  onClick={() => {
+                    setActiveCategory('전체');
+                    setActiveRegion('전체');
+                    setActiveCity('전체');
+                    setSearchTerm('');
+                  }}
+                  className="px-5 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-2xl font-bold text-xs cursor-pointer shadow-sm flex items-center gap-1.5"
+                >
+                  <span>🔄 전체 상품 보기</span>
+                </button>
                 <button
                   onClick={() => {
                     setConsultationTargetProduct(null);
                     setIsConsultationOpen(true);
                   }}
-                  className="px-5 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-2xl font-bold text-xs cursor-pointer shadow-sm"
+                  className="px-5 py-2.5 bg-teal-700 hover:bg-teal-800 text-white rounded-2xl font-bold text-xs cursor-pointer shadow-sm"
                 >
                   💬 1:1 맞춤 여행 견적 문의하기
                 </button>
@@ -1201,7 +1226,7 @@ export default function App() {
                   className="px-5 py-2.5 bg-slate-800 hover:bg-slate-900 text-white rounded-2xl font-bold text-xs cursor-pointer shadow-sm flex items-center gap-1.5"
                 >
                   <PackagePlus className="w-4 h-4" />
-                  <span>관리자 상품 등록하기</span>
+                  <span>관리자 상품 관리</span>
                 </button>
               </div>
             </div>

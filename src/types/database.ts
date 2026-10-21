@@ -204,10 +204,6 @@ export function mapProductToDbRow(p: Product, sortOrder: number = 0, status: 'pu
     tags: p.tags || [],
     villa_specs: p.villaSpecs || {},
     golf_specs: p.golfSpecs || {},
-    highlights: p.highlights || [],
-    vehicle_info: p.vehicleInfo || '',
-    guide_info: p.guideInfo || '',
-    travel_theme: p.travelTheme || '',
     room_info: extraBackup,
     rating: p.rating || 5.0,
     review_count: p.reviewCount || 0,
@@ -219,18 +215,20 @@ export function mapProductToDbRow(p: Product, sortOrder: number = 0, status: 'pu
   };
 }
 
-function mapDbCategoryToFrontend(cat: string): Category {
+export function mapDbCategoryToFrontend(cat: string): Category {
   if (cat === 'free_travel' || cat === '자유여행') return '자유여행';
   if (cat === 'pool_villa' || cat === '풀빌라') return '풀빌라';
   if (cat === 'golf' || cat === '골프투어') return '골프투어';
-  return '추천패키지';
+  // Map all package tour items into '자유여행' so they appear in both admin and customer views
+  if (cat === 'package' || cat === '추천패키지') return '자유여행';
+  return '자유여행';
 }
 
-function mapFrontendCategoryToDb(cat: Category): string {
-  if (cat === '자유여행') return 'free_travel';
+export function mapFrontendCategoryToDb(cat: Category): string {
+  if (cat === '자유여행' || cat === '추천패키지') return 'free_travel';
   if (cat === '풀빌라') return 'pool_villa';
   if (cat === '골프투어') return 'golf';
-  return 'package';
+  return 'free_travel';
 }
 
 function mapDbRegionToFrontend(reg: string): Region {
