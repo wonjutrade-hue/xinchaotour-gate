@@ -86,6 +86,14 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   const validIndex = currentImgIndex >= 0 && currentImgIndex < allImages.length ? currentImgIndex : 0;
   const currentPhoto = allImages[validIndex] || fallbackImg;
 
+  const handleImgError = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    const target = e.currentTarget;
+    if (!target.dataset.fallbackApplied) {
+      target.dataset.fallbackApplied = 'true';
+      target.src = fallbackImg;
+    }
+  };
+
   const handleOpenPhotoTour = (startIndex: number = 0, mode: 'slide' | 'grid' = 'slide') => {
     setCurrentImgIndex(startIndex);
     setLightboxMode(mode);
@@ -347,7 +355,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
         <section className="space-y-3">
           {allImages.length >= 5 ? (
             /* Airbnb Signature 5-Photo Showcase Grid */
-            <div className="relative rounded-3xl overflow-hidden border border-slate-200 bg-slate-950 shadow-md">
+            <div className="relative rounded-3xl overflow-hidden border border-slate-200 bg-slate-100 shadow-md">
               <div className="grid grid-cols-1 md:grid-cols-4 gap-2 h-[340px] sm:h-[460px]">
                 {/* Big Hero Photo (Left - 2 Cols) */}
                 <div
@@ -358,9 +366,10 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                     src={allImages[0]}
                     alt={`${product.title} - 1`}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover/hero:scale-105"
+                    onError={handleImgError}
                   />
                   <div className="absolute inset-0 bg-black/10 group-hover/hero:bg-transparent transition-colors" />
-                  <div className="absolute top-4 left-4 bg-slate-900/80 text-white text-xs font-black px-3 py-1.5 rounded-xl backdrop-blur-xs flex items-center gap-1.5">
+                  <div className="absolute top-4 left-4 bg-slate-900/80 text-white text-xs font-black px-3 py-1.5 rounded-xl backdrop-blur-xs flex items-center gap-1.5 shadow-sm">
                     <span>👑 대표 사진</span>
                   </div>
                 </div>
@@ -371,12 +380,13 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                     <div
                       key={`hero-grid-${idx}`}
                       onClick={() => handleOpenPhotoTour(idx + 1, 'slide')}
-                      className="relative h-full overflow-hidden cursor-pointer group/sub bg-slate-900"
+                      className="relative h-full overflow-hidden cursor-pointer group/sub bg-slate-800"
                     >
                       <img
                         src={img}
                         alt={`${product.title} - ${idx + 2}`}
                         className="w-full h-full object-cover transition-transform duration-500 group-hover/sub:scale-105"
+                        onError={handleImgError}
                       />
                       <div className="absolute inset-0 bg-black/10 group-hover/sub:bg-transparent transition-colors" />
                     </div>
@@ -404,12 +414,13 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
             </div>
           ) : (
             /* High-Impact Frame for 1~4 Photos */
-            <div className="aspect-[16/10] sm:aspect-[21/9] rounded-3xl overflow-hidden bg-slate-950 border border-slate-200 relative group shadow-md">
+            <div className="aspect-[16/10] sm:aspect-[21/9] rounded-3xl overflow-hidden bg-slate-900 border border-slate-200 relative group shadow-md">
               <img
                 src={currentPhoto}
                 alt={product.title}
                 className="w-full h-full object-cover cursor-pointer transition-transform duration-300 hover:scale-[1.01]"
                 onClick={() => handleOpenPhotoTour(validIndex, 'slide')}
+                onError={handleImgError}
               />
 
               <div 
@@ -476,7 +487,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                         : 'border-slate-200 opacity-60 hover:opacity-100 hover:border-slate-400'
                     }`}
                   >
-                    <img src={img} alt={`thumb-${idx}`} className="w-full h-full object-cover" />
+                    <img src={img} alt={`thumb-${idx}`} className="w-full h-full object-cover" onError={handleImgError} />
                     {isActive && (
                       <div className="absolute inset-0 bg-teal-500/10 pointer-events-none" />
                     )}
@@ -1191,6 +1202,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                   src={currentPhoto}
                   alt={`${product.title} - ${validIndex + 1}`}
                   className="max-w-full max-h-[72vh] object-contain rounded-2xl shadow-2xl border border-slate-800 transition-all duration-200"
+                  onError={handleImgError}
                 />
 
                 {allImages.length > 1 && (
@@ -1228,7 +1240,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                           : 'border-slate-800 opacity-40 hover:opacity-90'
                       }`}
                     >
-                      <img src={img} alt={`thumb-${idx}`} className="w-full h-full object-cover" />
+                      <img src={img} alt={`thumb-${idx}`} className="w-full h-full object-cover" onError={handleImgError} />
                       <span className="absolute bottom-0.5 right-1 text-[8px] font-black text-white bg-slate-900/80 px-1 rounded">
                         #{idx + 1}
                       </span>
@@ -1256,6 +1268,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                       src={img}
                       alt={`photo-${idx}`}
                       className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      onError={handleImgError}
                     />
                     <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors" />
                     <div className="absolute top-1.5 left-1.5 bg-slate-900/85 text-white text-[10px] font-black px-2 py-0.5 rounded shadow">

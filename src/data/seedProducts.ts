@@ -1,6 +1,7 @@
+// Auto-generated seed products cache with rich photo sets and verified itineraries
 import { Product } from '../types';
 
-export const ALL_COMPREHENSIVE_PRODUCTS: Product[] = [
+export const INITIAL_PRODUCTS: Product[] = [
   {
     "id": "prod-danang-villa-cysea-5bed",
     "title": "[다낭/독채풀빌라] Cy'sea(사이시) 프라이빗 비치 5베드룸 단독 풀빌라",
@@ -432,9 +433,15 @@ export const ALL_COMPREHENSIVE_PRODUCTS: Product[] = [
     "priceKRW": 315000,
     "priceVND": 5929185,
     "duration": "",
-    "imageUrl": "/images/vietnam_beach_villa.jpg",
+    "imageUrl": "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1200&q=80",
     "additionalImages": [
-      "/images/vietnam_beach_villa.jpg"
+      "https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 5,
     "reviewCount": 94,
@@ -506,7 +513,16 @@ export const ALL_COMPREHENSIVE_PRODUCTS: Product[] = [
     "airbnbUrl": "https://www.airbnb.co.kr/rooms/1596807485988738548?adults=8&search_mode=regular_search&source_impression_id=p3_1773058617_P3xK6pEU9aoIJDMS&previous_page_section_name=1000&federated_search_id=a2420d66-c7ca-4754-98c4-1f72afdd15e6&guests=1&check_in=2026-10-13&check_out=2026-10-14",
     "googleMapUrl": "23 Chế Lan Viên, Ngũ Hành Sơn, Đà Nẵng 550000 베트남",
     "address": "",
-    "updatedAt": "2026-09-03T01:59:45.021Z"
+    "updatedAt": "2026-09-03T01:59:45.021Z",
+    "galleryImages": [
+      "https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=1200&q=80"
+    ]
   },
   {
     "id": "prod-north-vntravel-hagiang-babe-5d4n",
@@ -518,18 +534,22 @@ export const ALL_COMPREHENSIVE_PRODUCTS: Product[] = [
     "priceKRW": 319000,
     "priceVND": 5790000,
     "duration": "4박 5일",
-    "imageUrl": "https://dulichvntravel.com/files/product/ha-giang-dong-van-thac-ban-gioc-pac-bo-ho-ba-be-p9yqtjwr.jpg",
+    "imageUrl": "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=1200&q=80",
     "additionalImages": [
-      "https://images.unsplash.com/photo-1528127269322-539801943592?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1544735716-392fe2489ffa?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=1200&auto=format&fit=crop",
-      "https://dulichvntravel.com/files/product/ha-giang-dong-van-thac-ban-gioc-pac-bo-ho-ba-be-p9yqtjwr.jpg"
+      "https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1512100356356-de1b84283e18?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&w=1200&q=80"
     ],
     "galleryImages": [
-      "https://dulichvntravel.com/files/product/ha-giang-dong-van-thac-ban-gioc-pac-bo-ho-ba-be-p9yqtjwr.jpg",
-      "https://images.unsplash.com/photo-1528127269322-539801943592?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1544735716-392fe2489ffa?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=1200&auto=format&fit=crop"
+      "https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1512100356356-de1b84283e18?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 4.9,
     "reviewCount": 38,
@@ -629,16 +649,22 @@ export const ALL_COMPREHENSIVE_PRODUCTS: Product[] = [
     "priceKRW": 205000,
     "priceVND": 3690000,
     "duration": "3박 4일",
-    "imageUrl": "https://dulichvntravel.com/files/product/ha-giang-dong-van-nho-que-rzwjlfi6.jpg",
+    "imageUrl": "https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1200&q=80",
     "additionalImages": [
-      "https://images.unsplash.com/photo-1528127269322-539801943592?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?q=80&w=1200&auto=format&fit=crop",
-      "https://dulichvntravel.com/files/product/ha-giang-dong-van-nho-que-rzwjlfi6.jpg"
+      "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1512100356356-de1b84283e18?auto=format&fit=crop&w=1200&q=80"
     ],
     "galleryImages": [
-      "https://dulichvntravel.com/files/product/ha-giang-dong-van-nho-que-rzwjlfi6.jpg",
-      "https://images.unsplash.com/photo-1528127269322-539801943592?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?q=80&w=1200&auto=format&fit=crop"
+      "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1512100356356-de1b84283e18?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 4.9,
     "reviewCount": 42,
@@ -730,16 +756,22 @@ export const ALL_COMPREHENSIVE_PRODUCTS: Product[] = [
     "priceKRW": 275000,
     "priceVND": 4990000,
     "duration": "3박 4일",
-    "imageUrl": "https://dulichvntravel.com/files/product/ha-noi-ha-long-ha-noi-ngu-du-thuyen-ha-long-tfd2wd9o.jpg",
+    "imageUrl": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
     "additionalImages": [
-      "https://images.unsplash.com/photo-1528127269322-539801943592?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=1200&auto=format&fit=crop",
-      "https://dulichvntravel.com/files/product/ha-noi-ha-long-ha-noi-ngu-du-thuyen-ha-long-tfd2wd9o.jpg"
+      "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&w=1200&q=80"
     ],
     "galleryImages": [
-      "https://dulichvntravel.com/files/product/ha-noi-ha-long-ha-noi-ngu-du-thuyen-ha-long-tfd2wd9o.jpg",
-      "https://images.unsplash.com/photo-1528127269322-539801943592?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=1200&auto=format&fit=crop"
+      "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 5,
     "reviewCount": 56,
@@ -832,16 +864,22 @@ export const ALL_COMPREHENSIVE_PRODUCTS: Product[] = [
     "priceKRW": 198000,
     "priceVND": 3590000,
     "duration": "2박 3일",
-    "imageUrl": "https://dulichvntravel.com/files/product/ha-noi-trang-an-bai-dinh-ha-long-kdl-yen-tu-ppgeib1l.jpg",
+    "imageUrl": "https://images.unsplash.com/photo-1528181304800-259b08848526?auto=format&fit=crop&w=1200&q=80",
     "additionalImages": [
-      "https://images.unsplash.com/photo-1544735716-392fe2489ffa?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1528127269322-539801943592?q=80&w=1200&auto=format&fit=crop",
-      "https://dulichvntravel.com/files/product/ha-noi-trang-an-bai-dinh-ha-long-kdl-yen-tu-ppgeib1l.jpg"
+      "https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=1200&q=80"
     ],
     "galleryImages": [
-      "https://dulichvntravel.com/files/product/ha-noi-trang-an-bai-dinh-ha-long-kdl-yen-tu-ppgeib1l.jpg",
-      "https://images.unsplash.com/photo-1544735716-392fe2489ffa?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1528127269322-539801943592?q=80&w=1200&auto=format&fit=crop"
+      "https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 4.8,
     "reviewCount": 29,
@@ -925,16 +963,22 @@ export const ALL_COMPREHENSIVE_PRODUCTS: Product[] = [
     "priceKRW": 215000,
     "priceVND": 3890000,
     "duration": "3박 4일",
-    "imageUrl": "https://dulichvntravel.com/files/product/ha-noi-trang-an-bai-dinh-ha-long-kdl-yen-tu-voofybjd.jpg",
+    "imageUrl": "https://images.unsplash.com/photo-1528181304800-259b08848526?auto=format&fit=crop&w=1200&q=80",
     "additionalImages": [
-      "https://images.unsplash.com/photo-1528127269322-539801943592?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1544735716-392fe2489ffa?q=80&w=1200&auto=format&fit=crop",
-      "https://dulichvntravel.com/files/product/ha-noi-trang-an-bai-dinh-ha-long-kdl-yen-tu-voofybjd.jpg"
+      "https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=1200&q=80"
     ],
     "galleryImages": [
-      "https://dulichvntravel.com/files/product/ha-noi-trang-an-bai-dinh-ha-long-kdl-yen-tu-voofybjd.jpg",
-      "https://images.unsplash.com/photo-1528127269322-539801943592?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1544735716-392fe2489ffa?q=80&w=1200&auto=format&fit=crop"
+      "https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 4.9,
     "reviewCount": 34,
@@ -1028,16 +1072,22 @@ export const ALL_COMPREHENSIVE_PRODUCTS: Product[] = [
     "priceKRW": 319000,
     "priceVND": 5790000,
     "duration": "5박 6일",
-    "imageUrl": "https://dulichvntravel.com/files/product/ha-noi-trang-an-bai-dinh-ha-long-kdl-yen-tu-sapa-utieurtv.jpg",
+    "imageUrl": "https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1200&q=80",
     "additionalImages": [
-      "https://images.unsplash.com/photo-1544735716-392fe2489ffa?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1528127269322-539801943592?q=80&w=1200&auto=format&fit=crop",
-      "https://dulichvntravel.com/files/product/ha-noi-trang-an-bai-dinh-ha-long-kdl-yen-tu-sapa-utieurtv.jpg"
+      "https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1528181304800-259b08848526?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1200&q=80"
     ],
     "galleryImages": [
-      "https://dulichvntravel.com/files/product/ha-noi-trang-an-bai-dinh-ha-long-kdl-yen-tu-sapa-utieurtv.jpg",
-      "https://images.unsplash.com/photo-1544735716-392fe2489ffa?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1528127269322-539801943592?q=80&w=1200&auto=format&fit=crop"
+      "https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1528181304800-259b08848526?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 5,
     "reviewCount": 48,
@@ -1147,16 +1197,22 @@ export const ALL_COMPREHENSIVE_PRODUCTS: Product[] = [
     "priceKRW": 295000,
     "priceVND": 5290000,
     "duration": "4박 5일",
-    "imageUrl": "https://dulichvntravel.com/files/product/ha-noi-trang-an-bai-dinh-ha-long-kdl-yen-tu-sapa-bixi8kj9.jpg",
+    "imageUrl": "https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1200&q=80",
     "additionalImages": [
-      "https://images.unsplash.com/photo-1544735716-392fe2489ffa?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1528127269322-539801943592?q=80&w=1200&auto=format&fit=crop",
-      "https://dulichvntravel.com/files/product/ha-noi-trang-an-bai-dinh-ha-long-kdl-yen-tu-sapa-bixi8kj9.jpg"
+      "https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1528181304800-259b08848526?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1200&q=80"
     ],
     "galleryImages": [
-      "https://dulichvntravel.com/files/product/ha-noi-trang-an-bai-dinh-ha-long-kdl-yen-tu-sapa-bixi8kj9.jpg",
-      "https://images.unsplash.com/photo-1544735716-392fe2489ffa?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1528127269322-539801943592?q=80&w=1200&auto=format&fit=crop"
+      "https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1528181304800-259b08848526?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 4.9,
     "reviewCount": 51,
@@ -1256,18 +1312,22 @@ export const ALL_COMPREHENSIVE_PRODUCTS: Product[] = [
     "priceKRW": 199000,
     "priceVND": 2690000,
     "duration": "3박 4일",
-    "imageUrl": "https://dulichvntravel.com/files/product/da-nang-son-tra-cu-lao-cham-rung-dua-bay-mau-hoi-an-lskswlq8.jpg",
+    "imageUrl": "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&w=1200&q=80",
     "additionalImages": [
-      "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1583417319070-4a69db38a482?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1528181304800-259b08848526?q=80&w=1200&auto=format&fit=crop",
-      "https://dulichvntravel.com/files/product/da-nang-son-tra-cu-lao-cham-rung-dua-bay-mau-hoi-an-lskswlq8.jpg"
+      "https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1598970434795-0c54fe7c0648?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=1200&q=80"
     ],
     "galleryImages": [
-      "https://dulichvntravel.com/files/product/da-nang-son-tra-cu-lao-cham-rung-dua-bay-mau-hoi-an-lskswlq8.jpg",
-      "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1583417319070-4a69db38a482?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1528181304800-259b08848526?q=80&w=1200&auto=format&fit=crop"
+      "https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1598970434795-0c54fe7c0648?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 4.9,
     "reviewCount": 48,
@@ -1359,18 +1419,22 @@ export const ALL_COMPREHENSIVE_PRODUCTS: Product[] = [
     "priceKRW": 235000,
     "priceVND": 3290000,
     "duration": "3박 4일",
-    "imageUrl": "https://dulichvntravel.com/files/product/da-nang-ba-na-hue-dong-phong-nha-thien-duong-ykquuzvo.jpg",
+    "imageUrl": "https://images.unsplash.com/photo-1598970434795-0c54fe7c0648?auto=format&fit=crop&w=1200&q=80",
     "additionalImages": [
-      "https://images.unsplash.com/photo-1598970434795-0c54fe7c0648?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?q=80&w=1200&auto=format&fit=crop",
-      "https://dulichvntravel.com/files/product/da-nang-ba-na-hue-dong-phong-nha-thien-duong-ykquuzvo.jpg"
+      "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80"
     ],
     "galleryImages": [
-      "https://dulichvntravel.com/files/product/da-nang-ba-na-hue-dong-phong-nha-thien-duong-ykquuzvo.jpg",
-      "https://images.unsplash.com/photo-1598970434795-0c54fe7c0648?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?q=80&w=1200&auto=format&fit=crop"
+      "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 4.9,
     "reviewCount": 39,
@@ -1459,18 +1523,22 @@ export const ALL_COMPREHENSIVE_PRODUCTS: Product[] = [
     "priceKRW": 259000,
     "priceVND": 3690000,
     "duration": "3박 4일",
-    "imageUrl": "https://dulichvntravel.com/files/product/da-nang-ngu-hanh-son-hoi-an-ba-na-hue-dong-phong-nha-thien-duong-rdiy8tuc.jpg",
+    "imageUrl": "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&w=1200&q=80",
     "additionalImages": [
-      "https://images.unsplash.com/photo-1528181304800-259b08848526?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1544735716-392fe2489ffa?q=80&w=1200&auto=format&fit=crop",
-      "https://dulichvntravel.com/files/product/da-nang-ngu-hanh-son-hoi-an-ba-na-hue-dong-phong-nha-thien-duong-rdiy8tuc.jpg"
+      "https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1598970434795-0c54fe7c0648?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=1200&q=80"
     ],
     "galleryImages": [
-      "https://dulichvntravel.com/files/product/da-nang-ngu-hanh-son-hoi-an-ba-na-hue-dong-phong-nha-thien-duong-rdiy8tuc.jpg",
-      "https://images.unsplash.com/photo-1528181304800-259b08848526?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1544735716-392fe2489ffa?q=80&w=1200&auto=format&fit=crop"
+      "https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1598970434795-0c54fe7c0648?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 4.9,
     "reviewCount": 35,
@@ -1557,18 +1625,22 @@ export const ALL_COMPREHENSIVE_PRODUCTS: Product[] = [
     "priceKRW": 289000,
     "priceVND": 4090000,
     "duration": "4박 5일",
-    "imageUrl": "https://dulichvntravel.com/files/product/da-nang-son-tra-ngu-hanh-son-hoi-an-ba-na-hue-dong-phong-nha-thien-duong-jw8sgq0s.jpg",
+    "imageUrl": "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&w=1200&q=80",
     "additionalImages": [
-      "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1598970434795-0c54fe7c0648?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1528181304800-259b08848526?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=1200&auto=format&fit=crop"
+      "https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1598970434795-0c54fe7c0648?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=1200&q=80"
     ],
     "galleryImages": [
-      "https://dulichvntravel.com/files/product/da-nang-son-tra-ngu-hanh-son-hoi-an-ba-na-hue-dong-phong-nha-thien-duong-jw8sgq0s.jpg",
-      "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1598970434795-0c54fe7c0648?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1528181304800-259b08848526?q=80&w=1200&auto=format&fit=crop"
+      "https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1598970434795-0c54fe7c0648?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 5,
     "reviewCount": 52,
@@ -1664,18 +1736,22 @@ export const ALL_COMPREHENSIVE_PRODUCTS: Product[] = [
     "priceKRW": 315000,
     "priceVND": 4490000,
     "duration": "3박 4일",
-    "imageUrl": "https://dulichvntravel.com/files/product/quy-nhon-phu-yen-ntyfg2ue.jpg",
+    "imageUrl": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
     "additionalImages": [
-      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1519046904884-53103b34b206?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=1200&auto=format&fit=crop",
-      "https://dulichvntravel.com/files/product/quy-nhon-phu-yen-ntyfg2ue.jpg"
+      "https://images.unsplash.com/photo-1512100356356-de1b84283e18?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&w=1200&q=80"
     ],
     "galleryImages": [
-      "https://dulichvntravel.com/files/product/quy-nhon-phu-yen-ntyfg2ue.jpg",
-      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1519046904884-53103b34b206?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=1200&auto=format&fit=crop"
+      "https://images.unsplash.com/photo-1512100356356-de1b84283e18?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 4.9,
     "reviewCount": 29,
@@ -1765,16 +1841,22 @@ export const ALL_COMPREHENSIVE_PRODUCTS: Product[] = [
     "priceKRW": 269000,
     "priceVND": 3890000,
     "duration": "2박 3일",
-    "imageUrl": "https://dulichvntravel.com/files/product/huyen-thoai-mien-dat-vo-quy-nhon-zuimwxqn.jpg",
+    "imageUrl": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
     "additionalImages": [
-      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1519046904884-53103b34b206?q=80&w=1200&auto=format&fit=crop",
-      "https://dulichvntravel.com/files/product/huyen-thoai-mien-dat-vo-quy-nhon-zuimwxqn.jpg"
+      "https://images.unsplash.com/photo-1512100356356-de1b84283e18?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&w=1200&q=80"
     ],
     "galleryImages": [
-      "https://dulichvntravel.com/files/product/huyen-thoai-mien-dat-vo-quy-nhon-zuimwxqn.jpg",
-      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1519046904884-53103b34b206?q=80&w=1200&auto=format&fit=crop"
+      "https://images.unsplash.com/photo-1512100356356-de1b84283e18?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 4.8,
     "reviewCount": 26,
@@ -1852,16 +1934,22 @@ export const ALL_COMPREHENSIVE_PRODUCTS: Product[] = [
     "priceKRW": 189000,
     "priceVND": 2590000,
     "duration": "2박 3일",
-    "imageUrl": "https://images.unsplash.com/photo-1544551763-46a013bb70d5?q=80&w=1200&auto=format&fit=crop",
+    "imageUrl": "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=1200&q=80",
     "additionalImages": [
-      "https://dulichvntravel.com/files/product/da-nang-son-tra-cu-lao-cham-rung-dua-bay-mau-hoi-an-lskswlq8.jpg",
-      "https://images.unsplash.com/photo-1528181304800-259b08848526?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1200&auto=format&fit=crop"
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1512100356356-de1b84283e18?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1598970434795-0c54fe7c0648?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=1200&q=80"
     ],
     "galleryImages": [
-      "https://images.unsplash.com/photo-1544551763-46a013bb70d5?q=80&w=1200&auto=format&fit=crop",
-      "https://dulichvntravel.com/files/product/da-nang-son-tra-cu-lao-cham-rung-dua-bay-mau-hoi-an-lskswlq8.jpg",
-      "https://images.unsplash.com/photo-1528181304800-259b08848526?q=80&w=1200&auto=format&fit=crop"
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1512100356356-de1b84283e18?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1598970434795-0c54fe7c0648?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 4.9,
     "reviewCount": 38,
@@ -1943,16 +2031,22 @@ export const ALL_COMPREHENSIVE_PRODUCTS: Product[] = [
     "priceKRW": 215000,
     "priceVND": 2990000,
     "duration": "2박 3일",
-    "imageUrl": "https://images.unsplash.com/photo-1598970434795-0c54fe7c0648?q=80&w=1200&auto=format&fit=crop",
+    "imageUrl": "https://images.unsplash.com/photo-1598970434795-0c54fe7c0648?auto=format&fit=crop&w=1200&q=80",
     "additionalImages": [
-      "https://images.unsplash.com/photo-1583417319070-4a69db38a482?q=80&w=1200&auto=format&fit=crop",
-      "https://dulichvntravel.com/files/product/da-nang-ba-na-hue-dong-phong-nha-thien-duong-ykquuzvo.jpg",
-      "https://images.unsplash.com/photo-1598970434795-0c54fe7c0648?q=80&w=1200&auto=format&fit=crop"
+      "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80"
     ],
     "galleryImages": [
-      "https://images.unsplash.com/photo-1598970434795-0c54fe7c0648?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1583417319070-4a69db38a482?q=80&w=1200&auto=format&fit=crop",
-      "https://dulichvntravel.com/files/product/da-nang-ba-na-hue-dong-phong-nha-thien-duong-ykquuzvo.jpg"
+      "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 4.9,
     "reviewCount": 31,
@@ -2033,18 +2127,22 @@ export const ALL_COMPREHENSIVE_PRODUCTS: Product[] = [
     "priceKRW": 198000,
     "priceVND": 2690000,
     "duration": "2박 3일",
-    "imageUrl": "https://dulichvntravel.com/files/product/phu-quoc-thanh-pho-khong-ngu-grand-world-tour-4-dao-ngam-san-ho-2wnojenb.jpg",
+    "imageUrl": "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80",
     "additionalImages": [
-      "https://images.unsplash.com/photo-1540555700478-4be289fbecef?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1544551763-46a013bb70d5?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1200&auto=format&fit=crop",
-      "https://dulichvntravel.com/files/product/phu-quoc-thanh-pho-khong-ngu-grand-world-tour-4-dao-ngam-san-ho-2wnojenb.jpg"
+      "https://images.unsplash.com/photo-1512100356356-de1b84283e18?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=1200&q=80"
     ],
     "galleryImages": [
-      "https://dulichvntravel.com/files/product/phu-quoc-thanh-pho-khong-ngu-grand-world-tour-4-dao-ngam-san-ho-2wnojenb.jpg",
-      "https://images.unsplash.com/photo-1540555700478-4be289fbecef?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1544551763-46a013bb70d5?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1200&auto=format&fit=crop"
+      "https://images.unsplash.com/photo-1512100356356-de1b84283e18?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 4.9,
     "reviewCount": 42,
@@ -2134,17 +2232,22 @@ export const ALL_COMPREHENSIVE_PRODUCTS: Product[] = [
     "priceKRW": 285000,
     "priceVND": 3890000,
     "duration": "3박 4일",
-    "imageUrl": "https://images.unsplash.com/photo-1540555700478-4be289fbecef?q=80&w=1200&auto=format&fit=crop",
+    "imageUrl": "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80",
     "additionalImages": [
-      "https://dulichvntravel.com/files/product/phu-quoc-thanh-pho-khong-ngu-grand-world-tour-4-dao-ngam-san-ho-2wnojenb.jpg",
-      "https://images.unsplash.com/photo-1518509562904-e7ef99cdcc86?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1544551763-46a013bb70d5?q=80&w=1200&auto=format&fit=crop"
+      "https://images.unsplash.com/photo-1512100356356-de1b84283e18?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=1200&q=80"
     ],
     "galleryImages": [
-      "https://images.unsplash.com/photo-1540555700478-4be289fbecef?q=80&w=1200&auto=format&fit=crop",
-      "https://dulichvntravel.com/files/product/phu-quoc-thanh-pho-khong-ngu-grand-world-tour-4-dao-ngam-san-ho-2wnojenb.jpg",
-      "https://images.unsplash.com/photo-1518509562904-e7ef99cdcc86?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1544551763-46a013bb70d5?q=80&w=1200&auto=format&fit=crop"
+      "https://images.unsplash.com/photo-1512100356356-de1b84283e18?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 5,
     "reviewCount": 36,
@@ -2236,16 +2339,22 @@ export const ALL_COMPREHENSIVE_PRODUCTS: Product[] = [
     "priceKRW": 179000,
     "priceVND": 2450000,
     "duration": "2박 3일",
-    "imageUrl": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1200&auto=format&fit=crop",
+    "imageUrl": "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80",
     "additionalImages": [
-      "https://dulichvntravel.com/files/product/phu-quoc-thanh-pho-khong-ngu-grand-world-tour-4-dao-ngam-san-ho-2wnojenb.jpg",
-      "https://images.unsplash.com/photo-1540555700478-4be289fbecef?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1544551763-46a013bb70d5?q=80&w=1200&auto=format&fit=crop"
+      "https://images.unsplash.com/photo-1512100356356-de1b84283e18?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=1200&q=80"
     ],
     "galleryImages": [
-      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1200&auto=format&fit=crop",
-      "https://dulichvntravel.com/files/product/phu-quoc-thanh-pho-khong-ngu-grand-world-tour-4-dao-ngam-san-ho-2wnojenb.jpg",
-      "https://images.unsplash.com/photo-1540555700478-4be289fbecef?q=80&w=1200&auto=format&fit=crop"
+      "https://images.unsplash.com/photo-1512100356356-de1b84283e18?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=1200&q=80"
     ],
     "rating": 4.8,
     "reviewCount": 28,
@@ -3247,8 +3356,120 @@ export const ALL_COMPREHENSIVE_PRODUCTS: Product[] = [
       }
     ],
     "updatedAt": "2026-10-22T08:00:00.000Z"
+  },
+  {
+    "id": "prod-hanoi-halong-pkg-02",
+    "title": "[하노이/하롱베이 당일크루즈+닌빈 3박5일] 한국인 맞춤 야간비행 플랜 · 럭셔리 크루즈 & 짱안 생태보트 · 항무아 파노라마 (베스트셀러)",
+    "subTitle": "밤 도착 & 밤 출발 맞춤 · 하노이 5성급 호텔 연박 + 하롱베이 럭셔리 당일 크루즈 & 뷔페 + 닌빈 짱안 나룻배 & 항무아 용의 능선",
+    "category": "추천패키지",
+    "region": "북부",
+    "city": "하노이",
+    "priceKRW": 580000,
+    "priceVND": 8120000,
+    "duration": "3박 5일 (기내 1박)",
+    "imageUrl": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
+    "additionalImages": [
+      "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&w=1200&q=80"
+    ],
+    "galleryImages": [
+      "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&w=1200&q=80"
+    ],
+    "rating": 4.9,
+    "reviewCount": 142,
+    "isPopular": true,
+    "isHotDeal": true,
+    "departureCities": [
+      "인천",
+      "부산",
+      "대구"
+    ],
+    "tags": [
+      "#하노이",
+      "#하롱베이",
+      "#닌빈짱안",
+      "#항무아",
+      "#한국인가이드",
+      "#야간비행플랜",
+      "#노쇼핑"
+    ],
+    "description": "한국 관광객의 항공 스케줄(첫날 밤 노이바이 공항 도착, 마지막 날 밤 노이바이 공항 출발 및 다음날 새벽 한국 도착)에 완벽하게 맞춘 프리미엄 북부 핵심 패키지입니다. 잦은 호텔 이동 없이 하노이 5성급 호텔에 편안하게 연박하며, 하롱베이 럭셔리 당일 크루즈와 닌빈 짱안 생태 보트, 항무아 파노라마 전망대를 전용 VIP 차량과 한국어 전문 가이드와 함께 여유롭게 여행합니다.",
+    "included": [
+      "하노이 시내 5성급 호텔 3박 (조식 포함)",
+      "전 일정 단독 VIP 전용 리무진 차량 & 유류비 & 도로비",
+      "한국어 전문 현지 가이드 전 일정 동행",
+      "하롱베이 럭셔리 당일 크루즈 승선권 & 선상 씨푸드 뷔페 중식",
+      "하롱베이 카약/대나무배 체험 & 티톱섬 전망대 입장료",
+      "닌빈 짱안 유네스코 생태 보트투어 나룻배 탑승권 & 뱃사공 매너팁",
+      "항무아(Hang Mua) 용의 능선 파노라마 전망대 입장료",
+      "전 일정 명시된 식사 (선상 뷔페, 분짜, 쌀국수, 로컬 특식 등)",
+      "생수 매일 1인 2병 제공, 여행자 보험"
+    ],
+    "excluded": [
+      "왕복 국제선 항공권 (원하시는 항공편으로 실시간 발권 대행 가능)",
+      "가이드 & 기사 매너팁 (1인 전 일정 $30~40 권장)",
+      "개인 음료, 주류 및 기타 개인 경비"
+    ],
+    "highlights": [
+      "한국인 비행 스케줄 최적화: 1일차 늦은 밤 도착 호텔 직행 숙면, 마지막 날 밤 출발 전 시티투어&쇼핑&공항 샌딩",
+      "호텔 체크인/체크아웃 반복 없는 하노이 5성급 호텔 3연박의 안락함",
+      "유네스코 세계자연유산 하롱베이 럭셔리 크루즈 & 환상적인 선상 씨푸드 뷔페",
+      "‘육지의 하롱베이’ 닌빈 짱안 나룻배 투어 및 항무아 500계단 정상 파노라마",
+      "하노이 명소 호안끼엠 호수, 성 요셉 성당, 36 구시가지 스트리트카 체험"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "한국 출발 ➔ 늦은 밤(심야) 하노이 노이바이 국제공항 도착 ➔ 가이드 미팅 & 호텔 체크인",
+        "description": "저녁 시간대 한국(인천/부산) 공항을 출발하여 늦은 밤 하노이 노이바이 국제공항에 도착합니다. 입국 심사 및 수하물 수령 후 공항 입국장 앞 전용 한국어 가이드와 미팅하여 전용 차량으로 하노이 5성급 호텔로 편안하게 이동합니다. 체크인 후 편안한 휴식과 숙면을 취합니다.",
+        "meal": "석식: 기내식 또는 개별식",
+        "hotel": "하노이 시내 5성급 호텔 (그랜드 플라자 또는 동급)",
+        "vehicle": "단독 VIP 전용 리무진 차량"
+      },
+      {
+        "day": 2,
+        "title": "하노이 ➔ 하롱베이 럭셔리 당일 크루즈 & 카약/대나무배 · 티톱섬 전망대 ➔ 하노이 귀환",
+        "description": "호텔 조식 후 고속도로를 이용하여 하롱베이 국제 여객터미널로 이동(약 2시간 30분)합니다. 럭셔리 크루즈선에 승선하여 웰컴 드링크와 함께 기암괴석이 펼쳐진 에메랄드빛 만을 항해합니다. 선상 씨푸드 뷔페 중식을 즐긴 후 티톱섬 정상에 올라 360도 하롱베이 파노라마를 감상하고, 승솟 석회동굴 탐방 및 루온 동굴 카약/대나무배를 체험합니다. 오후 하롱베이 항구 귀환 후 하노이 호텔로 복귀하여 휴식을 취합니다.",
+        "meal": "조식: 호텔식 | 중식: 선상 씨푸드 뷔페 | 석식: 하노이 전통 분짜 & 스프링롤 정식",
+        "hotel": "하노이 시내 5성급 호텔",
+        "vehicle": "단독 VIP 전용 리무진 차량"
+      },
+      {
+        "day": 3,
+        "title": "하노이 ➔ 닌빈 짱안 유네스코 생태 보트투어 · 항무아 용의 능선 파노라마 ➔ 하노이",
+        "description": "호텔 조식 후 닌빈으로 이동합니다. 유네스코 세계복합유산인 짱안에서 전통 나룻배를 타고 맑은 강물을 따라 신비로운 천연 석회동굴을 통과하는 힐링 보트투어를 즐깁니다. 닌빈 향토 염소고기 및 로컬 특식으로 중식을 마친 뒤, 항무아로 이동하여 500개의 돌계단을 올라 용의 조각상이 있는 산 정상에서 짱안의 기암괴석과 강줄기가 한눈에 내려다보이는 절경을 감상합니다. 하노이로 돌아와 저녁 식사 후 휴식합니다.",
+        "meal": "조식: 호텔식 | 중식: 닌빈 로컬 특식 | 석식: 하노이 고급 베트남 가정식 요리",
+        "hotel": "하노이 시내 5성급 호텔",
+        "vehicle": "단독 VIP 전용 리무진 차량"
+      },
+      {
+        "day": 4,
+        "title": "호텔 체크아웃 ➔ 하노이 시티투어 (호안끼엠, 성요셉성당, 36거리) ➔ 한시장/마트 쇼핑 ➔ 늦은 밤 공항 샌딩",
+        "description": "오전 여유롭게 호텔 조식 후 12:00 체크아웃합니다. 짐은 전용 차량에 안전하게 싣고 하노이 시티투어를 진행합니다. 하노이의 심장 호안끼엠 호수와 응옥선 사당, 파리의 노트르담을 닮은 성 요셉 성당을 관람하고 전기차(스트리트카)를 타고 36 구시가지 골목을 누빕니다. 롯데마트 또는 특산품점에서 기념품 쇼핑을 즐긴 후, 여행의 피로를 풀어주는 90분 VIP 전신 마사지(샤워 시설 완비)를 받습니다. 하노이 전통 쌀국수와 분짜 만찬을 즐긴 후 늦은 밤 노이바이 국제공항으로 이동하여 출국 수속을 밟습니다.",
+        "meal": "조식: 호텔식 | 중식: 현지식 | 석식: 하노이 정통 미식 만찬",
+        "hotel": "기내 숙면 (비행기 기내박)",
+        "vehicle": "단독 VIP 전용 리무진 차량"
+      },
+      {
+        "day": 5,
+        "title": "기내 숙면 ➔ 이른 아침 한국(인천/부산) 공항 도착 및 귀가",
+        "description": "기내에서 편안히 숙면을 취한 후 이른 아침(05:30~07:00경) 인천/부산 국제공항에 안전하게 도착하여 따뜻한 추억과 함께 모든 일정을 마무리합니다.",
+        "meal": "조식: 기내식 또는 개별식",
+        "hotel": "따뜻한 우리 집",
+        "vehicle": "항공편 이동"
+      }
+    ]
   }
 ];
 
-export const INITIAL_PRODUCTS: Product[] = ALL_COMPREHENSIVE_PRODUCTS;
-export const SAMPLE_PRODUCTS: Product[] = ALL_COMPREHENSIVE_PRODUCTS;
+export const SAMPLE_PRODUCTS: Product[] = INITIAL_PRODUCTS;
+export const ALL_COMPREHENSIVE_PRODUCTS: Product[] = INITIAL_PRODUCTS;

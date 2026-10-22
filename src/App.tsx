@@ -51,7 +51,7 @@ import { getDisplayProductImage } from './lib/imageFallback';
 import { trackVisitorEvent } from './lib/analytics';
 
 const PRODUCTS_CACHE_KEY = 'xinchao_products_cache_master_v5';
-const CURRENT_CATALOG_REVISION = '2026_10_22_alotravel_danang_8tours_v4_sync';
+const CURRENT_CATALOG_REVISION = '2026_10_22_all_products_min5_photos_v5_sync';
 const REVISION_KEY = 'xinchao_catalog_revision_applied';
 
 function mergeProductsPreservingLocal(localList: Product[], incomingList: Product[]): { merged: Product[]; localWasNewer: boolean } {
@@ -186,6 +186,8 @@ export default function App() {
         localStorage.removeItem(PRODUCTS_CACHE_KEY);
         localStorage.removeItem('xinchao_simple_page_products_override');
         localStorage.removeItem('xinchao_simple_page_is_customized');
+        saveProductsToIndexedDB(INITIAL_PRODUCTS).catch(console.warn);
+        setStoredJson(PRODUCTS_CACHE_KEY, INITIAL_PRODUCTS);
         return INITIAL_PRODUCTS;
       }
     } catch (e) {}
@@ -355,11 +357,11 @@ export default function App() {
     if (products.length === 0) return;
     try {
       const params = new URLSearchParams(window.location.search);
-      const targetId = params.get('productId') || params.get('product') || params.get('p');
+      const targetId = params.get('productId') || params.get('product') || params.get('id') || params.get('p');
       if (targetId && !selectedProduct) {
         const match = products.find(
           p => p.id === targetId || encodeURIComponent(p.id) === targetId || decodeURIComponent(targetId) === p.id
-        );
+        ) || INITIAL_PRODUCTS.find(p => p.id === targetId);
         if (match) {
           setSelectedProduct(match);
           trackVisitorEvent('product_view', `[직접링크접속] ${match.title}`, { productId: match.id, productTitle: match.title });

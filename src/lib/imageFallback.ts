@@ -24,7 +24,7 @@ export const MASTER_UNIQUE_PRODUCT_IMAGES: Record<string, string> = {
   "prod-phuquoc-pkg-01": "/images/phuquoc_cablecar.jpg",
   "prod-phuquoc-pkg-02": "/images/phuquoc_island_hopping.jpg",
   "prod-hanoi-halong-pkg-01": "/images/halong_cruise.jpg",
-  "prod-hanoi-halong-pkg-02": "/images/halong_kayak_bay.jpg",
+  "prod-hanoi-halong-pkg-02": "/images/halong_cruise.jpg",
   "prod-dalat-pkg-01": "/images/dalat_langbiang_mountain.jpg",
   "prod-dalat-pkg-02": "/images/dalat_spring_lake_1787099173538.jpg",
   "prod-sapa-pkg-01": "/images/sapa_fansipan.jpg",

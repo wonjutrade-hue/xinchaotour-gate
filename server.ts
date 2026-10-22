@@ -82,7 +82,6 @@ const DELETED_LEGACY_CATALOG_IDS = new Set<string>([
   'prod-phuquoc-free-01',
   'prod-phuquoc-free-02',
   'prod-hanoi-halong-pkg-01',
-  'prod-hanoi-halong-pkg-02',
   'prod-hanoi-golf-01',
   'prod-hanoi-golf-02',
   'prod-hanoi-villa-01',
@@ -563,7 +562,7 @@ async function startServer() {
     res.json({ success: true, count: 0, products: [] });
   });
 
-  // 4-C. Sync Products (Safely merge and save)
+  // 4-C. Sync Products (Safely merge and save, protecting rich photo collections)
   app.post('/api/products/sync', (req: Request, res: Response) => {
     try {
       const { products: newProducts } = req.body;
@@ -572,8 +571,51 @@ async function startServer() {
           console.warn('[Server] Ignored sync with empty array to prevent data loss');
           return res.json({ success: true, count: products.length, products });
         }
-        // Save the synchronized product list cleanly (filtering any legacy deleted dummy items)
-        products = newProducts.filter(isProductAllowed).map(p => sanitizeProduct(p));
+
+        const serverMap = new Map<string, Product>();
+        products.forEach(p => { if (p && p.id) serverMap.set(p.id, p); });
+
+        const mergedList: Product[] = [];
+        const seenIds = new Set<string>();
+
+        newProducts.filter(isProductAllowed).forEach(rawIncoming => {
+          const incoming = sanitizeProduct(rawIncoming);
+          if (!incoming.id) return;
+          seenIds.add(incoming.id);
+
+          const existing = serverMap.get(incoming.id);
+          if (existing) {
+            // If incoming has fewer photos than existing rich photos (e.g. 2 vs 7), preserve existing rich photos
+            const incomingPhotosCount = 1 + (incoming.additionalImages?.length || 0);
+            const existingPhotosCount = 1 + (existing.additionalImages?.length || 0);
+            let finalAdditional = incoming.additionalImages;
+            let finalMainImg = incoming.imageUrl;
+
+            if (existingPhotosCount >= 5 && incomingPhotosCount < 5) {
+              finalMainImg = existing.imageUrl;
+              finalAdditional = existing.additionalImages;
+            }
+
+            mergedList.push({
+              ...existing,
+              ...incoming,
+              imageUrl: finalMainImg,
+              additionalImages: finalAdditional,
+              galleryImages: finalAdditional
+            });
+          } else {
+            mergedList.push(incoming);
+          }
+        });
+
+        // Retain server products that weren't included in incoming payload
+        serverMap.forEach((p, id) => {
+          if (!seenIds.has(id) && isProductAllowed(p)) {
+            mergedList.push(p);
+          }
+        });
+
+        products = mergedList;
         saveStoredProducts(products);
         lastDataSyncTimestamp = Date.now();
         res.json({ success: true, count: products.length, products });
