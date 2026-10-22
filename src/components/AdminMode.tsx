@@ -2362,7 +2362,7 @@ export const AdminMode: React.FC<AdminModeProps> = ({
                   const regCities: Record<string, string[]> = {
                     '전체': ['다낭', '하노이', '푸꾸옥', '나트랑', '달랏'],
                     '북부': ['하노이', '사파', '하롱베이', '하장', '닌빈'],
-                    '중부': ['다낭', '호이안', '후에'],
+                    '중부': ['다낭', '호이안', '후에', '꾸이년', '퐁냐/광빈'],
                     '남부': ['나트랑', '달랏', '호치민', '푸꾸옥', '무이네']
                   };
 
@@ -2998,7 +2998,7 @@ export const AdminMode: React.FC<AdminModeProps> = ({
                         🏙️ 3. 대표 도시 선택 *
                       </label>
                       <div className="flex flex-wrap gap-1.5">
-                        {(editingProduct.region === '중부' ? ['다낭', '호이안', '후에'] :
+                        {(editingProduct.region === '중부' ? ['다낭', '호이안', '후에', '꾸이년', '퐁냐/광빈'] :
                           editingProduct.region === '북부' ? ['하노이', '하롱베이', '사파', '닌빈'] :
                           ['나트랑', '달랏', '호치민', '푸꾸옥', '무이네']
                         ).map((cityName) => {
