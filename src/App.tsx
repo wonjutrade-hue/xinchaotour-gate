@@ -51,7 +51,7 @@ import { getDisplayProductImage } from './lib/imageFallback';
 import { trackVisitorEvent } from './lib/analytics';
 
 const PRODUCTS_CACHE_KEY = 'xinchao_products_cache_master_v5';
-const CURRENT_CATALOG_REVISION = '2026_10_22_phu_quoc_and_central_tours_v2_sync';
+const CURRENT_CATALOG_REVISION = '2026_10_22_phuquoc_korean_flight_v3_sync';
 const REVISION_KEY = 'xinchao_catalog_revision_applied';
 
 function mergeProductsPreservingLocal(localList: Product[], incomingList: Product[]): { merged: Product[]; localWasNewer: boolean } {
