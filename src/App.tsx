@@ -50,8 +50,8 @@ import { INITIAL_PRODUCTS } from './data/seedProducts';
 import { getDisplayProductImage } from './lib/imageFallback';
 import { trackVisitorEvent } from './lib/analytics';
 
-const PRODUCTS_CACHE_KEY = 'xinchao_products_cache_master_v5';
-const CURRENT_CATALOG_REVISION = '2026_10_22_all_products_min5_photos_v5_sync';
+const PRODUCTS_CACHE_KEY = 'xinchao_products_cache_master_v9';
+const CURRENT_CATALOG_REVISION = '2026_10_25_photo_enrichment_guarantee_v9_sync';
 const REVISION_KEY = 'xinchao_catalog_revision_applied';
 
 function mergeProductsPreservingLocal(localList: Product[], incomingList: Product[]): { merged: Product[]; localWasNewer: boolean } {
@@ -71,7 +71,7 @@ function mergeProductsPreservingLocal(localList: Product[], incomingList: Produc
   // Process incoming from server
   incomingList.forEach(serverProd => {
     if (!serverProd || !serverProd.id) return;
-    const localProd = localMap.get(serverProd.id);
+    let localProd = localMap.get(serverProd.id);
     if (!localProd) {
       mergedMap.set(serverProd.id, serverProd);
       return;
@@ -80,9 +80,21 @@ function mergeProductsPreservingLocal(localList: Product[], incomingList: Produc
     const serverTime = serverProd.updatedAt ? new Date(serverProd.updatedAt).getTime() : (serverProd.createdAt ? new Date(serverProd.createdAt).getTime() : 0);
     const localTime = localProd.updatedAt ? new Date(localProd.updatedAt).getTime() : (localProd.createdAt ? new Date(localProd.createdAt).getTime() : 0);
 
-    // Detect user modifications
+    // Photo count comparison: never let stale 1-2 photo items downgrade server's enriched 7+ photo collection
+    const localPhotos = [localProd.imageUrl, ...(localProd.additionalImages || [])].filter((u): u is string => Boolean(u && !isDummyImage(u)));
+    const serverPhotos = [serverProd.imageUrl, ...(serverProd.additionalImages || [])].filter((u): u is string => Boolean(u && !isDummyImage(u)));
+    
+    if (serverPhotos.length > localPhotos.length) {
+      localProd = {
+        ...localProd,
+        imageUrl: serverProd.imageUrl || localProd.imageUrl,
+        additionalImages: serverProd.additionalImages && serverProd.additionalImages.length > 0 ? serverProd.additionalImages : localProd.additionalImages
+      };
+    }
+
+    // Detect true user customizations
     const localHasDifferentImage = Boolean(localProd.imageUrl && localProd.imageUrl !== serverProd.imageUrl && !isDummyImage(localProd.imageUrl));
-    const localHasCustomSubs = JSON.stringify(localProd.additionalImages || []) !== JSON.stringify(serverProd.additionalImages || []);
+    const localHasCustomSubs = localPhotos.length >= serverPhotos.length && JSON.stringify(localProd.additionalImages || []) !== JSON.stringify(serverProd.additionalImages || []);
     const localHasCustomDesc = Boolean(localProd.description && localProd.description !== serverProd.description);
     const localHasCustomTitle = Boolean(localProd.title && localProd.title !== serverProd.title);
     const localHasCustomPrice = Boolean(localProd.priceKRW && localProd.priceKRW !== serverProd.priceKRW);
@@ -94,7 +106,14 @@ function mergeProductsPreservingLocal(localList: Product[], incomingList: Produc
 
     if (localTime > serverTime || (localTime === serverTime && hasLocalCustomizations) || (hasLocalCustomizations && !isDummyImage(localProd.imageUrl))) {
       // Local user edits have higher priority
-      mergedMap.set(localProd.id, localProd);
+      // But ensure we keep the server's enriched photos if local had fewer photos
+      const finalProd = serverPhotos.length > localPhotos.length ? {
+        ...localProd,
+        imageUrl: serverProd.imageUrl || localProd.imageUrl,
+        additionalImages: serverProd.additionalImages || localProd.additionalImages
+      } : localProd;
+
+      mergedMap.set(finalProd.id, finalProd);
       localWasNewer = true;
     } else {
       // Server is newer; but preserve user uploaded image if server somehow lacks it
@@ -183,6 +202,10 @@ export default function App() {
       if (appliedRev !== CURRENT_CATALOG_REVISION) {
         localStorage.setItem(REVISION_KEY, CURRENT_CATALOG_REVISION);
         localStorage.removeItem('xinchao_products_cache_master');
+        localStorage.removeItem('xinchao_products_cache_master_v5');
+        localStorage.removeItem('xinchao_products_cache_master_v6');
+        localStorage.removeItem('xinchao_products_cache_master_v7');
+        localStorage.removeItem('xinchao_products_cache_master_v8');
         localStorage.removeItem(PRODUCTS_CACHE_KEY);
         localStorage.removeItem('xinchao_simple_page_products_override');
         localStorage.removeItem('xinchao_simple_page_is_customized');

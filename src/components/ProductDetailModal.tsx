@@ -33,7 +33,7 @@ import {
 import { ExchangeRates, calculateVNDFromKRW, calculateKRWFromVND, calculateUSDFromKRW, formatVND, formatUSD } from '../lib/exchangeRate';
 import { COMPANY_INFO } from '../data/companyInfo';
 import { DEFAULT_KAKAO_LINK, handleOpenKakaoTalkDirect } from '../constants';
-import { getProductFallbackImage } from '../lib/imageFallback';
+import { getProductFallbackImage, getDestinationPhotoPool } from '../lib/imageFallback';
 
 interface ProductDetailModalProps {
   product: Product | null;
@@ -81,7 +81,11 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   const subImages = product.additionalImages || (product as any).galleryImages || (product as any).images || [];
   const rawImages = [product.imageUrl, ...subImages].filter((img): img is string => Boolean(img && img.trim().length > 0 && img !== 'VILLA_PHOTO_DATA'));
   const fallbackImg = getProductFallbackImage(product.category, product.city);
-  const allImages = rawImages.length > 0 ? Array.from(new Set(rawImages)) : [fallbackImg];
+  let allImages = rawImages.length > 0 ? Array.from(new Set(rawImages)) : [fallbackImg];
+  if (allImages.length < 6) {
+    const pool = getDestinationPhotoPool(product.category, product.city);
+    allImages = Array.from(new Set([...allImages, ...pool]));
+  }
 
   const validIndex = currentImgIndex >= 0 && currentImgIndex < allImages.length ? currentImgIndex : 0;
   const currentPhoto = allImages[validIndex] || fallbackImg;

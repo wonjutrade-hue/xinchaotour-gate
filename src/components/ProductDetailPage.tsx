@@ -42,6 +42,7 @@ import {
 } from 'lucide-react';
 import { ExchangeRates, calculateVNDFromKRW, calculateKRWFromVND, calculateUSDFromKRW, formatVND, formatUSD } from '../lib/exchangeRate';
 import { handleOpenKakaoTalkDirect } from '../constants';
+import { getProductFallbackImage, getDestinationPhotoPool } from '../lib/imageFallback';
 
 interface ProductDetailPageProps {
   product: Product;
@@ -73,11 +74,16 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   }, [product.id]);
 
   const subImages = product.additionalImages || (product as any).galleryImages || (product as any).images || [];
-  const rawImages = [product.imageUrl, ...subImages];
-  const allImages = Array.from(new Set(rawImages.filter(Boolean)));
+  const rawImages = [product.imageUrl, ...subImages].filter((img): img is string => Boolean(img && img.trim().length > 0 && img !== 'VILLA_PHOTO_DATA'));
+  const fallbackImg = getProductFallbackImage(product.category, product.city);
+  let allImages = rawImages.length > 0 ? Array.from(new Set(rawImages)) : [fallbackImg];
+  if (allImages.length < 6) {
+    const pool = getDestinationPhotoPool(product.category, product.city);
+    allImages = Array.from(new Set([...allImages, ...pool]));
+  }
 
   const validIndex = currentImgIndex >= 0 && currentImgIndex < allImages.length ? currentImgIndex : 0;
-  const currentPhoto = allImages[validIndex] || product.imageUrl || '';
+  const currentPhoto = allImages[validIndex] || fallbackImg;
 
   const handleOpenPhotoTour = (startIndex: number = 0, mode: 'slide' | 'grid' = 'slide') => {
     setCurrentImgIndex(startIndex);
