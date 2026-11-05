@@ -10,6 +10,7 @@ export type City =
   | '하장'
   // 중부
   | '다낭'
+  | 'Premier Village'
   | '호이안'
   | '후에'
   | '꾸이년'

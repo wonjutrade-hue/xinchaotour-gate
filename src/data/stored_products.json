@@ -1,5 +1,102 @@
 [
   {
+    "id": "prod-danang-villa-premier-village",
+    "title": "[다낭/프리미어빌리지] Premier Village 다낭 럭셔리 4베드룸 오션 프라이빗 풀빌라",
+    "subTitle": "미케비치 5성급 아코르(Accor) 직영 리조트 단지 · 침실 4개/욕실 4개 · 450㎡ 대형 단독 전용 수영장 & 프라이빗 비치",
+    "category": "풀빌라",
+    "region": "중부",
+    "city": "다낭",
+    "priceKRW": 585000,
+    "priceVND": 10000000,
+    "duration": "1박 기준 (연박 가능)",
+    "imageUrl": "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1200&q=80",
+    "additionalImages": [
+      "https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=1200&q=80"
+    ],
+    "galleryImages": [
+      "https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=1200&q=80"
+    ],
+    "rating": 5,
+    "reviewCount": 42,
+    "isPopular": true,
+    "isHotDeal": true,
+    "discountPercent": 15,
+    "departureCities": [
+      "다낭 현지 체크인",
+      "인천",
+      "부산",
+      "대구"
+    ],
+    "tags": [
+      "#다낭대표풀빌라",
+      "#프리미어빌리지",
+      "#PremierVillage",
+      "#미케비치5성급",
+      "#4베드룸풀빌라",
+      "#단독전용수영장",
+      "#가족여행추천"
+    ],
+    "description": "다낭 최고의 미케비치 해변에 자리잡은 세계적인 5성급 아코르(Accor) 체인의 프리미어 빌리지(Premier Village Danang Resort) 단독 풀빌라입니다. 침실 4개, 욕실 4개, 450㎡의 넓은 부지에 프라이빗 개인 풀과 아늑한 정원이 완비되어 대가족 및 프리미엄 단독 휴양에 가장 인기 있는 최고급 풀빌라입니다.",
+    "included": [
+      "Premier Village 다낭 4베드룸 단독 풀빌라 전체 독채 사용",
+      "프라이빗 개인 수영장 & 야외 프라이빗 선베드 테라스",
+      "리조트 전용 프라이빗 비치 & 메인 인피니티 풀 무제한 이용",
+      "풀옵션 주방 & 다이닝 공간 (대형 냉장고, 조리도구 일체)",
+      "24시간 리조트 보안 및 버기카 호출 서비스",
+      "초고속 무료 Wi-Fi & 스마트 TV 전 객실 완비",
+      "호스트 24시간 실시간 한국어 케어 및 응대"
+    ],
+    "excluded": [
+      "개인 경비 및 식음료비 (리조트 레스토랑 또는 룸서비스 이용 가능)",
+      "왕복 항공권 (필요 시 단독 VIP 차량 픽업/샌딩 연계 가능)"
+    ],
+    "villaSpecs": {
+      "villaName": "Premier Village 다낭 리조트 4베드룸 풀빌라",
+      "structureDescription": "침실 4개 + 킹/퀸베드 4개 + 욕실 4개 + 대형 거실 + 키친 + 단독 프라이빗 수영장 & 잔디 정원",
+      "bedrooms": 4,
+      "bathrooms": 4,
+      "beds": "침대 4개 (킹 2개, 퀸 2개)",
+      "maxOccupancy": 10,
+      "standardOccupancy": 8,
+      "privatePool": true,
+      "oceanView": true,
+      "areaSqm": 450,
+      "floors": 3,
+      "address": "99 Võ Nguyên Giáp, Bắc Mỹ An, Ngũ Hành Sơn, Đà Nẵng, 베트남",
+      "googleMapUrl": "https://maps.google.com/?q=Premier+Village+Danang+Resort",
+      "airbnbUrl": "https://www.airbnb.co.kr/rooms/premiervillagedanang",
+      "amenities": [
+        "프라이빗 전용 수영장",
+        "리조트 전용 전용 비치(미케비치)",
+        "풀옵션 고급 주방 & 다이닝 공간",
+        "전 객실 개별 욕실 & 고급 어메니티",
+        "버기카(Buggy) 24시간 무료 호출",
+        "리조트 키즈클럽 & 피트니스 센터",
+        "초고속 와이파이 & 스마트 TV",
+        "24시간 실시간 한국어 상담 케어"
+      ],
+      "checkInTime": "15:00",
+      "checkOutTime": "11:00",
+      "breakfastIncluded": false,
+      "hostLanguage": "한국어 / 베트남어 / 영어 (24시간 카카오톡 실시간 상담)"
+    },
+    "airbnbUrl": "https://www.airbnb.co.kr/rooms/premiervillagedanang",
+    "googleMapUrl": "https://maps.google.com/?q=Premier+Village+Danang+Resort",
+    "address": "99 Võ Nguyên Giáp, Bắc Mỹ An, Ngũ Hành Sơn, Đà Nẵng, 베트남"
+  },
+  {
     "id": "prod-danang-villa-cysea-5bed",
     "title": "[다낭/독채풀빌라] Cy'sea(사이시) 프라이빗 비치 5베드룸 단독 풀빌라",
     "subTitle": "리엔찌에우 에메랄드 해변 인근 · 침실 5개/침대 8개/욕실 5.5개 · 전용 단독 수영장 · 바비큐 시설",

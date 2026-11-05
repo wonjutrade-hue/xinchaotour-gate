@@ -50,8 +50,8 @@ import { INITIAL_PRODUCTS } from './data/seedProducts';
 import { getDisplayProductImage } from './lib/imageFallback';
 import { trackVisitorEvent } from './lib/analytics';
 
-const PRODUCTS_CACHE_KEY = 'xinchao_products_cache_master_v10';
-const CURRENT_CATALOG_REVISION = '2026_11_05_cash_buying_rate_v10_sync';
+const PRODUCTS_CACHE_KEY = 'xinchao_products_cache_master_v11';
+const CURRENT_CATALOG_REVISION = '2026_11_05_premier_village_danang_v11_sync';
 const REVISION_KEY = 'xinchao_catalog_revision_applied';
 
 function mergeProductsPreservingLocal(localList: Product[], incomingList: Product[]): { merged: Product[]; localWasNewer: boolean } {
@@ -207,6 +207,7 @@ export default function App() {
         localStorage.removeItem('xinchao_products_cache_master_v7');
         localStorage.removeItem('xinchao_products_cache_master_v8');
         localStorage.removeItem('xinchao_products_cache_master_v9');
+        localStorage.removeItem('xinchao_products_cache_master_v10');
         localStorage.removeItem(PRODUCTS_CACHE_KEY);
         localStorage.removeItem('xinchao_simple_page_products_override');
         localStorage.removeItem('xinchao_simple_page_is_customized');
@@ -704,13 +705,22 @@ export default function App() {
           p.title.includes('호이안') ||
           (p.tags && p.tags.some(t => t.includes('다낭') || t.includes('호이안'))));
 
+      const isPremierVillage =
+        activeCity === 'Premier Village' &&
+        (p.id.includes('premier-village') ||
+          p.title.includes('Premier Village') ||
+          p.title.includes('프리미어') ||
+          p.city === 'Premier Village' ||
+          (p.subTitle && p.subTitle.includes('Premier Village')) ||
+          (p.tags && p.tags.some(t => t.includes('PremierVillage') || t.includes('프리미어빌리지'))));
+
       const defaultCityMatch =
         p.city === activeCity ||
         p.title.includes(activeCity) ||
         (p.subTitle && p.subTitle.includes(activeCity)) ||
         (p.tags && p.tags.some(t => t.includes(activeCity)));
 
-      if (!isNhaTrang && !isDalat && !isDaNang && !defaultCityMatch) {
+      if (!isPremierVillage && !isNhaTrang && !isDalat && !isDaNang && !defaultCityMatch) {
         return false;
       }
     } else if (activeRegion !== '전체') {
