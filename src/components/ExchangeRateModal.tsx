@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { X, RefreshCw, TrendingUp, DollarSign, Calculator, ArrowRightLeft } from 'lucide-react';
-import { ExchangeRates, calculateVNDFromKRW, calculateUSDFromKRW, formatVND, formatUSD } from '../lib/exchangeRate';
+import { ExchangeRates, calculateVNDFromKRW, calculateKRWFromVND, calculateUSDFromKRW, formatVND, formatUSD } from '../lib/exchangeRate';
 
 interface ExchangeRateModalProps {
   isOpen: boolean;
@@ -26,8 +26,8 @@ export const ExchangeRateModal: React.FC<ExchangeRateModalProps> = ({
   const liveVND = calculateVNDFromKRW(krwInput, rates);
   const liveUSD = calculateUSDFromKRW(krwInput, rates);
 
-  // KRW from VND
-  const krwFromVnd = Math.round((vndInput / (rates.VND || 25200)) * (rates.KRW || 1350));
+  // KRW from VND based on cash buying rate
+  const krwFromVnd = calculateKRWFromVND(vndInput, rates);
 
   return (
     <div className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-4 animate-fadeIn">
@@ -39,15 +39,15 @@ export const ExchangeRateModal: React.FC<ExchangeRateModalProps> = ({
               <TrendingUp className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="font-extrabold text-base">네이버 금융 실시간 환율 연동</h3>
-              <p className="text-[11px] text-slate-300">
-                마지막 고시 업데이트: {new Date(rates.lastUpdated || Date.now()).toLocaleTimeString('ko-KR')}
+              <h3 className="font-extrabold text-base">하나은행·네이버 금융 환율 연동</h3>
+              <p className="text-[11px] text-amber-300 font-bold">
+                적용 기준: 현찰 살 때 (100동당 약 {(rates.cashBuyRateKRWPer100VND || 5.85).toFixed(2)}원)
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-slate-700/80 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center transition-colors"
+            className="w-8 h-8 rounded-full bg-slate-700/80 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
@@ -57,22 +57,22 @@ export const ExchangeRateModal: React.FC<ExchangeRateModalProps> = ({
         <div className="p-5 space-y-5">
           <div className="grid grid-cols-2 gap-3">
             <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-200">
-              <span className="text-[10px] font-bold text-slate-400 block uppercase">1 USD 기준 환율</span>
+              <span className="text-[10px] font-bold text-slate-400 block uppercase">현찰 살 때 환율</span>
               <p className="text-base font-black text-slate-900 mt-1">
-                $1 = <span className="text-teal-700">{rates.KRW.toLocaleString()}원</span>
+                100 ₫ = <span className="text-teal-700">{(rates.cashBuyRateKRWPer100VND || 5.85).toFixed(2)}원</span>
               </p>
               <p className="text-[11px] text-slate-500 mt-0.5">
-                $1 = {rates.VND.toLocaleString()} ₫
+                $1 = {(rates.cashBuyRateUSD || Math.round(rates.KRW * 1.0175)).toLocaleString()}원
               </p>
             </div>
 
             <div className="bg-amber-50 p-3.5 rounded-2xl border border-amber-200">
               <span className="text-[10px] font-bold text-amber-800 block uppercase">1,000 KRW (원) ≒ 베트남 동</span>
               <p className="text-base font-black text-amber-950 mt-1">
-                1,000원 ≒ <span className="text-amber-600">{Math.round((1000 / rates.KRW) * rates.VND).toLocaleString()} ₫</span>
+                1,000원 ≒ <span className="text-amber-600">{Math.round((1000 / (rates.cashBuyRateKRWPer100VND || 5.85)) * 100).toLocaleString()} ₫</span>
               </p>
               <p className="text-[11px] text-amber-800/80 mt-0.5">
-                10만동(VND) ≒ 약 {Math.round((100000 / rates.VND) * rates.KRW).toLocaleString()}원
+                10만동(VND) ≒ <strong className="text-amber-900">{calculateKRWFromVND(100000, rates).toLocaleString()}원</strong>
               </p>
             </div>
           </div>

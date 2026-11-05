@@ -1034,10 +1034,10 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                   </span>
                 </div>
                 <div className="text-2xl sm:text-3xl font-black text-emerald-800">
-                  {displayVND.toLocaleString('ko-KR')} <span className="text-lg font-bold">₫~</span>
+                  {displayKRW.toLocaleString('ko-KR')} <span className="text-lg font-bold">원~</span>
                 </div>
                 <p className="text-xs font-bold text-slate-600">
-                  (네이버 환율 기준: 약 <strong className="text-slate-900">{displayKRW.toLocaleString('ko-KR')}원</strong> / {formatUSD(liveUSD)})
+                  (현찰 살 때 환율 기준: 약 <strong className="text-emerald-700">{displayVND.toLocaleString('ko-KR')} ₫</strong> / {formatUSD(liveUSD)})
                 </p>
               </div>
 

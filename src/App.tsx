@@ -50,8 +50,8 @@ import { INITIAL_PRODUCTS } from './data/seedProducts';
 import { getDisplayProductImage } from './lib/imageFallback';
 import { trackVisitorEvent } from './lib/analytics';
 
-const PRODUCTS_CACHE_KEY = 'xinchao_products_cache_master_v9';
-const CURRENT_CATALOG_REVISION = '2026_10_25_photo_enrichment_guarantee_v9_sync';
+const PRODUCTS_CACHE_KEY = 'xinchao_products_cache_master_v10';
+const CURRENT_CATALOG_REVISION = '2026_11_05_cash_buying_rate_v10_sync';
 const REVISION_KEY = 'xinchao_catalog_revision_applied';
 
 function mergeProductsPreservingLocal(localList: Product[], incomingList: Product[]): { merged: Product[]; localWasNewer: boolean } {
@@ -206,6 +206,7 @@ export default function App() {
         localStorage.removeItem('xinchao_products_cache_master_v6');
         localStorage.removeItem('xinchao_products_cache_master_v7');
         localStorage.removeItem('xinchao_products_cache_master_v8');
+        localStorage.removeItem('xinchao_products_cache_master_v9');
         localStorage.removeItem(PRODUCTS_CACHE_KEY);
         localStorage.removeItem('xinchao_simple_page_products_override');
         localStorage.removeItem('xinchao_simple_page_is_customized');

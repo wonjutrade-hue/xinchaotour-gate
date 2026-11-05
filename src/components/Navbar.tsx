@@ -48,7 +48,8 @@ export const Navbar: React.FC<NavbarProps> = ({
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const vndPerThousandKRW = Math.round((1000 / (exchangeRates.KRW || 1350)) * (exchangeRates.VND || 25200));
+  const cashBuyRate100 = exchangeRates.cashBuyRateKRWPer100VND || 5.85;
+  const vndPerThousandKRW = Math.round((1000 / cashBuyRate100) * 100);
 
   const navItems: { key: NavPage; label: string; badge?: string }[] = [
     { key: 'simple', label: '⚡심플홈', badge: '인기' },
@@ -92,10 +93,10 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               onClick={onOpenRateCalculator}
               className="hidden sm:inline-flex items-center gap-1 text-slate-300 hover:text-emerald-300 transition cursor-pointer font-bold bg-white/5 px-2 py-0.5 rounded-md border border-white/10"
-              title="실시간 베트남 동(VND) 환율 계산기 열기"
+              title="실시간 베트남 동(VND) 현찰 살 때 환율 계산기 열기"
             >
               <DollarSign className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-              <span>실시간 환율: 1,000원 ≒ <strong className="text-amber-300">{vndPerThousandKRW.toLocaleString()}동</strong></span>
+              <span>현찰 살때: 1,000원 ≒ <strong className="text-amber-300">{vndPerThousandKRW.toLocaleString()}동</strong> (100동당 {cashBuyRate100.toFixed(2)}원)</span>
             </button>
           </div>
 

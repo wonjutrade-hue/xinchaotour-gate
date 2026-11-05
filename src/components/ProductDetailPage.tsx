@@ -927,8 +927,8 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                   <span className="text-xs font-black text-teal-800 bg-teal-50 px-2 py-0.5 rounded-md">
                     {isVilla ? '단독 풀빌라 직영 특가' : '실시간 최저가 보장'}
                   </span>
-                  <span className="text-[11px] text-slate-400 font-bold">
-                    네이버 실시간 환율 연동
+                  <span className="text-[11px] text-amber-700 font-bold bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200">
+                    현찰 살 때 환율 기준
                   </span>
                 </div>
 

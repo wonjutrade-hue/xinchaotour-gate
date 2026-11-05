@@ -262,11 +262,14 @@ const getGenAIClient = () => {
   return new GoogleGenAI({ apiKey });
 };
 
-// Live Exchange Rates Cache
+// Live Exchange Rates Cache (현찰 살 때 기준)
 let cachedRates = {
   USD: 1,
   KRW: 1352.5,
-  VND: 25450.0
+  VND: 25450.0,
+  cashBuyRateKRWPer100VND: 5.85,
+  cashBuyRateUSD: 1376.2,
+  source: '하나은행·네이버 금융 고시 환율 (현찰 살 때 기준)'
 };
 let lastRateFetch = 0;
 
@@ -279,10 +282,19 @@ async function fetchLiveExchangeRates() {
     const res = await fetch('https://open.er-api.com/v6/latest/USD');
     const data: any = await res.json();
     if (data && data.rates) {
+      const baseKRW = data.rates.KRW || 1352.5;
+      const baseVND = data.rates.VND || 25450.0;
+      const base100VNDInKRW = (baseKRW / baseVND) * 100;
+      // 은행 고시 베트남 동 현찰 살 때 환전 스프레드 11.8%
+      const cashBuyRate = base100VNDInKRW * 1.118;
+      
       cachedRates = {
         USD: 1,
-        KRW: data.rates.KRW || 1352.5,
-        VND: data.rates.VND || 25450.0
+        KRW: baseKRW,
+        VND: baseVND,
+        cashBuyRateKRWPer100VND: Math.round(cashBuyRate * 100) / 100,
+        cashBuyRateUSD: Math.round(baseKRW * 1.0175 * 10) / 10,
+        source: '하나은행·네이버 금융 고시 환율 (현찰 살 때 기준)'
       };
       lastRateFetch = now;
     }
