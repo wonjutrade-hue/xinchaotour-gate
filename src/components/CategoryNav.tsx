@@ -18,7 +18,7 @@ interface CategoryNavProps {
 
 export const REGION_CITIES: Record<Exclude<Region, '전체'>, City[]> = {
   북부: ['하노이', '하롱베이', '닌빈', '사파', '하장'],
-  중부: ['Premier Village', '다낭', '호이안', '후에', '꾸이년', '퐁냐/광빈'],
+  중부: ['다낭', '호이안', '후에', '꾸이년', '퐁냐/광빈'],
   남부: ['나트랑', '달랏', '호치민', '푸꾸옥', '무이네'],
 };
 
@@ -116,28 +116,19 @@ export const CategoryNav: React.FC<CategoryNavProps> = ({
               >
                 {activeRegion} 전체
               </button>
-              {REGION_CITIES[activeRegion]?.map((city) => {
-                const isSelected = activeCity === city;
-                const isPV = city === 'Premier Village';
-                return (
-                  <button
-                    key={city}
-                    onClick={() => onSelectCity(city)}
-                    className={`px-2.5 py-1 rounded-lg text-xs font-black whitespace-nowrap transition cursor-pointer flex items-center gap-1 ${
-                      isSelected
-                        ? isPV
-                          ? 'bg-amber-500 text-slate-950 shadow-md ring-2 ring-amber-300'
-                          : 'bg-teal-600 text-white shadow-2xs'
-                        : isPV
-                        ? 'bg-amber-50 text-amber-900 border border-amber-300 hover:bg-amber-100 hover:text-amber-950 font-black'
-                        : 'bg-slate-100 text-slate-600 hover:bg-teal-50 hover:text-teal-700'
-                    }`}
-                  >
-                    {isPV && <span>🏰</span>}
-                    <span>{city}</span>
-                  </button>
-                );
-              })}
+              {REGION_CITIES[activeRegion]?.map((city) => (
+                <button
+                  key={city}
+                  onClick={() => onSelectCity(city)}
+                  className={`px-2.5 py-1 rounded-lg text-xs font-black whitespace-nowrap transition cursor-pointer ${
+                    activeCity === city
+                      ? 'bg-teal-600 text-white shadow-2xs'
+                      : 'bg-slate-100 text-slate-600 hover:bg-teal-50 hover:text-teal-700'
+                  }`}
+                >
+                  {city}
+                </button>
+              ))}
             </div>
           )}
         </div>

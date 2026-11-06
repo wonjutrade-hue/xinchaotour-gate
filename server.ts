@@ -29,7 +29,8 @@ if (!fs.existsSync(UPLOADS_DIR)) {
 // Explicit blocklist of all removed dummy/sample catalog items
 // Legacy blocklist (only exclude genuine junk/test items)
 const DELETED_LEGACY_CATALOG_IDS = new Set<string>([
-  'test-123'
+  'test-123',
+  'prod-danang-villa-premier-village'
 ]);
 
 function isProductAllowed(p: Product): boolean {
