@@ -2,7 +2,7 @@
   {
     "id": "prod-danang-villa-cysea-5bed",
     "title": "[다낭/독채풀빌라] Cy'sea(사이시) 프라이빗 비치 5베드룸 단독 풀빌라",
-    "subTitle": "리엔찌에우 에메랄드 해변 인근 · 침실 5개/침대 8개/욕실 5.5개 · 전용 단독 수영장 · 바비큐 시설",
+    "subTitle": "미케비치 도보 3분 · 5개 침실 전용 욕실 · 대형 프라이빗 온수풀 · 최고급 어메니티",
     "category": "풀빌라",
     "region": "중부",
     "city": "다낭",
@@ -90,7 +90,8 @@
     },
     "airbnbUrl": "https://www.airbnb.co.kr/rooms/1234407839831467877",
     "googleMapUrl": "https://maps.google.com/?q=Lien+Chieu+Da+Nang",
-    "address": "Liên Chiểu, Đà Nẵng, 베트남"
+    "address": "Liên Chiểu, Đà Nẵng, 베트남",
+    "updatedAt": "2026-11-08T20:15:40.126Z"
   },
   {
     "id": "prod-danang-villa-marble-6bed",
@@ -182,7 +183,8 @@
     },
     "airbnbUrl": "https://www.airbnb.co.kr/rooms/1596807485988738548",
     "googleMapUrl": "https://maps.google.com/?q=23+Che+Lan+Vien+Ngu+Hanh+Son+Da+Nang",
-    "address": "23 Chế Lan Viên, Ngũ Hành Sơn, Đà Nẵng 550000 베트남"
+    "address": "23 Chế Lan Viên, Ngũ Hành Sơn, Đà Nẵng 550000 베트남",
+    "updatedAt": "2026-11-08T20:15:32.507Z"
   },
   {
     "id": "prod-danang-villa-pearl-10bed",
@@ -276,7 +278,8 @@
     },
     "airbnbUrl": "https://www.airbnb.co.kr/rooms/1470661871888779964",
     "googleMapUrl": "https://maps.google.com/?q=Son+Tra+Da+Nang",
-    "address": "Sơn Trà, Đà Nẵng, 베트남 (미케비치 도보 1분)"
+    "address": "Sơn Trà, Đà Nẵng, 베트남 (미케비치 도보 1분)",
+    "updatedAt": "2026-11-08T20:15:32.507Z"
   },
   {
     "id": "prod-danang-villa-napoli-12bed",
@@ -370,7 +373,8 @@
     },
     "airbnbUrl": "https://www.airbnb.co.kr/rooms/1622142057449951853",
     "googleMapUrl": "https://maps.google.com/?q=Man+Thai+Son+Tra+Da+Nang",
-    "address": "Mân Thái, Sơn Trà, Đà Nẵng, 베트남 (만타이 해안)"
+    "address": "Mân Thái, Sơn Trà, Đà Nẵng, 베트남 (만타이 해안)",
+    "updatedAt": "2026-11-08T20:15:32.507Z"
   },
   {
     "id": "prod-1787849206215",
@@ -3414,7 +3418,8 @@
         "hotel": "따뜻한 우리 집",
         "vehicle": "항공편 이동"
       }
-    ]
+    ],
+    "updatedAt": "2026-11-08T20:15:32.507Z"
   },
   {
     "id": "prod-free-danang-hoian-3n5d",
@@ -3524,7 +3529,8 @@
         "hotel": "따뜻한 우리 집",
         "vehicle": "항공편 이동"
       }
-    ]
+    ],
+    "updatedAt": "2026-11-08T20:15:32.507Z"
   },
   {
     "id": "prod-free-danang-hoian-hue-4n6d",
@@ -3632,7 +3638,8 @@
         "hotel": "따뜻한 우리 집",
         "vehicle": "항공편 이동"
       }
-    ]
+    ],
+    "updatedAt": "2026-11-08T20:15:32.507Z"
   },
   {
     "id": "prod-free-nhatrang-dalat-3n5d",
@@ -3730,7 +3737,8 @@
         "hotel": "따뜻한 우리 집",
         "vehicle": "항공편 이동"
       }
-    ]
+    ],
+    "updatedAt": "2026-11-08T20:15:32.507Z"
   },
   {
     "id": "prod-free-nhatrang-phanrang-dalat-4n6d",
@@ -3835,7 +3843,8 @@
         "hotel": "따뜻한 우리 집",
         "vehicle": "항공편 이동"
       }
-    ]
+    ],
+    "updatedAt": "2026-11-08T20:15:32.507Z"
   },
   {
     "id": "prod-free-hanoi-halong-ninbinh-3n5d",
@@ -3934,7 +3943,8 @@
         "hotel": "따뜻한 우리 집",
         "vehicle": "항공편 이동"
       }
-    ]
+    ],
+    "updatedAt": "2026-11-08T20:15:32.507Z"
   },
   {
     "id": "prod-free-hochiminh-muine-3n5d",
@@ -4032,7 +4042,8 @@
         "hotel": "따뜻한 우리 집",
         "vehicle": "항공편 이동"
       }
-    ]
+    ],
+    "updatedAt": "2026-11-08T20:15:32.507Z"
   },
   {
     "id": "prod-free-phuquoc-3n5d",
@@ -4131,6 +4142,7 @@
         "hotel": "따뜻한 우리 집",
         "vehicle": "항공편 이동"
       }
-    ]
+    ],
+    "updatedAt": "2026-11-08T20:15:32.507Z"
   }
 ]

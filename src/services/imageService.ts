@@ -164,10 +164,10 @@ export const imageService = {
     const batchSize = 4;
     for (let i = 0; i < dataUrls.length; i += batchSize) {
       const chunk = dataUrls.slice(i, i + batchSize);
-      const toUpload = chunk.filter(u => u.startsWith('data:image/'));
-      const alreadyUrls = chunk.filter(u => !u.startsWith('data:image/'));
+      const hasUploads = chunk.some(u => u.startsWith('data:image/'));
 
-      if (toUpload.length > 0) {
+      if (hasUploads) {
+        const toUpload = chunk.filter(u => u.startsWith('data:image/'));
         try {
           const res = await fetch('/api/upload-images', {
             method: 'POST',
@@ -177,19 +177,22 @@ export const imageService = {
           if (res.ok) {
             const data = await res.json();
             if (data.success && Array.isArray(data.urls)) {
-              finalUrls.push(...data.urls);
-            } else {
-              finalUrls.push(...toUpload);
+              let uploadIdx = 0;
+              chunk.forEach(item => {
+                if (item.startsWith('data:image/')) {
+                  finalUrls.push(data.urls[uploadIdx++] || item);
+                } else {
+                  finalUrls.push(item);
+                }
+              });
+              continue;
             }
-          } else {
-            finalUrls.push(...toUpload);
           }
         } catch (err) {
           console.warn('[ImageService] Batch upload failed, keeping dataUrl:', err);
-          finalUrls.push(...toUpload);
         }
       }
-      finalUrls.push(...alreadyUrls);
+      finalUrls.push(...chunk);
     }
 
     return finalUrls.filter(Boolean);

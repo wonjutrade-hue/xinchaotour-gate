@@ -80,21 +80,12 @@ function mergeProductsPreservingLocal(localList: Product[], incomingList: Produc
     const serverTime = serverProd.updatedAt ? new Date(serverProd.updatedAt).getTime() : (serverProd.createdAt ? new Date(serverProd.createdAt).getTime() : 0);
     const localTime = localProd.updatedAt ? new Date(localProd.updatedAt).getTime() : (localProd.createdAt ? new Date(localProd.createdAt).getTime() : 0);
 
-    // Photo count comparison: never let stale 1-2 photo items downgrade server's enriched 7+ photo collection
-    const localPhotos = [localProd.imageUrl, ...(localProd.additionalImages || [])].filter((u): u is string => Boolean(u && !isDummyImage(u)));
-    const serverPhotos = [serverProd.imageUrl, ...(serverProd.additionalImages || [])].filter((u): u is string => Boolean(u && !isDummyImage(u)));
-    
-    if (serverPhotos.length > localPhotos.length) {
-      localProd = {
-        ...localProd,
-        imageUrl: serverProd.imageUrl || localProd.imageUrl,
-        additionalImages: serverProd.additionalImages && serverProd.additionalImages.length > 0 ? serverProd.additionalImages : localProd.additionalImages
-      };
-    }
+    const isLocalDummy = isDummyImage(localProd.imageUrl);
+    const isServerDummy = isDummyImage(serverProd.imageUrl);
 
     // Detect true user customizations
-    const localHasDifferentImage = Boolean(localProd.imageUrl && localProd.imageUrl !== serverProd.imageUrl && !isDummyImage(localProd.imageUrl));
-    const localHasCustomSubs = localPhotos.length >= serverPhotos.length && JSON.stringify(localProd.additionalImages || []) !== JSON.stringify(serverProd.additionalImages || []);
+    const localHasDifferentImage = Boolean(localProd.imageUrl && localProd.imageUrl !== serverProd.imageUrl && !isLocalDummy);
+    const localHasCustomSubs = JSON.stringify(localProd.additionalImages || []) !== JSON.stringify(serverProd.additionalImages || []);
     const localHasCustomDesc = Boolean(localProd.description && localProd.description !== serverProd.description);
     const localHasCustomTitle = Boolean(localProd.title && localProd.title !== serverProd.title);
     const localHasCustomPrice = Boolean(localProd.priceKRW && localProd.priceKRW !== serverProd.priceKRW);
@@ -104,20 +95,13 @@ function mergeProductsPreservingLocal(localList: Product[], incomingList: Produc
 
     const hasLocalCustomizations = localHasDifferentImage || localHasCustomSubs || localHasCustomDesc || localHasCustomTitle || localHasCustomPrice || localHasCustomItinerary || localHasCustomIncluded || localHasCustomHighlights;
 
-    if (localTime > serverTime || (localTime === serverTime && hasLocalCustomizations) || (hasLocalCustomizations && !isDummyImage(localProd.imageUrl))) {
-      // Local user edits have higher priority
-      // But ensure we keep the server's enriched photos if local had fewer photos
-      const finalProd = serverPhotos.length > localPhotos.length ? {
-        ...localProd,
-        imageUrl: serverProd.imageUrl || localProd.imageUrl,
-        additionalImages: serverProd.additionalImages || localProd.additionalImages
-      } : localProd;
-
-      mergedMap.set(finalProd.id, finalProd);
+    // If local was modified by user (newer timestamp or active customizations), local user edits win!
+    if (localTime > serverTime || (localTime === serverTime && hasLocalCustomizations) || (!isLocalDummy && hasLocalCustomizations && localTime >= serverTime - 60000)) {
+      mergedMap.set(localProd.id, localProd);
       localWasNewer = true;
     } else {
-      // Server is newer; but preserve user uploaded image if server somehow lacks it
-      if (localHasDifferentImage && isDummyImage(serverProd.imageUrl)) {
+      // Server is newer; but preserve user uploaded image if server somehow lacks it or has dummy
+      if (isServerDummy && !isLocalDummy) {
         mergedMap.set(serverProd.id, {
           ...serverProd,
           imageUrl: localProd.imageUrl,

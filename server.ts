@@ -75,18 +75,16 @@ function loadStoredProducts(): Product[] {
     if (p && p.id) {
       const existing = map.get(p.id);
       if (existing) {
-        // If fileList has fewer photos than existing rich photos (e.g. 2 vs 7), preserve rich photos
-        const filePhotos = 1 + (p.additionalImages?.length || 0);
-        const seedPhotos = 1 + (existing.additionalImages?.length || 0);
-        if (seedPhotos >= 5 && filePhotos < 5) {
+        // If fileList has dummy images and seed has rich images, keep seed images
+        const isDummy = !p.imageUrl || p.imageUrl === 'TEST_IMG' || p.imageUrl === 'VILLA_PHOTO_DATA';
+        if (isDummy && existing.imageUrl) {
           map.set(p.id, {
             ...p,
             imageUrl: existing.imageUrl,
-            additionalImages: existing.additionalImages,
-            galleryImages: existing.additionalImages
+            additionalImages: (p.additionalImages && p.additionalImages.length > 0) ? p.additionalImages : existing.additionalImages
           });
         } else {
-          map.set(p.id, p);
+          map.set(p.id, { ...existing, ...p });
         }
       } else {
         map.set(p.id, p);
@@ -506,23 +504,24 @@ async function startServer() {
 
           const existing = serverMap.get(incoming.id);
           if (existing) {
-            // If incoming has fewer photos than existing rich photos (e.g. 2 vs 7), preserve existing rich photos
-            const incomingPhotosCount = 1 + (incoming.additionalImages?.length || 0);
-            const existingPhotosCount = 1 + (existing.additionalImages?.length || 0);
-            let finalAdditional = incoming.additionalImages;
-            let finalMainImg = incoming.imageUrl;
+            // Respect incoming product updates directly
+            const hasIncomingMain = Boolean(incoming.imageUrl && !['TEST_IMG', 'VILLA_PHOTO_DATA'].includes(incoming.imageUrl));
+            const finalMainImg = hasIncomingMain ? incoming.imageUrl : existing.imageUrl;
 
-            if (existingPhotosCount >= 5 && incomingPhotosCount < 5) {
-              finalMainImg = existing.imageUrl;
-              finalAdditional = existing.additionalImages;
-            }
+            // Gallery images: if incoming has additionalImages array provided, accept it directly!
+            // Only if incoming has completely empty additionalImages and no valid main image, retain existing
+            const incomingHasPhotos = Array.isArray(incoming.additionalImages) && incoming.additionalImages.length > 0;
+            const finalAdditional = (incomingHasPhotos || hasIncomingMain) 
+              ? (Array.isArray(incoming.additionalImages) ? incoming.additionalImages : [])
+              : (existing.additionalImages || []);
 
             mergedList.push({
               ...existing,
               ...incoming,
               imageUrl: finalMainImg,
               additionalImages: finalAdditional,
-              galleryImages: finalAdditional
+              galleryImages: finalAdditional,
+              updatedAt: incoming.updatedAt || new Date().toISOString()
             });
           } else {
             mergedList.push(incoming);

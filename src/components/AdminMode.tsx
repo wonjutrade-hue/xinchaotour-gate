@@ -1115,7 +1115,7 @@ export const AdminMode: React.FC<AdminModeProps> = ({
         updated = [validatedProduct, ...products];
       }
 
-      await onSaveProducts(updated);
+      // 1. Direct API update first
       try {
         if (exists) {
           await productService.updateProduct(validatedProduct.id, validatedProduct);
@@ -1125,10 +1125,14 @@ export const AdminMode: React.FC<AdminModeProps> = ({
       } catch (pErr) {
         console.warn('Direct product save warning:', pErr);
       }
+
+      // 2. Global state & persistent client cache sync
+      await onSaveProducts(updated);
+
       setIsEditorOpen(false);
       const savedTitle = validatedProduct.title;
       setEditingProduct(null);
-      showNotification(`💾 "${savedTitle}" 상품과 사진이 성공적으로 저장되었습니다!`);
+      showNotification(`💾 "${savedTitle}" 상품과 사진이 영구 저장되었습니다!`);
     } catch (err) {
       console.error('Save error:', err);
       showNotification('⚠️ 저장 중 오류가 발생했습니다.');
@@ -1203,7 +1207,7 @@ export const AdminMode: React.FC<AdminModeProps> = ({
             };
           });
 
-          showNotification(`📸 ${finalUrls.length}장의 사진이 성공적으로 등록되었습니다!`);
+          showNotification(`📸 ${finalUrls.length}장의 사진이 추가되었습니다! 수정 완료 후 하단 [상품 저장 완료]를 눌러주세요.`);
         }
       }
     } catch (err) {
