@@ -206,12 +206,20 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                     <span className="text-xs font-bold ml-0.5 text-slate-700">원</span>
                   </>
                 ) : (
-                  <span className="text-emerald-700 text-sm font-bold">견적 문의</span>
+                  <div className="flex items-center justify-end gap-1.5">
+                    <span className="text-emerald-700">0</span>
+                    <span className="text-xs font-bold text-slate-700">원</span>
+                    <span className="text-[10px] font-bold text-amber-700 bg-amber-50 border border-amber-200 px-1.5 py-0.5 rounded-md">가격조정중</span>
+                  </div>
                 )}
               </div>
-              {displayVND > 0 && (
+              {displayVND > 0 ? (
                 <div className="text-[11px] text-amber-700 font-bold">
                   {displayVND.toLocaleString()} ₫ <span className="text-[10px] text-slate-400 font-normal">({formatUSD(liveUSD)})</span>
+                </div>
+              ) : (
+                <div className="text-[10px] text-slate-500 font-medium">
+                  베트남 여행사 판매가 협의 중
                 </div>
               )}
             </div>

@@ -1,11 +1,11 @@
-// Auto-generated seed products cache with rich photo sets & cash buying exchange rates
+// Auto-generated seed products cache with rich photo sets & zero price for free travel (sales negotiation in progress)
 import { Product } from '../types';
 
 export const INITIAL_PRODUCTS: Product[] = [
   {
     "id": "prod-danang-villa-cysea-5bed",
     "title": "[다낭/독채풀빌라] Cy'sea(사이시) 프라이빗 비치 5베드룸 단독 풀빌라",
-    "subTitle": "리엔찌에우 에메랄드 해변 인근 · 침실 5개/침대 8개/욕실 5.5개 · 전용 단독 수영장 · 바비큐 시설",
+    "subTitle": "미케비치 도보 3분 · 5개 침실 전용 욕실 · 대형 프라이빗 온수풀 · 최고급 어메니티",
     "category": "풀빌라",
     "region": "중부",
     "city": "다낭",
@@ -93,7 +93,8 @@ export const INITIAL_PRODUCTS: Product[] = [
     },
     "airbnbUrl": "https://www.airbnb.co.kr/rooms/1234407839831467877",
     "googleMapUrl": "https://maps.google.com/?q=Lien+Chieu+Da+Nang",
-    "address": "Liên Chiểu, Đà Nẵng, 베트남"
+    "address": "Liên Chiểu, Đà Nẵng, 베트남",
+    "updatedAt": "2026-11-08T20:15:40.126Z"
   },
   {
     "id": "prod-danang-villa-marble-6bed",
@@ -185,7 +186,8 @@ export const INITIAL_PRODUCTS: Product[] = [
     },
     "airbnbUrl": "https://www.airbnb.co.kr/rooms/1596807485988738548",
     "googleMapUrl": "https://maps.google.com/?q=23+Che+Lan+Vien+Ngu+Hanh+Son+Da+Nang",
-    "address": "23 Chế Lan Viên, Ngũ Hành Sơn, Đà Nẵng 550000 베트남"
+    "address": "23 Chế Lan Viên, Ngũ Hành Sơn, Đà Nẵng 550000 베트남",
+    "updatedAt": "2026-11-08T20:15:32.507Z"
   },
   {
     "id": "prod-danang-villa-pearl-10bed",
@@ -279,7 +281,8 @@ export const INITIAL_PRODUCTS: Product[] = [
     },
     "airbnbUrl": "https://www.airbnb.co.kr/rooms/1470661871888779964",
     "googleMapUrl": "https://maps.google.com/?q=Son+Tra+Da+Nang",
-    "address": "Sơn Trà, Đà Nẵng, 베트남 (미케비치 도보 1분)"
+    "address": "Sơn Trà, Đà Nẵng, 베트남 (미케비치 도보 1분)",
+    "updatedAt": "2026-11-08T20:15:32.507Z"
   },
   {
     "id": "prod-danang-villa-napoli-12bed",
@@ -373,7 +376,8 @@ export const INITIAL_PRODUCTS: Product[] = [
     },
     "airbnbUrl": "https://www.airbnb.co.kr/rooms/1622142057449951853",
     "googleMapUrl": "https://maps.google.com/?q=Man+Thai+Son+Tra+Da+Nang",
-    "address": "Mân Thái, Sơn Trà, Đà Nẵng, 베트남 (만타이 해안)"
+    "address": "Mân Thái, Sơn Trà, Đà Nẵng, 베트남 (만타이 해안)",
+    "updatedAt": "2026-11-08T20:15:32.507Z"
   },
   {
     "id": "prod-1787849206215",
@@ -481,8 +485,8 @@ export const INITIAL_PRODUCTS: Product[] = [
     "category": "자유여행",
     "region": "북부",
     "city": "하장",
-    "priceKRW": 339000,
-    "priceVND": 5790000,
+    "priceKRW": 0,
+    "priceVND": 0,
     "duration": "4박 5일",
     "imageUrl": "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=1200&q=80",
     "additionalImages": [
@@ -587,7 +591,7 @@ export const INITIAL_PRODUCTS: Product[] = [
         "hotel": "투어 종료 (공항 샌딩)"
       }
     ],
-    "updatedAt": "2026-10-21T18:08:13.720Z"
+    "updatedAt": "2026-11-09T11:21:00.977Z"
   },
   {
     "id": "prod-north-vntravel-hagiang-nhoque-4d3n",
@@ -596,8 +600,8 @@ export const INITIAL_PRODUCTS: Product[] = [
     "category": "자유여행",
     "region": "북부",
     "city": "하장",
-    "priceKRW": 216000,
-    "priceVND": 3690000,
+    "priceKRW": 0,
+    "priceVND": 0,
     "duration": "3박 4일",
     "imageUrl": "https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1200&q=80",
     "additionalImages": [
@@ -694,7 +698,7 @@ export const INITIAL_PRODUCTS: Product[] = [
         "hotel": "투어 종료 (공항 샌딩)"
       }
     ],
-    "updatedAt": "2026-10-21T18:08:13.720Z"
+    "updatedAt": "2026-11-09T11:21:00.977Z"
   },
   {
     "id": "prod-north-vntravel-halong-cruise-4d3n",
@@ -703,8 +707,8 @@ export const INITIAL_PRODUCTS: Product[] = [
     "category": "자유여행",
     "region": "북부",
     "city": "하롱베이",
-    "priceKRW": 292000,
-    "priceVND": 4990000,
+    "priceKRW": 0,
+    "priceVND": 0,
     "duration": "3박 4일",
     "imageUrl": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
     "additionalImages": [
@@ -802,7 +806,7 @@ export const INITIAL_PRODUCTS: Product[] = [
         "hotel": "투어 종료 (공항 샌딩)"
       }
     ],
-    "updatedAt": "2026-10-21T18:08:13.720Z"
+    "updatedAt": "2026-11-09T11:21:00.977Z"
   },
   {
     "id": "prod-north-vntravel-trangan-halong-3d2n",
@@ -811,8 +815,8 @@ export const INITIAL_PRODUCTS: Product[] = [
     "category": "자유여행",
     "region": "북부",
     "city": "닌빈",
-    "priceKRW": 210000,
-    "priceVND": 3590000,
+    "priceKRW": 0,
+    "priceVND": 0,
     "duration": "2박 3일",
     "imageUrl": "https://images.unsplash.com/photo-1528181304800-259b08848526?auto=format&fit=crop&w=1200&q=80",
     "additionalImages": [
@@ -901,7 +905,7 @@ export const INITIAL_PRODUCTS: Product[] = [
         "hotel": "투어 종료 (공항 샌딩)"
       }
     ],
-    "updatedAt": "2026-10-21T18:08:13.720Z"
+    "updatedAt": "2026-11-09T11:21:00.977Z"
   },
   {
     "id": "prod-north-vntravel-hanoi-trangan-halong-4d3n",
@@ -910,8 +914,8 @@ export const INITIAL_PRODUCTS: Product[] = [
     "category": "자유여행",
     "region": "북부",
     "city": "하노이",
-    "priceKRW": 228000,
-    "priceVND": 3890000,
+    "priceKRW": 0,
+    "priceVND": 0,
     "duration": "3박 4일",
     "imageUrl": "https://images.unsplash.com/photo-1528181304800-259b08848526?auto=format&fit=crop&w=1200&q=80",
     "additionalImages": [
@@ -1010,7 +1014,7 @@ export const INITIAL_PRODUCTS: Product[] = [
         "hotel": "투어 종료 (공항 샌딩)"
       }
     ],
-    "updatedAt": "2026-10-21T18:08:13.720Z"
+    "updatedAt": "2026-11-09T11:21:00.977Z"
   },
   {
     "id": "prod-north-vntravel-hanoi-halong-sapa-6d5n",
@@ -1019,8 +1023,8 @@ export const INITIAL_PRODUCTS: Product[] = [
     "category": "자유여행",
     "region": "북부",
     "city": "사파",
-    "priceKRW": 339000,
-    "priceVND": 5790000,
+    "priceKRW": 0,
+    "priceVND": 0,
     "duration": "5박 6일",
     "imageUrl": "https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1200&q=80",
     "additionalImages": [
@@ -1135,7 +1139,7 @@ export const INITIAL_PRODUCTS: Product[] = [
         "hotel": "투어 종료 (공항 샌딩)"
       }
     ],
-    "updatedAt": "2026-10-21T18:08:13.720Z"
+    "updatedAt": "2026-11-09T11:21:00.977Z"
   },
   {
     "id": "prod-north-vntravel-hanoi-halong-sapa-5d4n",
@@ -1144,8 +1148,8 @@ export const INITIAL_PRODUCTS: Product[] = [
     "category": "자유여행",
     "region": "북부",
     "city": "사파",
-    "priceKRW": 309000,
-    "priceVND": 5290000,
+    "priceKRW": 0,
+    "priceVND": 0,
     "duration": "4박 5일",
     "imageUrl": "https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1200&q=80",
     "additionalImages": [
@@ -1250,7 +1254,7 @@ export const INITIAL_PRODUCTS: Product[] = [
         "hotel": "투어 종료 (공항 샌딩)"
       }
     ],
-    "updatedAt": "2026-10-21T18:08:13.720Z"
+    "updatedAt": "2026-11-09T11:21:00.977Z"
   },
   {
     "id": "prod-central-vntravel-danang-bana-hoian-4d3n",
@@ -1259,8 +1263,8 @@ export const INITIAL_PRODUCTS: Product[] = [
     "category": "자유여행",
     "region": "중부",
     "city": "다낭",
-    "priceKRW": 157000,
-    "priceVND": 2690000,
+    "priceKRW": 0,
+    "priceVND": 0,
     "duration": "3박 4일",
     "imageUrl": "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&w=1200&q=80",
     "additionalImages": [
@@ -1357,7 +1361,7 @@ export const INITIAL_PRODUCTS: Product[] = [
         "hotel": "투어 종료 (공항 샌딩)"
       }
     ],
-    "updatedAt": "2026-10-22T04:00:00.000Z"
+    "updatedAt": "2026-11-09T11:21:00.977Z"
   },
   {
     "id": "prod-central-vntravel-danang-hue-phongnha-4d3n",
@@ -1366,8 +1370,8 @@ export const INITIAL_PRODUCTS: Product[] = [
     "category": "자유여행",
     "region": "중부",
     "city": "후에",
-    "priceKRW": 192000,
-    "priceVND": 3290000,
+    "priceKRW": 0,
+    "priceVND": 0,
     "duration": "3박 4일",
     "imageUrl": "https://images.unsplash.com/photo-1598970434795-0c54fe7c0648?auto=format&fit=crop&w=1200&q=80",
     "additionalImages": [
@@ -1461,7 +1465,7 @@ export const INITIAL_PRODUCTS: Product[] = [
         "hotel": "투어 종료 (공항 샌딩)"
       }
     ],
-    "updatedAt": "2026-10-22T04:00:00.000Z"
+    "updatedAt": "2026-11-09T11:21:00.977Z"
   },
   {
     "id": "prod-central-vntravel-danang-marblemountain-bana-hoian-phongnha-4d3n",
@@ -1470,8 +1474,8 @@ export const INITIAL_PRODUCTS: Product[] = [
     "category": "자유여행",
     "region": "중부",
     "city": "다낭",
-    "priceKRW": 216000,
-    "priceVND": 3690000,
+    "priceKRW": 0,
+    "priceVND": 0,
     "duration": "3박 4일",
     "imageUrl": "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&w=1200&q=80",
     "additionalImages": [
@@ -1563,7 +1567,7 @@ export const INITIAL_PRODUCTS: Product[] = [
         "hotel": "투어 종료 (공항 샌딩)"
       }
     ],
-    "updatedAt": "2026-10-22T04:00:00.000Z"
+    "updatedAt": "2026-11-09T11:21:00.977Z"
   },
   {
     "id": "prod-central-vntravel-central-grand-tour-5d4n",
@@ -1572,8 +1576,8 @@ export const INITIAL_PRODUCTS: Product[] = [
     "category": "자유여행",
     "region": "중부",
     "city": "다낭",
-    "priceKRW": 239000,
-    "priceVND": 4090000,
+    "priceKRW": 0,
+    "priceVND": 0,
     "duration": "4박 5일",
     "imageUrl": "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&w=1200&q=80",
     "additionalImages": [
@@ -1674,7 +1678,7 @@ export const INITIAL_PRODUCTS: Product[] = [
         "hotel": "투어 종료 (공항 샌딩)"
       }
     ],
-    "updatedAt": "2026-10-22T04:00:00.000Z"
+    "updatedAt": "2026-11-09T11:21:00.977Z"
   },
   {
     "id": "prod-central-vntravel-quynhon-phuyen-4d3n",
@@ -1683,8 +1687,8 @@ export const INITIAL_PRODUCTS: Product[] = [
     "category": "자유여행",
     "region": "중부",
     "city": "꾸이년",
-    "priceKRW": 263000,
-    "priceVND": 4490000,
+    "priceKRW": 0,
+    "priceVND": 0,
     "duration": "3박 4일",
     "imageUrl": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
     "additionalImages": [
@@ -1779,7 +1783,7 @@ export const INITIAL_PRODUCTS: Product[] = [
         "hotel": "투어 종료 (공항 샌딩)"
       }
     ],
-    "updatedAt": "2026-10-22T04:00:00.000Z"
+    "updatedAt": "2026-11-09T11:21:00.977Z"
   },
   {
     "id": "prod-central-vntravel-quynhon-martial-3d2n",
@@ -1788,8 +1792,8 @@ export const INITIAL_PRODUCTS: Product[] = [
     "category": "자유여행",
     "region": "중부",
     "city": "꾸이년",
-    "priceKRW": 228000,
-    "priceVND": 3890000,
+    "priceKRW": 0,
+    "priceVND": 0,
     "duration": "2박 3일",
     "imageUrl": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
     "additionalImages": [
@@ -1872,7 +1876,7 @@ export const INITIAL_PRODUCTS: Product[] = [
         "hotel": "투어 종료 (공항 샌딩)"
       }
     ],
-    "updatedAt": "2026-10-22T04:00:00.000Z"
+    "updatedAt": "2026-11-09T11:21:00.977Z"
   },
   {
     "id": "prod-central-vntravel-danang-cu-lao-cham-3d2n",
@@ -1881,8 +1885,8 @@ export const INITIAL_PRODUCTS: Product[] = [
     "category": "자유여행",
     "region": "중부",
     "city": "호이안",
-    "priceKRW": 152000,
-    "priceVND": 2590000,
+    "priceKRW": 0,
+    "priceVND": 0,
     "duration": "2박 3일",
     "imageUrl": "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=1200&q=80",
     "additionalImages": [
@@ -1969,7 +1973,7 @@ export const INITIAL_PRODUCTS: Product[] = [
         "hotel": "투어 종료 (공항 샌딩)"
       }
     ],
-    "updatedAt": "2026-10-22T04:00:00.000Z"
+    "updatedAt": "2026-11-09T11:21:00.977Z"
   },
   {
     "id": "prod-central-vntravel-hue-heritage-royal-3d2n",
@@ -1978,8 +1982,8 @@ export const INITIAL_PRODUCTS: Product[] = [
     "category": "자유여행",
     "region": "중부",
     "city": "후에",
-    "priceKRW": 175000,
-    "priceVND": 2990000,
+    "priceKRW": 0,
+    "priceVND": 0,
     "duration": "2박 3일",
     "imageUrl": "https://images.unsplash.com/photo-1598970434795-0c54fe7c0648?auto=format&fit=crop&w=1200&q=80",
     "additionalImages": [
@@ -2065,7 +2069,7 @@ export const INITIAL_PRODUCTS: Product[] = [
         "hotel": "투어 종료 (공항 샌딩)"
       }
     ],
-    "updatedAt": "2026-10-22T04:00:00.000Z"
+    "updatedAt": "2026-11-09T11:21:00.977Z"
   },
   {
     "id": "prod-south-vntravel-phuquoc-grandworld-4islands-3d2n",
@@ -2074,8 +2078,8 @@ export const INITIAL_PRODUCTS: Product[] = [
     "category": "자유여행",
     "region": "남부",
     "city": "푸꾸옥",
-    "priceKRW": 157000,
-    "priceVND": 2690000,
+    "priceKRW": 0,
+    "priceVND": 0,
     "duration": "2박 3일",
     "imageUrl": "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80",
     "additionalImages": [
@@ -2170,7 +2174,7 @@ export const INITIAL_PRODUCTS: Product[] = [
         "hotel": "투어 종료 (공항 샌딩)"
       }
     ],
-    "updatedAt": "2026-10-22T05:00:00.000Z"
+    "updatedAt": "2026-11-09T11:21:00.977Z"
   },
   {
     "id": "prod-south-vntravel-phuquoc-grandworld-honthom-safari-4d3n",
@@ -2179,8 +2183,8 @@ export const INITIAL_PRODUCTS: Product[] = [
     "category": "자유여행",
     "region": "남부",
     "city": "푸꾸옥",
-    "priceKRW": 228000,
-    "priceVND": 3890000,
+    "priceKRW": 0,
+    "priceVND": 0,
     "duration": "3박 4일",
     "imageUrl": "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80",
     "additionalImages": [
@@ -2277,7 +2281,7 @@ export const INITIAL_PRODUCTS: Product[] = [
         "hotel": "투어 종료 (공항 샌딩)"
       }
     ],
-    "updatedAt": "2026-10-22T05:00:00.000Z"
+    "updatedAt": "2026-11-09T11:21:00.977Z"
   },
   {
     "id": "prod-south-vntravel-phuquoc-sunset-sanato-healing-3d2n",
@@ -2286,8 +2290,8 @@ export const INITIAL_PRODUCTS: Product[] = [
     "category": "자유여행",
     "region": "남부",
     "city": "푸꾸옥",
-    "priceKRW": 143000,
-    "priceVND": 2450000,
+    "priceKRW": 0,
+    "priceVND": 0,
     "duration": "2박 3일",
     "imageUrl": "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80",
     "additionalImages": [
@@ -2371,7 +2375,7 @@ export const INITIAL_PRODUCTS: Product[] = [
         "hotel": "투어 종료 (공항 샌딩)"
       }
     ],
-    "updatedAt": "2026-10-22T05:00:00.000Z"
+    "updatedAt": "2026-11-09T11:21:00.977Z"
   },
   {
     "id": "prod-central-alotravel-01-danang-bana-hoian-3n5d",
@@ -2380,8 +2384,8 @@ export const INITIAL_PRODUCTS: Product[] = [
     "category": "자유여행",
     "region": "중부",
     "city": "다낭",
-    "priceKRW": 196000,
-    "priceVND": 3350000,
+    "priceKRW": 0,
+    "priceVND": 0,
     "duration": "3박 5일 (기내 1박)",
     "imageUrl": "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?q=80&w=1200&auto=format&fit=crop",
     "additionalImages": [
@@ -2486,7 +2490,7 @@ export const INITIAL_PRODUCTS: Product[] = [
         "hotel": "투어 종료 (인천/부산 도착)"
       }
     ],
-    "updatedAt": "2026-10-22T08:00:00.000Z"
+    "updatedAt": "2026-11-09T11:21:00.977Z"
   },
   {
     "id": "prod-central-alotravel-02-danang-cu-lao-cham-3n5d",
@@ -2495,8 +2499,8 @@ export const INITIAL_PRODUCTS: Product[] = [
     "category": "자유여행",
     "region": "중부",
     "city": "다낭",
-    "priceKRW": 202000,
-    "priceVND": 3450000,
+    "priceKRW": 0,
+    "priceVND": 0,
     "duration": "3박 5일 (기내 1박)",
     "imageUrl": "https://images.unsplash.com/photo-1544551763-46a013bb70d5?q=80&w=1200&auto=format&fit=crop",
     "additionalImages": [
@@ -2599,7 +2603,7 @@ export const INITIAL_PRODUCTS: Product[] = [
         "hotel": "투어 종료 (인천/부산 도착)"
       }
     ],
-    "updatedAt": "2026-10-22T08:00:00.000Z"
+    "updatedAt": "2026-11-09T11:21:00.977Z"
   },
   {
     "id": "prod-central-alotravel-03-danang-hoian-hue-3n5d",
@@ -2608,8 +2612,8 @@ export const INITIAL_PRODUCTS: Product[] = [
     "category": "자유여행",
     "region": "중부",
     "city": "다낭",
-    "priceKRW": 234000,
-    "priceVND": 4000000,
+    "priceKRW": 0,
+    "priceVND": 0,
     "duration": "3박 5일 (기내 1박)",
     "imageUrl": "https://images.unsplash.com/photo-1598970434795-0c54fe7c0648?q=80&w=1200&auto=format&fit=crop",
     "additionalImages": [
@@ -2711,7 +2715,7 @@ export const INITIAL_PRODUCTS: Product[] = [
         "hotel": "투어 종료 (인천/부산 도착)"
       }
     ],
-    "updatedAt": "2026-10-22T08:00:00.000Z"
+    "updatedAt": "2026-11-09T11:21:00.977Z"
   },
   {
     "id": "prod-central-alotravel-04-danang-nui-than-tai-3n5d",
@@ -2720,8 +2724,8 @@ export const INITIAL_PRODUCTS: Product[] = [
     "category": "자유여행",
     "region": "중부",
     "city": "다낭",
-    "priceKRW": 245000,
-    "priceVND": 4190000,
+    "priceKRW": 0,
+    "priceVND": 0,
     "duration": "3박 5일 (기내 1박)",
     "imageUrl": "https://images.unsplash.com/photo-1571896349842-33c89424de2d?q=80&w=1200&auto=format&fit=crop",
     "additionalImages": [
@@ -2824,7 +2828,7 @@ export const INITIAL_PRODUCTS: Product[] = [
         "hotel": "투어 종료 (인천/부산 도착)"
       }
     ],
-    "updatedAt": "2026-10-22T08:00:00.000Z"
+    "updatedAt": "2026-11-09T11:21:00.977Z"
   },
   {
     "id": "prod-central-alotravel-05-danang-cu-lao-cham-4n6d",
@@ -2833,8 +2837,8 @@ export const INITIAL_PRODUCTS: Product[] = [
     "category": "자유여행",
     "region": "중부",
     "city": "다낭",
-    "priceKRW": 251000,
-    "priceVND": 4290000,
+    "priceKRW": 0,
+    "priceVND": 0,
     "duration": "4박 6일 (기내 1박)",
     "imageUrl": "https://images.unsplash.com/photo-1544551763-46a013bb70d5?q=80&w=1200&auto=format&fit=crop",
     "additionalImages": [
@@ -2944,7 +2948,7 @@ export const INITIAL_PRODUCTS: Product[] = [
         "hotel": "투어 종료 (인천/부산 도착)"
       }
     ],
-    "updatedAt": "2026-10-22T08:00:00.000Z"
+    "updatedAt": "2026-11-09T11:21:00.977Z"
   },
   {
     "id": "prod-central-alotravel-06-danang-hoian-hue-4n6d",
@@ -2953,8 +2957,8 @@ export const INITIAL_PRODUCTS: Product[] = [
     "category": "자유여행",
     "region": "중부",
     "city": "다낭",
-    "priceKRW": 262000,
-    "priceVND": 4480000,
+    "priceKRW": 0,
+    "priceVND": 0,
     "duration": "4박 6일 (기내 1박)",
     "imageUrl": "https://images.unsplash.com/photo-1598970434795-0c54fe7c0648?q=80&w=1200&auto=format&fit=crop",
     "additionalImages": [
@@ -3063,7 +3067,7 @@ export const INITIAL_PRODUCTS: Product[] = [
         "hotel": "투어 종료 (인천/부산 도착)"
       }
     ],
-    "updatedAt": "2026-10-22T08:00:00.000Z"
+    "updatedAt": "2026-11-09T11:21:00.977Z"
   },
   {
     "id": "prod-central-alotravel-07-danang-nui-than-tai-4n6d",
@@ -3072,8 +3076,8 @@ export const INITIAL_PRODUCTS: Product[] = [
     "category": "자유여행",
     "region": "중부",
     "city": "다낭",
-    "priceKRW": 268000,
-    "priceVND": 4580000,
+    "priceKRW": 0,
+    "priceVND": 0,
     "duration": "4박 6일 (기내 1박)",
     "imageUrl": "https://images.unsplash.com/photo-1571896349842-33c89424de2d?q=80&w=1200&auto=format&fit=crop",
     "additionalImages": [
@@ -3183,7 +3187,7 @@ export const INITIAL_PRODUCTS: Product[] = [
         "hotel": "투어 종료 (인천/부산 도착)"
       }
     ],
-    "updatedAt": "2026-10-22T08:00:00.000Z"
+    "updatedAt": "2026-11-09T11:21:00.977Z"
   },
   {
     "id": "prod-central-alotravel-08-danang-hue-phongnha-4n6d",
@@ -3192,8 +3196,8 @@ export const INITIAL_PRODUCTS: Product[] = [
     "category": "자유여행",
     "region": "중부",
     "city": "다낭",
-    "priceKRW": 272000,
-    "priceVND": 4650000,
+    "priceKRW": 0,
+    "priceVND": 0,
     "duration": "4박 6일 (기내 1박)",
     "imageUrl": "https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=1200&auto=format&fit=crop",
     "additionalImages": [
@@ -3305,7 +3309,7 @@ export const INITIAL_PRODUCTS: Product[] = [
         "hotel": "투어 종료 (인천/부산 도착)"
       }
     ],
-    "updatedAt": "2026-10-22T08:00:00.000Z"
+    "updatedAt": "2026-11-09T11:21:00.977Z"
   },
   {
     "id": "prod-hanoi-halong-pkg-02",
@@ -3417,7 +3421,8 @@ export const INITIAL_PRODUCTS: Product[] = [
         "hotel": "따뜻한 우리 집",
         "vehicle": "항공편 이동"
       }
-    ]
+    ],
+    "updatedAt": "2026-11-08T20:15:32.507Z"
   },
   {
     "id": "prod-free-danang-hoian-3n5d",
@@ -3426,8 +3431,8 @@ export const INITIAL_PRODUCTS: Product[] = [
     "category": "자유여행",
     "region": "중부",
     "city": "다낭",
-    "priceKRW": 319000,
-    "priceVND": 5460000,
+    "priceKRW": 0,
+    "priceVND": 0,
     "duration": "3박 5일 (기내 1박)",
     "imageUrl": "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&w=1200&q=80",
     "additionalImages": [
@@ -3527,7 +3532,8 @@ export const INITIAL_PRODUCTS: Product[] = [
         "hotel": "따뜻한 우리 집",
         "vehicle": "항공편 이동"
       }
-    ]
+    ],
+    "updatedAt": "2026-11-09T11:21:00.977Z"
   },
   {
     "id": "prod-free-danang-hoian-hue-4n6d",
@@ -3536,8 +3542,8 @@ export const INITIAL_PRODUCTS: Product[] = [
     "category": "자유여행",
     "region": "중부",
     "city": "다낭",
-    "priceKRW": 401000,
-    "priceVND": 6860000,
+    "priceKRW": 0,
+    "priceVND": 0,
     "duration": "4박 6일 (기내 1박)",
     "imageUrl": "https://images.unsplash.com/photo-1598970434795-0c54fe7c0648?auto=format&fit=crop&w=1200&q=80",
     "additionalImages": [
@@ -3635,7 +3641,8 @@ export const INITIAL_PRODUCTS: Product[] = [
         "hotel": "따뜻한 우리 집",
         "vehicle": "항공편 이동"
       }
-    ]
+    ],
+    "updatedAt": "2026-11-09T11:21:00.977Z"
   },
   {
     "id": "prod-free-nhatrang-dalat-3n5d",
@@ -3644,8 +3651,8 @@ export const INITIAL_PRODUCTS: Product[] = [
     "category": "자유여행",
     "region": "남부",
     "city": "나트랑",
-    "priceKRW": 344000,
-    "priceVND": 5880000,
+    "priceKRW": 0,
+    "priceVND": 0,
     "duration": "3박 5일 (기내 1박)",
     "imageUrl": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
     "additionalImages": [
@@ -3733,7 +3740,8 @@ export const INITIAL_PRODUCTS: Product[] = [
         "hotel": "따뜻한 우리 집",
         "vehicle": "항공편 이동"
       }
-    ]
+    ],
+    "updatedAt": "2026-11-09T11:21:00.977Z"
   },
   {
     "id": "prod-free-nhatrang-phanrang-dalat-4n6d",
@@ -3742,8 +3750,8 @@ export const INITIAL_PRODUCTS: Product[] = [
     "category": "자유여행",
     "region": "남부",
     "city": "나트랑",
-    "priceKRW": 426000,
-    "priceVND": 7280000,
+    "priceKRW": 0,
+    "priceVND": 0,
     "duration": "4박 6일 (기내 1박)",
     "imageUrl": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
     "additionalImages": [
@@ -3838,7 +3846,8 @@ export const INITIAL_PRODUCTS: Product[] = [
         "hotel": "따뜻한 우리 집",
         "vehicle": "항공편 이동"
       }
-    ]
+    ],
+    "updatedAt": "2026-11-09T11:21:00.977Z"
   },
   {
     "id": "prod-free-hanoi-halong-ninbinh-3n5d",
@@ -3847,8 +3856,8 @@ export const INITIAL_PRODUCTS: Product[] = [
     "category": "자유여행",
     "region": "북부",
     "city": "하노이",
-    "priceKRW": 336000,
-    "priceVND": 5740000,
+    "priceKRW": 0,
+    "priceVND": 0,
     "duration": "3박 5일 (기내 1박)",
     "imageUrl": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
     "additionalImages": [
@@ -3937,7 +3946,8 @@ export const INITIAL_PRODUCTS: Product[] = [
         "hotel": "따뜻한 우리 집",
         "vehicle": "항공편 이동"
       }
-    ]
+    ],
+    "updatedAt": "2026-11-09T11:21:00.977Z"
   },
   {
     "id": "prod-free-hochiminh-muine-3n5d",
@@ -3946,8 +3956,8 @@ export const INITIAL_PRODUCTS: Product[] = [
     "category": "자유여행",
     "region": "남부",
     "city": "호치민",
-    "priceKRW": 352000,
-    "priceVND": 6020000,
+    "priceKRW": 0,
+    "priceVND": 0,
     "duration": "3박 5일 (기내 1박)",
     "imageUrl": "https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=1200&q=80",
     "additionalImages": [
@@ -4035,7 +4045,8 @@ export const INITIAL_PRODUCTS: Product[] = [
         "hotel": "따뜻한 우리 집",
         "vehicle": "항공편 이동"
       }
-    ]
+    ],
+    "updatedAt": "2026-11-09T11:21:00.977Z"
   },
   {
     "id": "prod-free-phuquoc-3n5d",
@@ -4044,8 +4055,8 @@ export const INITIAL_PRODUCTS: Product[] = [
     "category": "자유여행",
     "region": "남부",
     "city": "푸꾸옥",
-    "priceKRW": 377000,
-    "priceVND": 6440000,
+    "priceKRW": 0,
+    "priceVND": 0,
     "duration": "3박 5일 (기내 1박)",
     "imageUrl": "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80",
     "additionalImages": [
@@ -4134,7 +4145,8 @@ export const INITIAL_PRODUCTS: Product[] = [
         "hotel": "따뜻한 우리 집",
         "vehicle": "항공편 이동"
       }
-    ]
+    ],
+    "updatedAt": "2026-11-09T11:21:00.977Z"
   }
 ];
 

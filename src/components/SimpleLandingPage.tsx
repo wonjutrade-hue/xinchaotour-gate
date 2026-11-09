@@ -466,7 +466,9 @@ export const SimpleLandingPage: React.FC<SimpleLandingPageProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {displayedProducts.map(prod => {
             const displayImg = getDisplayProductImage(prod);
-            const priceWon = prod.priceKRW ? `${prod.priceKRW.toLocaleString()}원` : '맞춤 견적 문의';
+            const priceWon = prod.priceKRW !== undefined && prod.priceKRW > 0 
+              ? `${prod.priceKRW.toLocaleString()}원` 
+              : '0원 (가격조정중)';
 
             return (
               <div

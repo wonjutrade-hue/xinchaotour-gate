@@ -51,7 +51,7 @@ import { getDisplayProductImage } from './lib/imageFallback';
 import { trackVisitorEvent } from './lib/analytics';
 
 const PRODUCTS_CACHE_KEY = 'xinchao_products_cache_master_v12';
-const CURRENT_CATALOG_REVISION = '2026_11_06_remove_premier_village_v12_sync';
+const CURRENT_CATALOG_REVISION = '2026_11_09_free_travel_price_zero_v1';
 const REVISION_KEY = 'xinchao_catalog_revision_applied';
 
 function mergeProductsPreservingLocal(localList: Product[], incomingList: Product[]): { merged: Product[]; localWasNewer: boolean } {

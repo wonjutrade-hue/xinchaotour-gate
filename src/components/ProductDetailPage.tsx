@@ -933,24 +933,38 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                 </div>
 
                 {/* Primary Price */}
-                <div className="pt-2">
+                <div className="pt-2 flex flex-wrap items-baseline gap-2">
                   <span className="text-2xl sm:text-3xl font-black text-amber-500 tracking-tight">
                     {displayKRW.toLocaleString('ko-KR')}
                     <span className="text-sm font-bold text-slate-900 ml-1">원</span>
                   </span>
-                  <span className="text-xs text-slate-400 font-bold ml-1.5">
-                    / {product.duration || (isVilla ? '1박' : '1인')}
-                  </span>
+                  {displayKRW === 0 ? (
+                    <span className="text-xs font-bold text-amber-800 bg-amber-100 border border-amber-300 px-2 py-0.5 rounded-md">
+                      베트남 현지 여행사 판매가 조정 중 · 상담 문의
+                    </span>
+                  ) : (
+                    <span className="text-xs text-slate-400 font-bold">
+                      / {product.duration || (isVilla ? '1박' : '1인')}
+                    </span>
+                  )}
                 </div>
 
                 {/* Secondary VND & USD equivalents */}
                 <div className="text-xs font-extrabold text-slate-700 flex flex-wrap items-center gap-1.5 pt-0.5">
-                  <span className="text-teal-900 bg-teal-50/80 px-2 py-0.5 rounded border border-teal-200">
-                    약 {formatVND(displayVND)}
-                  </span>
-                  <span className="text-slate-500">
-                    ({formatUSD(liveUSD)})
-                  </span>
+                  {displayKRW > 0 ? (
+                    <>
+                      <span className="text-teal-900 bg-teal-50/80 px-2 py-0.5 rounded border border-teal-200">
+                        약 {formatVND(displayVND)}
+                      </span>
+                      <span className="text-slate-500">
+                        ({formatUSD(liveUSD)})
+                      </span>
+                    </>
+                  ) : (
+                    <span className="text-slate-500 font-medium">
+                      판매 가격 조정 및 견적 협의 중 (카카오톡/전화 상담 가능)
+                    </span>
+                  )}
                 </div>
               </div>
 

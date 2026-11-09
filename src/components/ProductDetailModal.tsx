@@ -1033,11 +1033,20 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                     실시간 환율 적용
                   </span>
                 </div>
-                <div className="text-2xl sm:text-3xl font-black text-emerald-800">
-                  {displayKRW.toLocaleString('ko-KR')} <span className="text-lg font-bold">원~</span>
+                <div className="text-2xl sm:text-3xl font-black text-emerald-800 flex flex-wrap items-baseline gap-2">
+                  <span>{displayKRW.toLocaleString('ko-KR')} <span className="text-lg font-bold">원~</span></span>
+                  {displayKRW === 0 && (
+                    <span className="text-xs font-bold text-amber-800 bg-amber-100 border border-amber-300 px-2 py-0.5 rounded-md">
+                      베트남 현지 여행사 판매가 조정 중 (상담문의)
+                    </span>
+                  )}
                 </div>
                 <p className="text-xs font-bold text-slate-600">
-                  (현찰 살 때 환율 기준: 약 <strong className="text-emerald-700">{displayVND.toLocaleString('ko-KR')} ₫</strong> / {formatUSD(liveUSD)})
+                  {displayKRW > 0 ? (
+                    <>(현찰 살 때 환율 기준: 약 <strong className="text-emerald-700">{displayVND.toLocaleString('ko-KR')} ₫</strong> / {formatUSD(liveUSD)})</>
+                  ) : (
+                    <span>(현지 여행사 요금 재조정 진행 중 · 맞춤 상담 가능)</span>
+                  )}
                 </p>
               </div>
 
