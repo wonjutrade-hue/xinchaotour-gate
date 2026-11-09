@@ -4189,7 +4189,11 @@
       "개인 매너팁 및 자유경비"
     ],
     "itinerary": [],
-    "updatedAt": "2026-11-09T11:39:08.436Z"
+    "updatedAt": "2026-11-09T11:39:08.436Z",
+    "galleryImages": [
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=1200&q=80"
+    ]
   },
   {
     "id": "prod-nhatrang-dalat-vip-3n5d",
@@ -4234,6 +4238,10 @@
       "개인 자유경비"
     ],
     "itinerary": [],
-    "updatedAt": "2026-11-09T11:39:08.436Z"
+    "updatedAt": "2026-11-09T11:39:08.436Z",
+    "galleryImages": [
+      "https://images.unsplash.com/photo-1512100356356-de1b84283e18?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80"
+    ]
   }
 ]

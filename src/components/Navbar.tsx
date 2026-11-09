@@ -302,27 +302,19 @@ export const Navbar: React.FC<NavbarProps> = ({
             })}
           </div>
 
-          {/* MOU Official Partner Link in Mobile Menu */}
-          <div className="p-3 rounded-2xl bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-amber-500/10 border border-amber-300/40 flex items-center justify-between gap-3">
-            <div className="flex items-center gap-2">
-              <span className="text-base">🤝</span>
-              <div className="leading-tight">
-                <div className="text-xs font-black text-slate-900 flex items-center gap-1">
-                  <span>VITRACO TOUR</span>
-                  <span className="text-[9px] font-black bg-amber-400 text-slate-950 px-1.5 py-0.2 rounded-full">공식 MOU</span>
-                </div>
-                <p className="text-[10px] text-slate-500">베트남 현지 최대 운송·투어 제휴사</p>
+          {/* MOU Official Partner Info in Mobile Menu */}
+          <div className="p-3 rounded-2xl bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-amber-500/10 border border-amber-300/40 space-y-1.5">
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-1.5">
+                <span className="text-base">🤝</span>
+                <span className="text-xs font-black text-slate-900">VITRACO TOUR</span>
+                <span className="text-[9px] font-black bg-amber-400 text-slate-950 px-1.5 py-0.2 rounded-full">공식 MOU</span>
               </div>
+              <span className="text-[10px] text-amber-800 font-extrabold bg-amber-100 px-2 py-0.5 rounded-md">다낭 · 하노이 · 호치민</span>
             </div>
-            <a
-              href={PARTNER_COMPANY_INFO.websiteUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-[11px] font-black text-amber-600 hover:text-amber-700 bg-white px-2.5 py-1 rounded-lg border border-amber-300/60 shadow-2xs flex items-center gap-1 shrink-0"
-            >
-              <span>홈페이지</span>
-              <ExternalLink className="w-3 h-3" />
-            </a>
+            <p className="text-[10.5px] text-slate-600 leading-snug">
+              하노이 사무실 (0914.020.726) · 호치민 사무실 (0983.975.797)
+            </p>
           </div>
 
           {/* Quick Tools */}

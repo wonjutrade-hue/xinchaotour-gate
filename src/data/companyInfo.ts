@@ -1,6 +1,7 @@
 export interface CompanyInfo {
   name: string;
   brandName: string;
+  representative: string;
   domain: string;
   slogan: string;
   subSlogan: string;
@@ -11,9 +12,10 @@ export interface CompanyInfo {
   kakaoId: string;
   kakaoLink: string;
   kakaoChannel: string;
-  address: string;
+  officeAddress: string;
+  address?: string;
   vietnamOffice: string;
-  businessNumber: string;
+  businessNumber?: string;
   tourLicense: string;
   workingHours: string;
   services: {
@@ -26,6 +28,7 @@ export interface CompanyInfo {
 export const COMPANY_INFO: CompanyInfo = {
   name: '신짜오투어',
   brandName: 'XinChaoTour',
+  representative: '김동완',
   domain: 'xinchaotour.com',
   slogan: '베트남의 아름다운 순간을 한국인의 편안함으로 여행하세요',
   subSlogan: '자유여행 · 풀빌라 · 골프여행 XinChaoTour와 함께하세요.',
@@ -36,9 +39,9 @@ export const COMPANY_INFO: CompanyInfo = {
   kakaoId: 'wonjutrade',
   kakaoLink: 'https://open.kakao.com/o/s7OOoshf',
   kakaoChannel: 'https://pf.kakao.com/_xincaotour',
-  address: '강원도 원주시 / 베트남 다낭시 손짜구 현지 직영 라운지',
-  vietnamOffice: 'Da Nang, Son Tra / Hanoi, Hoan Kiem Local Branch',
-  businessNumber: '224-81-00000 (사업자등록 완료)',
+  officeAddress: 'Tòa nhà VITRACO, 394B Điện Biên Phủ, P. Thanh Khê Đông, Q. Thanh Khê, TP. Đà Nẵng, Việt Nam',
+  address: 'Tòa nhà VITRACO, 394B Điện Biên Phủ, P. Thanh Khê Đông, Q. Thanh Khê, TP. Đà Nẵng, Việt Nam',
+  vietnamOffice: 'Tòa nhà VITRACO, 394B Điện Biên Phủ, P. Thanh Khê Đông, Q. Thanh Khê, TP. Đà Nẵng, Việt Nam (다낭 비트라코 빌딩 현지 사무실)',
   tourLicense: '관광사업등록 및 기획여행보증보험 1억원 가입',
   workingHours: '연중무휴 24시간 한국어 카카오톡 & 전화 긴급 지원',
   services: [
@@ -91,6 +94,10 @@ export interface PartnerCompanyInfo {
   sloganVn: string;
   headquarters: string;
   headquartersVn: string;
+  hanoiOffice: string;
+  hanoiOfficeShort: string;
+  hcmOffice: string;
+  hcmOfficeShort: string;
   phone: string;
   hotline: string;
   email: string;
@@ -115,6 +122,10 @@ export const PARTNER_COMPANY_INFO: PartnerCompanyInfo = {
   sloganVn: 'Nâng Tầm Cao Mới',
   headquarters: '베트남 다낭시 청케구 디엔비엔푸 394B 비트라코 빌딩 (Tòa nhà VITRACO)',
   headquartersVn: 'Tòa nhà VITRACO, 394B Điện Biên Phủ, P. Thanh Khê Đông, Q. Thanh Khê, TP. Đà Nẵng, Việt Nam',
+  hanoiOffice: 'Số 8/26/113 Đường Ngọc Thụy, P. Ngọc Thụy, Q. Long Biên, TP. Hà Nội (Hotline: 0914.020.726)',
+  hanoiOfficeShort: '하노이 사무실: Số 8/26/113 Đường Ngọc Thụy, Q. Long Biên, TP. Hà Nội (0914.020.726)',
+  hcmOffice: 'Số 183/14/17 Hoàng Hoa Thám, P. 6, Q. Bình Thạnh, TP. Hồ Chí Minh (Hotline: 0983.975.797)',
+  hcmOfficeShort: '호치민 사무실: Số 183/14/17 Hoàng Hoa Thám, Q. Bình Thạnh, TP. Hồ Chí Minh (0983.975.797)',
   phone: '0236 3 738 738',
   hotline: '0909 119 119 / 0915 705 705',
   email: 'vitraco@vitraco.vip',
@@ -126,7 +137,7 @@ export const PARTNER_COMPANY_INFO: PartnerCompanyInfo = {
   establishedYear: 2003,
   partnershipHighlights: [
     '베트남 중부 최대 16~45인승 최신형 VIP 리무진 단독 전용 차량 직영 배차',
-    '다낭·호이안·후에·바나힐 직영 인프라 및 입장권 우선 발권 혜택',
+    '다낭 본사 및 하노이·호치민 지사를 잇는 베트남 전역 인프라 제휴',
     '현지 정식 공인 한국어 전문 가이드 풀케어 및 차량 안전 보험 100% 가입',
     '24시간 현지 신속 대응팀 및 한국 고객 전담 VIP 라운지 연계'
   ],

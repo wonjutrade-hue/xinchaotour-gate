@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Product } from '../types';
-import { X, Send, PhoneCall, MessageCircle, CheckCircle2, ShieldCheck, Calendar, Users } from 'lucide-react';
+import { X, Send, PhoneCall, MessageCircle, CheckCircle2, ShieldCheck, Calendar, Users, Info, HelpCircle } from 'lucide-react';
 import { handleOpenKakaoTalkDirect, COMPANY_PHONE, DEFAULT_KAKAO_LINK } from '../constants';
 import { trackVisitorEvent } from '../lib/analytics';
 
@@ -291,11 +291,47 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full py-3 rounded-2xl bg-teal-700 hover:bg-teal-800 disabled:opacity-50 text-white font-extrabold text-sm shadow-md shadow-teal-700/20 transition-all flex items-center justify-center gap-2"
+              className="w-full py-3.5 rounded-2xl bg-teal-700 hover:bg-teal-800 disabled:opacity-50 text-white font-extrabold text-sm shadow-md shadow-teal-700/20 transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
               <Send className="w-4 h-4 text-amber-300" />
               <span>{isSubmitting ? '상담 접수 중...' : '실시간 상담 신청하기'}</span>
             </button>
+
+            {/* Daily Limit & Policy Guidance with Interactive Tooltip */}
+            <div className="pt-3 border-t border-slate-100 space-y-2 text-center">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-50 border border-slate-200 text-slate-700 text-[11px] font-bold relative group cursor-help">
+                <ShieldCheck className="w-3.5 h-3.5 text-teal-600 shrink-0" />
+                <span>상담 신청 일일 한도 및 운영 정책 안내</span>
+                <HelpCircle className="w-3 h-3 text-slate-400 group-hover:text-teal-600 transition-colors" />
+
+                {/* Hover Tooltip Popup */}
+                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-72 p-3 bg-slate-900 text-slate-200 text-[11px] font-normal leading-relaxed rounded-2xl shadow-2xl opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-all duration-200 z-50 text-left border border-slate-700">
+                  <div className="font-bold text-amber-300 pb-1 border-b border-slate-800 mb-1.5 flex items-center gap-1">
+                    <Info className="w-3.5 h-3.5 text-amber-400" />
+                    <span>상담 신청 정책 상세</span>
+                  </div>
+                  <ul className="space-y-1 text-slate-300 text-[10.5px]">
+                    <li>• <strong>신청 한도:</strong> 원활한 여행 상담을 위해 <strong>일일 횟수 제한 없이 자유롭게 무료 신청</strong> 가능합니다.</li>
+                    <li>• <strong>배정 원칙:</strong> 중복 스팸 방지를 위해 동일 번호 기준 1:1 전담 플래너가 배정되어 집중 케어해 드립니다.</li>
+                    <li>• <strong>긴급 문의:</strong> 즉시 빠른 상담을 원하실 경우 카카오톡 1:1 상담이나 직통 전화(010-5365-6019)로 연락 주시면 실시간 연결됩니다.</li>
+                  </ul>
+                  <div className="w-2.5 h-2.5 bg-slate-900 rotate-45 absolute -bottom-1 left-1/2 -translate-x-1/2 border-r border-b border-slate-700" />
+                </div>
+              </div>
+
+              <p className="text-[11px] text-slate-500 leading-relaxed max-w-sm mx-auto">
+                신짜오투어는 <strong className="text-slate-700">별도의 일일 상담 한도 없이 365일 24시간 상시 무료 상담</strong>을 지원합니다.
+                접수 즉시 전담 플래너가 꼼꼼히 확인 후 신속하게 맞춤 일정표와 최적 견적을 안내해 드립니다.
+              </p>
+
+              <div className="flex items-center justify-center gap-2 pt-0.5 text-[10.5px] text-slate-400 font-medium">
+                <span className="flex items-center gap-1">🛡️ 100% 무료 맞춤 견적</span>
+                <span>•</span>
+                <span className="flex items-center gap-1">⚡ 빠른 전담 플래너 배정</span>
+                <span>•</span>
+                <span className="flex items-center gap-1">🔒 안심 개인정보 보호</span>
+              </div>
+            </div>
           </form>
         )}
       </div>

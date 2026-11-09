@@ -771,12 +771,12 @@ export const SimpleLandingPage: React.FC<SimpleLandingPageProps> = ({
             <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800/80 space-y-1">
               <p className="font-bold text-white text-xs flex items-center gap-1.5 pb-1 border-b border-slate-800">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                <span>신짜오투어 (한국 총괄 본사)</span>
+                <span>신짜오투어 (XinChao Tour)</span>
               </p>
-              <p><strong className="text-slate-300">상호:</strong> {COMPANY_INFO.brandName} ({COMPANY_INFO.name}) | <strong className="text-slate-300">대표:</strong> 원주무역</p>
-              <p><strong className="text-slate-300">주소:</strong> {COMPANY_INFO.address}</p>
+              <p><strong className="text-slate-300">상호:</strong> {COMPANY_INFO.brandName} ({COMPANY_INFO.name}) | <strong className="text-slate-300">대표자:</strong> {COMPANY_INFO.representative}</p>
+              <p><strong className="text-slate-300">현지 사무실:</strong> {COMPANY_INFO.vietnamOffice}</p>
               <p><strong className="text-slate-300">고객센터:</strong> {COMPANY_PHONE} | <strong className="text-slate-300">이메일:</strong> {COMPANY_INFO.email}</p>
-              <p><strong className="text-slate-300">등록번호:</strong> {COMPANY_INFO.businessNumber}</p>
+              <p><strong className="text-slate-300">안전보증:</strong> {COMPANY_INFO.tourLicense}</p>
             </div>
 
             <div className="p-4 rounded-xl bg-slate-900/60 border border-amber-900/30 space-y-1">
@@ -788,14 +788,10 @@ export const SimpleLandingPage: React.FC<SimpleLandingPageProps> = ({
                 <span className="text-[10px] text-amber-300 font-bold bg-amber-950/80 px-1.5 py-0.2 rounded-sm border border-amber-800">공식 MOU</span>
               </p>
               <p><strong className="text-slate-300">현지 법인명:</strong> {PARTNER_COMPANY_INFO.nameVn}</p>
-              <p><strong className="text-slate-300">본사 주소:</strong> {PARTNER_COMPANY_INFO.headquartersVn}</p>
+              <p><strong className="text-slate-300">다낭 본사:</strong> {PARTNER_COMPANY_INFO.headquartersVn}</p>
+              <p><strong className="text-amber-300">하노이 사무실:</strong> {PARTNER_COMPANY_INFO.hanoiOfficeShort}</p>
+              <p><strong className="text-amber-300">호치민 사무실:</strong> {PARTNER_COMPANY_INFO.hcmOfficeShort}</p>
               <p><strong className="text-slate-300">핫라인:</strong> {PARTNER_COMPANY_INFO.hotline} | <strong className="text-slate-300">이메일:</strong> {PARTNER_COMPANY_INFO.email}</p>
-              <p>
-                <strong className="text-slate-300">세무코드:</strong> {PARTNER_COMPANY_INFO.taxCode} | 
-                <a href={PARTNER_COMPANY_INFO.websiteUrl} target="_blank" rel="noopener noreferrer" className="text-amber-400 hover:underline ml-1 font-mono font-bold">
-                  {PARTNER_COMPANY_INFO.domain} ↗
-                </a>
-              </p>
             </div>
           </div>
 

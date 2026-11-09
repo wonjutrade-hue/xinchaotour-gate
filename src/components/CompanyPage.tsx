@@ -158,29 +158,33 @@ export const CompanyPage: React.FC<CompanyPageProps> = ({ onOpenConsultation }) 
               </p>
             </div>
 
-            <a
-              href={PARTNER_COMPANY_INFO.websiteUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-black px-5 py-3 rounded-xl text-sm transition shadow-lg shrink-0 cursor-pointer"
-            >
-              <span>VITRACO 공식 웹사이트</span>
-              <ExternalLink className="w-4 h-4" />
-            </a>
+            {/* Vitraco Hanoi & Ho Chi Minh Offices info box */}
+            <div className="bg-slate-950/80 border border-amber-500/30 rounded-2xl p-4 text-xs space-y-2 shrink-0 text-left min-w-[290px] max-w-md shadow-xl">
+              <div className="text-xs font-black text-amber-300 flex items-center gap-1.5 pb-1 border-b border-slate-800">
+                <span className="text-amber-400">🏢</span>
+                <span>VITRACO 하노이 · 호치민 지사</span>
+              </div>
+              <p className="text-slate-300 leading-snug">
+                <strong className="text-amber-200">하노이:</strong> {PARTNER_COMPANY_INFO.hanoiOffice}
+              </p>
+              <p className="text-slate-300 leading-snug">
+                <strong className="text-amber-200">호치민:</strong> {PARTNER_COMPANY_INFO.hcmOffice}
+              </p>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs text-slate-300 pt-2">
             <div className="space-y-2 bg-slate-950/60 p-5 rounded-2xl border border-slate-800">
               <h4 className="font-bold text-amber-400 text-sm flex items-center gap-1.5 pb-2 border-b border-slate-800">
                 <span>🏢</span>
-                <span>VITRACO TOUR 법인 정보</span>
+                <span>VITRACO TOUR 본사 및 지사 안내</span>
               </h4>
               <p><strong className="text-white">베트남 정식 법인명:</strong> {PARTNER_COMPANY_INFO.nameVn}</p>
-              <p><strong className="text-white">슬로건:</strong> {PARTNER_COMPANY_INFO.slogan}</p>
-              <p><strong className="text-white">베트남 본사:</strong> {PARTNER_COMPANY_INFO.headquartersVn}</p>
-              <p><strong className="text-white">핫라인:</strong> <span className="text-amber-300 font-bold">{PARTNER_COMPANY_INFO.hotline}</span> (유선: {PARTNER_COMPANY_INFO.phone})</p>
-              <p><strong className="text-white">이메일:</strong> {PARTNER_COMPANY_INFO.email}</p>
-              <p><strong className="text-white">세무코드 (MST):</strong> {PARTNER_COMPANY_INFO.taxCode}</p>
+              <p><strong className="text-white">다낭 본사:</strong> {PARTNER_COMPANY_INFO.headquartersVn}</p>
+              <p><strong className="text-amber-300">하노이 사무실:</strong> {PARTNER_COMPANY_INFO.hanoiOffice}</p>
+              <p><strong className="text-amber-300">호치민 사무실:</strong> {PARTNER_COMPANY_INFO.hcmOffice}</p>
+              <p><strong className="text-white">전국 핫라인:</strong> <span className="text-amber-300 font-bold">{PARTNER_COMPANY_INFO.hotline}</span> (유선: {PARTNER_COMPANY_INFO.phone})</p>
+              <p><strong className="text-white">공식 이메일:</strong> {PARTNER_COMPANY_INFO.email}</p>
             </div>
 
             <div className="space-y-2 bg-slate-950/60 p-5 rounded-2xl border border-slate-800">
@@ -214,6 +218,10 @@ export const CompanyPage: React.FC<CompanyPageProps> = ({ onOpenConsultation }) 
                 <span>{COMPANY_INFO.brandName} ({COMPANY_INFO.name})</span>
               </div>
               <div className="flex items-start gap-3">
+                <span className="font-bold text-white w-24 shrink-0">대표자 :</span>
+                <span className="text-white font-bold">{COMPANY_INFO.representative}</span>
+              </div>
+              <div className="flex items-start gap-3">
                 <span className="font-bold text-white w-24 shrink-0">공식도메인 :</span>
                 <span className="text-emerald-400 font-mono">{COMPANY_INFO.domain}</span>
               </div>
@@ -235,16 +243,8 @@ export const CompanyPage: React.FC<CompanyPageProps> = ({ onOpenConsultation }) 
 
             <div className="space-y-3.5">
               <div className="flex items-start gap-3">
-                <span className="font-bold text-white w-24 shrink-0">국내 사무소 :</span>
-                <span>{COMPANY_INFO.address}</span>
-              </div>
-              <div className="flex items-start gap-3">
-                <span className="font-bold text-white w-24 shrink-0">현지 라운지 :</span>
+                <span className="font-bold text-white w-24 shrink-0">현지 사무실 :</span>
                 <span>{COMPANY_INFO.vietnamOffice}</span>
-              </div>
-              <div className="flex items-start gap-3">
-                <span className="font-bold text-white w-24 shrink-0">사업자 등록 :</span>
-                <span>{COMPANY_INFO.businessNumber}</span>
               </div>
               <div className="flex items-start gap-3">
                 <span className="font-bold text-white w-24 shrink-0">보증 보험 :</span>

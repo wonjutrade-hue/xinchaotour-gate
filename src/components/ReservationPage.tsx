@@ -406,9 +406,14 @@ export const ReservationPage: React.FC<ReservationPageProps> = ({
                 </button>
               </div>
 
-              <div className="flex items-center justify-center gap-2 text-xs text-slate-500 pt-2">
-                <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                입력하신 개인정보는 견적 상담 목적 외에 절대 사용되지 않습니다.
+              <div className="space-y-1 text-center pt-2">
+                <div className="flex items-center justify-center gap-1.5 text-xs text-slate-600 font-medium">
+                  <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
+                  <span>입력하신 개인정보는 견적 상담 목적 외에 절대 사용되지 않습니다.</span>
+                </div>
+                <p className="text-[11px] text-slate-500">
+                  ※ 일일 상담 횟수 제한 없이 365일 24시간 언제든 무료 상담 신청이 가능합니다.
+                </p>
               </div>
             </form>
           )}
