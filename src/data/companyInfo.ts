@@ -79,3 +79,61 @@ export const COMPANY_INFO: CompanyInfo = {
     }
   ]
 };
+
+export interface PartnerCompanyInfo {
+  nameKo: string;
+  nameVn: string;
+  nameEn: string;
+  shortName: string;
+  domain: string;
+  websiteUrl: string;
+  slogan: string;
+  sloganVn: string;
+  headquarters: string;
+  headquartersVn: string;
+  phone: string;
+  hotline: string;
+  email: string;
+  bookingEmail: string;
+  taxCode: string;
+  license: string;
+  mouTitle: string;
+  mouDescription: string;
+  establishedYear: number;
+  partnershipHighlights: string[];
+  services: string[];
+}
+
+export const PARTNER_COMPANY_INFO: PartnerCompanyInfo = {
+  nameKo: '비트라코 투어 (VITRACO Tour & Transport)',
+  nameVn: 'Công ty TNHH Liên hợp Vận tải và Du lịch Vitraco',
+  nameEn: 'VITRACO Transport & Tourism Joint Venture Co., Ltd.',
+  shortName: 'VITRACO TOUR',
+  domain: 'vitracotour.com',
+  websiteUrl: 'https://vitracotour.com/',
+  slogan: 'Nâng Tầm Cao Mới (새로운 차원으로의 도약)',
+  sloganVn: 'Nâng Tầm Cao Mới',
+  headquarters: '베트남 다낭시 청케구 디엔비엔푸 394B 비트라코 빌딩 (Tòa nhà VITRACO)',
+  headquartersVn: 'Tòa nhà VITRACO, 394B Điện Biên Phủ, P. Thanh Khê Đông, Q. Thanh Khê, TP. Đà Nẵng, Việt Nam',
+  phone: '0236 3 738 738',
+  hotline: '0909 119 119 / 0915 705 705',
+  email: 'vitraco@vitraco.vip',
+  bookingEmail: 'booking@vitracotour.com / info@vitracotour.com',
+  taxCode: '0400452391',
+  license: '베트남 국토교통부 국제운송 및 베트남 관광총국(VNAT) 국제여행업 공식 정식 인가',
+  mouTitle: '신짜오투어 × VITRACO TOUR 공식 전략적 업무협약(MOU)',
+  mouDescription: '다낭 본사의 베트남 대표 종합 운송·관광 그룹 VITRACO와의 공식 업무협약(MOU)을 통해 최신형 단독 VIP 리무진 차량 전용 배차, 다낭·호이안·후에·바나힐 현지 직영 투어망, 공인 한국어 가이드 및 24시간 안전 케어망을 독점 협력 운영합니다.',
+  establishedYear: 2003,
+  partnershipHighlights: [
+    '베트남 중부 최대 16~45인승 최신형 VIP 리무진 단독 전용 차량 직영 배차',
+    '다낭·호이안·후에·바나힐 직영 인프라 및 입장권 우선 발권 혜택',
+    '현지 정식 공인 한국어 전문 가이드 풀케어 및 차량 안전 보험 100% 가입',
+    '24시간 현지 신속 대응팀 및 한국 고객 전담 VIP 라운지 연계'
+  ],
+  services: [
+    'VIP DCar 리무진 & 단독 투어 차량 렌탈 (7/16/29/35/45인승)',
+    '다낭·호이안·후에·바나힐 맞춤 데이투어 & 프라이빗 패키지',
+    '바나힐, 빈원더스 등 주요 관광지 공식 티켓팅 및 VIP 패스트트랙',
+    '골프장 VIP 송영 및 국제 행사 전용 의전 서비스'
+  ]
+};

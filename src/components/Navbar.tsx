@@ -16,8 +16,9 @@ import {
   ExternalLink
 } from 'lucide-react';
 import { COMPANY_PHONE, COMPANY_PHONE_TEL, DEFAULT_KAKAO_LINK, handleOpenKakaoTalkDirect } from '../constants';
-import { COMPANY_INFO } from '../data/companyInfo';
+import { COMPANY_INFO, PARTNER_COMPANY_INFO } from '../data/companyInfo';
 import { ExchangeRates } from '../lib/exchangeRate';
+import { BrandLogoLockup } from './BrandLogoLockup';
 
 export type NavPage = 'home' | 'simple' | 'free_travel' | 'villa' | 'golf' | 'travel_info' | 'reservation';
 
@@ -86,7 +87,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <div className="flex items-center gap-2 text-slate-300 text-[11px] sm:text-xs shrink-0 whitespace-nowrap">
             <span className="flex items-center gap-1.5 font-black text-emerald-300">
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-              <span>100% 현지 직영 · 한국어 전담 가이드 & 단독 VIP 차량</span>
+              <span>100% 현지 직영 · VITRACO TOUR 공식 MOU 파트너십 (단독 VIP 리무진 직영 배차)</span>
             </span>
             <span className="hidden lg:inline-block text-teal-800">|</span>
             {/* Live Exchange Rate Indicator */}
@@ -161,24 +162,12 @@ export const Navbar: React.FC<NavbarProps> = ({
       {/* Main Nav Bar */}
       <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6">
         <div className="flex items-center justify-between h-16 sm:h-18 gap-2 lg:gap-4">
-          {/* Logo */}
-          <button
-            onClick={() => handleItemClick('home')}
-            className="flex items-center gap-2 text-left shrink-0 cursor-pointer group"
-          >
-            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-white shadow-md shadow-emerald-500/20 group-hover:scale-105 transition shrink-0">
-              <Palmtree className="w-5 h-5 sm:w-5.5 sm:h-5.5" />
-            </div>
-            <div className="shrink-0">
-              <div className="font-black text-lg sm:text-xl text-slate-900 tracking-tight flex items-center gap-0.5 leading-none">
-                <span>XinChao</span>
-                <span className="text-emerald-600">Tour</span>
-              </div>
-              <p className="text-[9px] sm:text-[10px] text-slate-500 font-semibold tracking-tight mt-0.5 whitespace-nowrap">
-                신짜오투어 | 베트남 맞춤여행
-              </p>
-            </div>
-          </button>
+          {/* Dual Brand Co-Branding Logo Lockup: XinChao Tour ✕ VITRACO Tour */}
+          <BrandLogoLockup
+            onNavigateHome={() => handleItemClick('home')}
+            size="md"
+            showSubtitle={true}
+          />
 
           {/* Desktop Navigation Links - Always Single Row */}
           <nav className="hidden md:flex items-center gap-0.5 lg:gap-1 shrink-0 flex-nowrap whitespace-nowrap">
@@ -311,6 +300,29 @@ export const Navbar: React.FC<NavbarProps> = ({
                 </button>
               );
             })}
+          </div>
+
+          {/* MOU Official Partner Link in Mobile Menu */}
+          <div className="p-3 rounded-2xl bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-amber-500/10 border border-amber-300/40 flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <span className="text-base">🤝</span>
+              <div className="leading-tight">
+                <div className="text-xs font-black text-slate-900 flex items-center gap-1">
+                  <span>VITRACO TOUR</span>
+                  <span className="text-[9px] font-black bg-amber-400 text-slate-950 px-1.5 py-0.2 rounded-full">공식 MOU</span>
+                </div>
+                <p className="text-[10px] text-slate-500">베트남 현지 최대 운송·투어 제휴사</p>
+              </div>
+            </div>
+            <a
+              href={PARTNER_COMPANY_INFO.websiteUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[11px] font-black text-amber-600 hover:text-amber-700 bg-white px-2.5 py-1 rounded-lg border border-amber-300/60 shadow-2xs flex items-center gap-1 shrink-0"
+            >
+              <span>홈페이지</span>
+              <ExternalLink className="w-3 h-3" />
+            </a>
           </div>
 
           {/* Quick Tools */}

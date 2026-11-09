@@ -14,9 +14,10 @@ import {
   Plane,
   Home,
   CheckCircle2,
-  CalendarCheck
+  CalendarCheck,
+  ExternalLink
 } from 'lucide-react';
-import { COMPANY_INFO } from '../data/companyInfo';
+import { COMPANY_INFO, PARTNER_COMPANY_INFO } from '../data/companyInfo';
 import { DEFAULT_KAKAO_LINK, handleOpenKakaoTalkDirect } from '../constants';
 
 interface CompanyPageProps {
@@ -136,6 +137,66 @@ export const CompanyPage: React.FC<CompanyPageProps> = ({ onOpenConsultation }) 
                 <p className="text-xs text-slate-600 leading-relaxed">{svc.description}</p>
               </div>
             ))}
+          </div>
+        </div>
+
+        {/* Strategic MOU Partner Showcase Block */}
+        <div className="bg-gradient-to-br from-slate-900 via-slate-900 to-amber-950/50 text-white rounded-3xl p-8 sm:p-10 border border-amber-500/30 shadow-xl space-y-6">
+          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 pb-6 border-b border-slate-800">
+            <div>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-400/20 text-amber-300 text-xs font-black border border-amber-400/30 mb-2">
+                <span>🤝</span>
+                <span>공식 전략적 업무협약(MOU) 체결 베트남 현지 파트너사</span>
+              </div>
+              <h3 className="text-2xl sm:text-3xl font-black text-white tracking-tight flex items-center gap-2">
+                <span>XinChao Tour</span>
+                <span className="text-amber-400">✕</span>
+                <span>{PARTNER_COMPANY_INFO.nameKo}</span>
+              </h3>
+              <p className="text-sm text-slate-300 mt-2 max-w-2xl leading-relaxed">
+                {PARTNER_COMPANY_INFO.mouDescription}
+              </p>
+            </div>
+
+            <a
+              href={PARTNER_COMPANY_INFO.websiteUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-black px-5 py-3 rounded-xl text-sm transition shadow-lg shrink-0 cursor-pointer"
+            >
+              <span>VITRACO 공식 웹사이트</span>
+              <ExternalLink className="w-4 h-4" />
+            </a>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs text-slate-300 pt-2">
+            <div className="space-y-2 bg-slate-950/60 p-5 rounded-2xl border border-slate-800">
+              <h4 className="font-bold text-amber-400 text-sm flex items-center gap-1.5 pb-2 border-b border-slate-800">
+                <span>🏢</span>
+                <span>VITRACO TOUR 법인 정보</span>
+              </h4>
+              <p><strong className="text-white">베트남 정식 법인명:</strong> {PARTNER_COMPANY_INFO.nameVn}</p>
+              <p><strong className="text-white">슬로건:</strong> {PARTNER_COMPANY_INFO.slogan}</p>
+              <p><strong className="text-white">베트남 본사:</strong> {PARTNER_COMPANY_INFO.headquartersVn}</p>
+              <p><strong className="text-white">핫라인:</strong> <span className="text-amber-300 font-bold">{PARTNER_COMPANY_INFO.hotline}</span> (유선: {PARTNER_COMPANY_INFO.phone})</p>
+              <p><strong className="text-white">이메일:</strong> {PARTNER_COMPANY_INFO.email}</p>
+              <p><strong className="text-white">세무코드 (MST):</strong> {PARTNER_COMPANY_INFO.taxCode}</p>
+            </div>
+
+            <div className="space-y-2 bg-slate-950/60 p-5 rounded-2xl border border-slate-800">
+              <h4 className="font-bold text-emerald-400 text-sm flex items-center gap-1.5 pb-2 border-b border-slate-800">
+                <span>🛡️</span>
+                <span>공식 협력 핵심 혜택</span>
+              </h4>
+              <ul className="space-y-2 pt-1">
+                {PARTNER_COMPANY_INFO.partnershipHighlights.map((hl, i) => (
+                  <li key={i} className="flex items-start gap-2">
+                    <span className="text-amber-400 font-bold">✓</span>
+                    <span className="leading-relaxed">{hl}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
 

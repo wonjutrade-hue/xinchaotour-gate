@@ -326,11 +326,21 @@ export const Hero: React.FC<HeroProps> = ({
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 w-full flex-1 flex flex-col justify-center">
         <div className="max-w-3xl space-y-4 sm:space-y-5">
           
-          {/* Top Destination Badges */}
+          {/* Top Destination Badges & Strategic MOU Ribbon */}
           <div className="flex flex-wrap items-center gap-2">
+            {/* MOU Partnership Trust Ribbon */}
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-950/85 border border-amber-400/50 backdrop-blur-md shadow-xl text-xs font-black text-white">
+              <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
+              <span className="text-emerald-400 font-black">XinChao</span>
+              <span className="text-amber-400 font-extrabold">✕</span>
+              <span className="text-amber-300 font-black">VITRACO</span>
+              <span className="text-slate-500">|</span>
+              <span className="text-slate-200 font-bold">베트남 현지 공식 MOU 체결 직영 배차</span>
+            </div>
+
             <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/30 border border-emerald-300/50 backdrop-blur-md text-emerald-300 text-xs font-black shadow-lg">
               <Sun className="w-3.5 h-3.5 text-amber-300 animate-spin-slow" />
-              <span>베트남 전역 맞춤 여행 · 100% 단독 VIP 케어</span>
+              <span>100% 단독 VIP 케어</span>
             </div>
             
             <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-900/80 border border-amber-400/40 backdrop-blur-md text-amber-300 text-xs font-black shadow-lg">

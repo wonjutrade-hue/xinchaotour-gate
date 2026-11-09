@@ -21,7 +21,8 @@ import {
   RotateCcw
 } from 'lucide-react';
 import { Product, Category, City } from '../types';
-import { COMPANY_INFO } from '../data/companyInfo';
+import { COMPANY_INFO, PARTNER_COMPANY_INFO } from '../data/companyInfo';
+import { BrandLogoLockup } from './BrandLogoLockup';
 import { COMPANY_PHONE, COMPANY_PHONE_TEL, DEFAULT_KAKAO_LINK, handleOpenKakaoTalkDirect } from '../constants';
 import { trackVisitorEvent } from '../lib/analytics';
 import { ExchangeRates } from '../lib/exchangeRate';
@@ -248,10 +249,19 @@ export const SimpleLandingPage: React.FC<SimpleLandingPageProps> = ({
         <div className="absolute top-1/3 right-10 w-[400px] h-[300px] bg-teal-500/10 blur-[100px] rounded-full pointer-events-none" />
 
         <div className="max-w-5xl mx-auto px-4 sm:px-6 relative z-10 text-center">
-          {/* Logo & Headline */}
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs sm:text-sm font-extrabold mb-5">
-            <Palmtree className="w-4 h-4 text-emerald-400" />
-            <span>베트남 현지 직영 1등 여행사 · 신짜오투어 (Xin Chao Tour)</span>
+          {/* Dual Brand Co-Branding Logo Lockup & MOU Announcement */}
+          <div className="flex flex-col items-center justify-center gap-3 mb-6">
+            <div className="bg-slate-950/80 px-4 py-2 rounded-2xl border border-white/10 shadow-xl backdrop-blur-md">
+              <BrandLogoLockup
+                size="md"
+                theme="dark"
+                showSubtitle={true}
+              />
+            </div>
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-400/10 border border-amber-400/30 text-amber-300 text-xs font-black">
+              <span>🤝</span>
+              <span>VITRACO TOUR 공식 MOU 파트너십 체결 · 단독 최신형 VIP 리무진 직영 배차</span>
+            </div>
           </div>
 
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-[1.2] mb-5">
@@ -744,20 +754,53 @@ export const SimpleLandingPage: React.FC<SimpleLandingPageProps> = ({
         </div>
       </section>
 
-      {/* 5. FOOTER (MINIMAL) */}
-      <footer className="bg-slate-950 border-t border-slate-800 text-slate-500 py-10 px-4 sm:px-6 text-xs text-center">
-        <div className="max-w-4xl mx-auto space-y-3">
-          <div className="font-black text-slate-300 text-sm flex items-center justify-center gap-2">
-            <span>XinChao Tour</span>
-            <span className="text-slate-600">|</span>
-            <span>신짜오투어</span>
+      {/* 5. FOOTER WITH DUAL-BRAND COOPERATION & PARTNER DETAILS */}
+      <footer className="bg-slate-950 border-t border-slate-800 text-slate-400 py-12 px-4 sm:px-6 text-xs">
+        <div className="max-w-4xl mx-auto space-y-6">
+          {/* Dual Brand Co-Branding Center Lockup */}
+          <div className="flex justify-center">
+            <BrandLogoLockup
+              size="md"
+              theme="dark"
+              showSubtitle={true}
+            />
           </div>
-          <p className="text-slate-400 max-w-xl mx-auto leading-relaxed">
-            {COMPANY_INFO.name} · 상호: {COMPANY_INFO.brandName} · 사업자등록번호: {COMPANY_INFO.businessNumber} <br />
-            주소: {COMPANY_INFO.address} · 고객센터: {COMPANY_PHONE} · 이메일: {COMPANY_INFO.email}
-          </p>
-          <div className="pt-2 text-[11px] text-slate-600 flex items-center justify-center gap-2">
-            <span>© 2026 XinChao Tour. All Rights Reserved. 100% 현지 직영 단독투어 시스템.</span>
+
+          {/* Two-Column Information: XinChao & Vitraco */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left pt-2 text-[11.5px] leading-relaxed">
+            <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800/80 space-y-1">
+              <p className="font-bold text-white text-xs flex items-center gap-1.5 pb-1 border-b border-slate-800">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                <span>신짜오투어 (한국 총괄 본사)</span>
+              </p>
+              <p><strong className="text-slate-300">상호:</strong> {COMPANY_INFO.brandName} ({COMPANY_INFO.name}) | <strong className="text-slate-300">대표:</strong> 원주무역</p>
+              <p><strong className="text-slate-300">주소:</strong> {COMPANY_INFO.address}</p>
+              <p><strong className="text-slate-300">고객센터:</strong> {COMPANY_PHONE} | <strong className="text-slate-300">이메일:</strong> {COMPANY_INFO.email}</p>
+              <p><strong className="text-slate-300">등록번호:</strong> {COMPANY_INFO.businessNumber}</p>
+            </div>
+
+            <div className="p-4 rounded-xl bg-slate-900/60 border border-amber-900/30 space-y-1">
+              <p className="font-bold text-white text-xs flex items-center justify-between pb-1 border-b border-slate-800">
+                <span className="flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+                  <span>{PARTNER_COMPANY_INFO.nameKo}</span>
+                </span>
+                <span className="text-[10px] text-amber-300 font-bold bg-amber-950/80 px-1.5 py-0.2 rounded-sm border border-amber-800">공식 MOU</span>
+              </p>
+              <p><strong className="text-slate-300">현지 법인명:</strong> {PARTNER_COMPANY_INFO.nameVn}</p>
+              <p><strong className="text-slate-300">본사 주소:</strong> {PARTNER_COMPANY_INFO.headquartersVn}</p>
+              <p><strong className="text-slate-300">핫라인:</strong> {PARTNER_COMPANY_INFO.hotline} | <strong className="text-slate-300">이메일:</strong> {PARTNER_COMPANY_INFO.email}</p>
+              <p>
+                <strong className="text-slate-300">세무코드:</strong> {PARTNER_COMPANY_INFO.taxCode} | 
+                <a href={PARTNER_COMPANY_INFO.websiteUrl} target="_blank" rel="noopener noreferrer" className="text-amber-400 hover:underline ml-1 font-mono font-bold">
+                  {PARTNER_COMPANY_INFO.domain} ↗
+                </a>
+              </p>
+            </div>
+          </div>
+
+          <div className="pt-2 text-center text-[11px] text-slate-500 flex flex-wrap items-center justify-center gap-2">
+            <span>© {new Date().getFullYear()} {COMPANY_INFO.brandName} ({COMPANY_INFO.name}) ✕ {PARTNER_COMPANY_INFO.shortName}. All Rights Reserved.</span>
             {onOpenAdmin && (
               <>
                 <span>·</span>
