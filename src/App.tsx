@@ -51,7 +51,7 @@ import { getDisplayProductImage } from './lib/imageFallback';
 import { trackVisitorEvent } from './lib/analytics';
 
 const PRODUCTS_CACHE_KEY = 'xinchao_products_cache_master_v12';
-const CURRENT_CATALOG_REVISION = '2026_11_09_free_travel_price_zero_v1';
+const CURRENT_CATALOG_REVISION = '2026_11_09_free_travel_all_vietnam_zero_v5';
 const REVISION_KEY = 'xinchao_catalog_revision_applied';
 
 function mergeProductsPreservingLocal(localList: Product[], incomingList: Product[]): { merged: Product[]; localWasNewer: boolean } {
@@ -122,7 +122,20 @@ function mergeProductsPreservingLocal(localList: Product[], incomingList: Produc
     }
   });
 
-  return { merged: Array.from(mergedMap.values()), localWasNewer };
+  // Unconditionally ensure all travel / package tours across Vietnam are 0 KRW as requested
+  const mergedList: Product[] = Array.from(mergedMap.values()).map(p => {
+    if (p.category !== '풀빌라' && p.category !== '골프투어') {
+      return {
+        ...p,
+        category: '자유여행' as Category,
+        priceKRW: 0,
+        priceVND: 0
+      };
+    }
+    return p;
+  });
+
+  return { merged: mergedList, localWasNewer };
 }
 
 function cleanPlaceholderUrls(prodList: Product[]): Product[] {
@@ -133,8 +146,12 @@ function cleanPlaceholderUrls(prodList: Product[]): Product[] {
     if (mainImg === 'VILLA_PHOTO_DATA' || mainImg === 'TEST_IMG') {
       mainImg = cleanSubs.length > 0 ? cleanSubs[0] : '';
     }
+    const isTour = p.category !== '풀빌라' && p.category !== '골프투어';
     return {
       ...p,
+      category: (isTour ? '자유여행' : p.category) as Category,
+      priceKRW: isTour ? 0 : p.priceKRW,
+      priceVND: isTour ? 0 : p.priceVND,
       imageUrl: mainImg,
       additionalImages: cleanSubs
     };
@@ -202,7 +219,14 @@ export default function App() {
       }
     } catch (e) {}
     const cached = getStoredJson<Product[]>(PRODUCTS_CACHE_KEY, []);
-    if (cached && cached.length > 0) return cached;
+    if (cached && cached.length > 0) {
+      return cached.map(p => {
+        if (p.category !== '풀빌라' && p.category !== '골프투어') {
+          return { ...p, category: '자유여행', priceKRW: 0, priceVND: 0 };
+        }
+        return p;
+      });
+    }
     return INITIAL_PRODUCTS;
   });
   const [inquiries, setInquiries] = useState<ConsultationRequest[]>([]);

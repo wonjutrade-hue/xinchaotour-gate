@@ -1,4 +1,4 @@
-// Auto-generated seed products cache with rich photo sets & zero price for free travel (sales negotiation in progress)
+// Auto-generated seed products cache with zero price for all free travel
 import { Product } from '../types';
 
 export const INITIAL_PRODUCTS: Product[] = [
@@ -591,7 +591,7 @@ export const INITIAL_PRODUCTS: Product[] = [
         "hotel": "투어 종료 (공항 샌딩)"
       }
     ],
-    "updatedAt": "2026-11-09T11:21:00.977Z"
+    "updatedAt": "2026-11-09T11:39:08.435Z"
   },
   {
     "id": "prod-north-vntravel-hagiang-nhoque-4d3n",
@@ -698,7 +698,7 @@ export const INITIAL_PRODUCTS: Product[] = [
         "hotel": "투어 종료 (공항 샌딩)"
       }
     ],
-    "updatedAt": "2026-11-09T11:21:00.977Z"
+    "updatedAt": "2026-11-09T11:39:08.436Z"
   },
   {
     "id": "prod-north-vntravel-halong-cruise-4d3n",
@@ -806,7 +806,7 @@ export const INITIAL_PRODUCTS: Product[] = [
         "hotel": "투어 종료 (공항 샌딩)"
       }
     ],
-    "updatedAt": "2026-11-09T11:21:00.977Z"
+    "updatedAt": "2026-11-09T11:39:08.436Z"
   },
   {
     "id": "prod-north-vntravel-trangan-halong-3d2n",
@@ -905,7 +905,7 @@ export const INITIAL_PRODUCTS: Product[] = [
         "hotel": "투어 종료 (공항 샌딩)"
       }
     ],
-    "updatedAt": "2026-11-09T11:21:00.977Z"
+    "updatedAt": "2026-11-09T11:39:08.436Z"
   },
   {
     "id": "prod-north-vntravel-hanoi-trangan-halong-4d3n",
@@ -1014,7 +1014,7 @@ export const INITIAL_PRODUCTS: Product[] = [
         "hotel": "투어 종료 (공항 샌딩)"
       }
     ],
-    "updatedAt": "2026-11-09T11:21:00.977Z"
+    "updatedAt": "2026-11-09T11:39:08.436Z"
   },
   {
     "id": "prod-north-vntravel-hanoi-halong-sapa-6d5n",
@@ -1139,7 +1139,7 @@ export const INITIAL_PRODUCTS: Product[] = [
         "hotel": "투어 종료 (공항 샌딩)"
       }
     ],
-    "updatedAt": "2026-11-09T11:21:00.977Z"
+    "updatedAt": "2026-11-09T11:39:08.436Z"
   },
   {
     "id": "prod-north-vntravel-hanoi-halong-sapa-5d4n",
@@ -1254,7 +1254,7 @@ export const INITIAL_PRODUCTS: Product[] = [
         "hotel": "투어 종료 (공항 샌딩)"
       }
     ],
-    "updatedAt": "2026-11-09T11:21:00.977Z"
+    "updatedAt": "2026-11-09T11:39:08.436Z"
   },
   {
     "id": "prod-central-vntravel-danang-bana-hoian-4d3n",
@@ -1361,7 +1361,7 @@ export const INITIAL_PRODUCTS: Product[] = [
         "hotel": "투어 종료 (공항 샌딩)"
       }
     ],
-    "updatedAt": "2026-11-09T11:21:00.977Z"
+    "updatedAt": "2026-11-09T11:39:08.436Z"
   },
   {
     "id": "prod-central-vntravel-danang-hue-phongnha-4d3n",
@@ -1465,7 +1465,7 @@ export const INITIAL_PRODUCTS: Product[] = [
         "hotel": "투어 종료 (공항 샌딩)"
       }
     ],
-    "updatedAt": "2026-11-09T11:21:00.977Z"
+    "updatedAt": "2026-11-09T11:39:08.436Z"
   },
   {
     "id": "prod-central-vntravel-danang-marblemountain-bana-hoian-phongnha-4d3n",
@@ -1567,7 +1567,7 @@ export const INITIAL_PRODUCTS: Product[] = [
         "hotel": "투어 종료 (공항 샌딩)"
       }
     ],
-    "updatedAt": "2026-11-09T11:21:00.977Z"
+    "updatedAt": "2026-11-09T11:39:08.436Z"
   },
   {
     "id": "prod-central-vntravel-central-grand-tour-5d4n",
@@ -1678,7 +1678,7 @@ export const INITIAL_PRODUCTS: Product[] = [
         "hotel": "투어 종료 (공항 샌딩)"
       }
     ],
-    "updatedAt": "2026-11-09T11:21:00.977Z"
+    "updatedAt": "2026-11-09T11:39:08.436Z"
   },
   {
     "id": "prod-central-vntravel-quynhon-phuyen-4d3n",
@@ -1783,7 +1783,7 @@ export const INITIAL_PRODUCTS: Product[] = [
         "hotel": "투어 종료 (공항 샌딩)"
       }
     ],
-    "updatedAt": "2026-11-09T11:21:00.977Z"
+    "updatedAt": "2026-11-09T11:39:08.436Z"
   },
   {
     "id": "prod-central-vntravel-quynhon-martial-3d2n",
@@ -1876,7 +1876,7 @@ export const INITIAL_PRODUCTS: Product[] = [
         "hotel": "투어 종료 (공항 샌딩)"
       }
     ],
-    "updatedAt": "2026-11-09T11:21:00.977Z"
+    "updatedAt": "2026-11-09T11:39:08.436Z"
   },
   {
     "id": "prod-central-vntravel-danang-cu-lao-cham-3d2n",
@@ -1973,7 +1973,7 @@ export const INITIAL_PRODUCTS: Product[] = [
         "hotel": "투어 종료 (공항 샌딩)"
       }
     ],
-    "updatedAt": "2026-11-09T11:21:00.977Z"
+    "updatedAt": "2026-11-09T11:39:08.436Z"
   },
   {
     "id": "prod-central-vntravel-hue-heritage-royal-3d2n",
@@ -2069,7 +2069,7 @@ export const INITIAL_PRODUCTS: Product[] = [
         "hotel": "투어 종료 (공항 샌딩)"
       }
     ],
-    "updatedAt": "2026-11-09T11:21:00.977Z"
+    "updatedAt": "2026-11-09T11:39:08.436Z"
   },
   {
     "id": "prod-south-vntravel-phuquoc-grandworld-4islands-3d2n",
@@ -2174,7 +2174,7 @@ export const INITIAL_PRODUCTS: Product[] = [
         "hotel": "투어 종료 (공항 샌딩)"
       }
     ],
-    "updatedAt": "2026-11-09T11:21:00.977Z"
+    "updatedAt": "2026-11-09T11:39:08.436Z"
   },
   {
     "id": "prod-south-vntravel-phuquoc-grandworld-honthom-safari-4d3n",
@@ -2281,7 +2281,7 @@ export const INITIAL_PRODUCTS: Product[] = [
         "hotel": "투어 종료 (공항 샌딩)"
       }
     ],
-    "updatedAt": "2026-11-09T11:21:00.977Z"
+    "updatedAt": "2026-11-09T11:39:08.436Z"
   },
   {
     "id": "prod-south-vntravel-phuquoc-sunset-sanato-healing-3d2n",
@@ -2375,7 +2375,7 @@ export const INITIAL_PRODUCTS: Product[] = [
         "hotel": "투어 종료 (공항 샌딩)"
       }
     ],
-    "updatedAt": "2026-11-09T11:21:00.977Z"
+    "updatedAt": "2026-11-09T11:39:08.436Z"
   },
   {
     "id": "prod-central-alotravel-01-danang-bana-hoian-3n5d",
@@ -2490,7 +2490,7 @@ export const INITIAL_PRODUCTS: Product[] = [
         "hotel": "투어 종료 (인천/부산 도착)"
       }
     ],
-    "updatedAt": "2026-11-09T11:21:00.977Z"
+    "updatedAt": "2026-11-09T11:39:08.436Z"
   },
   {
     "id": "prod-central-alotravel-02-danang-cu-lao-cham-3n5d",
@@ -2603,7 +2603,7 @@ export const INITIAL_PRODUCTS: Product[] = [
         "hotel": "투어 종료 (인천/부산 도착)"
       }
     ],
-    "updatedAt": "2026-11-09T11:21:00.977Z"
+    "updatedAt": "2026-11-09T11:39:08.436Z"
   },
   {
     "id": "prod-central-alotravel-03-danang-hoian-hue-3n5d",
@@ -2715,7 +2715,7 @@ export const INITIAL_PRODUCTS: Product[] = [
         "hotel": "투어 종료 (인천/부산 도착)"
       }
     ],
-    "updatedAt": "2026-11-09T11:21:00.977Z"
+    "updatedAt": "2026-11-09T11:39:08.436Z"
   },
   {
     "id": "prod-central-alotravel-04-danang-nui-than-tai-3n5d",
@@ -2828,7 +2828,7 @@ export const INITIAL_PRODUCTS: Product[] = [
         "hotel": "투어 종료 (인천/부산 도착)"
       }
     ],
-    "updatedAt": "2026-11-09T11:21:00.977Z"
+    "updatedAt": "2026-11-09T11:39:08.436Z"
   },
   {
     "id": "prod-central-alotravel-05-danang-cu-lao-cham-4n6d",
@@ -2948,7 +2948,7 @@ export const INITIAL_PRODUCTS: Product[] = [
         "hotel": "투어 종료 (인천/부산 도착)"
       }
     ],
-    "updatedAt": "2026-11-09T11:21:00.977Z"
+    "updatedAt": "2026-11-09T11:39:08.436Z"
   },
   {
     "id": "prod-central-alotravel-06-danang-hoian-hue-4n6d",
@@ -3067,7 +3067,7 @@ export const INITIAL_PRODUCTS: Product[] = [
         "hotel": "투어 종료 (인천/부산 도착)"
       }
     ],
-    "updatedAt": "2026-11-09T11:21:00.977Z"
+    "updatedAt": "2026-11-09T11:39:08.436Z"
   },
   {
     "id": "prod-central-alotravel-07-danang-nui-than-tai-4n6d",
@@ -3187,7 +3187,7 @@ export const INITIAL_PRODUCTS: Product[] = [
         "hotel": "투어 종료 (인천/부산 도착)"
       }
     ],
-    "updatedAt": "2026-11-09T11:21:00.977Z"
+    "updatedAt": "2026-11-09T11:39:08.436Z"
   },
   {
     "id": "prod-central-alotravel-08-danang-hue-phongnha-4n6d",
@@ -3309,17 +3309,17 @@ export const INITIAL_PRODUCTS: Product[] = [
         "hotel": "투어 종료 (인천/부산 도착)"
       }
     ],
-    "updatedAt": "2026-11-09T11:21:00.977Z"
+    "updatedAt": "2026-11-09T11:39:08.436Z"
   },
   {
     "id": "prod-hanoi-halong-pkg-02",
     "title": "[하노이/하롱베이 당일크루즈+닌빈 3박5일] 한국인 맞춤 야간비행 플랜 · 럭셔리 크루즈 & 짱안 생태보트 · 항무아 파노라마 (베스트셀러)",
     "subTitle": "밤 도착 & 밤 출발 맞춤 · 하노이 5성급 호텔 연박 + 하롱베이 럭셔리 당일 크루즈 & 뷔페 + 닌빈 짱안 나룻배 & 항무아 용의 능선",
-    "category": "추천패키지",
+    "category": "자유여행",
     "region": "북부",
     "city": "하노이",
-    "priceKRW": 475000,
-    "priceVND": 8120000,
+    "priceKRW": 0,
+    "priceVND": 0,
     "duration": "3박 5일 (기내 1박)",
     "imageUrl": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
     "additionalImages": [
@@ -3422,7 +3422,7 @@ export const INITIAL_PRODUCTS: Product[] = [
         "vehicle": "항공편 이동"
       }
     ],
-    "updatedAt": "2026-11-08T20:15:32.507Z"
+    "updatedAt": "2026-11-09T11:39:08.436Z"
   },
   {
     "id": "prod-free-danang-hoian-3n5d",
@@ -3533,7 +3533,7 @@ export const INITIAL_PRODUCTS: Product[] = [
         "vehicle": "항공편 이동"
       }
     ],
-    "updatedAt": "2026-11-09T11:21:00.977Z"
+    "updatedAt": "2026-11-09T11:39:08.436Z"
   },
   {
     "id": "prod-free-danang-hoian-hue-4n6d",
@@ -3642,7 +3642,7 @@ export const INITIAL_PRODUCTS: Product[] = [
         "vehicle": "항공편 이동"
       }
     ],
-    "updatedAt": "2026-11-09T11:21:00.977Z"
+    "updatedAt": "2026-11-09T11:39:08.436Z"
   },
   {
     "id": "prod-free-nhatrang-dalat-3n5d",
@@ -3741,7 +3741,7 @@ export const INITIAL_PRODUCTS: Product[] = [
         "vehicle": "항공편 이동"
       }
     ],
-    "updatedAt": "2026-11-09T11:21:00.977Z"
+    "updatedAt": "2026-11-09T11:39:08.436Z"
   },
   {
     "id": "prod-free-nhatrang-phanrang-dalat-4n6d",
@@ -3847,7 +3847,7 @@ export const INITIAL_PRODUCTS: Product[] = [
         "vehicle": "항공편 이동"
       }
     ],
-    "updatedAt": "2026-11-09T11:21:00.977Z"
+    "updatedAt": "2026-11-09T11:39:08.436Z"
   },
   {
     "id": "prod-free-hanoi-halong-ninbinh-3n5d",
@@ -3947,7 +3947,7 @@ export const INITIAL_PRODUCTS: Product[] = [
         "vehicle": "항공편 이동"
       }
     ],
-    "updatedAt": "2026-11-09T11:21:00.977Z"
+    "updatedAt": "2026-11-09T11:39:08.436Z"
   },
   {
     "id": "prod-free-hochiminh-muine-3n5d",
@@ -4046,7 +4046,7 @@ export const INITIAL_PRODUCTS: Product[] = [
         "vehicle": "항공편 이동"
       }
     ],
-    "updatedAt": "2026-11-09T11:21:00.977Z"
+    "updatedAt": "2026-11-09T11:39:08.436Z"
   },
   {
     "id": "prod-free-phuquoc-3n5d",
@@ -4146,7 +4146,98 @@ export const INITIAL_PRODUCTS: Product[] = [
         "vehicle": "항공편 이동"
       }
     ],
-    "updatedAt": "2026-11-09T11:21:00.977Z"
+    "updatedAt": "2026-11-09T11:39:08.436Z"
+  },
+  {
+    "id": "prod-hanoi-halong-pkg-01",
+    "title": "[하노이·하롱베이/유네스코명품] 하노이 시내 & 하롱베이 6성급 럭셔리 크루즈 1박 3박 5일",
+    "subTitle": "하롱베이 6성급 앰배서더 크루즈 1박 (발코니 오션뷰 캐빈) + 닌빈 짱안 유람선 + 하노이 5성급 롯데호텔",
+    "category": "자유여행",
+    "region": "북부",
+    "city": "하노이",
+    "priceKRW": 0,
+    "priceVND": 0,
+    "duration": "3박 5일",
+    "imageUrl": "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=1200&q=80",
+    "additionalImages": [
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=1200&q=80"
+    ],
+    "rating": 5,
+    "reviewCount": 38,
+    "isPopular": true,
+    "isHotDeal": true,
+    "discountPercent": 15,
+    "departureCities": [
+      "인천",
+      "부산",
+      "대구"
+    ],
+    "tags": [
+      "#하노이",
+      "#하롱베이크루즈",
+      "#닌빈짱안",
+      "#6성급크루즈",
+      "#NO쇼핑",
+      "#북부대표"
+    ],
+    "description": "세계 7대 자연경관 하롱베이에서 6성급 크루즈 1박을 하며 신비로운 기암괴석과 선상 갈라 디너를 즐기는 최고급 패키지입니다.",
+    "included": [
+      "하노이 5성급 롯데호텔 2박 + 하롱베이 6성급 크루즈 1박",
+      "전 일정 단독 최신형 16인승 리무진 차량 & 유류비/기사비",
+      "베트남 관광청 라이선스 보유 한국어 전담 가이드"
+    ],
+    "excluded": [
+      "국제선 왕복 항공권",
+      "개인 매너팁 및 자유경비"
+    ],
+    "itinerary": [],
+    "updatedAt": "2026-11-09T11:39:08.436Z"
+  },
+  {
+    "id": "prod-nhatrang-dalat-vip-3n5d",
+    "title": "[나짱·달랏/VIP 단독 품격] 에메랄드 해변 & 영원한 봄의 고원도시 3박 5일 올인원 (NO쇼핑/NO옵션)",
+    "subTitle": "나트랑 5성급 오션뷰 2박 + 달랏 5성급 리조트 1박 · 16인승 리무진 단독 배차 & 전담 한국어가이드 · 다딴라 루지 & 머드온천",
+    "category": "자유여행",
+    "region": "남부",
+    "city": "나트랑",
+    "priceKRW": 0,
+    "priceVND": 0,
+    "duration": "3박 5일",
+    "imageUrl": "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80",
+    "additionalImages": [
+      "https://images.unsplash.com/photo-1512100356356-de1b84283e18?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80"
+    ],
+    "rating": 5,
+    "reviewCount": 42,
+    "isPopular": true,
+    "isHotDeal": true,
+    "discountPercent": 12,
+    "departureCities": [
+      "인천",
+      "부산",
+      "대구",
+      "청주"
+    ],
+    "tags": [
+      "#나트랑달랏",
+      "#VIP단독품격",
+      "#다딴라루지",
+      "#머드온천",
+      "#NO쇼핑"
+    ],
+    "description": "300일 내내 온화한 햇살과 에메랄드빛 바다가 펼쳐지는 나트랑과 연중 쾌적한 꽃과 소나무의 고원도시 달랏을 묶은 베스트셀러 VIP 단독 패키지입니다.",
+    "included": [
+      "나트랑 5성급 호텔 2박 + 달랏 5성급 호텔 1박",
+      "전 일정 최신형 16인승 전용 차량 & 한국어 전담 가이드"
+    ],
+    "excluded": [
+      "국제선 왕복 항공권",
+      "개인 자유경비"
+    ],
+    "itinerary": [],
+    "updatedAt": "2026-11-09T11:39:08.436Z"
   }
 ];
 

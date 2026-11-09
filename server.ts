@@ -4,7 +4,7 @@ import fs from 'fs';
 import { createServer as createViteServer } from 'vite';
 import { GoogleGenAI } from '@google/genai';
 import { INITIAL_PRODUCTS, SAMPLE_PRODUCTS } from './src/data/seedProducts.js';
-import { Product, ConsultationRequest, VisitorLog, DailyVisitorStat, AnalyticsSummary } from './src/types.js';
+import { Product, Category, ConsultationRequest, VisitorLog, DailyVisitorStat, AnalyticsSummary } from './src/types.js';
 import { COMPANY_INFO } from './src/data/companyInfo.js';
 import { INITIAL_REVIEWS } from './src/data/reviews.js';
 
@@ -92,7 +92,12 @@ function loadStoredProducts(): Product[] {
     }
   });
 
-  const finalProds = Array.from(map.values());
+  const finalProds: Product[] = Array.from(map.values()).map(p => {
+    if (p.category !== '풀빌라' && p.category !== '골프투어') {
+      return { ...p, category: '자유여행' as Category, priceKRW: 0, priceVND: 0 };
+    }
+    return p;
+  });
   return finalProds;
 }
 
@@ -515,16 +520,30 @@ async function startServer() {
               ? (Array.isArray(incoming.additionalImages) ? incoming.additionalImages : [])
               : (existing.additionalImages || []);
 
+            const isTour = incoming.category !== '풀빌라' && incoming.category !== '골프투어';
+            const finalPriceKRW = isTour ? 0 : (incoming.priceKRW !== undefined ? incoming.priceKRW : existing.priceKRW);
+            const finalPriceVND = isTour ? 0 : (incoming.priceVND !== undefined ? incoming.priceVND : existing.priceVND);
+            const finalCategory: Category = isTour ? '자유여행' : ((incoming.category || existing.category) as Category);
+
             mergedList.push({
               ...existing,
               ...incoming,
+              category: finalCategory,
+              priceKRW: finalPriceKRW,
+              priceVND: finalPriceVND,
               imageUrl: finalMainImg,
               additionalImages: finalAdditional,
               galleryImages: finalAdditional,
               updatedAt: incoming.updatedAt || new Date().toISOString()
             });
           } else {
-            mergedList.push(incoming);
+            const isTour = incoming.category !== '풀빌라' && incoming.category !== '골프투어';
+            mergedList.push({
+              ...incoming,
+              category: (isTour ? '자유여행' : incoming.category) as Category,
+              priceKRW: isTour ? 0 : (incoming.priceKRW || 0),
+              priceVND: isTour ? 0 : (incoming.priceVND || 0)
+            });
           }
         });
 

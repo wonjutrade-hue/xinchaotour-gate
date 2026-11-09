@@ -693,7 +693,7 @@ export const AdminMode: React.FC<AdminModeProps> = ({
     let defaultTheme = '가족 힐링 여행';
 
     if (category === '자유여행') {
-      defaultPriceKRW = 490000;
+      defaultPriceKRW = 0;
       defaultDuration = '3박 4일';
       defaultTags = ['#자유여행', '#단독차량렌트', '#한국어기사', '#맞춤일정', '#가족자유여행'];
       defaultIncluded = [...FREE_TOUR_INCLUDED];
@@ -901,7 +901,7 @@ export const AdminMode: React.FC<AdminModeProps> = ({
       ];
     } else {
       // 추천패키지
-      defaultPriceKRW = 690000;
+      defaultPriceKRW = 0;
       defaultDuration = '3박 5일';
       defaultTags = ['#추천패키지', '#가족여행', '#효도여행', '#노쇼핑', '#단독차량', '#한국어가이드'];
       defaultIncluded = [...FREE_TOUR_INCLUDED];
