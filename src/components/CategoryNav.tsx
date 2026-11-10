@@ -1,8 +1,6 @@
 import React from 'react';
 import { Region, City, Category } from '../types';
-import { MapPin, ArrowUpDown, Sparkles, Filter, ExternalLink } from 'lucide-react';
-
-const DEV_PRODUCTS_APP_URL = 'https://aistudio.google.com/apps/c73a1589-c5ae-4c05-8095-e17ecb350cb2?showPreview=true&showAssistant=true&fullscreenApplet=true';
+import { MapPin, ArrowUpDown, Sparkles, Filter } from 'lucide-react';
 
 interface CategoryNavProps {
   activeCategory: Category | '전체';
@@ -16,6 +14,7 @@ interface CategoryNavProps {
   onSelectSubFilter?: (sf: string) => void;
   onSortChange: (sort: 'popular' | 'price_asc' | 'price_desc' | 'rating') => void;
   totalProductsCount: number;
+  onNavigateToDevProducts?: () => void;
 }
 
 export const REGION_CITIES: Record<Exclude<Region, '전체'>, City[]> = {
@@ -34,6 +33,7 @@ export const CategoryNav: React.FC<CategoryNavProps> = ({
   onSelectCity,
   onSortChange,
   totalProductsCount,
+  onNavigateToDevProducts,
 }) => {
   return (
     <div id="filter-section" className="bg-gradient-to-b from-teal-50/50 via-white to-slate-50 border-y border-teal-100/70 py-3.5 px-3 sm:px-6 lg:px-8 scroll-mt-20">
@@ -70,18 +70,22 @@ export const CategoryNav: React.FC<CategoryNavProps> = ({
 
               {/* 개발중인 상품 메뉴 연결 */}
               <a
-                href={DEV_PRODUCTS_APP_URL}
-                target="_blank"
-                rel="noopener noreferrer"
+                href="/?page=dev_products"
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (onNavigateToDevProducts) {
+                    onNavigateToDevProducts();
+                  }
+                }}
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black bg-gradient-to-r from-amber-500 via-amber-600 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-xs hover:shadow-md transition-all whitespace-nowrap cursor-pointer border border-amber-400/80 group"
-                title="신규 개발중인 상품 웹페이지로 바로 연결 (새 창에서 열림)"
+                title="신규 개발중인 상품 라인업 안내"
               >
                 <Sparkles className="w-3.5 h-3.5 text-amber-200 animate-pulse" />
                 <span>개발중인 상품</span>
                 <span className="text-[9px] font-black bg-black/25 text-amber-100 px-1.5 py-0.2 rounded-full border border-white/20">
                   NEW
                 </span>
-                <ExternalLink className="w-3 h-3 text-white/90 group-hover:translate-x-0.5 transition-transform" />
+                <span className="text-[10px] font-bold opacity-90 group-hover:translate-x-0.5 transition-transform">→</span>
               </a>
             </div>
 

@@ -19,6 +19,7 @@ import { TravelInfoPage } from './components/TravelInfoPage';
 import { ReviewsPage } from './components/ReviewsPage';
 import { CompanyPage } from './components/CompanyPage';
 import { SimpleLandingPage } from './components/SimpleLandingPage';
+import { DevProductsPage } from './components/DevProductsPage';
 import { getLiveExchangeRates, ExchangeRates, DEFAULT_RATES } from './lib/exchangeRate';
 import { productService } from './services/productService';
 import { inquiryService } from './services/inquiryService';
@@ -216,6 +217,9 @@ export default function App() {
         const search = window.location.search.toLowerCase();
         if (path.includes('/simple') || search.includes('mode=simple') || search.includes('page=simple')) {
           return 'simple';
+        }
+        if (path.includes('/dev-products') || path.includes('/dev_products') || search.includes('page=dev_products') || search.includes('page=dev-products')) {
+          return 'dev_products';
         }
       }
     } catch (e) {}
@@ -445,7 +449,8 @@ export default function App() {
       villa: '독채 풀빌라',
       golf: '골프투어',
       travel_info: '베트남 여행정보 꿀팁',
-      reservation: '빠른 견적/예약 신청'
+      reservation: '빠른 견적/예약 신청',
+      dev_products: '출시 예정 신규 개발중인 상품'
     };
     trackVisitorEvent('page_view', navTitles[page] || page);
 
@@ -456,6 +461,10 @@ export default function App() {
           url.searchParams.set('page', 'simple');
           window.history.pushState({ page: 'simple' }, '', url.toString());
         }
+      } else if (page === 'dev_products') {
+        const url = new URL(window.location.href);
+        url.searchParams.set('page', 'dev_products');
+        window.history.pushState({ page: 'dev_products' }, '', url.toString());
       } else if (page === 'home') {
         const url = new URL(window.location.href);
         if (url.searchParams.has('page')) {
@@ -671,6 +680,21 @@ export default function App() {
     };
     document.addEventListener('visibilitychange', handleVisibility);
 
+    const handlePopState = () => {
+      try {
+        const search = window.location.search.toLowerCase();
+        const path = window.location.pathname.toLowerCase();
+        if (search.includes('page=dev_products') || search.includes('page=dev-products') || path.includes('/dev-products')) {
+          setCurrentPage('dev_products');
+        } else if (search.includes('page=simple') || path.includes('/simple')) {
+          setCurrentPage('simple');
+        } else {
+          setCurrentPage('home');
+        }
+      } catch (err) {}
+    };
+    window.addEventListener('popstate', handlePopState);
+
     return () => {
       clearInterval(pollTimer);
       window.removeEventListener('storage', handleStorageChange);
@@ -679,6 +703,7 @@ export default function App() {
       }
       window.removeEventListener('focus', handleReSync);
       document.removeEventListener('visibilitychange', handleVisibility);
+      window.removeEventListener('popstate', handlePopState);
     };
   }, []);
 
@@ -861,6 +886,20 @@ export default function App() {
       );
     }
 
+    if (currentPage === 'dev_products') {
+      return (
+        <DevProductsPage
+          onSelectProduct={handleSelectProduct}
+          onOpenConsultation={(targetProd) => {
+            setConsultationTargetProduct(targetProd || null);
+            setIsConsultationOpen(true);
+          }}
+          onNavigateHome={() => handleNavigate('home')}
+          exchangeRates={exchangeRates}
+        />
+      );
+    }
+
     return (
       <div className="flex-1 flex flex-col">
         {/* Hero Carousel (Shown on HOME) */}
@@ -886,6 +925,7 @@ export default function App() {
           onSelectSubFilter={setSubFilter}
           onSortChange={setSortBy}
           totalProductsCount={filteredProducts.length}
+          onNavigateToDevProducts={() => handleNavigate('dev_products')}
         />
 
         {/* Quick Tropical Theme Highlights (Shown on HOME) */}

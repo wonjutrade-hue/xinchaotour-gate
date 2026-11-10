@@ -20,7 +20,7 @@ import { COMPANY_INFO, PARTNER_COMPANY_INFO } from '../data/companyInfo';
 import { ExchangeRates } from '../lib/exchangeRate';
 import { BrandLogoLockup } from './BrandLogoLockup';
 
-export type NavPage = 'home' | 'simple' | 'free_travel' | 'villa' | 'golf' | 'travel_info' | 'reservation';
+export type NavPage = 'home' | 'simple' | 'free_travel' | 'villa' | 'golf' | 'travel_info' | 'reservation' | 'dev_products';
 
 interface NavbarProps {
   currentPage: NavPage;
@@ -133,11 +133,13 @@ export const Navbar: React.FC<NavbarProps> = ({
 
             {/* Dev products link */}
             <a
-              href="https://aistudio.google.com/apps/c73a1589-c5ae-4c05-8095-e17ecb350cb2?showPreview=true&showAssistant=true&fullscreenApplet=true"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="/?page=dev_products"
+              onClick={(e) => {
+                e.preventDefault();
+                handleItemClick('dev_products');
+              }}
               className="hidden lg:inline-flex items-center gap-1 text-amber-200 hover:text-white font-extrabold transition cursor-pointer bg-gradient-to-r from-amber-500/20 to-orange-500/20 hover:bg-amber-500/30 px-2 py-0.5 rounded-md border border-amber-400/40 text-[11px]"
-              title="신규 개발중인 상품 웹앱으로 연결"
+              title="신규 개발중인 상품 라인업 안내"
             >
               <Sparkles className="w-3 h-3 text-amber-300" />
               <span>개발중인 상품</span>
@@ -315,20 +317,18 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
 
           {/* 개발중인 상품 모바일 메뉴 링크 */}
-          <a
-            href="https://aistudio.google.com/apps/c73a1589-c5ae-4c05-8095-e17ecb350cb2?showPreview=true&showAssistant=true&fullscreenApplet=true"
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => setMobileMenuOpen(false)}
-            className="w-full py-2.5 px-3.5 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-600 to-orange-500 text-white font-extrabold text-xs flex items-center justify-between shadow-xs hover:shadow-md transition-all border border-amber-400/80"
+          <button
+            type="button"
+            onClick={() => handleItemClick('dev_products')}
+            className="w-full py-2.5 px-3.5 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-600 to-orange-500 text-white font-extrabold text-xs flex items-center justify-between shadow-xs hover:shadow-md transition-all border border-amber-400/80 cursor-pointer"
           >
             <div className="flex items-center gap-1.5">
               <Sparkles className="w-3.5 h-3.5 text-amber-200 animate-pulse" />
-              <span>신규 개발중인 상품 웹앱 바로가기</span>
+              <span>신규 개발중인 상품 라인업 보기</span>
               <span className="text-[9px] bg-black/25 text-amber-100 px-1.5 py-0.2 rounded-full border border-white/20">NEW</span>
             </div>
-            <ExternalLink className="w-3.5 h-3.5 text-white/90" />
-          </a>
+            <span className="text-xs font-bold text-amber-100">바로가기 →</span>
+          </button>
 
           {/* MOU Official Partner Info in Mobile Menu */}
           <div className="p-3 rounded-2xl bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-amber-500/10 border border-amber-300/40 space-y-1.5">

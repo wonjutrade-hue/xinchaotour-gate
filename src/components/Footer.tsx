@@ -124,6 +124,15 @@ export const Footer: React.FC<FooterProps> = ({
                   📝 예약문의
                 </button>
               </li>
+              <li>
+                <button
+                  onClick={() => onNavigate('dev_products')}
+                  className="hover:text-amber-300 transition-colors text-left cursor-pointer font-bold text-amber-400 flex items-center gap-1"
+                >
+                  <span>✨ 개발중인 상품 (출시예정)</span>
+                  <span className="text-[10px] px-1.5 py-0.2 bg-amber-500/20 text-amber-300 rounded-full border border-amber-500/30">NEW</span>
+                </button>
+              </li>
             </ul>
           </div>
 
