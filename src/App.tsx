@@ -51,7 +51,7 @@ import { getDisplayProductImage } from './lib/imageFallback';
 import { trackVisitorEvent } from './lib/analytics';
 
 const PRODUCTS_CACHE_KEY = 'xinchao_products_cache_master_v12';
-const CURRENT_CATALOG_REVISION = '2026_11_09_free_travel_all_vietnam_zero_v5';
+const CURRENT_CATALOG_REVISION = '2026_11_10_fixed_napoli_pearl_prices_v1';
 const REVISION_KEY = 'xinchao_catalog_revision_applied';
 
 function mergeProductsPreservingLocal(localList: Product[], incomingList: Product[]): { merged: Product[]; localWasNewer: boolean } {
@@ -132,6 +132,17 @@ function mergeProductsPreservingLocal(localList: Product[], incomingList: Produc
         priceVND: 0
       };
     }
+    // Fixed authoritative pricing for Pearl Retreat (1,247,000 KRW) & Napoli Castle (1,503,000 KRW)
+    if (p.id === 'prod-danang-villa-napoli-12bed') {
+      if (!p.priceKRW || p.priceKRW < 1400000) {
+        return { ...p, priceKRW: 1503000, priceVND: 25303030 };
+      }
+    }
+    if (p.id === 'prod-danang-villa-pearl-10bed') {
+      if (!p.priceKRW || p.priceKRW < 1000000) {
+        return { ...p, priceKRW: 1247000, priceVND: 20993266 };
+      }
+    }
     return p;
   });
 
@@ -147,11 +158,24 @@ function cleanPlaceholderUrls(prodList: Product[]): Product[] {
       mainImg = cleanSubs.length > 0 ? cleanSubs[0] : '';
     }
     const isTour = p.category !== '풀빌라' && p.category !== '골프투어';
+    let krw = isTour ? 0 : (p.priceKRW || 0);
+    let vnd = isTour ? 0 : (p.priceVND || 0);
+
+    // Guaranteed authoritative fixed pricing for Pearl Retreat and Napoli Castle
+    if (p.id === 'prod-danang-villa-napoli-12bed' && (!krw || krw < 1400000)) {
+      krw = 1503000;
+      vnd = 25303030;
+    }
+    if (p.id === 'prod-danang-villa-pearl-10bed' && (!krw || krw < 1000000)) {
+      krw = 1247000;
+      vnd = 20993266;
+    }
+
     return {
       ...p,
       category: (isTour ? '자유여행' : p.category) as Category,
-      priceKRW: isTour ? 0 : p.priceKRW,
-      priceVND: isTour ? 0 : p.priceVND,
+      priceKRW: krw,
+      priceVND: vnd,
       imageUrl: mainImg,
       additionalImages: cleanSubs
     };

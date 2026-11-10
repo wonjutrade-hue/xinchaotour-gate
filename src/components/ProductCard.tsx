@@ -206,10 +206,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                     <span className="text-xs font-bold ml-0.5 text-slate-700">원</span>
                   </>
                 ) : (
-                  <div className="flex items-center justify-end gap-1.5">
-                    <span className="text-emerald-700">0</span>
-                    <span className="text-xs font-bold text-slate-700">원</span>
-                    <span className="text-[10px] font-bold text-amber-700 bg-amber-50 border border-amber-200 px-1.5 py-0.5 rounded-md">가격조정중</span>
+                  <div className="flex items-center justify-end">
+                    <span className="text-sm font-black text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-md shadow-2xs">
+                      가격 문의
+                    </span>
                   </div>
                 )}
               </div>
@@ -219,7 +219,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                 </div>
               ) : (
                 <div className="text-[10px] text-slate-500 font-medium">
-                  베트남 여행사 판매가 협의 중
+                  맞춤 일정 및 견적 상담 문의
                 </div>
               )}
             </div>

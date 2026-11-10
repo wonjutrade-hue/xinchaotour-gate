@@ -934,18 +934,25 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
 
                 {/* Primary Price */}
                 <div className="pt-2 flex flex-wrap items-baseline gap-2">
-                  <span className="text-2xl sm:text-3xl font-black text-amber-500 tracking-tight">
-                    {displayKRW.toLocaleString('ko-KR')}
-                    <span className="text-sm font-bold text-slate-900 ml-1">원</span>
-                  </span>
-                  {displayKRW === 0 ? (
-                    <span className="text-xs font-bold text-amber-800 bg-amber-100 border border-amber-300 px-2 py-0.5 rounded-md">
-                      베트남 현지 여행사 판매가 조정 중 · 상담 문의
-                    </span>
+                  {displayKRW > 0 ? (
+                    <>
+                      <span className="text-2xl sm:text-3xl font-black text-amber-500 tracking-tight">
+                        {displayKRW.toLocaleString('ko-KR')}
+                        <span className="text-sm font-bold text-slate-900 ml-1">원</span>
+                      </span>
+                      <span className="text-xs text-slate-400 font-bold">
+                        / {product.duration || (isVilla ? '1박' : '1인')}
+                      </span>
+                    </>
                   ) : (
-                    <span className="text-xs text-slate-400 font-bold">
-                      / {product.duration || (isVilla ? '1박' : '1인')}
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-2xl sm:text-3xl font-black text-amber-600 tracking-tight">
+                        가격 문의
+                      </span>
+                      <span className="text-xs font-bold text-emerald-800 bg-emerald-100 border border-emerald-300 px-2 py-0.5 rounded-md">
+                        상담 후 맞춤 견적 안내
+                      </span>
+                    </div>
                   )}
                 </div>
 
@@ -962,7 +969,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                     </>
                   ) : (
                     <span className="text-slate-500 font-medium">
-                      판매 가격 조정 및 견적 협의 중 (카카오톡/전화 상담 가능)
+                      맞춤 일정 및 견적 상담 문의 (카카오톡/전화 실시간 상담 가능)
                     </span>
                   )}
                 </div>

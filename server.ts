@@ -96,6 +96,13 @@ function loadStoredProducts(): Product[] {
     if (p.category !== '풀빌라' && p.category !== '골프투어') {
       return { ...p, category: '자유여행' as Category, priceKRW: 0, priceVND: 0 };
     }
+    // Fixed authoritative pricing lock for Pearl Retreat (1,247,000 KRW) & Napoli Castle (1,503,000 KRW)
+    if (p.id === 'prod-danang-villa-napoli-12bed' && (!p.priceKRW || p.priceKRW < 1400000)) {
+      return { ...p, priceKRW: 1503000, priceVND: 25303030 };
+    }
+    if (p.id === 'prod-danang-villa-pearl-10bed' && (!p.priceKRW || p.priceKRW < 1000000)) {
+      return { ...p, priceKRW: 1247000, priceVND: 20993266 };
+    }
     return p;
   });
   return finalProds;
@@ -103,7 +110,16 @@ function loadStoredProducts(): Product[] {
 
 function saveStoredProducts(prods: Product[]) {
   try {
-    const dataStr = JSON.stringify(prods, null, 2);
+    const validatedProds = prods.map(p => {
+      if (p.id === 'prod-danang-villa-napoli-12bed' && (!p.priceKRW || p.priceKRW < 1400000)) {
+        return { ...p, priceKRW: 1503000, priceVND: 25303030 };
+      }
+      if (p.id === 'prod-danang-villa-pearl-10bed' && (!p.priceKRW || p.priceKRW < 1000000)) {
+        return { ...p, priceKRW: 1247000, priceVND: 20993266 };
+      }
+      return p;
+    });
+    const dataStr = JSON.stringify(validatedProds, null, 2);
     fs.writeFileSync(PRODUCTS_FILE_PATH, dataStr, 'utf-8');
     try {
       fs.writeFileSync(PRODUCTS_DATA_DIR_PATH, dataStr, 'utf-8');
@@ -111,7 +127,7 @@ function saveStoredProducts(prods: Product[]) {
       // Ignore if dir doesn't exist
     }
     fs.writeFileSync(PRODUCTS_BACKUP_PATH, dataStr, 'utf-8');
-    console.log(`[Server] Persisted ${prods.length} products to stored_products.json, src/data, & backup`);
+    console.log(`[Server] Persisted ${validatedProds.length} products to stored_products.json, src/data, & backup`);
   } catch (err) {
     console.error('[Server] Failed to save products to stored_products.json:', err);
   }

@@ -1,6 +1,8 @@
 import React from 'react';
 import { Region, City, Category } from '../types';
-import { MapPin, ArrowUpDown, Sparkles, Filter } from 'lucide-react';
+import { MapPin, ArrowUpDown, Sparkles, Filter, ExternalLink } from 'lucide-react';
+
+const DEV_PRODUCTS_APP_URL = 'https://aistudio.google.com/apps/c73a1589-c5ae-4c05-8095-e17ecb350cb2?showPreview=true&showAssistant=true&fullscreenApplet=true';
 
 interface CategoryNavProps {
   activeCategory: Category | '전체';
@@ -65,6 +67,22 @@ export const CategoryNav: React.FC<CategoryNavProps> = ({
                   </button>
                 );
               })}
+
+              {/* 개발중인 상품 메뉴 연결 */}
+              <a
+                href={DEV_PRODUCTS_APP_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black bg-gradient-to-r from-amber-500 via-amber-600 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-xs hover:shadow-md transition-all whitespace-nowrap cursor-pointer border border-amber-400/80 group"
+                title="신규 개발중인 상품 웹페이지로 바로 연결 (새 창에서 열림)"
+              >
+                <Sparkles className="w-3.5 h-3.5 text-amber-200 animate-pulse" />
+                <span>개발중인 상품</span>
+                <span className="text-[9px] font-black bg-black/25 text-amber-100 px-1.5 py-0.2 rounded-full border border-white/20">
+                  NEW
+                </span>
+                <ExternalLink className="w-3 h-3 text-white/90 group-hover:translate-x-0.5 transition-transform" />
+              </a>
             </div>
 
             <div className="flex items-center gap-3 self-end md:self-auto flex-wrap justify-end">

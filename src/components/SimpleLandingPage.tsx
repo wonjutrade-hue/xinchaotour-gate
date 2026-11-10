@@ -478,7 +478,7 @@ export const SimpleLandingPage: React.FC<SimpleLandingPageProps> = ({
             const displayImg = getDisplayProductImage(prod);
             const priceWon = prod.priceKRW !== undefined && prod.priceKRW > 0 
               ? `${prod.priceKRW.toLocaleString()}원` 
-              : '0원 (가격조정중)';
+              : '가격 문의';
 
             return (
               <div

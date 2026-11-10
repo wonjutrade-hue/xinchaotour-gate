@@ -1034,18 +1034,22 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                   </span>
                 </div>
                 <div className="text-2xl sm:text-3xl font-black text-emerald-800 flex flex-wrap items-baseline gap-2">
-                  <span>{displayKRW.toLocaleString('ko-KR')} <span className="text-lg font-bold">원~</span></span>
-                  {displayKRW === 0 && (
-                    <span className="text-xs font-bold text-amber-800 bg-amber-100 border border-amber-300 px-2 py-0.5 rounded-md">
-                      베트남 현지 여행사 판매가 조정 중 (상담문의)
-                    </span>
+                  {displayKRW > 0 ? (
+                    <span>{displayKRW.toLocaleString('ko-KR')} <span className="text-lg font-bold">원~</span></span>
+                  ) : (
+                    <div className="flex items-center gap-2">
+                      <span className="text-amber-700 font-black">가격 문의</span>
+                      <span className="text-xs font-bold text-emerald-800 bg-emerald-100 border border-emerald-300 px-2 py-0.5 rounded-md">
+                        상담 후 맞춤 견적 안내
+                      </span>
+                    </div>
                   )}
                 </div>
                 <p className="text-xs font-bold text-slate-600">
                   {displayKRW > 0 ? (
                     <>(현찰 살 때 환율 기준: 약 <strong className="text-emerald-700">{displayVND.toLocaleString('ko-KR')} ₫</strong> / {formatUSD(liveUSD)})</>
                   ) : (
-                    <span>(현지 여행사 요금 재조정 진행 중 · 맞춤 상담 가능)</span>
+                    <span>(일정 및 인원에 따른 맞춤 견적 상담 가능)</span>
                   )}
                 </p>
               </div>

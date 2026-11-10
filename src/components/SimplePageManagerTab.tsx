@@ -403,7 +403,7 @@ export const SimplePageManagerTab: React.FC<SimplePageManagerTabProps> = ({
                       {prod.title}
                     </h4>
                     <p className="text-slate-400 text-[11px] truncate">
-                      {prod.priceKRW !== undefined && prod.priceKRW > 0 ? `${prod.priceKRW.toLocaleString()}원` : '0원 (가격조정중)'} · {prod.duration}
+                      {prod.priceKRW !== undefined && prod.priceKRW > 0 ? `${prod.priceKRW.toLocaleString()}원` : '가격 문의'} · {prod.duration}
                     </p>
                   </div>
                 </div>

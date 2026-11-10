@@ -1754,11 +1754,19 @@ export const AdminMode: React.FC<AdminModeProps> = ({
             {/* Price & Specs */}
             <div className="flex flex-wrap items-center gap-3 pt-1 text-xs">
               <span className="font-black text-amber-400 font-mono text-sm">
-                ₩{(prod.priceKRW || 0).toLocaleString()}원
+                {prod.priceKRW !== undefined && prod.priceKRW > 0 ? (
+                  `₩${prod.priceKRW.toLocaleString()}원`
+                ) : (
+                  <span className="text-amber-400 font-bold bg-amber-950/60 border border-amber-700/60 px-2 py-0.5 rounded text-xs">
+                    가격 문의
+                  </span>
+                )}
               </span>
-              <span className="text-slate-400 text-[11px]">
-                (약 {formatVND(liveVND)})
-              </span>
+              {prod.priceKRW !== undefined && prod.priceKRW > 0 && (
+                <span className="text-slate-400 text-[11px]">
+                  (약 {formatVND(liveVND)})
+                </span>
+              )}
               <span className="text-amber-400 flex items-center gap-0.5 text-[11px]">
                 ★ {prod.rating || 4.9} ({prod.reviewCount || 0})
               </span>
