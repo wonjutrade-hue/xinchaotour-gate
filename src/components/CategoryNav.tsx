@@ -68,7 +68,7 @@ export const CategoryNav: React.FC<CategoryNavProps> = ({
                 );
               })}
 
-              {/* 개발중인 상품 메뉴 연결 */}
+              {/* 협력사 Vitraco 베트남 관광 메뉴 연결 */}
               <a
                 href="/?page=dev_products"
                 onClick={(e) => {
@@ -78,10 +78,10 @@ export const CategoryNav: React.FC<CategoryNavProps> = ({
                   }
                 }}
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black bg-gradient-to-r from-amber-500 via-amber-600 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-xs hover:shadow-md transition-all whitespace-nowrap cursor-pointer border border-amber-400/80 group"
-                title="신규 개발중인 상품 라인업 안내"
+                title="협력사 VITRACO TOUR 베트남 관광 상품 (베트남 현지 가격 복사본)"
               >
                 <Sparkles className="w-3.5 h-3.5 text-amber-200 animate-pulse" />
-                <span>개발중인 상품</span>
+                <span>베트남 관광 (VITRACO)</span>
                 <span className="text-[9px] font-black bg-black/25 text-amber-100 px-1.5 py-0.2 rounded-full border border-white/20">
                   NEW
                 </span>

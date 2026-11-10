@@ -450,7 +450,7 @@ export default function App() {
       golf: '골프투어',
       travel_info: '베트남 여행정보 꿀팁',
       reservation: '빠른 견적/예약 신청',
-      dev_products: '출시 예정 신규 개발중인 상품'
+      dev_products: '베트남 관광 (VITRACO 직영 상품)'
     };
     trackVisitorEvent('page_view', navTitles[page] || page);
 

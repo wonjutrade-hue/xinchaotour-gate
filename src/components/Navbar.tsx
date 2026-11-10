@@ -131,7 +131,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               <span>{COMPANY_PHONE}</span>
             </a>
 
-            {/* Dev products link */}
+            {/* Vitraco 베트남 관광 상품 링크 */}
             <a
               href="/?page=dev_products"
               onClick={(e) => {
@@ -139,10 +139,10 @@ export const Navbar: React.FC<NavbarProps> = ({
                 handleItemClick('dev_products');
               }}
               className="hidden lg:inline-flex items-center gap-1 text-amber-200 hover:text-white font-extrabold transition cursor-pointer bg-gradient-to-r from-amber-500/20 to-orange-500/20 hover:bg-amber-500/30 px-2 py-0.5 rounded-md border border-amber-400/40 text-[11px]"
-              title="신규 개발중인 상품 라인업 안내"
+              title="협력사 VITRACO TOUR 베트남 관광 상품 (베트남 현지 가격 복사본)"
             >
               <Sparkles className="w-3 h-3 text-amber-300" />
-              <span>개발중인 상품</span>
+              <span>베트남 관광 (VITRACO)</span>
             </a>
 
             {/* Kakao quick chat */}
@@ -316,7 +316,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             })}
           </div>
 
-          {/* 개발중인 상품 모바일 메뉴 링크 */}
+          {/* Vitraco 베트남 관광 모바일 메뉴 링크 */}
           <button
             type="button"
             onClick={() => handleItemClick('dev_products')}
@@ -324,10 +324,10 @@ export const Navbar: React.FC<NavbarProps> = ({
           >
             <div className="flex items-center gap-1.5">
               <Sparkles className="w-3.5 h-3.5 text-amber-200 animate-pulse" />
-              <span>신규 개발중인 상품 라인업 보기</span>
+              <span>베트남 관광 (VITRACO 직영 상품)</span>
               <span className="text-[9px] bg-black/25 text-amber-100 px-1.5 py-0.2 rounded-full border border-white/20">NEW</span>
             </div>
-            <span className="text-xs font-bold text-amber-100">바로가기 →</span>
+            <span className="text-xs font-bold text-amber-100">보러가기 →</span>
           </button>
 
           {/* MOU Official Partner Info in Mobile Menu */}
