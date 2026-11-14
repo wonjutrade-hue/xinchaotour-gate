@@ -13,7 +13,8 @@ import {
   CalendarCheck, 
   BookOpen, 
   Bot,
-  ExternalLink
+  ExternalLink,
+  Plane
 } from 'lucide-react';
 import { COMPANY_PHONE, COMPANY_PHONE_TEL, DEFAULT_KAKAO_LINK, handleOpenKakaoTalkDirect } from '../constants';
 import { COMPANY_INFO, PARTNER_COMPANY_INFO } from '../data/companyInfo';
@@ -33,6 +34,7 @@ interface NavbarProps {
   onSearchChange: (val: string) => void;
   exchangeRates: ExchangeRates;
   onOpenRateCalculator?: () => void;
+  onOpenFlights?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -45,7 +47,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   searchTerm,
   onSearchChange,
   exchangeRates,
-  onOpenRateCalculator
+  onOpenRateCalculator,
+  onOpenFlights
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -98,6 +101,30 @@ export const Navbar: React.FC<NavbarProps> = ({
             >
               <DollarSign className="w-3.5 h-3.5 text-amber-400 shrink-0" />
               <span>현찰 살때: 1,000원 ≒ <strong className="text-amber-300">{vndPerThousandKRW.toLocaleString()}동</strong> (100동당 {cashBuyRate100.toFixed(2)}원)</span>
+            </button>
+
+            {/* Live Flights Trigger Button */}
+            <button
+              onClick={() => {
+                if (onOpenFlights) {
+                  onOpenFlights();
+                } else {
+                  const el = document.getElementById('live-flights');
+                  if (el) {
+                    el.scrollIntoView({ behavior: 'smooth' });
+                  } else {
+                    onNavigate('home');
+                    setTimeout(() => {
+                      document.getElementById('live-flights')?.scrollIntoView({ behavior: 'smooth' });
+                    }, 250);
+                  }
+                }
+              }}
+              className="inline-flex items-center gap-1 text-slate-200 hover:text-amber-300 transition cursor-pointer font-bold bg-teal-500/20 hover:bg-teal-500/30 px-2.5 py-0.5 rounded-md border border-teal-400/40 text-[11px] sm:text-xs"
+              title="베트남 주요 공항(다낭 DAD, 하노이 HAN 등) 실시간 항공편 운항 정보"
+            >
+              <Plane className="w-3.5 h-3.5 text-teal-300 shrink-0" />
+              <span>✈️ 실시간 항공편 (DAD/HAN)</span>
             </button>
           </div>
 
@@ -347,6 +374,28 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           {/* Quick Tools */}
           <div className="pt-2 grid grid-cols-2 gap-2">
+            <button
+              onClick={() => {
+                setMobileMenuOpen(false);
+                if (onOpenFlights) {
+                  onOpenFlights();
+                } else {
+                  const el = document.getElementById('live-flights');
+                  if (el) {
+                    el.scrollIntoView({ behavior: 'smooth' });
+                  } else {
+                    onNavigate('home');
+                    setTimeout(() => {
+                      document.getElementById('live-flights')?.scrollIntoView({ behavior: 'smooth' });
+                    }, 250);
+                  }
+                }
+              }}
+              className="p-2.5 rounded-xl bg-teal-50 text-teal-900 border border-teal-200 text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer col-span-2 shadow-xs"
+            >
+              <Plane className="w-4 h-4 text-teal-600" />
+              <span>✈️ 실시간 공항 운항 정보 (DAD/HAN)</span>
+            </button>
             <button
               onClick={() => handleItemClick('travel_info')}
               className="p-2.5 rounded-xl bg-amber-50 text-amber-900 border border-amber-200 text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer"

@@ -762,11 +762,16 @@ export const VITRACO_MENU_STRUCTURE = {
   ]
 };
 
-export const DevProductsPage: React.FC<DevProductsPageProps> = ({
-  onSelectProduct,
+export interface VitracoTourCatalogProps {
+  onOpenConsultation: (targetProduct?: Product | null) => void;
+  exchangeRates: ExchangeRates;
+  isHomeSection?: boolean;
+}
+
+export const VitracoTourCatalog: React.FC<VitracoTourCatalogProps> = ({
   onOpenConsultation,
-  onNavigateHome,
-  exchangeRates
+  exchangeRates,
+  isHomeSection = false
 }) => {
   const [selectedRegion, setSelectedRegion] = useState<'전체' | '북부' | '중부' | '남부'>('전체');
   const [selectedSubRegion, setSelectedSubRegion] = useState<string>('전체');
@@ -813,36 +818,9 @@ export const DevProductsPage: React.FC<DevProductsPageProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-100 pb-24">
-      {/* Top Breadcrumb & Return Bar */}
-      <div className="bg-slate-950/90 backdrop-blur-md border-b border-slate-800 sticky top-0 z-30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between gap-3">
-          <button
-            onClick={onNavigateHome}
-            className="inline-flex items-center gap-2 text-xs font-bold text-slate-300 hover:text-emerald-400 transition cursor-pointer"
-          >
-            <ArrowLeft className="w-4 h-4 text-emerald-400" />
-            <span>← 신짜오투어 메인으로 돌아가기</span>
-          </button>
-
-          <div className="flex items-center gap-3">
-            <span className="hidden sm:inline-flex items-center gap-1.5 text-xs text-amber-300 bg-amber-500/10 px-2.5 py-1 rounded-md border border-amber-400/30 font-bold">
-              <DollarSign className="w-3.5 h-3.5 text-amber-400" />
-              <span>환율 기준: 100동당 {cashBuyRate100.toFixed(2)}원</span>
-            </span>
-            <a
-              href={COMPANY_PHONE_TEL}
-              className="hidden md:inline-flex items-center gap-1 text-xs text-slate-300 hover:text-white font-extrabold"
-            >
-              <PhoneCall className="w-3 h-3 text-emerald-400" />
-              <span>{COMPANY_PHONE}</span>
-            </a>
-          </div>
-        </div>
-      </div>
-
+    <div className={isHomeSection ? 'py-8' : ''}>
       {/* Hero Header: Vitraco Official Domestic -> Vietnam Tours Partnership */}
-      <div className="relative overflow-hidden bg-gradient-to-b from-slate-950 via-slate-900 to-slate-900 pt-10 pb-10 sm:pt-14 sm:pb-14 border-b border-slate-800">
+      <div className={`relative overflow-hidden bg-gradient-to-b from-slate-950 via-slate-900 to-slate-900 ${isHomeSection ? 'pt-8 pb-8 rounded-3xl border border-amber-500/30 mx-4 sm:mx-6 lg:mx-8 mb-8' : 'pt-10 pb-10 sm:pt-14 sm:pb-14 border-b border-slate-800'}`}>
         <div className="absolute inset-0 opacity-10 pointer-events-none bg-[radial-gradient(#f59e0b_1px,transparent_1px)] [background-size:24px_24px]" />
         
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center space-y-4">
@@ -878,6 +856,7 @@ export const DevProductsPage: React.FC<DevProductsPageProps> = ({
           </div>
         </div>
       </div>
+
 
       {/* Vitraco Style 3-Column Mega Menu Navigation (Mirroring user's screenshot) */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
@@ -1269,6 +1248,52 @@ export const DevProductsPage: React.FC<DevProductsPageProps> = ({
           </div>
         </div>
       </div>
+    </div>
+  );
+};
+
+export const DevProductsPage: React.FC<DevProductsPageProps> = ({
+  onSelectProduct,
+  onOpenConsultation,
+  onNavigateHome,
+  exchangeRates
+}) => {
+  const cashBuyRate100 = exchangeRates.cashBuyRateKRWPer100VND || 5.85;
+
+  return (
+    <div className="min-h-screen bg-slate-900 text-slate-100 pb-24">
+      {/* Top Breadcrumb & Return Bar */}
+      <div className="bg-slate-950/90 backdrop-blur-md border-b border-slate-800 sticky top-0 z-30">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between gap-3">
+          <button
+            onClick={onNavigateHome}
+            className="inline-flex items-center gap-2 text-xs font-bold text-slate-300 hover:text-emerald-400 transition cursor-pointer"
+          >
+            <ArrowLeft className="w-4 h-4 text-emerald-400" />
+            <span>← 신짜오투어 메인으로 돌아가기</span>
+          </button>
+
+          <div className="flex items-center gap-3">
+            <span className="hidden sm:inline-flex items-center gap-1.5 text-xs text-amber-300 bg-amber-500/10 px-2.5 py-1 rounded-md border border-amber-400/30 font-bold">
+              <DollarSign className="w-3.5 h-3.5 text-amber-400" />
+              <span>환율 기준: 100동당 {cashBuyRate100.toFixed(2)}원</span>
+            </span>
+            <a
+              href={COMPANY_PHONE_TEL}
+              className="hidden md:inline-flex items-center gap-1 text-xs text-slate-300 hover:text-white font-extrabold"
+            >
+              <PhoneCall className="w-3 h-3 text-emerald-400" />
+              <span>{COMPANY_PHONE}</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <VitracoTourCatalog
+        onOpenConsultation={onOpenConsultation}
+        exchangeRates={exchangeRates}
+        isHomeSection={false}
+      />
     </div>
   );
 };

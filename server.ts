@@ -7,6 +7,7 @@ import { INITIAL_PRODUCTS, SAMPLE_PRODUCTS } from './src/data/seedProducts.js';
 import { Product, Category, ConsultationRequest, VisitorLog, DailyVisitorStat, AnalyticsSummary } from './src/types.js';
 import { COMPANY_INFO } from './src/data/companyInfo.js';
 import { INITIAL_REVIEWS } from './src/data/reviews.js';
+import { fetchLiveFlightData } from './src/services/flightBackend.js';
 
 // Persisted stores
 const PRODUCTS_FILE_PATH = path.join(process.cwd(), 'stored_products.json');
@@ -39,6 +40,16 @@ function isProductAllowed(p: Product): boolean {
   return true;
 }
 
+function cleanAloText(str?: string): string {
+  if (!str || typeof str !== 'string') return str || '';
+  return str
+    .replace(/Alo\s*Travel/gi, '신짜오투어')
+    .replace(/#ALO\s*-?\s*(\d+)/gi, '#$1')
+    .replace(/\bALO\s*-\s*(\d+)/gi, '$1')
+    .replace(/\bALO\b\s*-?\s*/gi, '')
+    .replace(/  +/g, ' ');
+}
+
 function sanitizeProduct(p: Product): Product {
   if (!p) return p;
   const img = p.imageUrl || '';
@@ -47,6 +58,12 @@ function sanitizeProduct(p: Product): Product {
 
   return {
     ...p,
+    title: cleanAloText(p.title),
+    subTitle: p.subTitle ? cleanAloText(p.subTitle) : p.subTitle,
+    description: cleanAloText(p.description),
+    travelTheme: p.travelTheme ? cleanAloText(p.travelTheme) : p.travelTheme,
+    tags: Array.isArray(p.tags) ? p.tags.map(t => cleanAloText(t)) : p.tags,
+    highlights: Array.isArray(p.highlights) ? p.highlights.map(h => cleanAloText(h)) : p.highlights,
     imageUrl: cleanMain,
     additionalImages: cleanSubs
   };
@@ -279,7 +296,14 @@ const getGenAIClient = () => {
   if (!apiKey || apiKey === 'MY_GEMINI_API_KEY') {
     return null;
   }
-  return new GoogleGenAI({ apiKey });
+  return new GoogleGenAI({
+    apiKey,
+    httpOptions: {
+      headers: {
+        'User-Agent': 'aistudio-build',
+      }
+    }
+  });
 };
 
 // Live Exchange Rates Cache (현찰 살 때 기준)
@@ -410,6 +434,22 @@ async function startServer() {
       rates,
       lastUpdated: nowStr
     });
+  });
+
+  // 0-D. Live Flight Arrival / Departure Info with Search Grounding
+  app.get('/api/flights/live', async (req: Request, res: Response) => {
+    try {
+      const airport = ((req.query.airport as string) || 'DAD').toUpperCase();
+      const type = (req.query.type === 'departure' ? 'departure' : 'arrival') as 'arrival' | 'departure';
+      const refresh = req.query.refresh === 'true';
+
+      const flightData = await fetchLiveFlightData(airport, type, refresh);
+      res.setHeader('Cache-Control', 'public, max-age=60');
+      res.json(flightData);
+    } catch (err: any) {
+      console.error('[Server] Failed to get live flight data:', err);
+      res.status(500).json({ success: false, error: err.message });
+    }
   });
 
   // 1. Get Products
@@ -697,7 +737,7 @@ async function startServer() {
 답변할 때 신차오투어만의 강점(100% 한국어 가이드, 단독 차량, 거품 없는 최저가, 24시간 현지 긴급 지원)을 매력적으로 어필하고, 추천 패키지나 풀빌라/골프 상품을 구체적으로 권유하라.`;
 
       const response = await ai.models.generateContent({
-        model: 'gemini-2.5-flash',
+        model: 'gemini-3.8-flash',
         contents: [
           { role: 'user', parts: [{ text: `${systemInstruction}\n\n[사용자 질문]\n${prompt}\n\n[사용자 맥락]: ${JSON.stringify(userContext || {})}` }] }
         ]

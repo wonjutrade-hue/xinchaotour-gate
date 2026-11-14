@@ -203,3 +203,44 @@ export interface AnalyticsSummary {
   popularProducts: { productId: string; title: string; views: number }[];
   recentLogs: VisitorLog[];
 }
+
+export interface FlightInfo {
+  id: string;
+  flightNumber: string;
+  airline: string;
+  airlineCode?: string;
+  type: 'arrival' | 'departure';
+  airportCode: string;
+  origin: string;
+  originCode: string;
+  destination: string;
+  destinationCode: string;
+  scheduledTime: string;
+  estimatedTime?: string;
+  status: '정상' | '도착' | '지연' | '탑승중' | '출발' | '결항';
+  statusEn: string;
+  terminal?: string;
+  gate?: string;
+  carousel?: string;
+  aircraft?: string;
+  isKoreaRoute: boolean;
+}
+
+export interface GroundingSource {
+  title: string;
+  uri: string;
+}
+
+export interface LiveFlightResponse {
+  success: boolean;
+  airportCode: string;
+  airportNameKo: string;
+  airportNameEn: string;
+  city: string;
+  type: 'arrival' | 'departure';
+  updatedAt: string;
+  advisory?: string;
+  searchQueries?: string[];
+  groundingSources?: GroundingSource[];
+  flights: FlightInfo[];
+}

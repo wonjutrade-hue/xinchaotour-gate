@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Product, Category, Region, City, ConsultationRequest } from './types';
+import { Product, Category, Region, City, ConsultationRequest, FlightInfo } from './types';
 import { Navbar, NavPage } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { CategoryNav, REGION_CITIES } from './components/CategoryNav';
@@ -19,7 +19,8 @@ import { TravelInfoPage } from './components/TravelInfoPage';
 import { ReviewsPage } from './components/ReviewsPage';
 import { CompanyPage } from './components/CompanyPage';
 import { SimpleLandingPage } from './components/SimpleLandingPage';
-import { DevProductsPage } from './components/DevProductsPage';
+import { DevProductsPage, VitracoTourCatalog } from './components/DevProductsPage';
+import { LiveFlightsWidget } from './components/LiveFlightsWidget';
 import { getLiveExchangeRates, ExchangeRates, DEFAULT_RATES } from './lib/exchangeRate';
 import { productService } from './services/productService';
 import { inquiryService } from './services/inquiryService';
@@ -52,8 +53,30 @@ import { getDisplayProductImage } from './lib/imageFallback';
 import { trackVisitorEvent } from './lib/analytics';
 
 const PRODUCTS_CACHE_KEY = 'xinchao_products_cache_master_v12';
-const CURRENT_CATALOG_REVISION = '2026_11_10_fixed_napoli_pearl_prices_v1';
+const CURRENT_CATALOG_REVISION = '2026_11_13_remove_alo_text_v1';
 const REVISION_KEY = 'xinchao_catalog_revision_applied';
+
+function cleanAloText(str?: string): string {
+  if (!str || typeof str !== 'string') return str || '';
+  return str
+    .replace(/Alo\s*Travel/gi, '신짜오투어')
+    .replace(/#ALO\s*-?\s*(\d+)/gi, '#$1')
+    .replace(/\bALO\s*-\s*(\d+)/gi, '$1')
+    .replace(/\bALO\b\s*-?\s*/gi, '')
+    .replace(/  +/g, ' ');
+}
+
+function sanitizeAloFields(p: Product): Product {
+  return {
+    ...p,
+    title: cleanAloText(p.title),
+    subTitle: p.subTitle ? cleanAloText(p.subTitle) : p.subTitle,
+    description: cleanAloText(p.description),
+    travelTheme: p.travelTheme ? cleanAloText(p.travelTheme) : p.travelTheme,
+    tags: Array.isArray(p.tags) ? p.tags.map(t => cleanAloText(t)) : p.tags,
+    highlights: Array.isArray(p.highlights) ? p.highlights.map(h => cleanAloText(h)) : p.highlights
+  };
+}
 
 function mergeProductsPreservingLocal(localList: Product[], incomingList: Product[]): { merged: Product[]; localWasNewer: boolean } {
   if (!incomingList || incomingList.length === 0) return { merged: localList || [], localWasNewer: false };
@@ -124,7 +147,8 @@ function mergeProductsPreservingLocal(localList: Product[], incomingList: Produc
   });
 
   // Unconditionally ensure all travel / package tours across Vietnam are 0 KRW as requested
-  const mergedList: Product[] = Array.from(mergedMap.values()).map(p => {
+  const mergedList: Product[] = Array.from(mergedMap.values()).map(rawP => {
+    const p = sanitizeAloFields(rawP);
     if (p.category !== '풀빌라' && p.category !== '골프투어') {
       return {
         ...p,
@@ -172,9 +196,10 @@ function cleanPlaceholderUrls(prodList: Product[]): Product[] {
       vnd = 20993266;
     }
 
+    const sanitized = sanitizeAloFields(p);
     return {
-      ...p,
-      category: (isTour ? '자유여행' : p.category) as Category,
+      ...sanitized,
+      category: (isTour ? '자유여행' : sanitized.category) as Category,
       priceKRW: krw,
       priceVND: vnd,
       imageUrl: mainImg,
@@ -332,6 +357,38 @@ export default function App() {
   const [isAdminMode, setIsAdminMode] = useState(false);
   const [isAdminLoginOpen, setIsAdminLoginOpen] = useState(false);
   const [adminTargetTab, setAdminTargetTab] = useState<'products' | 'inquiries' | 'analytics' | 'guide' | 'simple_page'>('products');
+  const [isFlightsModalOpen, setIsFlightsModalOpen] = useState(false);
+
+  const handleOpenConsultationWithFlight = (flight: FlightInfo) => {
+    const isArr = flight.type === 'arrival';
+    const city = (flight.airportCode === 'DAD' ? '다낭' : (flight.airportCode === 'HAN' ? '하노이' : (flight.airportCode === 'SGN' ? '호치민' : (flight.airportCode === 'CXR' ? '나트랑' : '푸꾸옥')))) as City;
+    const region: Region = flight.airportCode === 'HAN' ? '북부' : (flight.airportCode === 'DAD' || flight.airportCode === 'CXR' ? '중부' : '남부');
+    
+    const flightProduct: Product = {
+      id: `flight-transfer-${flight.flightNumber}`,
+      title: `[공항 픽업/샌딩] ${flight.airportCode} 공항 ${flight.airline} ${flight.flightNumber}편 (${flight.origin} ➔ ${flight.destination})`,
+      subTitle: `${flight.airportCode} 공항 ${flight.scheduledTime} ${isArr ? '도착' : '출발'} 단독 VIP 리무진 픽업/샌딩 서비스 예약 문의`,
+      category: '자유여행',
+      duration: '1일 (공항 픽업/샌딩)',
+      description: '공항 픽업 및 전용 VIP 리무진 샌딩 서비스입니다.',
+      region,
+      city,
+      priceKRW: 0,
+      priceVND: 0,
+      departureCities: ['인천', '부산', '대구', '청주', '현지'],
+      imageUrl: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=1200&q=80',
+      tags: ['공항픽업', 'VIP리무진', flight.flightNumber, '단독배차'],
+      included: ['전용 단독 VIP 리무진', '한국어 가능 현지 기사', '유류비 및 고속도로 톨게이트', '항공편 지연 시 네임피켓 자동 대기'],
+      excluded: ['기사 개인 매너팁'],
+      highlights: ['항공편명 실시간 추적 시스템 탑재', '지연 시에도 추가 요금 없이 대기', '호텔/풀빌라 로비 정문까지 직송'],
+      rating: 5.0,
+      reviewCount: 42
+    };
+
+    setConsultationTargetProduct(flightProduct);
+    setIsConsultationOpen(true);
+    setIsFlightsModalOpen(false);
+  };
 
   const handleOpenAdmin = (targetTab?: string) => {
     if (targetTab === 'simple_page' || targetTab === 'inquiries' || targetTab === 'analytics' || targetTab === 'guide') {
@@ -912,6 +969,27 @@ export default function App() {
           />
         )}
 
+        {/* Vitraco Tour Official Vietnam Tours Showcase (첫 페이지 복사본) */}
+        {currentPage === 'home' && (
+          <VitracoTourCatalog
+            onOpenConsultation={(targetProd) => {
+              setConsultationTargetProduct(targetProd || null);
+              setIsConsultationOpen(true);
+            }}
+            exchangeRates={exchangeRates}
+            isHomeSection={true}
+          />
+        )}
+
+        {/* Live Flight Information Tracker (Google Search Grounding) */}
+        {currentPage === 'home' && (
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 w-full">
+            <LiveFlightsWidget
+              onOpenConsultationWithFlight={handleOpenConsultationWithFlight}
+            />
+          </div>
+        )}
+
         {/* Category Nav & Regional Filter */}
         <CategoryNav
           activeCategory={activeCategory}
@@ -1455,14 +1533,27 @@ export default function App() {
       <Navbar
         currentPage={currentPage}
         onNavigate={handleNavigate}
-        onOpenExchangeModal={() => setIsRateModalOpen(true)}
-        onOpenConsultationModal={() => {
+        onOpenConsultation={() => {
           setConsultationTargetProduct(null);
           setIsConsultationOpen(true);
         }}
+        onOpenAiAssistant={() => setIsAiAssistantOpen(true)}
+        onOpenTravelInfo={handleOpenTravelInfo}
         onOpenAdmin={handleOpenAdmin}
+        searchTerm={searchTerm}
+        onSearchChange={setSearchTerm}
         exchangeRates={exchangeRates}
-        totalProductsCount={products.length}
+        onOpenRateCalculator={() => setIsRateModalOpen(true)}
+        onOpenFlights={() => {
+          if (currentPage === 'home') {
+            const el = document.getElementById('live-flights');
+            if (el) {
+              el.scrollIntoView({ behavior: 'smooth' });
+              return;
+            }
+          }
+          setIsFlightsModalOpen(true);
+        }}
       />
 
       {/* Main Page Body */}
@@ -1557,6 +1648,23 @@ export default function App() {
             window.scrollTo({ top: 0, behavior: 'smooth' });
           }}
         />
+      )}
+
+      {/* Live Flights Dedicated Modal (accessible from any page via top banner) */}
+      {isFlightsModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
+          <div className="relative w-full max-w-6xl max-h-[92vh] overflow-y-auto rounded-3xl shadow-2xl bg-white border border-slate-200">
+            <button
+              onClick={() => setIsFlightsModalOpen(false)}
+              className="absolute top-4 right-4 z-50 w-9 h-9 rounded-full bg-slate-900/80 hover:bg-slate-950 text-white flex items-center justify-center font-bold text-sm shadow-lg transition cursor-pointer"
+            >
+              ✕
+            </button>
+            <LiveFlightsWidget
+              onOpenConsultationWithFlight={handleOpenConsultationWithFlight}
+            />
+          </div>
+        </div>
       )}
     </div>
   );
